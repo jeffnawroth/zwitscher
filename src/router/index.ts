@@ -1,6 +1,6 @@
 // Composables
 import { createRouter, createWebHistory } from "vue-router";
-//Test2
+
 const routes = [{
   path: "/",
   name: "home",
