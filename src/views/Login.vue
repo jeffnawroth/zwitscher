@@ -10,6 +10,8 @@
           :type="showPassword ? 'text' : 'password'"
           @click:append-inner="showPassword = !showPassword"
         ></v-text-field>
+        <span> Du hast noch kein Konto? </span>
+        <router-link :to="{ name: 'register' }"> Registrieren </router-link>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
