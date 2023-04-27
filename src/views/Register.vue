@@ -64,7 +64,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn>Registrieren</v-btn>
+        <v-btn variant="tonal">Registrieren</v-btn>
       </v-card-actions>
     </v-card>
   </v-container>

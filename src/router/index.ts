@@ -3,6 +3,11 @@ import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
   {
+    path: "/",
+    name: "landing-page",
+    component: () => import("@/views/LandingPage.vue"),
+  },
+  {
     path: "/login",
     name: "login",
     component: () => import("@/views/Login.vue"),

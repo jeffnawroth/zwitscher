@@ -15,7 +15,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn>Anmelden</v-btn>
+        <v-btn variant="tonal">Anmelden</v-btn>
       </v-card-actions>
     </v-card>
   </v-container>
