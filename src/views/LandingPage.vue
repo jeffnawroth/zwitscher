@@ -4,13 +4,11 @@
       <v-col class="d-flex justify-center">
         <h1>Willkommen!</h1>
       </v-col>
-      <v-col class="d-flex justify-center" cols="12">
+      <v-col class="d-flex justify-center text-center" cols="12">
         <h2>
           Um den Mikroblogging-Dienst zu nutzen, müssen Sie sich
           <router-link :to="{ name: 'login' }"> Anmelden </router-link>
-        </h2>
-        <h2>
-          &nbsp;oder
+          oder
           <router-link :to="{ name: 'register' }"> Registrieren </router-link>
         </h2>
       </v-col>
