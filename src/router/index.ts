@@ -8,6 +8,12 @@ const routes = [
     component: () => import("@/views/LandingPage.vue"),
   },
   {
+    path: "/home",
+    name: "home",
+    component: () => import("@/views/Home.vue"),
+    //meta: { requiresAuth: true },
+  },
+  {
     path: "/login",
     name: "login",
     component: () => import("@/views/Login.vue"),
@@ -23,5 +29,11 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
+
+/* router.beforeEach((to, from, next) => {
+  const loggedIn = localStorage.getItem("");
+  if (to.name !== "login" && !loggedIn) next({ name: "login" });
+  else next();
+}); */
 
 export default router;
