@@ -23,6 +23,22 @@ const routes = [
     name: "register",
     component: () => import("@/views/Register.vue"),
   },
+  {
+    path: "/users",
+    name: "users",
+    component: () => import("@/views/UserManagement.vue"),
+    children: [
+      {
+        name: "create-user",
+        path: "create-user",
+        props: true,
+        component: () =>
+          import(
+            /* weppackChunkName: "create-user" */ "@/components/UserDialog.vue"
+          ),
+      },
+    ],
+  },
 ];
 
 const router = createRouter({
