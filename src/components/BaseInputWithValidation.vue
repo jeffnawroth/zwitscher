@@ -5,6 +5,7 @@
     :error-messages="errors"
     :type="type"
     :clearable="true"
+    hide-details="auto"
     @blur="handleBlur"
   />
 </template>
