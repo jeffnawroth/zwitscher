@@ -1,14 +1,26 @@
 import { defineStore } from "pinia";
-import { Ref, ref } from "vue";
+import { ref } from "vue";
 import dummyUsers from "@/views/dummyUsers";
+import { User } from "@/interfaces";
 
 export const useUsersStore = defineStore("users", () => {
-  const users = ref(dummyUsers);
+  const users = ref<User[]>([]);
+  const user = ref<User>();
 
-  function createUser(user: Object) {
-    //@ts-expect-error
+  function createUser(user: User) {
     users.value.push(user);
   }
 
-  return { users, createUser };
+  function getUsers() {
+    users.value = dummyUsers;
+  }
+
+  function deleteUser() {
+    const index = users.value.findIndex(
+      (userArray) => userArray.id === user.value?.id
+    );
+    users.value.splice(index, 1);
+  }
+
+  return { user, users, createUser, getUsers, deleteUser };
 });
