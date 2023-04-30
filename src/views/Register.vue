@@ -10,6 +10,15 @@
           <v-row>
             <v-col>
               <BaseInputWithValidation
+                name="username"
+                label="Username"
+                type="text"
+              ></BaseInputWithValidation>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <BaseInputWithValidation
                 name="firstName"
                 label="Vorname"
                 type="text"
@@ -23,55 +32,35 @@
               ></BaseInputWithValidation>
             </v-col>
           </v-row>
-          <BaseInputWithValidation
-            name="email"
-            label="E-Mail"
-            type="text"
-          ></BaseInputWithValidation>
           <v-row>
             <v-col>
               <BaseInputWithValidation
-                name="password"
-                label="Passwort"
-                :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                :type="showPassword ? 'text' : 'password'"
-                @click:append-inner="showPassword = !showPassword"
-              ></BaseInputWithValidation>
-            </v-col>
-            <v-col>
-              <BaseInputWithValidation
-                name="passwordConfirm"
-                label="Passwort bestätigen"
-                :append-inner-icon="
-                  showPasswordConfirm ? 'mdi-eye' : 'mdi-eye-off'
-                "
-                :type="showPasswordConfirm ? 'text' : 'password'"
-                @click:append-inner="showPasswordConfirm = !showPasswordConfirm"
+                name="email"
+                label="E-Mail"
+                type="text"
               ></BaseInputWithValidation>
             </v-col>
           </v-row>
-
-          <!--   <div class="ml-4 mb-6">
-            <ul>
-              <li :class="{ 'text-success': isMinLengthValid }">
-                mindestens 6 Zeichen
-              </li>
-              <li :class="{ 'text-success': hasDigit }">
-                mindestens eine Ziffer ('0'-'9')
-              </li>
-              <li :class="{ 'text-success': hasLowercase }">
-                mindestens einen Kleinbuchstaben ('a'-'z')
-              </li>
-              <li :class="{ 'text-success': hasNonAlphanumeric }">
-                mindestens ein nicht alphanumerisches Zeichen
-              </li>
-              <li :class="{ 'text-success': hasUppercase }">
-                mindestens einen Großbuchstaben ('A'-'Z')
-              </li>
-            </ul>
-          </div> -->
-          <span> Du hast bereits ein Konto? </span>
-          <router-link :to="{ name: 'login' }"> Anmelden </router-link>
+          <v-row>
+            <v-col>
+              <BasePasswordInput
+                name="password"
+                label="Passwort"
+              ></BasePasswordInput>
+            </v-col>
+            <v-col>
+              <BasePasswordInput
+                name="passwordConfirm"
+                label="Passwort bestätigen"
+              ></BasePasswordInput>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <span> Du hast bereits ein Konto? </span>
+              <router-link :to="{ name: 'login' }"> Anmelden </router-link>
+            </v-col>
+          </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -88,6 +77,7 @@
 import { computed, ref } from "vue";
 import { useAuthenticationStore } from "@/store/authentication";
 import BaseInputWithValidation from "@/components/BaseInputWithValidation.vue";
+import BasePasswordInput from "@/components/BasePasswordInput.vue";
 import router from "@/router";
 import { Form } from "vee-validate";
 import { object, string, ref as yupRef, setLocale } from "yup";
@@ -96,10 +86,9 @@ import yupLocaleDe from "@/plugins/yupLocaleDe";
 setLocale(yupLocaleDe);
 
 const store = useAuthenticationStore();
-const showPassword = ref(false);
-const showPasswordConfirm = ref(false);
 
 const validationSchema = object({
+  username: string().required().label("Username"),
   firstName: string().required().label("Vorname"),
   lastName: string().required().label("Nachname"),
   email: string().required().email().label("E-Mail"),
@@ -114,20 +103,4 @@ function submit(values: Object) {
   store.register(values);
   router.push({ name: "home" });
 }
-
-/* const isMinLengthValid = computed(() => {
-  return user.value.password.length >= 6;
-});
-const hasDigit = computed(() => {
-  return /\d/.test(user.value.password);
-});
-const hasLowercase = computed(() => {
-  return /[a-z]/.test(user.value.password);
-});
-const hasNonAlphanumeric = computed(() => {
-  return /\W/.test(user.value.password);
-});
-const hasUppercase = computed(() => {
-  return /[A-Z]/.test(user.value.password);
-}); */
 </script>
