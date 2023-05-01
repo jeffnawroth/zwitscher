@@ -1,12 +1,13 @@
 <template>
   <v-dialog v-model="dialog" max-width="500" persistent>
     <Form
+      ref="form"
       v-slot="{ meta }"
       :validation-schema="validationSchema"
       :initial-values="initialValues"
       @submit="submit"
     >
-      <v-card width="500" title="Nutzer erstellen">
+      <v-card width="500" :title="cardTitle">
         <v-row class="justify-center mb-2">
           <v-menu open-on-hover>
             <template #activator="{ props }">
@@ -21,7 +22,7 @@
             </template>
             <v-list>
               <v-list-item>
-                <v-btn variant="text"> Profilbild ändern </v-btn>
+                <v-btn>Profilbild ändern</v-btn>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -97,7 +98,10 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn variant="tonal" @click="cancel(meta.dirty)">Abbrechen</v-btn>
-          <v-btn :disabled="!meta.valid" type="submit" variant="tonal"
+          <v-btn
+            :disabled="!meta.valid || !meta.dirty"
+            type="submit"
+            variant="tonal"
             >Speichern</v-btn
           >
         </v-card-actions>
@@ -123,12 +127,29 @@ import { Form } from "vee-validate";
 import { object, string, ref as yupRef, setLocale } from "yup";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
 import { useUsersStore } from "@/store/users";
+import { onMounted } from "vue";
 
 setLocale(yupLocaleDe);
 
-const usersStore = useUsersStore();
+const store = useUsersStore();
 const dialog = ref(true);
 const discardDialog = ref(false);
+
+const initialValues = ref({
+  role: null,
+  username: "",
+  firstName: "",
+  lastName: "",
+  email: "",
+  gender: null,
+  password: "",
+  passwordConfirm: "",
+});
+
+const form = ref<InstanceType<typeof Form> | null>(null);
+
+const roles = ref(["Admin", "Moderator", "Nutzer"]);
+const gender = ref(["männlich", "weiblich", "divers"]);
 
 const validationSchema = object({
   role: string().required().label("Rolle"),
@@ -140,23 +161,9 @@ const validationSchema = object({
   password: string().required().label("Passwort"),
   passwordConfirm: string()
     .required()
-    .oneOf([yupRef("password")])
-    .label("Passwörter"),
+    .oneOf([yupRef("password")], "Passwörter stimmen nicht überein")
+    .label("Passwort bestätigen"),
 });
-
-const initialValues = {
-  role: null,
-  username: "",
-  firstName: "",
-  lastName: "",
-  gender: null,
-  email: "",
-  password: "",
-  passwordConfirm: "",
-};
-
-const roles = ref(["Admin", "Moderator", "Nutzer"]);
-const gender = ref(["männlich", "weiblich", "divers"]);
 
 function cancel(dirty?: boolean) {
   if (dirty) {
@@ -166,12 +173,34 @@ function cancel(dirty?: boolean) {
   }
 }
 
+onMounted(() => {
+  if (store.user && router.currentRoute.value.name == "edit-user") {
+    let initialValues = JSON.parse(JSON.stringify(store.user));
+    initialValues.passwordConfirm = initialValues.password;
+    form.value?.resetForm({
+      values: initialValues,
+    });
+  }
+});
+
 function close() {
   router.push({ name: "users" });
 }
 
-function submit(values: Object) {
-  usersStore.createUser(values);
+function submit(values: any) {
+  delete values.passwordConfirm;
+
+  if (router.currentRoute.value.name == "create-user") {
+    store.createUser(values);
+  } else {
+    store.updateUser(values);
+  }
   close();
 }
+
+const cardTitle = computed(() => {
+  return router.currentRoute.value.name == "create-user"
+    ? "Nutzer erstellen"
+    : "Nutzer bearbeiten";
+});
 </script>
