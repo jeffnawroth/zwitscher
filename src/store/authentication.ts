@@ -1,17 +1,12 @@
+import { AuthUser } from "@/interfaces";
 import router from "@/router";
 import axios from "axios";
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
-
-const userData = {
-  firstName: "Admin",
-  lastName: "Nimda",
-  token:
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
-};
+import { userData } from "@/dummyData";
 
 export const useAuthenticationStore = defineStore("authentication", () => {
-  const user = ref(null);
+  const user = ref<AuthUser | null>(userData);
 
   async function register(credentials: Object) {
     //TO-DO: Register User
@@ -31,7 +26,7 @@ export const useAuthenticationStore = defineStore("authentication", () => {
     user.value = null;
     localStorage.removeItem("user");
     axios.defaults.headers.common["Authorization"] = null;
-    router.push({ name: "landing-page" });
+    router.push({ name: "login" });
   }
 
   function setUserData(data: any) {

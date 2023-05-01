@@ -1,18 +1,39 @@
 // Composables
-import { createRouter, createWebHistory } from "vue-router";
+import { useUsersStore } from "@/store/users";
+import {
+  NavigationGuardNext,
+  RouteLocationNormalized,
+  createRouter,
+  createWebHistory,
+} from "vue-router";
 
 const routes = [
   {
     path: "/",
+    name: "home",
+    component: () => import("@/views/Home.vue"),
+  },
+  {
+    path: "/profile",
+    name: "profile",
+    component: () => import("@/views/Home.vue"),
+  },
+  {
+    path: "/dashboard",
+    name: "dashboard",
+    component: () => import("@/views/Home.vue"),
+  },
+  {
+    path: "/settings",
+    name: "settings",
+    component: () => import("@/views/Home.vue"),
+  },
+  {
+    path: "/landing-page",
     name: "landing-page",
     component: () => import("@/views/LandingPage.vue"),
   },
-  {
-    path: "/home",
-    name: "home",
-    component: () => import("@/views/Home.vue"),
-    //meta: { requiresAuth: true },
-  },
+
   {
     path: "/login",
     name: "login",
@@ -31,11 +52,22 @@ const routes = [
       {
         name: "create-user",
         path: "create-user",
-        props: true,
-        component: () =>
-          import(
-            /* weppackChunkName: "create-user" */ "@/components/UserDialog.vue"
-          ),
+        component: () => import("@/components/UserDialog.vue"),
+      },
+      {
+        name: "edit-user",
+        path: "user/:id",
+        component: () => import("@/components/UserDialog.vue"),
+        beforeEnter(
+          to: RouteLocationNormalized,
+          from: RouteLocationNormalized,
+          next: NavigationGuardNext
+        ) {
+          //TO-DO: Add api
+          const store = useUsersStore();
+          store.getUser(Number(to.params.id));
+          next();
+        },
       },
     ],
   },

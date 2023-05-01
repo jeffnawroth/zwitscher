@@ -1,14 +1,28 @@
 <template>
-  <v-btn @click="logoutUser">Logout</v-btn>
-  <span class="text-h1">Home Sweet Home</span>
+  <v-list rounded="lg">
+    <v-list-item>
+      <CreatePost></CreatePost>
+    </v-list-item>
+    <v-divider></v-divider>
+
+    <div v-for="post in store.posts" :key="post.id">
+      <v-list-item>
+        <Post :post="post"></Post>
+      </v-list-item>
+      <v-divider></v-divider>
+    </div>
+  </v-list>
 </template>
 
-<script lang="ts" setup>
-import { useAuthenticationStore } from "@/store/authentication";
+<script setup lang="ts">
+import Post from "@/components/Post.vue";
+import CreatePost from "@/components/CreatePost.vue";
+import { usePostStore } from "@/store/posts";
+import { onMounted } from "vue";
 
-const store = useAuthenticationStore();
+const store = usePostStore();
 
-function logoutUser() {
-  store.logout();
-}
+onMounted(() => {
+  store.getAllPosts();
+});
 </script>
