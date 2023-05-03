@@ -19,6 +19,9 @@
             Folge ich
           </p>
         </template>
+        <template #text>
+          {{ authStore.user?.bio }}
+        </template>
       </v-card>
     </v-list-item>
     <v-divider></v-divider>

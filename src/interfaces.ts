@@ -10,6 +10,9 @@ export interface User {
   password: string;
   follower: number;
   following: number;
+  bio?: string;
+  liked: number[];
+  disliked: number[];
 }
 
 export interface Post {
@@ -26,27 +29,11 @@ export interface Post {
 }
 
 export interface AddPost {
-  firstName: string;
-  avatar: string;
-  lastName: string;
-  username: string;
+  userId: number;
   text: string;
-  date: Date;
 }
 
-export interface AuthUser {
-  id: number;
-  avatar?: string;
-  role: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  gender?: string;
+export interface AuthUser extends User {
   password: string;
   token: string;
-  follower: number;
-  following: number;
-  liked: number[];
-  disliked: number[];
 }

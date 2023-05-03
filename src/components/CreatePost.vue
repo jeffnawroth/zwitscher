@@ -55,12 +55,8 @@ const fieldSchema = string().required().max(281);
 
 function submit(values: any, { resetForm }: any) {
   const post: AddPost = {
-    avatar: authStore.user?.avatar!,
-    firstName: authStore.user!.firstName,
-    lastName: authStore.user!.firstName,
-    username: authStore.user!.username,
+    userId: authStore.user!.id,
     text: values.text,
-    date: new Date(),
   };
   postsStore.createPost(post);
   resetForm();

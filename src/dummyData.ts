@@ -16,6 +16,7 @@ export const userData: AuthUser = {
   following: 14,
   liked: [],
   disliked: [],
+  bio: "Hallo das ist meine Bio.",
 };
 
 export const users: User[] = [
@@ -31,6 +32,8 @@ export const users: User[] = [
       "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg",
     follower: 32,
     following: 14,
+    liked: [],
+    disliked: [],
   },
   {
     id: 1,
@@ -42,6 +45,8 @@ export const users: User[] = [
     password: "789das789dfas789dfs",
     follower: 31,
     following: 14,
+    liked: [],
+    disliked: [],
   },
   {
     id: 2,
@@ -53,6 +58,8 @@ export const users: User[] = [
     password: "789das789dfas789dfs",
     follower: 31,
     following: 14,
+    liked: [],
+    disliked: [],
   },
 ];
 

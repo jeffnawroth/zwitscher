@@ -25,10 +25,15 @@ export const usePostStore = defineStore("post", () => {
 
     const post: Post = {
       ...postAdd,
+
       id: 0,
       upvotes: 0,
       downvotes: 0,
-      userId: authStore.user!.id,
+      firstName: "Admin",
+      lastName: "Nimda",
+      username: "ANimda",
+      date: new Date(),
+      avatar: authStore.user?.avatar,
     };
     allPosts.value?.push(post);
   }
