@@ -8,10 +8,13 @@ export interface User {
   email: string;
   gender?: string;
   password: string;
+  follower: number;
+  following: number;
 }
 
 export interface Post {
   id: number;
+  userId: number;
   avatar?: string;
   firstName: string;
   lastName: string;
@@ -19,6 +22,7 @@ export interface Post {
   text: string;
   upvotes: number;
   downvotes: number;
+  date: Date;
 }
 
 export interface AddPost {
@@ -27,6 +31,7 @@ export interface AddPost {
   lastName: string;
   username: string;
   text: string;
+  date: Date;
 }
 
 export interface AuthUser {
@@ -40,4 +45,8 @@ export interface AuthUser {
   gender?: string;
   password: string;
   token: string;
+  follower: number;
+  following: number;
+  liked: number[];
+  disliked: number[];
 }
