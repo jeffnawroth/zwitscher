@@ -7,7 +7,7 @@
   >
     <template #top>
       <v-toolbar flat>
-        <v-toolbar-title>Nutzerverwaltung</v-toolbar-title>
+        <v-toolbar-title>Benutzerverwaltung</v-toolbar-title>
         <v-spacer />
         <v-btn variant="tonal" @click="$router.push({ name: 'create-user' })"
           >Nutzer erstellen</v-btn
