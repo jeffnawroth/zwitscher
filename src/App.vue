@@ -4,12 +4,13 @@
       <v-spacer></v-spacer>
       <v-text-field
         class="mt-5"
-        variant="solo"
+        variant="outlined"
         placeholder="Suche..."
         density="compact"
+        flat
       ></v-text-field>
       <v-spacer></v-spacer>
-      <v-btn icon="mdi-logout" @click="store.logout"></v-btn>
+      <v-btn :icon="authIcon" @click="store.logout"></v-btn>
     </v-app-bar>
 
     <v-main class="bg-grey-lighten-3">
@@ -49,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { computed, onMounted } from "vue";
 import { useAuthenticationStore } from "@/store/authentication";
 import axios from "axios";
 
@@ -83,6 +84,10 @@ const items = [
 ];
 
 const store = useAuthenticationStore();
+
+const authIcon = computed(() => {
+  return store.loggedIn ? "mdi-logout" : "mdi-login";
+});
 
 onMounted(() => {
   const userString = localStorage.getItem("user");
