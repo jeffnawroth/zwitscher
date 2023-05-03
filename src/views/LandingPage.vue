@@ -1,29 +1,28 @@
 <template>
-  <v-container class="fill-height justify-center">
-    <v-row>
-      <v-col class="d-flex justify-center">
-        <span class="text-h2 font-weight-bold"
-          >Willkommen beim Mikroblogging-Dienst!</span
-        >
-      </v-col>
-      <v-col
-        v-if="!store.loggedIn"
-        class="d-flex justify-center text-center"
-        cols="12"
-      >
-        <span class="text-h5">
+  <v-dialog v-model="dialog">
+    <v-card class="mx-auto">
+      <v-card-title class="text-h4"> </v-card-title>
+      <v-card-text>
+        <p class="text-h2 mb-4">Willkommen beim Mikroblogging-Dienst!</p>
+        <p v-if="!store.loggedIn" class="text-h5">
           Um den Mikroblogging-Dienst zu nutzen, müssen Sie sich
           <router-link :to="{ name: 'login' }"> Anmelden </router-link>
           oder
           <router-link :to="{ name: 'register' }"> Registrieren </router-link>
-        </span>
-      </v-col>
-    </v-row>
-  </v-container>
+        </p>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn variant="tonal" @click="dialog = false">Schließen</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
 import { useAuthenticationStore } from "@/store/authentication";
+import { ref } from "vue";
 
 const store = useAuthenticationStore();
+const dialog = ref(true);
 </script>
