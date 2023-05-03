@@ -17,17 +17,18 @@
       <v-container>
         <v-row>
           <v-col cols="3">
-            <v-sheet rounded="lg" min-height="268" class="pa-2">
+            <v-sheet rounded="lg" class="pa-2">
               <v-list>
-                <v-list-item
-                  v-for="item in items"
-                  :key="item.title"
-                  :to="item.route"
-                  :title="item.title"
-                  :prepend-icon="item.icon"
-                  rounded="lg"
-                >
-                </v-list-item>
+                <div v-for="item in items" :key="item.title">
+                  <v-list-item
+                    v-if="store.loggedIn || item.title === 'Startseite'"
+                    :to="item.route"
+                    :title="item.title"
+                    :prepend-icon="item.icon"
+                    rounded="lg"
+                  >
+                  </v-list-item>
+                </div>
               </v-list>
             </v-sheet>
           </v-col>
