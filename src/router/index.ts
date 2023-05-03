@@ -12,38 +12,40 @@ const routes = [
     path: "/",
     name: "home",
     component: () => import("@/views/Home.vue"),
+    children: [
+      {
+        path: "/login",
+        name: "login",
+        component: () => import("@/views/Login.vue"),
+      },
+      {
+        path: "/register",
+        name: "register",
+        component: () => import("@/views/Register.vue"),
+      },
+    ],
   },
   {
     path: "/profile",
     name: "profile",
-    component: () => import("@/views/Home.vue"),
+    component: () => import("@/views/Profile.vue"),
   },
   {
     path: "/dashboard",
     name: "dashboard",
-    component: () => import("@/views/Home.vue"),
+    component: () => import("@/views/Dashboard.vue"),
   },
   {
     path: "/settings",
     name: "settings",
-    component: () => import("@/views/Home.vue"),
+    component: () => import("@/views/Settings.vue"),
   },
-  {
+  /* {
     path: "/landing-page",
     name: "landing-page",
     component: () => import("@/views/LandingPage.vue"),
-  },
+  }, */
 
-  {
-    path: "/login",
-    name: "login",
-    component: () => import("@/views/Login.vue"),
-  },
-  {
-    path: "/register",
-    name: "register",
-    component: () => import("@/views/Register.vue"),
-  },
   {
     path: "/users",
     name: "users",

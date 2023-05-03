@@ -1,11 +1,11 @@
 <template>
-  <v-container class="fill-height justify-center">
+  <v-dialog v-model="dialog" width="500">
     <Form
       v-slot="{ meta }"
       :validation-schema="validationSchema"
       @submit="submit"
     >
-      <v-card width="500" title="Registrieren">
+      <v-card title="Registrieren">
         <v-card-text>
           <v-row>
             <v-col>
@@ -64,13 +64,19 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
+          <v-btn
+            type="submit"
+            variant="tonal"
+            @click="router.push({ name: 'home' })"
+            >Schließen</v-btn
+          >
           <v-btn :disabled="!meta.valid" type="submit" variant="tonal"
             >Registrieren</v-btn
           >
         </v-card-actions>
       </v-card>
     </Form>
-  </v-container>
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
@@ -86,6 +92,7 @@ import yupLocaleDe from "@/plugins/yupLocaleDe";
 setLocale(yupLocaleDe);
 
 const store = useAuthenticationStore();
+const dialog = ref(true);
 
 const validationSchema = object({
   username: string().required().label("Username"),
