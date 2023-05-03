@@ -12,8 +12,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn @click="$emit('cancel')">Abbrechen</v-btn>
-        <v-btn @click="$emit('discard')">Verwerfen</v-btn>
+        <v-btn variant="tonal" @click="$emit('cancel')">Abbrechen</v-btn>
+        <v-btn variant="tonal" @click="$emit('discard')">Verwerfen</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
