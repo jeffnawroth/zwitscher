@@ -82,8 +82,8 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useAuthenticationStore } from "@/store/authentication";
-import BaseInputWithValidation from "@/components/BaseInputWithValidation.vue";
-import BasePasswordInput from "@/components/BasePasswordInput.vue";
+import BaseInputWithValidation from "@/components/BaseComponents/BaseInputWithValidation.vue";
+import BasePasswordInput from "@/components/BaseComponents/BasePasswordInput.vue";
 import router from "@/router";
 import { Form } from "vee-validate";
 import { object, string, ref as yupRef, setLocale } from "yup";

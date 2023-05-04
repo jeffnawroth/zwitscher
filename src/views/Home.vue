@@ -5,26 +5,17 @@
     </v-list-item>
     <v-divider></v-divider>
 
-    <div v-for="post in store.sortedPosts" :key="post.id">
-      <v-list-item>
-        <Post
-          :post="post"
-          @set-upvotes="(upvotes) => (post.upvotes = upvotes)"
-          @set-downvotes="(downvotes) => (post.downvotes = downvotes)"
-        ></Post>
-      </v-list-item>
-      <v-divider></v-divider>
-    </div>
+    <PostList :posts="store.sortedPosts"></PostList>
   </v-list>
   <router-view></router-view>
 </template>
 
 <script setup lang="ts">
-import Post from "@/components/Post.vue";
-import CreatePost from "@/components/CreatePost.vue";
+import CreatePost from "@/components/Posts/CreatePost.vue";
 import { usePostStore } from "@/store/posts";
 import { onMounted } from "vue";
 import { useAuthenticationStore } from "@/store/authentication";
+import PostList from "@/components/Posts/PostList.vue";
 
 const store = usePostStore();
 const authStore = useAuthenticationStore();

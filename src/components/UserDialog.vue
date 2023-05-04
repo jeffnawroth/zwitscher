@@ -118,10 +118,10 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import BaseInputWithValidation from "@/components/BaseInputWithValidation.vue";
-import BaseSelectWithValidation from "./BaseSelectWithValidation.vue";
-import BaseDiscardDialog from "./BaseDiscardDialog.vue";
-import BasePasswordInput from "./BasePasswordInput.vue";
+import BaseInputWithValidation from "./BaseComponents/BaseInputWithValidation.vue";
+import BaseSelectWithValidation from "./BaseComponents/BaseSelectWithValidation.vue";
+import BaseDiscardDialog from "./BaseComponents/BaseDiscardDialog.vue";
+import BasePasswordInput from "./BaseComponents/BasePasswordInput.vue";
 import router from "@/router";
 import { Form } from "vee-validate";
 import { object, string, ref as yupRef, setLocale } from "yup";

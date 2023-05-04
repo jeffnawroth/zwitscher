@@ -26,25 +26,17 @@
     </v-list-item>
     <v-divider></v-divider>
 
-    <div v-for="post in store.sortedUserPosts" :key="post.id">
-      <v-list-item>
-        <Post
-          :post="post"
-          @set-upvotes="(upvotes) => (post.upvotes = upvotes)"
-          @set-downvotes="(downvotes) => (post.downvotes = downvotes)"
-        ></Post>
-      </v-list-item>
-      <v-divider></v-divider>
-    </div>
+    <PostList :posts="store.sortedUserPosts"></PostList>
   </v-list>
 </template>
 
 <script setup lang="ts">
 import { usePostStore } from "@/store/posts";
 import { onMounted } from "vue";
-import Post from "@/components/Post.vue";
+import Post from "@/components/Posts/Post.vue";
 import { useUsersStore } from "@/store/users";
 import { onBeforeRouteUpdate } from "vue-router";
+import PostList from "@/components/Posts/PostList.vue";
 
 const store = usePostStore();
 const usersStore = useUsersStore();

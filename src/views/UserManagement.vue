@@ -35,7 +35,7 @@ import { useUsersStore } from "@/store/users";
 import { onMounted } from "vue";
 import router from "@/router";
 import { User } from "@/interfaces";
-import BaseDeleteDialog from "@/components/BaseDeleteDialog.vue";
+import BaseDeleteDialog from "@/components/BaseComponents/BaseDeleteDialog.vue";
 
 const store = useUsersStore();
 const deleteDialog = ref(false);

@@ -40,7 +40,7 @@
 <script setup lang="ts">
 import { Post } from "@/interfaces";
 import { useAuthenticationStore } from "@/store/authentication";
-import BaseDeleteDialog from "./BaseDeleteDialog.vue";
+import BaseDeleteDialog from "../BaseComponents/BaseDeleteDialog.vue";
 import { usePostStore } from "@/store/posts";
 import { PropType, computed, ref } from "vue";
 
