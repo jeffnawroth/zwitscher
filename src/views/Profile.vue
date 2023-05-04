@@ -5,15 +5,20 @@
         <template #prepend>
           <v-img>
             <v-avatar
-              :size="150"
+              :size="175"
               class="avatar"
               :image="usersStore.user?.avatar"
             ></v-avatar>
           </v-img>
         </template>
         <template #title>
-          <div class="d-flex">
-            {{ `${usersStore.user?.firstName} ${usersStore.user?.lastName}` }}
+          <div class="d-flex mb-1">
+            <div>
+              {{ `${usersStore.user?.firstName} ${usersStore.user?.lastName}` }}
+              <p class="v-card-subtitle">
+                {{ `@${usersStore.user?.username}` }}
+              </p>
+            </div>
             <v-spacer></v-spacer>
             <v-hover
               v-if="Number($route.params.id) !== authStore.user?.id"
@@ -33,7 +38,35 @@
           </div>
         </template>
         <template #subtitle>
-          <p>{{ `@${usersStore.user?.username}` }}</p>
+          <p>
+            <v-icon size="small">mdi-calendar-range</v-icon>
+            {{ `Beigetreten: ${created}` }}
+          </p>
+          <p v-if="usersStore.user?.birthdate">
+            <v-icon size="small">mdi-cake</v-icon>
+            {{ `Geboren: ${birtdate}` }}
+          </p>
+          <p v-if="usersStore.user?.gender">
+            <v-icon size="small">mdi-gender-male</v-icon>
+            {{ usersStore.user?.gender }}
+          </p>
+
+          <p v-if="usersStore.user?.interests" class="mb-1">
+            <v-icon size="small">mdi-heart-outline</v-icon>
+            Interessen:
+            <span
+              v-for="(interest, index) in usersStore.user?.interests"
+              :key="interest"
+              >{{ interest
+              }}{{
+                usersStore.user?.interests &&
+                index != usersStore.user?.interests?.length - 1
+                  ? ", "
+                  : ""
+              }}
+            </span>
+          </p>
+
           <p class="text-bold">
             <span class="font-weight-black">
               {{ `${usersStore.user?.follower.length}` }}
@@ -90,6 +123,21 @@ const followButtonVariant = computed(() => {
   return authStore.user?.following.includes(usersStore.user!.id)
     ? "tonal"
     : "outlined";
+});
+
+const birtdate = computed(() => {
+  return usersStore.user?.birthdate?.toLocaleDateString("de-DE", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+});
+
+const created = computed(() => {
+  return usersStore.user?.createdAt?.toLocaleDateString("de-DE", {
+    month: "long",
+    year: "numeric",
+  });
 });
 
 function setFollow() {

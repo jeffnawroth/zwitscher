@@ -14,6 +14,8 @@ export interface User {
   liked: number[];
   disliked: number[];
   createdAt: Date;
+  birthdate?: Date;
+  interests?: string[];
 }
 
 export interface Post {

@@ -1,6 +1,6 @@
 <template>
   <div v-for="post in posts" :key="post.id">
-    <v-list-item>
+    <v-list-item @click="log">
       <Post
         :post="post"
         @set-upvotes="(upvotes: number) => (post.upvotes = upvotes)"
@@ -24,4 +24,7 @@ defineProps({
     },
   },
 });
+function log() {
+  console.log("ho");
+}
 </script>
