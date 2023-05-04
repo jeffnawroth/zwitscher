@@ -34,6 +34,7 @@ export const users: User[] = [
     following: 14,
     liked: [],
     disliked: [],
+    bio: "Hallo das ist meine Bio.",
   },
   {
     id: 1,
@@ -47,6 +48,8 @@ export const users: User[] = [
     following: 14,
     liked: [],
     disliked: [],
+    avatar: "https://cdn.vuetifyjs.com/images/john.jpg",
+    bio: "Hallo das ist meine Bio.",
   },
   {
     id: 2,
@@ -60,6 +63,8 @@ export const users: User[] = [
     following: 14,
     liked: [],
     disliked: [],
+    avatar: "https://avatars0.githubusercontent.com/u/9064066?v=4&s=460",
+    bio: "Hallo das ist meine Bio.",
   },
 ];
 

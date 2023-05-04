@@ -55,6 +55,7 @@ import { computed, onMounted } from "vue";
 import { useAuthenticationStore } from "@/store/authentication";
 import axios from "axios";
 
+const store = useAuthenticationStore();
 const items = [
   {
     title: "Startseite",
@@ -64,7 +65,7 @@ const items = [
   {
     title: "Profil",
     icon: "mdi-account",
-    route: "/profile",
+    route: `/profile/${store.user?.id}`,
   },
   {
     title: "Benutzerverwaltung",
@@ -83,8 +84,6 @@ const items = [
     route: "/settings",
   },
 ];
-
-const store = useAuthenticationStore();
 
 const authIcon = computed(() => {
   return store.loggedIn ? "mdi-logout" : "mdi-login";

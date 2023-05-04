@@ -17,7 +17,7 @@ export const usePostStore = defineStore("post", () => {
   }
 
   function getPostsForUser(id: number) {
-    postsOfUser.value = userPosts;
+    postsOfUser.value = posts.filter((post) => post.userId === id);
   }
 
   function createPost(postAdd: AddPost) {

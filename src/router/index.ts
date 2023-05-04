@@ -26,9 +26,19 @@ const routes = [
     ],
   },
   {
-    path: "/profile",
+    path: "/profile/:id",
     name: "profile",
     component: () => import("@/views/Profile.vue"),
+    beforeEnter(
+      to: RouteLocationNormalized,
+      from: RouteLocationNormalized,
+      next: NavigationGuardNext
+    ) {
+      //TO-DO: Add api
+      const store = useUsersStore();
+      store.getUser(Number(to.params.id));
+      next();
+    },
   },
   {
     path: "/dashboard",

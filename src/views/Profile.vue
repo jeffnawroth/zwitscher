@@ -1,26 +1,26 @@
 <template>
   <v-list rounded="lg">
     <v-list-item>
-      <v-card :prepend-avatar="authStore.user?.avatar">
+      <v-card :prepend-avatar="usersStore.user?.avatar">
         <template #title>
-          {{ `${authStore.user?.firstName} ${authStore.user?.lastName}` }}
+          {{ `${usersStore.user?.firstName} ${usersStore.user?.lastName}` }}
         </template>
         <template #subtitle>
-          <p>{{ `@${authStore.user?.username}` }}</p>
+          <p>{{ `@${usersStore.user?.username}` }}</p>
           <p class="text-bold">
             <span class="font-weight-black">
-              {{ `${authStore.user?.follower}` }}
+              {{ `${usersStore.user?.follower}` }}
             </span>
             Abonnenten
 
             <span class="font-weight-black">{{
-              `${authStore.user?.following}`
+              `${usersStore.user?.following}`
             }}</span>
             Folge ich
           </p>
         </template>
         <template #text>
-          {{ authStore.user?.bio }}
+          {{ usersStore.user?.bio }}
         </template>
       </v-card>
     </v-list-item>
@@ -40,15 +40,23 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthenticationStore } from "@/store/authentication";
 import { usePostStore } from "@/store/posts";
 import { onMounted } from "vue";
 import Post from "@/components/Post.vue";
+import { useUsersStore } from "@/store/users";
+import { onBeforeRouteUpdate } from "vue-router";
 
 const store = usePostStore();
-const authStore = useAuthenticationStore();
+const usersStore = useUsersStore();
+
+onBeforeRouteUpdate(async (to, from) => {
+  if (to.params.id !== from.params.id) {
+    usersStore.getUser(Number(to.params.id));
+    store.getPostsForUser(usersStore.user!.id);
+  }
+});
 
 onMounted(() => {
-  store.getPostsForUser(authStore.user!.id);
+  store.getPostsForUser(usersStore.user!.id);
 });
 </script>

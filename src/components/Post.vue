@@ -1,10 +1,16 @@
 <template>
   <v-card
     :prepend-avatar="post.avatar"
-    :title="`${post.firstName} ${post.lastName}`"
     :subtitle="`@${post.username} • ${formattedDate}`"
     :text="post.text"
   >
+    <template #title>
+      <span
+        class="title"
+        @click="$router.push({ name: 'profile', params: { id: post.userId } })"
+        >{{ `${post.firstName} ${post.lastName}` }}</span
+      >
+    </template>
     <v-card-actions>
       <v-btn :prepend-icon="thumbUp" @click="likePost">{{
         post.upvotes
@@ -128,3 +134,10 @@ const formattedDate = computed(() => {
   }
 });
 </script>
+
+<style>
+.title:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+</style>
