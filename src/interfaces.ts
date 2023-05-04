@@ -8,11 +8,12 @@ export interface User {
   email: string;
   gender?: string;
   password: string;
-  follower: number;
-  following: number;
+  follower: number[];
+  following: number[];
   bio?: string;
   liked: number[];
   disliked: number[];
+  createdAt: Date;
 }
 
 export interface Post {

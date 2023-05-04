@@ -12,11 +12,12 @@ export const userData: AuthUser = {
   password: "Admin1!",
   avatar:
     "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg",
-  follower: 32,
-  following: 14,
+  follower: [1, 2],
+  following: [1, 2],
   liked: [],
   disliked: [],
   bio: "Hallo das ist meine Bio.",
+  createdAt: new Date(),
 };
 
 export const users: User[] = [
@@ -30,11 +31,12 @@ export const users: User[] = [
     password: "Admin1!",
     avatar:
       "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg",
-    follower: 32,
-    following: 14,
+    follower: [1, 2],
+    following: [1, 2],
     liked: [],
     disliked: [],
     bio: "Hallo das ist meine Bio.",
+    createdAt: new Date(),
   },
   {
     id: 1,
@@ -44,12 +46,13 @@ export const users: User[] = [
     email: "john.doe@example.com",
     role: "Admin",
     password: "789das789dfas789dfs",
-    follower: 31,
-    following: 14,
+    follower: [2, 0],
+    following: [2, 0],
     liked: [],
     disliked: [],
     avatar: "https://cdn.vuetifyjs.com/images/john.jpg",
     bio: "Hallo das ist meine Bio.",
+    createdAt: new Date(),
   },
   {
     id: 2,
@@ -59,12 +62,13 @@ export const users: User[] = [
     email: "jane.doe@example.com",
     role: "Moderator",
     password: "789das789dfas789dfs",
-    follower: 31,
-    following: 14,
+    follower: [1, 0],
+    following: [1, 0],
     liked: [],
     disliked: [],
     avatar: "https://avatars0.githubusercontent.com/u/9064066?v=4&s=460",
     bio: "Hallo das ist meine Bio.",
+    createdAt: new Date(),
   },
 ];
 

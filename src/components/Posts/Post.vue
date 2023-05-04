@@ -1,9 +1,16 @@
 <template>
-  <v-card
-    :prepend-avatar="post.avatar"
-    :subtitle="`@${post.username} • ${formattedDate}`"
-    :text="post.text"
-  >
+  <v-card :subtitle="`@${post.username} • ${formattedDate}`" :text="post.text">
+    <template #prepend>
+      <v-img>
+        <v-avatar
+          class="avatar"
+          :image="post?.avatar"
+          @click="
+            $router.push({ name: 'profile', params: { id: post.userId } })
+          "
+        ></v-avatar>
+      </v-img>
+    </template>
     <template #title>
       <span
         class="title"
@@ -139,5 +146,11 @@ const formattedDate = computed(() => {
 .title:hover {
   cursor: pointer;
   text-decoration: underline;
+}
+</style>
+
+<style>
+.avatar:hover {
+  cursor: pointer;
 }
 </style>
