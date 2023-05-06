@@ -11,6 +11,7 @@ const authStore = useAuthenticationStore();
 export const usePostStore = defineStore("post", () => {
   const allPosts = ref<Post[]>([]);
   const postsOfUser = ref<Post[]>([]);
+  const post = ref<Post | undefined>();
 
   function getAllPosts() {
     allPosts.value = posts;
@@ -18,6 +19,10 @@ export const usePostStore = defineStore("post", () => {
 
   function getPostsForUser(id: number) {
     postsOfUser.value = posts.filter((post) => post.userId === id);
+  }
+
+  function getPost(id: number) {
+    post.value = allPosts.value.find((post) => post.id == id);
   }
 
   function createPost(postAdd: AddPost) {
@@ -64,5 +69,7 @@ export const usePostStore = defineStore("post", () => {
     deletePost,
     sortedUserPosts,
     sortedPosts,
+    getPost,
+    post,
   };
 });

@@ -65,7 +65,7 @@ const items = [
   {
     title: "Profil",
     icon: "mdi-account",
-    route: `/profile/${store.user?.id}`,
+    route: `/${store.user?.username}/profile`,
   },
   {
     title: "Benutzerverwaltung",

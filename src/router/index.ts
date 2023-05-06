@@ -26,20 +26,33 @@ const routes = [
     ],
   },
   {
-    path: "/profile/:id",
-    name: "profile",
-    component: () => import("@/views/Profile.vue"),
-    beforeEnter(
-      to: RouteLocationNormalized,
-      from: RouteLocationNormalized,
-      next: NavigationGuardNext
-    ) {
-      //TO-DO: Add api
-      const store = useUsersStore();
-      store.getUser(Number(to.params.id));
-      next();
-    },
+    path: "/:username",
+    name: "user",
+    component: () => import("@/views/User.vue"),
+    children: [
+      {
+        name: "profile",
+        path: "profile",
+        component: () => import("@/views/Profile.vue"),
+        beforeEnter(
+          to: RouteLocationNormalized,
+          from: RouteLocationNormalized,
+          next: NavigationGuardNext
+        ) {
+          //TO-DO: Add api
+          const store = useUsersStore();
+          store.getUserByUsername(to.params.username as string);
+          next();
+        },
+      },
+      {
+        path: "post/:postId",
+        name: "post",
+        component: () => import("@/views/PostDetails.vue"),
+      },
+    ],
   },
+
   {
     path: "/dashboard",
     name: "dashboard",

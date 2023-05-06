@@ -5,18 +5,14 @@
         <v-avatar
           class="avatar"
           :image="post?.avatar"
-          @click="
-            $router.push({ name: 'profile', params: { id: post.userId } })
-          "
+          @click="openProfile"
         ></v-avatar>
       </v-img>
     </template>
     <template #title>
-      <span
-        class="title"
-        @click="$router.push({ name: 'profile', params: { id: post.userId } })"
-        >{{ `${post.firstName} ${post.lastName}` }}</span
-      >
+      <span class="title" @click="openProfile">{{
+        `${post.firstName} ${post.lastName}`
+      }}</span>
     </template>
     <v-card-actions>
       <v-btn :prepend-icon="thumbUp" @click="likePost">{{
@@ -50,6 +46,7 @@ import { useAuthenticationStore } from "@/store/authentication";
 import BaseDeleteDialog from "../BaseComponents/BaseDeleteDialog.vue";
 import { usePostStore } from "@/store/posts";
 import { PropType, computed, ref } from "vue";
+import router from "@/router";
 
 const emit = defineEmits<{
   (e: "set-upvotes", upvotes: number): void;
@@ -78,6 +75,10 @@ const thumbDown = computed(() => {
     ? "mdi-thumb-down"
     : "mdi-thumb-down-outline";
 });
+
+function openProfile() {
+  router.push({ name: "profile", params: { username: props.post.username } });
+}
 
 function likePost() {
   const likedIndex = user?.liked.indexOf(props.post.id);

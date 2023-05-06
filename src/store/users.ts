@@ -23,6 +23,11 @@ export const useUsersStore = defineStore("users", () => {
     user.value = userFound;
   }
 
+  function getUserByUsername(username: string) {
+    const userFound = users.value.find((user) => user.username == username);
+    user.value = userFound;
+  }
+
   function deleteUser() {
     const userIndex = users.value.findIndex(
       (userArray) => userArray.id === user.value?.id
@@ -35,5 +40,14 @@ export const useUsersStore = defineStore("users", () => {
     users.value.splice(userIndex, 1, userEdit);
   }
 
-  return { user, users, createUser, getUsers, deleteUser, getUser, updateUser };
+  return {
+    user,
+    users,
+    createUser,
+    getUsers,
+    deleteUser,
+    getUser,
+    updateUser,
+    getUserByUsername,
+  };
 });

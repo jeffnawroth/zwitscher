@@ -1,6 +1,6 @@
 <template>
   <div v-for="post in posts" :key="post.id">
-    <v-list-item @click="log">
+    <v-list-item @click="openPost(post)">
       <Post
         :post="post"
         @set-upvotes="(upvotes: number) => (post.upvotes = upvotes)"
@@ -15,6 +15,9 @@
 import { Post as IPost } from "@/interfaces";
 import { PropType } from "vue";
 import Post from "./Post.vue";
+import router from "@/router";
+import { usePostStore } from "@/store/posts";
+import { useUsersStore } from "@/store/users";
 
 defineProps({
   posts: {
@@ -24,7 +27,14 @@ defineProps({
     },
   },
 });
-function log() {
-  console.log("ho");
+
+const store = usePostStore();
+
+function openPost(post: IPost) {
+  store.post = post;
+  router.push({
+    name: "post",
+    params: { username: post.username, postId: post.id },
+  });
 }
 </script>
