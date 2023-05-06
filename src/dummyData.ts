@@ -90,6 +90,7 @@ export const allPosts: Post[] = [
     downvotes: 5,
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
     date: new Date("2023-05-1"),
+    comments: [],
   },
   {
     id: 2,
@@ -103,6 +104,7 @@ export const allPosts: Post[] = [
     downvotes: 5,
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
     date: new Date("2023-05-02T18:56:00"),
+    comments: [],
   },
   {
     id: 3,
@@ -115,6 +117,7 @@ export const allPosts: Post[] = [
     downvotes: 10,
     text: "I'm planning a road trip across the US this summer. Any recommendations?",
     date: new Date("2022-04-11"),
+    comments: [],
   },
   {
     id: 4,
@@ -127,6 +130,7 @@ export const allPosts: Post[] = [
     downvotes: 5,
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
     date: new Date("2023-04-27"),
+    comments: [],
   },
 ];
 
@@ -143,6 +147,7 @@ export const userPosts: Post[] = [
     downvotes: 5,
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
     date: new Date("2023-05-1"),
+    comments: [],
   },
   {
     id: 2,
@@ -156,5 +161,6 @@ export const userPosts: Post[] = [
     downvotes: 5,
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
     date: new Date("2023-05-02T18:56:00"),
+    comments: [],
   },
 ];

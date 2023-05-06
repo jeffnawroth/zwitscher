@@ -1,4 +1,5 @@
 // Composables
+import { usePostStore } from "@/store/posts";
 import { useUsersStore } from "@/store/users";
 import {
   NavigationGuardNext,
@@ -49,6 +50,16 @@ const routes = [
         path: "post/:postId",
         name: "post",
         component: () => import("@/views/PostDetails.vue"),
+        beforeEnter(
+          to: RouteLocationNormalized,
+          from: RouteLocationNormalized,
+          next: NavigationGuardNext
+        ) {
+          //TO-DO: Add api
+          const store = usePostStore();
+          store.getPost(Number(to.params.postId));
+          next();
+        },
       },
     ],
   },

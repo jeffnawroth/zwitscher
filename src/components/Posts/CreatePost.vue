@@ -85,7 +85,9 @@ function submit(values: any, { resetForm }: any) {
     userId: authStore.user!.id,
     text: values.text,
   };
-  postsStore.createPost(post);
+  router.currentRoute.value.name == "home"
+    ? postsStore.createPost(post)
+    : postsStore.addComment(post);
   resetForm();
 }
 </script>

@@ -29,6 +29,7 @@ export interface Post {
   upvotes: number;
   downvotes: number;
   date: Date;
+  comments?: Post[];
 }
 
 export interface AddPost {

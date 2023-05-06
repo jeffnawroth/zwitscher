@@ -94,7 +94,6 @@
 import { usePostStore } from "@/store/posts";
 import { computed, onMounted } from "vue";
 import { useUsersStore } from "@/store/users";
-import { onBeforeRouteUpdate } from "vue-router";
 import PostList from "@/components/Posts/PostList.vue";
 import { useAuthenticationStore } from "@/store/authentication";
 

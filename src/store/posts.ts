@@ -6,8 +6,6 @@ import { useAuthenticationStore } from "./authentication";
 import { computed } from "vue";
 import { sortByDateDescending } from "./helpers";
 
-const authStore = useAuthenticationStore();
-
 export const usePostStore = defineStore("post", () => {
   const allPosts = ref<Post[]>([]);
   const postsOfUser = ref<Post[]>([]);
@@ -26,6 +24,7 @@ export const usePostStore = defineStore("post", () => {
   }
 
   function createPost(postAdd: AddPost) {
+    const authStore = useAuthenticationStore();
     //todo
 
     const post: Post = {
@@ -41,6 +40,25 @@ export const usePostStore = defineStore("post", () => {
       avatar: authStore.user?.avatar,
     };
     allPosts.value?.push(post);
+  }
+
+  function addComment(comment: AddPost) {
+    const authStore = useAuthenticationStore();
+
+    const postAdd: Post = {
+      ...comment,
+      id: 10,
+      upvotes: 0,
+      downvotes: 0,
+      firstName: "Admin",
+      lastName: "Nimda",
+      username: "ANimda",
+      date: new Date(),
+      avatar: authStore.user?.avatar,
+      comments: [],
+    };
+
+    post.value?.comments?.push(postAdd);
   }
 
   function deletePost(id: number) {
@@ -71,5 +89,6 @@ export const usePostStore = defineStore("post", () => {
     sortedPosts,
     getPost,
     post,
+    addComment,
   };
 });
