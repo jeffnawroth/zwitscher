@@ -5,20 +5,20 @@
         <v-avatar
           class="avatar"
           :image="post?.avatar"
-          @click="openProfile"
+          @click.stop="openProfile"
         ></v-avatar>
       </v-img>
     </template>
     <template #title>
-      <span class="title" @click="openProfile">{{
+      <span class="title" @click.stop="openProfile">{{
         `${post.firstName} ${post.lastName}`
       }}</span>
     </template>
     <v-card-actions>
-      <v-btn :prepend-icon="thumbUp" @click="likePost">{{
+      <v-btn :prepend-icon="thumbUp" @click.stop="likePost">{{
         post.upvotes
       }}</v-btn>
-      <v-btn :prepend-icon="thumbDown" @click="dislikePost">{{
+      <v-btn :prepend-icon="thumbDown" @click.stop="dislikePost">{{
         post.downvotes
       }}</v-btn>
       <v-btn prepend-icon="mdi-comment-outline">3</v-btn>
@@ -27,7 +27,7 @@
       <v-btn
         v-if="post.userId === user?.id"
         icon="mdi-delete-outline"
-        @click="deleteDialog = true"
+        @click.stop="deleteDialog = true"
       ></v-btn>
     </v-card-actions>
   </v-card>
