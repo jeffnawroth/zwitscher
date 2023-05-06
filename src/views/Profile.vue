@@ -102,13 +102,6 @@ const store = usePostStore();
 const usersStore = useUsersStore();
 const authStore = useAuthenticationStore();
 
-onBeforeRouteUpdate(async (to, from) => {
-  if (to.params.id !== from.params.id) {
-    usersStore.getUser(Number(to.params.id));
-    store.getPostsForUser(usersStore.user!.id);
-  }
-});
-
 onMounted(() => {
   store.getPostsForUser(usersStore.user!.id);
 });

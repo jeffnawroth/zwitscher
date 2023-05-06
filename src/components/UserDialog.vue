@@ -71,6 +71,7 @@
               ></BaseInputWithValidation>
             </v-col>
           </v-row>
+          <BaseBirthdateInput></BaseBirthdateInput>
           <v-row>
             <v-col>
               <BaseSelectWithValidation
@@ -122,6 +123,7 @@ import BaseInputWithValidation from "./BaseComponents/BaseInputWithValidation.vu
 import BaseSelectWithValidation from "./BaseComponents/BaseSelectWithValidation.vue";
 import BaseDiscardDialog from "./BaseComponents/BaseDiscardDialog.vue";
 import BasePasswordInput from "./BaseComponents/BasePasswordInput.vue";
+import BaseBirthdateInput from "./BaseComponents/BaseBirthdateInput.vue";
 import router from "@/router";
 import { Form } from "vee-validate";
 import { object, string, ref as yupRef, setLocale } from "yup";

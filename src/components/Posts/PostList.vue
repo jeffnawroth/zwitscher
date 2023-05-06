@@ -17,7 +17,6 @@ import { PropType } from "vue";
 import Post from "./Post.vue";
 import router from "@/router";
 import { usePostStore } from "@/store/posts";
-import { useUsersStore } from "@/store/users";
 
 defineProps({
   posts: {
