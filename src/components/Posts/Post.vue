@@ -21,7 +21,9 @@
       <v-btn :prepend-icon="thumbDown" @click.stop="dislikePost">{{
         post.downvotes
       }}</v-btn>
-      <v-btn prepend-icon="mdi-comment-outline">3</v-btn>
+      <v-btn prepend-icon="mdi-comment-outline">{{
+        post.comments?.length ?? 0
+      }}</v-btn>
 
       <v-spacer></v-spacer>
       <v-btn
@@ -126,7 +128,9 @@ const formattedDate = computed(() => {
   const diffInMinutes = Math.round(diff / (1000 * 60));
   const diffInHours = Math.round(diff / (1000 * 60 * 60));
 
-  if (diffInSeconds < 60) {
+  if (diffInSeconds == 0) {
+    return "Jetzt";
+  } else if (diffInSeconds < 60) {
     return `${diffInSeconds}s`;
   } else if (diffInMinutes < 60) {
     return `${diffInMinutes}m`;

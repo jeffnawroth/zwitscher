@@ -7,7 +7,7 @@ import { computed } from "vue";
 import { sortByDateDescending } from "./helpers";
 
 export const usePostStore = defineStore("post", () => {
-  const allPosts = ref<Post[]>([]);
+  const allPosts = ref<Post[]>(posts);
   const postsOfUser = ref<Post[]>([]);
   const post = ref<Post | undefined>();
 

@@ -21,7 +21,7 @@
             </div>
             <v-spacer></v-spacer>
             <v-hover
-              v-if="Number($route.params.id) !== authStore.user?.id"
+              v-if="$route.params.username !== authStore.user?.username"
               v-slot="{ isHovering, props }"
             >
               <v-btn
