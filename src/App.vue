@@ -10,7 +10,11 @@
         flat
       ></v-text-field>
       <v-spacer></v-spacer>
-      <v-btn :icon="authIcon" @click="store.logout"></v-btn>
+      <v-tooltip :text="store.loggedIn ? 'Abmelden' : 'Anmelden'">
+        <template #activator="{ props }">
+          <v-btn v-bind="props" :icon="authIcon" @click="store.logout"></v-btn>
+        </template>
+      </v-tooltip>
     </v-app-bar>
 
     <v-main class="bg-grey-lighten-3">
