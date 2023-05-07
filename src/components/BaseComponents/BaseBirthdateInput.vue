@@ -1,42 +1,66 @@
 <template>
   <v-row>
     <v-col>
-      <v-select
-        v-model="day"
-        hide-details="auto"
+      <BaseSelectWithValidation
+        name="day"
         label="Tag"
         :items="days"
-      ></v-select>
+      ></BaseSelectWithValidation>
     </v-col>
     <v-col>
-      <v-select
-        v-model="month"
-        hide-details="auto"
+      <BaseSelectWithValidation
+        name="month"
         label="Monat"
         :items="months"
         item-title="text"
         item-value="value"
-      ></v-select>
+      ></BaseSelectWithValidation>
     </v-col>
     <v-col>
-      <v-select
-        v-model="year"
-        hide-details="auto"
+      <BaseSelectWithValidation
+        name="year"
         label="Jahr"
         :items="years"
-      ></v-select>
+      ></BaseSelectWithValidation>
     </v-col>
   </v-row>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, toRef, watch } from "vue";
+import BaseSelectWithValidation from "./BaseSelectWithValidation.vue";
+import { useField } from "vee-validate";
 
-const day = ref<number | undefined>();
-const month = ref<number | undefined>();
-const year = ref<number | undefined>();
+const props = defineProps({
+  nameDay: {
+    type: String,
+    required: true,
+  },
+  nameMonth: {
+    type: String,
+    required: true,
+  },
+  nameYear: {
+    type: String,
+    required: true,
+  },
+});
+
+const { value: day } = useField<number | undefined>(
+  toRef(props, "nameDay"),
+  undefined
+);
+const { value: month } = useField<number | undefined>(
+  toRef(props, "nameMonth"),
+  undefined
+);
+const { value: year } = useField<number | undefined>(
+  toRef(props, "nameYear"),
+  undefined
+);
 
 const days = ref([...Array(31).keys()].map((i) => i + 1));
+
 const months = [
   { text: "Januar", value: 1 },
   { text: "Februar", value: 2 },
@@ -54,11 +78,8 @@ const months = [
 const years = [...Array(100).keys()].map((i) => new Date().getFullYear() - i);
 
 watch(month, () => {
-  const daysInMonth = new Date(
-    year.value as number,
-    month.value as number,
-    0
-  ).getDate();
+  const daysInMonth = new Date(year.value ?? 0, month.value ?? 0, 0).getDate();
+
   days.value = [...Array(daysInMonth).keys()].map((i) => i + 1);
 
   // Reset the selected Tag if it's now out of range

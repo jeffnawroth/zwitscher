@@ -71,7 +71,11 @@
               ></BaseInputWithValidation>
             </v-col>
           </v-row>
-          <BaseBirthdateInput></BaseBirthdateInput>
+          <BaseBirthdateInput
+            name-day="day"
+            name-month="month"
+            name-year="year"
+          ></BaseBirthdateInput>
           <v-row>
             <v-col>
               <BaseSelectWithValidation
@@ -126,7 +130,7 @@ import BasePasswordInput from "./BaseComponents/BasePasswordInput.vue";
 import BaseBirthdateInput from "./BaseComponents/BaseBirthdateInput.vue";
 import router from "@/router";
 import { Form } from "vee-validate";
-import { object, string, ref as yupRef, setLocale } from "yup";
+import { object, string, number, ref as yupRef, setLocale } from "yup";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
 import { useUsersStore } from "@/store/users";
 import { onMounted } from "vue";
@@ -146,6 +150,9 @@ const initialValues = ref({
   gender: null,
   password: "",
   passwordConfirm: "",
+  day: null,
+  month: null,
+  year: null,
 });
 
 const form = ref<InstanceType<typeof Form> | null>(null);
@@ -160,6 +167,9 @@ const validationSchema = object({
   lastName: string().required().label("Nachname"),
   gender: string().label("Geschlecht").nullable(),
   email: string().required().email().label("E-Mail"),
+  day: number().nullable(),
+  month: number().nullable(),
+  year: number().nullable(),
   password: string().required().label("Passwort"),
   passwordConfirm: string()
     .required()
@@ -177,8 +187,19 @@ function cancel(dirty?: boolean) {
 
 onMounted(() => {
   if (store.user && router.currentRoute.value.name == "edit-user") {
-    let initialValues = JSON.parse(JSON.stringify(store.user));
-    initialValues.passwordConfirm = initialValues.password;
+    const { birthdate, password, ...rest } = JSON.parse(
+      JSON.stringify(store.user)
+    );
+    let initialValues = { ...rest, password, passwordConfirm: password };
+    if (birthdate) {
+      let date = new Date(birthdate);
+      initialValues = {
+        ...initialValues,
+        day: date.getDate(),
+        month: date.getMonth() + 1,
+        year: date.getFullYear(),
+      };
+    }
     form.value?.resetForm({
       values: initialValues,
     });
@@ -190,12 +211,17 @@ function close() {
 }
 
 function submit(values: any) {
-  delete values.passwordConfirm;
+  const { day, month, year, passwordConfirm, ...rest } = values;
+  let updatedValues: any = { ...rest };
+
+  if (day && month && year) {
+    updatedValues = { ...rest, birthdate: [day, month, year] };
+  }
 
   if (router.currentRoute.value.name == "create-user") {
-    store.createUser(values);
+    store.createUser(updatedValues);
   } else {
-    store.updateUser(values);
+    store.updateUser(updatedValues);
   }
   close();
 }

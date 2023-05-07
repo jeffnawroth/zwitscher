@@ -74,6 +74,7 @@ export const users: User[] = [
     avatar: "https://avatars0.githubusercontent.com/u/9064066?v=4&s=460",
     bio: "Hallo das ist meine Bio.",
     createdAt: new Date(),
+    birthdate: new Date(),
   },
 ];
 

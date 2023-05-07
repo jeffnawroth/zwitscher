@@ -8,13 +8,52 @@ export interface User {
   email: string;
   gender?: string;
   password: string;
-  follower: number[];
-  following: number[];
+  follower?: number[];
+  following?: number[];
   bio?: string;
-  liked: number[];
-  disliked: number[];
-  createdAt: Date;
+  liked?: number[];
+  disliked?: number[];
+  createdAt?: Date;
   birthdate?: Date;
+  interests?: string[];
+}
+
+export interface UserAdd {
+  avatar?: string;
+  role: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  gender?: string;
+  password: string;
+  follower?: number[];
+  following?: number[];
+  bio?: string;
+  liked?: number[];
+  disliked?: number[];
+  createdAt?: Date;
+  birthdate?: number[];
+  interests?: string[];
+}
+
+export interface UserEdit {
+  id: number;
+  avatar?: string;
+  role: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  gender?: string;
+  password: string;
+  follower?: number[];
+  following?: number[];
+  bio?: string;
+  liked?: number[];
+  disliked?: number[];
+  createdAt?: Date;
+  birthdate?: number[];
   interests?: string[];
 }
 
