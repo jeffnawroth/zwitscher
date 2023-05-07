@@ -10,9 +10,11 @@
       </v-img>
     </template>
     <template #title>
-      <span class="title" @click.stop="openProfile">{{
-        `${post.firstName} ${post.lastName}`
-      }}</span>
+      <span
+        :class="{ title: $router.currentRoute.value.name != 'profile' }"
+        @click.stop="openProfile"
+        >{{ `${post.firstName} ${post.lastName}` }}</span
+      >
     </template>
     <v-card-actions>
       <v-btn :prepend-icon="thumbUp" @click.stop="likePost">{{

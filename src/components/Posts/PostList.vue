@@ -1,5 +1,5 @@
 <template>
-  <div v-for="post in posts" :key="post.id">
+  <div v-for="(post, index) in posts" :key="post.id">
     <v-list-item @click="openPost(post)">
       <Post
         :post="post"
@@ -7,7 +7,7 @@
         @set-downvotes="(downvotes: number) => (post.downvotes = downvotes)"
       ></Post>
     </v-list-item>
-    <v-divider></v-divider>
+    <v-divider v-if="index !== posts.length - 1"></v-divider>
   </div>
 </template>
 
