@@ -27,7 +27,7 @@
 
       <v-spacer></v-spacer>
       <v-btn
-        v-if="post.userId === user?.id"
+        v-if="authStore.loggedIn && post.userId === authStore.user?.id"
         icon="mdi-delete-outline"
         @click.stop="deleteDialog = true"
       ></v-btn>
@@ -63,17 +63,17 @@ const props = defineProps({
 });
 
 const store = usePostStore();
-const { user } = useAuthenticationStore();
+const authStore = useAuthenticationStore();
 const deleteDialog = ref(false);
 
 const thumbUp = computed(() => {
-  return user?.liked.includes(props.post.id)
+  return authStore.user?.liked.includes(props.post.id)
     ? "mdi-thumb-up"
     : "mdi-thumb-up-outline";
 });
 
 const thumbDown = computed(() => {
-  return user?.disliked.includes(props.post.id)
+  return authStore.user?.disliked.includes(props.post.id)
     ? "mdi-thumb-down"
     : "mdi-thumb-down-outline";
 });
@@ -83,34 +83,42 @@ function openProfile() {
 }
 
 function likePost() {
-  const likedIndex = user?.liked.indexOf(props.post.id);
-  const dislikedIndex = user?.disliked.indexOf(props.post.id);
+  if (!authStore.loggedIn) {
+    router.push({ name: "login" });
+    return;
+  }
+  const likedIndex = authStore.user?.liked.indexOf(props.post.id);
+  const dislikedIndex = authStore.user?.disliked.indexOf(props.post.id);
 
   if (likedIndex != undefined && likedIndex !== -1) {
-    user?.liked.splice(likedIndex, 1);
+    authStore.user?.liked.splice(likedIndex, 1);
     emit("set-upvotes", props.post.upvotes - 1);
   } else {
-    user?.liked.push(props.post.id);
+    authStore.user?.liked.push(props.post.id);
     emit("set-upvotes", props.post.upvotes + 1);
     if (dislikedIndex != undefined && dislikedIndex !== -1) {
-      user?.disliked.splice(dislikedIndex, 1);
+      authStore.user?.disliked.splice(dislikedIndex, 1);
       emit("set-downvotes", props.post.downvotes - 1);
     }
   }
 }
 
 function dislikePost() {
-  const likedIndex = user?.liked.indexOf(props.post.id);
-  const dislikedIndex = user?.disliked.indexOf(props.post.id);
+  if (!authStore.loggedIn) {
+    router.push({ name: "login" });
+    return;
+  }
+  const likedIndex = authStore.user?.liked.indexOf(props.post.id);
+  const dislikedIndex = authStore.user?.disliked.indexOf(props.post.id);
 
   if (dislikedIndex != undefined && dislikedIndex !== -1) {
-    user?.disliked.splice(dislikedIndex, 1);
+    authStore.user?.disliked.splice(dislikedIndex, 1);
     emit("set-downvotes", props.post.downvotes - 1);
   } else {
-    user?.disliked.push(props.post.id);
+    authStore.user?.disliked.push(props.post.id);
     emit("set-downvotes", props.post.downvotes + 1);
     if (likedIndex != undefined && likedIndex !== -1) {
-      user?.liked.splice(likedIndex, 1);
+      authStore.user?.liked.splice(likedIndex, 1);
       emit("set-upvotes", props.post.upvotes - 1);
     }
   }

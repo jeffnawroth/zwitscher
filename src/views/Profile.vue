@@ -20,21 +20,23 @@
               </p>
             </div>
             <v-spacer></v-spacer>
-            <v-hover
-              v-if="$route.params.username !== authStore.user?.username"
-              v-slot="{ isHovering, props }"
-            >
-              <v-btn
-                v-bind="props"
-                :color="follow == 'Folge ich' && isHovering ? 'red' : ''"
-                :variant="followButtonVariant"
-                @click="setFollow"
-                >{{
-                  follow == "Folge ich" && isHovering ? "Entfolgen" : follow
-                }}</v-btn
+            <div v-if="authStore.loggedIn">
+              <v-hover
+                v-if="$route.params.username !== authStore.user?.username"
+                v-slot="{ isHovering, props }"
               >
-            </v-hover>
-            <v-btn v-else variant="tonal">Profil bearbeiten</v-btn>
+                <v-btn
+                  v-bind="props"
+                  :color="follow == 'Folge ich' && isHovering ? 'red' : ''"
+                  :variant="followButtonVariant"
+                  @click="setFollow"
+                  >{{
+                    follow == "Folge ich" && isHovering ? "Entfolgen" : follow
+                  }}</v-btn
+                >
+              </v-hover>
+              <v-btn v-else variant="tonal">Profil bearbeiten</v-btn>
+            </div>
           </div>
         </template>
         <template #subtitle>

@@ -1,11 +1,29 @@
 <template>
+  <v-tabs
+    v-if="authStore.loggedIn"
+    v-model="tab"
+    align-tabs="center"
+    fixed-tabs
+  >
+    <v-tab value="one">Für dich</v-tab>
+    <v-tab value="two">Folge ich</v-tab>
+  </v-tabs>
   <v-list rounded="lg">
-    <v-list-item v-if="authStore.loggedIn">
-      <CreatePost></CreatePost>
-    </v-list-item>
-    <v-divider></v-divider>
+    <div v-if="authStore.loggedIn">
+      <v-list-item>
+        <CreatePost></CreatePost>
+      </v-list-item>
+      <v-divider></v-divider>
+    </div>
 
-    <PostList :posts="store.sortedPosts"></PostList>
+    <v-window v-model="tab">
+      <v-window-item value="one">
+        <PostList :posts="store.sortedPosts"></PostList>
+      </v-window-item>
+      <v-window-item value="two">
+        <PostList :posts="store.sortedPosts"></PostList>
+      </v-window-item>
+    </v-window>
   </v-list>
   <router-view></router-view>
 </template>
@@ -13,12 +31,14 @@
 <script setup lang="ts">
 import CreatePost from "@/components/Posts/CreatePost.vue";
 import { usePostStore } from "@/store/posts";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useAuthenticationStore } from "@/store/authentication";
 import PostList from "@/components/Posts/PostList.vue";
 
 const store = usePostStore();
 const authStore = useAuthenticationStore();
+
+const tab = ref(null);
 
 onMounted(() => {
   store.getAllPosts();
