@@ -5,7 +5,7 @@
     align-tabs="center"
     fixed-tabs
   >
-    <v-tab value="one">Für dich</v-tab>
+    <v-tab value="one">Öffentlich</v-tab>
     <v-tab value="two">Folge ich</v-tab>
   </v-tabs>
   <v-list rounded="lg">
@@ -21,7 +21,7 @@
         <PostList :posts="store.sortedPosts"></PostList>
       </v-window-item>
       <v-window-item value="two">
-        <PostList :posts="store.sortedPosts"></PostList>
+        <PostList :posts="store.sortedPostsFollowedUsers"></PostList>
       </v-window-item>
     </v-window>
   </v-list>
@@ -31,16 +31,26 @@
 <script setup lang="ts">
 import CreatePost from "@/components/Posts/CreatePost.vue";
 import { usePostStore } from "@/store/posts";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useAuthenticationStore } from "@/store/authentication";
 import PostList from "@/components/Posts/PostList.vue";
 
 const store = usePostStore();
 const authStore = useAuthenticationStore();
 
-const tab = ref(null);
+const tab = ref("one");
 
 onMounted(() => {
   store.getAllPosts();
+  if (authStore.loggedIn) {
+    store.getFollowedUsersPosts(authStore.user!.id);
+  }
 });
+
+watch(
+  () => authStore.loggedIn,
+  (newVal) => {
+    if (!newVal) tab.value = "one";
+  }
+);
 </script>

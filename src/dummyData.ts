@@ -164,3 +164,32 @@ export const userPosts: Post[] = [
     comments: [],
   },
 ];
+
+export const followedUsersPosts: Post[] = [
+  {
+    id: 3,
+    userId: 2,
+    firstName: "Jane",
+    lastName: "Doe",
+    username: "JaneDoe",
+    avatar: "https://avatars0.githubusercontent.com/u/9064066?v=4&s=460",
+    upvotes: 15,
+    downvotes: 10,
+    text: "I'm planning a road trip across the US this summer. Any recommendations?",
+    date: new Date("2022-04-11"),
+    comments: [],
+  },
+  {
+    id: 4,
+    userId: 1,
+    firstName: "John",
+    lastName: "Doe",
+    username: "JDoe",
+    avatar: "https://cdn.vuetifyjs.com/images/john.jpg",
+    upvotes: 20,
+    downvotes: 5,
+    text: "Just finished reading a great book about astrophysics. Highly recommend it!",
+    date: new Date("2023-04-27"),
+    comments: [],
+  },
+];

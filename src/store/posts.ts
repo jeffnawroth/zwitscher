@@ -1,5 +1,9 @@
 import { defineStore } from "pinia";
-import { allPosts as posts, userPosts } from "@/dummyData";
+import {
+  allPosts as posts,
+  userPosts,
+  followedUsersPosts as postsOfFollowedUsers,
+} from "@/dummyData";
 import { ref } from "vue";
 import { AddPost, Post } from "@/interfaces";
 import { useAuthenticationStore } from "./authentication";
@@ -9,6 +13,7 @@ import { sortByDateDescending } from "./helpers";
 export const usePostStore = defineStore("post", () => {
   const allPosts = ref<Post[]>(posts);
   const postsOfUser = ref<Post[]>([]);
+  const postsFollowedUsers = ref<Post[]>([]);
   const post = ref<Post | undefined>();
 
   function getAllPosts() {
@@ -17,6 +22,10 @@ export const usePostStore = defineStore("post", () => {
 
   function getPostsForUser(id: number) {
     postsOfUser.value = posts.filter((post) => post.userId === id);
+  }
+
+  function getFollowedUsersPosts(id: number) {
+    postsFollowedUsers.value = postsOfFollowedUsers;
   }
 
   function getPost(id: number) {
@@ -78,6 +87,10 @@ export const usePostStore = defineStore("post", () => {
     return sortByDateDescending(postsOfUser.value);
   });
 
+  const sortedPostsFollowedUsers = computed(() => {
+    return sortByDateDescending(postsFollowedUsers.value);
+  });
+
   return {
     getAllPosts,
     allPosts,
@@ -90,5 +103,7 @@ export const usePostStore = defineStore("post", () => {
     getPost,
     post,
     addComment,
+    getFollowedUsersPosts,
+    sortedPostsFollowedUsers,
   };
 });
