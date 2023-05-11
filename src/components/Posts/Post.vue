@@ -1,5 +1,5 @@
 <template>
-  <v-card :subtitle="`@${post.username} • ${formattedDate}`" :text="post.text">
+  <v-card :subtitle="`@${post.username} • ${formattedDate}`">
     <template #prepend>
       <v-img>
         <v-avatar
@@ -15,6 +15,10 @@
         @click.stop="openProfile"
         >{{ `${post.firstName} ${post.lastName}` }}</span
       >
+    </template>
+    <template #text>
+      {{ post.text }}
+      <ImageLayout class="mt-1" :files="post.files"></ImageLayout>
     </template>
     <v-card-actions>
       <v-btn :prepend-icon="thumbUp" @click.stop="likePost">{{
@@ -51,6 +55,7 @@ import BaseDeleteDialog from "../BaseComponents/BaseDeleteDialog.vue";
 import { usePostStore } from "@/store/posts";
 import { PropType, computed, ref } from "vue";
 import router from "@/router";
+import ImageLayout from "./ImageLayout.vue";
 
 const emit = defineEmits<{
   (e: "set-upvotes", upvotes: number): void;

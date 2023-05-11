@@ -9,6 +9,7 @@ import { AddPost, Post } from "@/interfaces";
 import { useAuthenticationStore } from "./authentication";
 import { computed } from "vue";
 import { sortByDateDescending } from "./helpers";
+import { v4 as uuidv4 } from "uuid";
 
 export const usePostStore = defineStore("post", () => {
   const allPosts = ref<Post[]>(posts);
@@ -37,26 +38,8 @@ export const usePostStore = defineStore("post", () => {
     //todo
 
     const post: Post = {
-      ...postAdd,
-
-      id: 0,
-      upvotes: 0,
-      downvotes: 0,
-      firstName: "Admin",
-      lastName: "Nimda",
-      username: "ANimda",
-      date: new Date(),
-      avatar: authStore.user?.avatar,
-    };
-    allPosts.value?.push(post);
-  }
-
-  function addComment(comment: AddPost) {
-    const authStore = useAuthenticationStore();
-
-    const postAdd: Post = {
-      ...comment,
       id: 10,
+      userId: postAdd.userId,
       upvotes: 0,
       downvotes: 0,
       firstName: "Admin",
@@ -65,6 +48,28 @@ export const usePostStore = defineStore("post", () => {
       date: new Date(),
       avatar: authStore.user?.avatar,
       comments: [],
+      files: postAdd.files ?? [],
+      text: postAdd.text ?? "",
+    };
+    allPosts.value?.push(post);
+  }
+
+  function addComment(comment: AddPost) {
+    const authStore = useAuthenticationStore();
+
+    const postAdd: Post = {
+      id: 11,
+      userId: comment.userId,
+      upvotes: 0,
+      downvotes: 0,
+      firstName: "Admin",
+      lastName: "Nimda",
+      username: "ANimda",
+      date: new Date(),
+      avatar: authStore.user?.avatar,
+      comments: [],
+      files: comment.files ?? [],
+      text: comment.text ?? "",
     };
 
     post.value?.comments?.push(postAdd);

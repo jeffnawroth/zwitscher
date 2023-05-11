@@ -92,6 +92,7 @@ export const allPosts: Post[] = [
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
     date: new Date("2023-05-1"),
     comments: [],
+    files: [],
   },
   {
     id: 2,
@@ -106,6 +107,7 @@ export const allPosts: Post[] = [
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
     date: new Date("2023-05-02T18:56:00"),
     comments: [],
+    files: [],
   },
   {
     id: 3,
@@ -119,6 +121,7 @@ export const allPosts: Post[] = [
     text: "I'm planning a road trip across the US this summer. Any recommendations?",
     date: new Date("2022-04-11"),
     comments: [],
+    files: [],
   },
   {
     id: 4,
@@ -132,6 +135,7 @@ export const allPosts: Post[] = [
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
     date: new Date("2023-04-27"),
     comments: [],
+    files: [],
   },
 ];
 
@@ -149,6 +153,7 @@ export const userPosts: Post[] = [
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
     date: new Date("2023-05-1"),
     comments: [],
+    files: [],
   },
   {
     id: 2,
@@ -163,6 +168,7 @@ export const userPosts: Post[] = [
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
     date: new Date("2023-05-02T18:56:00"),
     comments: [],
+    files: [],
   },
 ];
 
@@ -179,6 +185,7 @@ export const followedUsersPosts: Post[] = [
     text: "I'm planning a road trip across the US this summer. Any recommendations?",
     date: new Date("2022-04-11"),
     comments: [],
+    files: [],
   },
   {
     id: 4,
@@ -192,5 +199,6 @@ export const followedUsersPosts: Post[] = [
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
     date: new Date("2023-04-27"),
     comments: [],
+    files: [],
   },
 ];

@@ -1,12 +1,17 @@
 <template>
-  <Form v-slot="{ meta }" :initial-values="initialValues" @submit="submit">
+  <Form
+    v-slot="{ meta }"
+    :initial-values="initialValues"
+    :validation-schema="validationSchema"
+    @submit="submit"
+  >
     <v-card
       :prepend-avatar="authStore.user?.avatar"
       :title="cardTitle"
       :subtitle="cardSubtitle"
     >
       <v-card-text>
-        <Field v-slot="{ field }" name="text" :rules="fieldSchema">
+        <Field v-slot="{ field }" name="text">
           <v-textarea
             v-bind="field"
             :placeholder="placeholder"
@@ -19,10 +24,34 @@
             persistent-counter
           ></v-textarea>
         </Field>
+        <ImageLayout
+          :files="files"
+          delete-img-btn
+          @remove-file="removeFile"
+        ></ImageLayout>
       </v-card-text>
       <v-card-actions>
-        <v-btn icon="mdi-image-outline"></v-btn>
-        <v-btn icon="mdi-file-gif-box"></v-btn>
+        <Field
+          v-slot="{ handleChange, handleBlur }"
+          v-model="files"
+          name="file"
+        >
+          <input
+            ref="fileInput"
+            multiple
+            type="file"
+            accept="image/*, video/*"
+            hidden
+            @change="handleChange"
+            @blur="handleBlur"
+          />
+        </Field>
+        <v-btn
+          icon="mdi-image-outline"
+          :disabled="files.length == 4"
+          @click="fileInput?.click()"
+        ></v-btn>
+        <v-btn :disabled="files.length >= 1" icon="mdi-file-gif-box"></v-btn>
         <v-btn icon="mdi-emoticon-happy-outline"></v-btn>
         <v-spacer></v-spacer>
         <v-btn variant="tonal" type="submit" :disabled="!meta.valid">{{
@@ -38,11 +67,12 @@ import { AddPost, Post } from "@/interfaces";
 import { useAuthenticationStore } from "@/store/authentication";
 import { usePostStore } from "@/store/posts";
 import { computed, ref } from "vue";
-import { setLocale, string } from "yup";
+import { mixed, object, setLocale, string } from "yup";
 import { Form, Field } from "vee-validate";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
 import router from "@/router";
 import { useUsersStore } from "@/store/users";
+import ImageLayout from "./ImageLayout.vue";
 
 setLocale(yupLocaleDe);
 
@@ -50,11 +80,25 @@ const authStore = useAuthenticationStore();
 const postsStore = usePostStore();
 const usersStore = useUsersStore();
 
+const fileInput = ref<HTMLInputElement | null>(null);
+
+const files = ref<File[]>([]);
+
 const initialValues = {
   text: "",
+  file: [],
 };
 
-const fieldSchema = string().required().max(281);
+const validationSchema = object({
+  text: string()
+    .max(281)
+    .when("file", {
+      is: (file: File[]) => file && file.length > 0,
+      then: (schema) => schema.nullable(),
+      otherwise: (schema) => schema.required(),
+    }),
+  file: mixed(),
+});
 
 const placeholder = computed(() => {
   return router.currentRoute.value.name == "home"
@@ -80,11 +124,20 @@ const cardTitle = computed(() => {
     : "";
 });
 
+function removeFile(file: File) {
+  const fileIndex = files.value.indexOf(file);
+  files.value.splice(fileIndex, 1);
+}
+
 function submit(values: any, { resetForm }: any) {
   const post: AddPost = {
     userId: authStore.user!.id,
     text: values.text,
+    files: values.file,
   };
+
+  console.log(post);
+
   router.currentRoute.value.name == "home"
     ? postsStore.createPost(post)
     : postsStore.addComment(post);

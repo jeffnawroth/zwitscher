@@ -134,6 +134,7 @@ import { object, string, number, ref as yupRef, setLocale } from "yup";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
 import { useUsersStore } from "@/store/users";
 import { onMounted } from "vue";
+import { UserEdit } from "@/interfaces";
 
 setLocale(yupLocaleDe);
 
@@ -212,7 +213,7 @@ function close() {
 
 function submit(values: any) {
   const { day, month, year, passwordConfirm, ...rest } = values;
-  let updatedValues: any = { ...rest };
+  let updatedValues: UserEdit = { ...rest };
 
   if (day && month && year) {
     updatedValues = { ...rest, birthdate: [day, month, year] };

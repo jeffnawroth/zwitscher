@@ -8,12 +8,12 @@ export interface User {
   email: string;
   gender?: string;
   password: string;
-  follower?: number[];
-  following?: number[];
+  follower: number[];
+  following: number[];
   bio?: string;
-  liked?: number[];
-  disliked?: number[];
-  createdAt?: Date;
+  liked: number[];
+  disliked: number[];
+  createdAt: Date;
   birthdate?: Date;
   interests?: string[];
 }
@@ -27,12 +27,7 @@ export interface UserAdd {
   email: string;
   gender?: string;
   password: string;
-  follower?: number[];
-  following?: number[];
   bio?: string;
-  liked?: number[];
-  disliked?: number[];
-  createdAt?: Date;
   birthdate?: number[];
   interests?: string[];
 }
@@ -47,14 +42,14 @@ export interface UserEdit {
   email: string;
   gender?: string;
   password: string;
-  follower?: number[];
-  following?: number[];
+  follower: number[];
+  following: number[];
   bio?: string;
-  liked?: number[];
-  disliked?: number[];
-  createdAt?: Date;
+  liked: number[];
+  disliked: number[];
   birthdate?: number[];
   interests?: string[];
+  createdAt: Date;
 }
 
 export interface Post {
@@ -64,16 +59,18 @@ export interface Post {
   firstName: string;
   lastName: string;
   username: string;
-  text: string;
+  text?: string;
   upvotes: number;
   downvotes: number;
   date: Date;
   comments?: Post[];
+  files: File[];
 }
 
 export interface AddPost {
   userId: number;
-  text: string;
+  text?: string;
+  files?: File[];
 }
 
 export interface AuthUser extends User {
