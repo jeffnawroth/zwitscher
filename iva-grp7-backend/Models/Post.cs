@@ -1,0 +1,20 @@
+﻿using System;
+namespace iva_grp7_backend.Models
+{
+	public class Post
+	{
+		public int Id { get; set; }
+		public int UserId { get; set; }
+		public string Avatar { get; set; }
+		public string Firstname { get; set; }
+		public string LastName { get; set; }
+        public string UserName { get; set; }
+        public string Text { get; set; }
+        public List<string> Files { get; set; }
+		public int UpVotes { get; set; }
+		public int DownVotes { get; set; }
+		public DateTime CreatedAt { get; set; }
+		public List<Post> Comments { get; set; }
+    }
+}
+
