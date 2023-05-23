@@ -45,6 +45,7 @@ function previewImage(file: File) {
   return URL.createObjectURL(file);
 }
 
+//Test
 const imgCols = computed(() => {
   return props.files.length == 1 ? "12" : "6";
 });
