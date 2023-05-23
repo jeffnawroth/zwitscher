@@ -25,11 +25,15 @@
           ></v-textarea>
         </Field>
         <ImageLayout
+          v-if="files[0] && files[0].type !== 'video/mp4'"
           :files="files"
           delete-img-btn
           @remove-file="removeFile"
         ></ImageLayout>
       </v-card-text>
+      <video v-if="files[0] && files[0].type === 'video/mp4'" controls>
+        <source :src="previewVideo(files[0])" type="video/mp4" />
+      </video>
       <v-card-actions>
         <Field
           v-slot="{ handleChange, handleBlur }"
@@ -124,6 +128,10 @@ const cardTitle = computed(() => {
     : "";
 });
 
+function previewVideo(file: File) {
+  return URL.createObjectURL(file);
+}
+
 function removeFile(file: File) {
   const fileIndex = files.value.indexOf(file);
   files.value.splice(fileIndex, 1);
@@ -144,3 +152,10 @@ function submit(values: any, { resetForm }: any) {
   resetForm();
 }
 </script>
+
+<style>
+video {
+  width: 100%;
+  height: auto;
+}
+</style>
