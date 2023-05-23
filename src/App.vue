@@ -18,7 +18,7 @@
     </v-app-bar>
 
     <v-main class="bg-grey-lighten-3">
-      <v-container fluid>
+      <v-container>
         <v-row>
           <v-col cols="3">
             <v-sheet rounded="lg" class="pa-2">
