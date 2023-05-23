@@ -25,15 +25,12 @@
           ></v-textarea>
         </Field>
         <ImageLayout
-          v-if="files[0] && files[0].type !== 'video/mp4'"
+          class="mt-2"
           :files="files"
           delete-img-btn
           @remove-file="removeFile"
         ></ImageLayout>
       </v-card-text>
-      <video v-if="files[0] && files[0].type === 'video/mp4'" controls>
-        <source :src="previewVideo(files[0])" type="video/mp4" />
-      </video>
       <v-card-actions>
         <Field
           v-slot="{ handleChange, handleBlur }"
@@ -45,14 +42,13 @@
             multiple
             type="file"
             accept="image/*, video/*"
-            hidden
             @change="handleChange"
             @blur="handleBlur"
           />
         </Field>
         <v-btn
           icon="mdi-image-outline"
-          :disabled="files.length == 4"
+          :disabled="files.length == 4 || files[0]?.type == 'video/mp4'"
           @click="fileInput?.click()"
         ></v-btn>
         <v-btn :disabled="files.length >= 1" icon="mdi-file-gif-box"></v-btn>
@@ -77,6 +73,7 @@ import yupLocaleDe from "@/plugins/yupLocaleDe";
 import router from "@/router";
 import { useUsersStore } from "@/store/users";
 import ImageLayout from "./ImageLayout.vue";
+import { readFileSync } from "fs";
 
 setLocale(yupLocaleDe);
 
@@ -128,10 +125,6 @@ const cardTitle = computed(() => {
     : "";
 });
 
-function previewVideo(file: File) {
-  return URL.createObjectURL(file);
-}
-
 function removeFile(file: File) {
   const fileIndex = files.value.indexOf(file);
   files.value.splice(fileIndex, 1);
@@ -143,8 +136,6 @@ function submit(values: any, { resetForm }: any) {
     text: values.text,
     files: values.file,
   };
-
-  console.log(post);
 
   router.currentRoute.value.name == "home"
     ? postsStore.createPost(post)
