@@ -16,8 +16,7 @@
               </v-btn>
             </template>
           </v-toolbar>
-          ></v-img
-        >
+        </v-img>
       </v-card>
     </v-col>
   </v-row>
