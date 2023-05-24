@@ -99,6 +99,15 @@
               ></BasePasswordInput>
             </v-col>
           </v-row>
+          <v-row>
+            <v-col>
+              <BaseCombobox
+                name="interests"
+                label="Interessen"
+                :items="interests"
+              ></BaseCombobox>
+            </v-col>
+          </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -128,9 +137,10 @@ import BaseSelectWithValidation from "./BaseComponents/BaseSelectWithValidation.
 import BaseDiscardDialog from "./BaseComponents/BaseDiscardDialog.vue";
 import BasePasswordInput from "./BaseComponents/BasePasswordInput.vue";
 import BaseBirthdateInput from "./BaseComponents/BaseBirthdateInput.vue";
+import BaseCombobox from "./BaseComponents/BaseCombobox.vue";
 import router from "@/router";
-import { Form } from "vee-validate";
-import { object, string, number, ref as yupRef, setLocale } from "yup";
+import { Form, Field } from "vee-validate";
+import { object, string, number, ref as yupRef, setLocale, array } from "yup";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
 import { useUsersStore } from "@/store/users";
 import { onMounted } from "vue";
@@ -154,12 +164,35 @@ const initialValues = ref({
   day: null,
   month: null,
   year: null,
+  interests: null,
 });
 
 const form = ref<InstanceType<typeof Form> | null>(null);
 
-const roles = ref(["Admin", "Moderator", "Nutzer"]);
-const gender = ref(["männlich", "weiblich", "divers"]);
+const roles = ["Admin", "Moderator", "Nutzer"];
+const gender = ["männlich", "weiblich", "divers"];
+const interests = [
+  "Sport",
+  "Musik",
+  "Lesen",
+  "Kunst",
+  "Reisen",
+  "Kochen",
+  "Filme",
+  "Gaming",
+  "Mode",
+  "Tiere",
+  "Natur",
+  "Technologie",
+  "Geschichte",
+  "Politik",
+  "Wissenschaft",
+  "Fotografie",
+  "Fitness",
+  "Yoga",
+  "Schreiben",
+  "Tanzen",
+];
 
 const validationSchema = object({
   role: string().required().label("Rolle"),
@@ -167,6 +200,7 @@ const validationSchema = object({
   firstName: string().required().label("Vorname"),
   lastName: string().required().label("Nachname"),
   gender: string().label("Geschlecht").nullable(),
+  interests: array().label("Interessen").required(),
   email: string().required().email().label("E-Mail"),
   day: number().nullable(),
   month: number().nullable(),
