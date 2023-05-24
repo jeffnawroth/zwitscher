@@ -20,8 +20,7 @@ namespace iva_grp7_backend.Controllers
         [Required]
         public string Password { get; set; }
 
-        [Required]
-        public string Role { get; set; }
+        
     }
 
 }

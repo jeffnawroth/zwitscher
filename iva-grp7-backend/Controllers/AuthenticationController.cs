@@ -79,7 +79,7 @@ public class AuthenticationController : ControllerBase
                     LastName = requestDto.LastName,
                     Email = requestDto.Email,
                     UserName = requestDto.Username,
-                    Role = requestDto.Role
+                    Role = "User"
                 };
 
 
@@ -101,10 +101,10 @@ public class AuthenticationController : ControllerBase
                 {
 
                     // Adding role
-                    if (!await roleManager.RoleExistsAsync(requestDto.Role))
-                        await roleManager.CreateAsync(new IdentityRole(requestDto.Role));
-                    if (await roleManager.RoleExistsAsync(requestDto.Role))
-                        await _userManager.AddToRoleAsync(new_user, requestDto.Role);
+                    if (!await roleManager.RoleExistsAsync("User"))
+                        await roleManager.CreateAsync(new IdentityRole("User"));
+                    if (await roleManager.RoleExistsAsync("User"))
+                        await _userManager.AddToRoleAsync(new_user, "User");
                     // Generate the token
                     var token = GenerateJwtToken(new_user);
                     return Ok(new_user);
