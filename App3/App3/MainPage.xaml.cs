@@ -18,6 +18,7 @@ namespace App3
             public MainPage()
             {
                 InitializeComponent();
+                
             }
 
             private void InitializeComponent()
