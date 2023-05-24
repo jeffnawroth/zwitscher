@@ -22,7 +22,8 @@
             </template>
             <v-list>
               <v-list-item>
-                <v-btn>Profilbild ändern</v-btn>
+                <v-btn @click="fileInput?.click()">Profilbild ändern</v-btn>
+                <input ref="fileInput" hidden type="file" />
               </v-list-item>
             </v-list>
           </v-menu>
@@ -108,6 +109,16 @@
               ></BaseCombobox>
             </v-col>
           </v-row>
+          <v-row>
+            <v-col>
+              <BaseTextarea
+                label="Bio"
+                type="text"
+                name="bio"
+                auto-grow
+              ></BaseTextarea>
+            </v-col>
+          </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -138,6 +149,7 @@ import BaseDiscardDialog from "./BaseComponents/BaseDiscardDialog.vue";
 import BasePasswordInput from "./BaseComponents/BasePasswordInput.vue";
 import BaseBirthdateInput from "./BaseComponents/BaseBirthdateInput.vue";
 import BaseCombobox from "./BaseComponents/BaseCombobox.vue";
+import BaseTextarea from "./BaseComponents/BaseTextarea.vue";
 import router from "@/router";
 import { Form, Field } from "vee-validate";
 import { object, string, number, ref as yupRef, setLocale, array } from "yup";
@@ -152,6 +164,8 @@ const store = useUsersStore();
 const dialog = ref(true);
 const discardDialog = ref(false);
 
+const fileInput = ref<HTMLInputElement | null>(null);
+
 const initialValues = ref({
   role: null,
   username: "",
@@ -165,6 +179,7 @@ const initialValues = ref({
   month: null,
   year: null,
   interests: null,
+  bio: null,
 });
 
 const form = ref<InstanceType<typeof Form> | null>(null);
@@ -205,6 +220,7 @@ const validationSchema = object({
   day: number().nullable(),
   month: number().nullable(),
   year: number().nullable(),
+  bio: string().nullable(),
   password: string().required().label("Passwort"),
   passwordConfirm: string()
     .required()

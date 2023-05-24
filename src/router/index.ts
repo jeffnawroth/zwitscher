@@ -1,4 +1,5 @@
 // Composables
+import { useAuthenticationStore } from "@/store/authentication";
 import { usePostStore } from "@/store/posts";
 import { useUsersStore } from "@/store/users";
 import {
@@ -37,7 +38,10 @@ const routes = [
     ) {
       //TO-DO: Add api
       const store = useUsersStore();
-      store.getUserByUsername(to.params.username as string);
+      const authStore = useAuthenticationStore();
+      to.params.username === authStore.user?.username
+        ? (store.user = authStore.user)
+        : store.getUserByUsername(to.params.username as string);
       next();
     },
     children: [

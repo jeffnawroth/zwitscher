@@ -1,11 +1,11 @@
 import { AuthUser, Post, User } from "@/interfaces";
 
 export const userData: AuthUser = {
-  firstName: "Admin",
-  lastName: "Nimda",
+  id: 0,
   token:
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
-  id: 0,
+  firstName: "Admin",
+  lastName: "Nimda",
   role: "Admin",
   username: "ANimda",
   email: "admin@nimda.de",
@@ -16,17 +16,18 @@ export const userData: AuthUser = {
   following: [1, 2],
   liked: [],
   disliked: [],
-  bio: "Hallo das ist meine Bio.",
+  bio: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere ex illum ad? Tenetur dolore accusantium laborum amet doloribus dignissimos reiciendis eveniet, exercitationem dicta perferendis, ullam cupiditate. Quidem sed non nulla!",
   createdAt: new Date(),
+  birthdate: new Date(),
   gender: "männlich",
   interests: ["Schach", "Bücher", "Fußball"],
 };
 
 export const users: User[] = [
   {
+    id: 0,
     firstName: "Admin",
     lastName: "Nimda",
-    id: 0,
     role: "Admin",
     username: "ANimda",
     email: "admin@nimda.de",

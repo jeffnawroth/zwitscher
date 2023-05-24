@@ -11,19 +11,19 @@
       :subtitle="cardSubtitle"
     >
       <v-card-text>
-        <Field v-slot="{ field }" name="text">
-          <v-textarea
-            v-bind="field"
-            :placeholder="placeholder"
-            variant="outlined"
-            clearable
-            counter="281"
-            hide-details="auto"
-            :rows="3"
-            auto-grow
-            persistent-counter
-          ></v-textarea>
-        </Field>
+        <BaseTextarea
+          type="text"
+          name="text"
+          :placeholder="placeholder"
+          flat
+          variant="solo"
+          clearable
+          counter="281"
+          :rows="1"
+          persistent-counter
+          error-messages=""
+        ></BaseTextarea>
+
         <FileLayout
           class="mt-2"
           :files="files"
@@ -79,6 +79,7 @@ import yupLocaleDe from "@/plugins/yupLocaleDe";
 import router from "@/router";
 import { useUsersStore } from "@/store/users";
 import FileLayout from "./FileLayout.vue";
+import BaseTextarea from "../BaseComponents/BaseTextarea.vue";
 
 setLocale(yupLocaleDe);
 
@@ -109,13 +110,11 @@ const validationSchema = object({
 const placeholder = computed(() => {
   return router.currentRoute.value.name == "home"
     ? "Was gibt's neues?"
-    : "Kommentieren";
+    : "Antworten";
 });
 
 const buttonText = computed(() => {
-  return router.currentRoute.value.name == "home"
-    ? "Veröffentlichen"
-    : "Kommentieren";
+  return router.currentRoute.value.name == "home" ? "Zwitschern" : "Antworten";
 });
 
 const cardSubtitle = computed(() => {
