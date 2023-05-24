@@ -1,13 +1,11 @@
 <template>
   <v-card :subtitle="`@${post.username} • ${formattedDate}`">
     <template #prepend>
-      <v-img>
-        <v-avatar
-          class="avatar"
-          :image="post?.avatar"
-          @click.stop="openProfile"
-        ></v-avatar>
-      </v-img>
+      <v-btn icon variant="text" @click.stop="openProfile">
+        <v-img>
+          <v-avatar class="avatar" :image="post?.avatar"></v-avatar>
+        </v-img>
+      </v-btn>
     </template>
     <template #title>
       <span
@@ -165,15 +163,9 @@ const formattedDate = computed(() => {
 });
 </script>
 
-<style>
+<style scoped>
 .title:hover {
   cursor: pointer;
   text-decoration: underline;
-}
-</style>
-
-<style>
-.avatar:hover {
-  cursor: pointer;
 }
 </style>
