@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 
 namespace iva_grp7_backend.Models;
 
-	public class User: IUser
+	public class User
 	{
 		
 		public int Id { get; set; }
@@ -24,6 +24,7 @@ namespace iva_grp7_backend.Models;
         [ForeignKey("DislikedByUserId")]
 		public DateTime CreatedAt { get; set; }
 		public string Bio { get; set; }
+		[NotMapped]
 		public List<string> Interests { get; set; }
 
 }
