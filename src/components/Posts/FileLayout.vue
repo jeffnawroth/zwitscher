@@ -3,9 +3,9 @@
     <v-col v-for="file in files" :key="file.name" :cols="imgCols">
       <!-- Image -->
       <v-card v-if="file.type === 'image/jpeg'">
-        <v-img cover aspect-ratio="1/1" :src="previewImage(file)">
+        <v-img cover aspect-ratio="1/1" :src="previewFile(file)">
           <v-toolbar color="rgba(0, 0, 0, 0)" theme="dark">
-            <template v-if="deleteImgBtn" #prepend>
+            <template v-if="removeFileBtn" #prepend>
               <v-btn
                 size="small"
                 icon
@@ -22,10 +22,10 @@
       <!-- Video -->
       <div v-else-if="file.type === 'video/mp4'" class="video-player">
         <video ref="videoPlayer" controls>
-          <source :src="previewImage(files[0])" type="video/mp4" />
+          <source :src="previewFile(files[0])" type="video/mp4" />
         </video>
         <v-btn
-          v-if="deleteImgBtn"
+          v-if="removeFileBtn"
           class="close-button"
           size="small"
           icon
@@ -54,12 +54,12 @@ const props = defineProps({
       [];
     },
   },
-  deleteImgBtn: {
+  removeFileBtn: {
     type: Boolean,
   },
 });
 
-function previewImage(file: File) {
+function previewFile(file: File) {
   return URL.createObjectURL(file);
 }
 

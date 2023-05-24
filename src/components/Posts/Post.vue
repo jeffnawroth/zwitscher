@@ -18,7 +18,10 @@
     </template>
     <template #text>
       {{ post.text }}
-      <ImageLayout class="mt-1" :files="post.files"></ImageLayout>
+      <FileLayout
+        :class="post.text === '' ? '' : 'mt-1'"
+        :files="post.files"
+      ></FileLayout>
     </template>
     <v-card-actions>
       <v-btn :prepend-icon="thumbUp" @click.stop="likePost">{{
@@ -55,7 +58,7 @@ import BaseDeleteDialog from "../BaseComponents/BaseDeleteDialog.vue";
 import { usePostStore } from "@/store/posts";
 import { PropType, computed, ref } from "vue";
 import router from "@/router";
-import ImageLayout from "./ImageLayout.vue";
+import FileLayout from "./FileLayout.vue";
 
 const emit = defineEmits<{
   (e: "set-upvotes", upvotes: number): void;

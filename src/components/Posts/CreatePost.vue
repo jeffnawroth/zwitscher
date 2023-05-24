@@ -1,6 +1,6 @@
 <template>
   <Form
-    v-slot="{ meta }"
+    v-slot="{ meta, validate }"
     :initial-values="initialValues"
     :validation-schema="validationSchema"
     @submit="submit"
@@ -24,12 +24,17 @@
             persistent-counter
           ></v-textarea>
         </Field>
-        <ImageLayout
+        <FileLayout
           class="mt-2"
           :files="files"
-          delete-img-btn
-          @remove-file="removeFile"
-        ></ImageLayout>
+          remove-file-btn
+          @remove-file="
+            (file: File) => {
+              removeFile(file);
+              validate();
+            }
+          "
+        ></FileLayout>
       </v-card-text>
       <v-card-actions>
         <Field
@@ -40,6 +45,7 @@
           <input
             ref="fileInput"
             multiple
+            hidden
             type="file"
             accept="image/*, video/*"
             @change="handleChange"
@@ -72,8 +78,7 @@ import { Form, Field } from "vee-validate";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
 import router from "@/router";
 import { useUsersStore } from "@/store/users";
-import ImageLayout from "./ImageLayout.vue";
-import { readFileSync } from "fs";
+import FileLayout from "./FileLayout.vue";
 
 setLocale(yupLocaleDe);
 
