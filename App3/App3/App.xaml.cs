@@ -6,15 +6,15 @@ namespace App3
 {
     public partial class App : Application
     {
-        public AppStart()
+        public App()
         {
-            InitializeComponent();
-
-            MainPage = new MainPage();
         }
 
         protected override void OnStart()
         {
+            InitializeComponent();
+
+            MainPage = new AppShell();
         }
 
         protected override void OnSleep()

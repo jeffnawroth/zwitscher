@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -10,12 +11,30 @@ using Xamarin.Forms;
 
 namespace App3
 {
-    public partial class App : Application
+    namespace App3
     {
-        public App()
+        public partial class MainPage : ContentPage
         {
-            InitializeComponent();
-            MainPage = new AppShell();
+            public MainPage()
+            {
+                InitializeComponent();
+            }
+
+            private void InitializeComponent()
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public class MyMainPage
+        {
+            private MainPage mainPage;
+
+            public MyMainPage()
+            {
+                mainPage = new MainPage();
+            }
+
         }
     }
 }
