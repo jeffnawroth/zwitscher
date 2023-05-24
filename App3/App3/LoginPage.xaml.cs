@@ -19,7 +19,6 @@ namespace App3
         {
             string username = usernameEntry.Text;
             string password = passwordEntry.Text;
-
             if (LoginService.ValidateCredentials(username, password))
             {
                 await DisplayAlert("Erfolgreich", "Login erfolgreich", "OK");
