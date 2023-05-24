@@ -16,7 +16,7 @@ namespace iva_grp7_backend.Controllers;
 public class AuthenticationController : ControllerBase
 {
     // These are the dependencies needed by the controller. They are passed in through the constructor.
-    private readonly UserManager<AuthUser> _userManager;
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly IConfiguration _configuration;
     private readonly TokenValidationParameters _tokenValidationParameters;
     private readonly RoleManager<IdentityRole> roleManager;
@@ -25,7 +25,7 @@ public class AuthenticationController : ControllerBase
 
     // The constructor takes in the dependencies and assigns them to the private fields.
     public AuthenticationController(
-        UserManager<AuthUser> userManager,
+        UserManager<ApplicationUser> userManager,
         IConfiguration configuration,
         ApiDbContext context,
         TokenValidationParameters tokenValidationParameters,
@@ -73,7 +73,7 @@ public class AuthenticationController : ControllerBase
                 }
 
                 // Create a user
-                var new_user = new AuthUser()
+                var new_user = new ApplicationUser()
                 {
                     FirstName = requestDto.FirstName,
                     LastName = requestDto.LastName,
@@ -142,7 +142,6 @@ public class AuthenticationController : ControllerBase
         {
             // Check if user exists
             var existing_user = await _userManager.FindByEmailAsync(loginRequest.Email);
-
             if (existing_user == null)
                 // Return bad request with error message if user doesn't exist
                 return BadRequest(new AuthResult()
@@ -359,7 +358,7 @@ public class AuthenticationController : ControllerBase
     }
 
     // This method generates a JWT token for the given ApplicationUser object
-    private async Task<AuthResult> GenerateJwtToken(AuthUser user)
+    private async Task<AuthResult> GenerateJwtToken(ApplicationUser user)
     {
         // Create a JwtSecurityTokenHandler object to handle JWT tokens
         var jwtTokenHandler = new JwtSecurityTokenHandler();

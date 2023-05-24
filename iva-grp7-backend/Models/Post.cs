@@ -10,7 +10,7 @@ namespace iva_grp7_backend.Models
 		public string LastName { get; set; }
         public string UserName { get; set; }
         public string Text { get; set; }
-        public List<string> Files { get; set; }
+        //public List<string> Files { get; set; }
 		public int UpVotes { get; set; }
 		public int DownVotes { get; set; }
 		public DateTime CreatedAt { get; set; }
