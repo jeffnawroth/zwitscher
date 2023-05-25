@@ -23,7 +23,6 @@
           persistent-counter
           error-messages=""
         ></BaseTextarea>
-
         <FileLayout
           class="mt-2"
           :files="files"
@@ -69,7 +68,7 @@
 </template>
 
 <script setup lang="ts">
-import { AddPost, Post } from "@/interfaces";
+import { AddPost } from "@/interfaces";
 import { useAuthenticationStore } from "@/store/authentication";
 import { usePostStore } from "@/store/posts";
 import { computed, ref } from "vue";

@@ -70,7 +70,7 @@ const validationSchema = object({
   password: string().required().label("Passwort"),
 });
 
-function submit(values: Object) {
+function submit(values: any) {
   store.login(values);
   router.push({ name: "home" });
 }

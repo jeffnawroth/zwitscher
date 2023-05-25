@@ -7,7 +7,6 @@ export interface User {
   lastName: string;
   email: string;
   gender?: string;
-  password: string;
   follower: number[];
   following: number[];
   bio?: string;
@@ -74,6 +73,20 @@ export interface AddPost {
 }
 
 export interface AuthUser extends User {
-  password: string;
   token: string;
+  refreshToken: string;
+  password: string;
+}
+
+export interface RegisterDto {
+  username: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
+export interface LoginDto {
+  email: string;
+  password: string;
 }

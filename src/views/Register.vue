@@ -80,7 +80,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { useAuthenticationStore } from "@/store/authentication";
 import BaseInputWithValidation from "@/components/BaseComponents/BaseInputWithValidation.vue";
 import BasePasswordInput from "@/components/BaseComponents/BasePasswordInput.vue";
@@ -106,7 +106,7 @@ const validationSchema = object({
     .label("Passwörter"),
 });
 
-function submit(values: Object) {
+function submit(values: any) {
   store.register(values);
   router.push({ name: "home" });
 }

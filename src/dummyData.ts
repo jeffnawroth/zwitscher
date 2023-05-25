@@ -21,6 +21,8 @@ export const userData: AuthUser = {
   birthdate: new Date(),
   gender: "männlich",
   interests: ["Schach", "Bücher", "Fußball"],
+  refreshToken:
+    "jfklasjfklajslfjklasjdfjasdkljfklsdjfkljsdlafjlkasdjfkljasdlfjasdklfjasdljflsdj",
 };
 
 export const users: User[] = [
@@ -31,7 +33,6 @@ export const users: User[] = [
     role: "Admin",
     username: "ANimda",
     email: "admin@nimda.de",
-    password: "Admin1!",
     avatar:
       "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg",
     follower: [1, 2],
@@ -51,7 +52,6 @@ export const users: User[] = [
     lastName: "Doe",
     email: "john.doe@example.com",
     role: "Admin",
-    password: "789das789dfas789dfs",
     follower: [2, 0],
     following: [2, 0],
     liked: [],
@@ -67,7 +67,6 @@ export const users: User[] = [
     lastName: "Doe",
     email: "jane.doe@example.com",
     role: "Moderator",
-    password: "789das789dfas789dfs",
     follower: [1, 0],
     following: [1, 0],
     liked: [],

@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import {
   allPosts as posts,
-  userPosts,
   followedUsersPosts as postsOfFollowedUsers,
 } from "@/dummyData";
 import { ref } from "vue";
@@ -9,7 +8,6 @@ import { AddPost, Post } from "@/interfaces";
 import { useAuthenticationStore } from "./authentication";
 import { computed } from "vue";
 import { sortByDateDescending } from "./helpers";
-import { v4 as uuidv4 } from "uuid";
 
 export const usePostStore = defineStore("post", () => {
   const allPosts = ref<Post[]>(posts);

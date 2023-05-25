@@ -1,4 +1,4 @@
-import { AuthUser } from "@/interfaces";
+import { AuthUser, LoginDto, RegisterDto } from "@/interfaces";
 import router from "@/router";
 import axios from "axios";
 import { defineStore } from "pinia";
@@ -8,14 +8,14 @@ import { userData } from "@/dummyData";
 export const useAuthenticationStore = defineStore("authentication", () => {
   const user = ref<AuthUser | null>(userData);
 
-  async function register(credentials: Object) {
+  async function register(credentials: RegisterDto) {
     //TO-DO: Register User
     //const userData = await ...
 
     setUserData(userData);
   }
 
-  async function login(credentials: Object) {
+  async function login(credentials: LoginDto) {
     //TO-DO: Log in user
     //const userData = await ...
 
