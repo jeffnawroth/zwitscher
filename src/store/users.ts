@@ -3,32 +3,20 @@ import { ref } from "vue";
 import { users as dummyUsers } from "@/dummyData";
 import { User, UserAdd, UserEdit } from "@/interfaces";
 
-let id = 4;
-
 export const useUsersStore = defineStore("users", () => {
   const users = ref<User[]>(dummyUsers);
   const user = ref<User>();
 
   function createUser(user: UserAdd) {
-    const { birthdate, ...rest } = user;
-    let addedUser: User = {
-      ...rest,
-      id: ++id,
+    const addedUser: User = {
+      ...user,
+      id: Math.random(),
       follower: [],
       following: [],
       liked: [],
       disliked: [],
       createdAt: new Date(),
     };
-
-    if (user.birthdate) {
-      const newBirthdate = new Date(
-        user.birthdate[2],
-        user.birthdate[1] - 1,
-        user.birthdate[0]
-      );
-      addedUser = { ...addedUser, birthdate: newBirthdate };
-    }
 
     users.value.push(addedUser);
   }
@@ -54,21 +42,12 @@ export const useUsersStore = defineStore("users", () => {
     users.value.splice(userIndex, 1);
   }
 
-  function updateUser(userEdit: UserEdit) {
+  function updateUser(userEdit: User) {
     const userIndex = users.value.findIndex((user) => user.id === userEdit.id);
-    const { birthdate, ...rest } = userEdit;
-    let user: User = { ...rest };
 
-    if (birthdate) {
-      const newBirthdate = new Date(
-        birthdate[2],
-        birthdate[1] - 1,
-        birthdate[0]
-      );
-      user = { ...user, birthdate: newBirthdate };
-    }
-
-    users.value.splice(userIndex, 1, user);
+    const store = useUsersStore();
+    users.value.splice(userIndex, 1, userEdit);
+    store.user = userEdit;
   }
 
   return {

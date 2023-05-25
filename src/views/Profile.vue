@@ -35,7 +35,12 @@
                   }}</v-btn
                 >
               </v-hover>
-              <v-btn v-else variant="tonal">Profil bearbeiten</v-btn>
+              <v-btn
+                v-else
+                variant="tonal"
+                @click="$router.push({ name: 'profile-settings' })"
+                >Profil bearbeiten</v-btn
+              >
             </div>
           </div>
         </template>
@@ -90,6 +95,7 @@
 
     <PostList :posts="store.sortedUserPosts"></PostList>
   </v-list>
+  <router-view></router-view>
 </template>
 
 <script setup lang="ts">
@@ -120,7 +126,15 @@ const followButtonVariant = computed(() => {
 });
 
 const birtdate = computed(() => {
-  return usersStore.user?.birthdate?.toLocaleDateString("de-DE", {
+  const birthdate = usersStore.user?.birthdate;
+
+  if (!birthdate) {
+    return undefined;
+  }
+
+  const [year, month, day] = birthdate.split("-");
+  const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+  return date.toLocaleDateString("de-DE", {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -128,7 +142,8 @@ const birtdate = computed(() => {
 });
 
 const created = computed(() => {
-  return usersStore.user?.createdAt?.toLocaleDateString("de-DE", {
+  const date = new Date(usersStore.user?.createdAt!);
+  return date.toLocaleDateString("de-DE", {
     month: "long",
     year: "numeric",
   });

@@ -1,4 +1,5 @@
 // Composables
+import { User } from "@/interfaces";
 import { useAuthenticationStore } from "@/store/authentication";
 import { usePostStore } from "@/store/posts";
 import { useUsersStore } from "@/store/users";
@@ -49,6 +50,13 @@ const routes = [
         name: "profile",
         path: "profile",
         component: () => import("@/views/Profile.vue"),
+        children: [
+          {
+            path: "settings",
+            name: "profile-settings",
+            component: () => import("@/components/UserDialog.vue"),
+          },
+        ],
       },
       {
         path: "post/:postId",
@@ -93,6 +101,10 @@ const routes = [
         name: "create-user",
         path: "create-user",
         component: () => import("@/components/UserDialog.vue"),
+        beforeEnter() {
+          const store = useUsersStore();
+          store.user = {} as User;
+        },
       },
       {
         name: "edit-user",

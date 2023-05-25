@@ -12,12 +12,15 @@
           <v-menu open-on-hover>
             <template #activator="{ props }">
               <v-btn v-bind="props" icon size="100">
-                <v-avatar size="100">
-                  <img
-                    alt="user"
-                    src="https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
-                  />
-                </v-avatar>
+                <Field v-slot="{ field }" name="avatar">
+                  <v-img>
+                    <v-avatar
+                      :size="100"
+                      class="avatar"
+                      :image="field.value"
+                    ></v-avatar>
+                  </v-img>
+                </Field>
               </v-btn>
             </template>
             <v-list>
@@ -72,20 +75,6 @@
               ></BaseInputWithValidation>
             </v-col>
           </v-row>
-          <BaseBirthdateInput
-            name-day="day"
-            name-month="month"
-            name-year="year"
-          ></BaseBirthdateInput>
-          <v-row>
-            <v-col>
-              <BaseSelectWithValidation
-                name="gender"
-                label="Geschlecht"
-                :items="gender"
-              ></BaseSelectWithValidation>
-            </v-col>
-          </v-row>
           <v-row>
             <v-col>
               <BasePasswordInput
@@ -102,13 +91,25 @@
           </v-row>
           <v-row>
             <v-col>
-              <BaseCombobox
-                name="interests"
-                label="Interessen"
-                :items="interests"
-              ></BaseCombobox>
+              <BaseInputWithValidation
+                name="birthdate"
+                label="Geburtsdatum"
+                type="date"
+                :clearable="false"
+                :max="dateToday"
+              ></BaseInputWithValidation>
             </v-col>
           </v-row>
+          <v-row>
+            <v-col>
+              <BaseSelectWithValidation
+                name="gender"
+                label="Geschlecht"
+                :items="gender"
+              ></BaseSelectWithValidation>
+            </v-col>
+          </v-row>
+
           <v-row>
             <v-col>
               <BaseTextarea
@@ -117,6 +118,15 @@
                 name="bio"
                 auto-grow
               ></BaseTextarea>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <BaseCombobox
+                name="interests"
+                label="Interessen"
+                :items="interests"
+              ></BaseCombobox>
             </v-col>
           </v-row>
         </v-card-text>
@@ -147,12 +157,19 @@ import BaseInputWithValidation from "./BaseComponents/BaseInputWithValidation.vu
 import BaseSelectWithValidation from "./BaseComponents/BaseSelectWithValidation.vue";
 import BaseDiscardDialog from "./BaseComponents/BaseDiscardDialog.vue";
 import BasePasswordInput from "./BaseComponents/BasePasswordInput.vue";
-import BaseBirthdateInput from "./BaseComponents/BaseBirthdateInput.vue";
 import BaseCombobox from "./BaseComponents/BaseCombobox.vue";
 import BaseTextarea from "./BaseComponents/BaseTextarea.vue";
 import router from "@/router";
 import { Form, Field } from "vee-validate";
-import { object, string, number, ref as yupRef, setLocale, array } from "yup";
+import {
+  object,
+  string,
+  number,
+  ref as yupRef,
+  setLocale,
+  array,
+  date,
+} from "yup";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
 import { useUsersStore } from "@/store/users";
 import { onMounted } from "vue";
@@ -167,17 +184,16 @@ const discardDialog = ref(false);
 const fileInput = ref<HTMLInputElement | null>(null);
 
 const initialValues = ref({
+  avatar: null,
   role: null,
   username: "",
   firstName: "",
   lastName: "",
   email: "",
   gender: null,
-  password: "",
-  passwordConfirm: "",
-  day: null,
-  month: null,
-  year: null,
+  password: null,
+  passwordConfirm: null,
+  birthdate: null,
   interests: null,
   bio: null,
 });
@@ -215,17 +231,16 @@ const validationSchema = object({
   firstName: string().required().label("Vorname"),
   lastName: string().required().label("Nachname"),
   gender: string().label("Geschlecht").nullable(),
-  interests: array().label("Interessen").required(),
+  interests: array().label("Interessen").nullable(),
   email: string().required().email().label("E-Mail"),
-  day: number().nullable(),
-  month: number().nullable(),
-  year: number().nullable(),
+  birthdate: string().nullable(),
   bio: string().nullable(),
-  password: string().required().label("Passwort"),
+  password: string().nullable().label("Passwort"),
   passwordConfirm: string()
-    .required()
+    .nullable()
     .oneOf([yupRef("password")], "Passwörter stimmen nicht überein")
     .label("Passwort bestätigen"),
+  avatar: string().nullable(),
 });
 
 function cancel(dirty?: boolean) {
@@ -236,21 +251,31 @@ function cancel(dirty?: boolean) {
   }
 }
 
+const profileSettings = computed(() => {
+  return router.currentRoute.value.name === "profile-settings";
+});
+
+const dateToday = computed(() => {
+  return new Date().toISOString().slice(0, 10);
+});
+
 onMounted(() => {
-  if (store.user && router.currentRoute.value.name == "edit-user") {
-    const { birthdate, password, ...rest } = JSON.parse(
+  if (
+    store.user &&
+    (router.currentRoute.value.name === "edit-user" ||
+      router.currentRoute.value.name === "profile-settings")
+  ) {
+    const { gender, interests, ...rest } = JSON.parse(
       JSON.stringify(store.user)
     );
-    let initialValues = { ...rest, password, passwordConfirm: password };
-    if (birthdate) {
-      let date = new Date(birthdate);
-      initialValues = {
-        ...initialValues,
-        day: date.getDate(),
-        month: date.getMonth() + 1,
-        year: date.getFullYear(),
-      };
-    }
+    let initialValues = {
+      ...rest,
+      password: "",
+      passwordConfirm: "",
+      gender,
+      interests,
+    };
+
     form.value?.resetForm({
       values: initialValues,
     });
@@ -258,16 +283,14 @@ onMounted(() => {
 });
 
 function close() {
-  router.push({ name: "users" });
+  profileSettings.value
+    ? router.push({ name: "profile" })
+    : router.push({ name: "users" });
 }
 
 function submit(values: any) {
-  const { day, month, year, passwordConfirm, ...rest } = values;
+  const { passwordConfirm, ...rest } = values;
   let updatedValues: UserEdit = { ...rest };
-
-  if (day && month && year) {
-    updatedValues = { ...rest, birthdate: [day, month, year] };
-  }
 
   if (router.currentRoute.value.name == "create-user") {
     store.createUser(updatedValues);
