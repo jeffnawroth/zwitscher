@@ -13,7 +13,7 @@ export interface User {
   liked: number[];
   disliked: number[];
   createdAt: Date;
-  birthdate?: Date;
+  birthdate?: string;
   interests?: string[];
 }
 
@@ -27,7 +27,7 @@ export interface UserAdd {
   gender?: string;
   password: string;
   bio?: string;
-  birthdate?: number[];
+  birthdate?: string;
   interests?: string[];
 }
 
@@ -46,7 +46,7 @@ export interface UserEdit {
   bio?: string;
   liked: number[];
   disliked: number[];
-  birthdate?: number[];
+  birthdate?: string;
   interests?: string[];
   createdAt: Date;
 }

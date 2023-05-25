@@ -36,7 +36,7 @@ export const usePostStore = defineStore("post", () => {
     //todo
 
     const post: Post = {
-      id: 10,
+      id: Math.random(),
       userId: postAdd.userId,
       upvotes: 0,
       downvotes: 0,
@@ -56,7 +56,7 @@ export const usePostStore = defineStore("post", () => {
     const authStore = useAuthenticationStore();
 
     const postAdd: Post = {
-      id: 11,
+      id: Math.random(),
       userId: comment.userId,
       upvotes: 0,
       downvotes: 0,

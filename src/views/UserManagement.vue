@@ -40,14 +40,14 @@ import BaseDeleteDialog from "@/components/BaseComponents/BaseDeleteDialog.vue";
 const store = useUsersStore();
 const deleteDialog = ref(false);
 
-const headers = ref([
+const headers = [
   { title: "Username", key: "username" },
   { title: "Vorname", key: "firstName" },
   { title: "Nachname", key: "lastName" },
   { title: "E-Mail", key: "email" },
   { title: "Rolle", key: "role" },
-  { key: "actions" },
-]);
+  { title: "", key: "actions" },
+];
 
 onMounted(() => {
   store.getUsers();

@@ -18,7 +18,7 @@ export const userData: AuthUser = {
   disliked: [],
   bio: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere ex illum ad? Tenetur dolore accusantium laborum amet doloribus dignissimos reiciendis eveniet, exercitationem dicta perferendis, ullam cupiditate. Quidem sed non nulla!",
   createdAt: new Date(),
-  birthdate: new Date(),
+  birthdate: new Date().toISOString().slice(0, 10),
   gender: "männlich",
   interests: ["Schach", "Bücher", "Fußball"],
   refreshToken:
@@ -42,7 +42,7 @@ export const users: User[] = [
     bio: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere ex illum ad? Tenetur dolore accusantium laborum amet doloribus dignissimos reiciendis eveniet, exercitationem dicta perferendis, ullam cupiditate. Quidem sed non nulla!",
     createdAt: new Date(),
     gender: "männlich",
-    birthdate: new Date(),
+    birthdate: new Date().toISOString().slice(0, 10),
     interests: ["Schach", "Bücher", "Fußball"],
   },
   {
@@ -74,7 +74,7 @@ export const users: User[] = [
     avatar: "https://avatars0.githubusercontent.com/u/9064066?v=4&s=460",
     bio: "Hallo das ist meine Bio.",
     createdAt: new Date(),
-    birthdate: new Date(),
+    birthdate: new Date().toISOString().slice(0, 10),
   },
 ];
 
