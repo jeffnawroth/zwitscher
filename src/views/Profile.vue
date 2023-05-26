@@ -36,7 +36,10 @@
                 >
               </v-hover>
               <v-btn
-                v-else
+                v-if="
+                  $route.params.username === authStore.user?.username ||
+                  authStore.user?.role === 'Admin'
+                "
                 variant="tonal"
                 @click="$router.push({ name: 'profile-settings' })"
                 >Profil bearbeiten</v-btn

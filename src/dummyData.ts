@@ -23,6 +23,7 @@ export const userData: AuthUser = {
   interests: ["Schach", "Bücher", "Fußball"],
   refreshToken:
     "jfklasjfklajslfjklasjdfjasdkljfklsdjfkljsdlafjlkasdjfkljasdlfjasdklfjasdljflsdj",
+  locked: false,
 };
 
 export const users: User[] = [
@@ -44,6 +45,7 @@ export const users: User[] = [
     gender: "männlich",
     birthdate: new Date().toISOString().slice(0, 10),
     interests: ["Schach", "Bücher", "Fußball"],
+    locked: false,
   },
   {
     id: 1,
@@ -59,6 +61,7 @@ export const users: User[] = [
     avatar: "https://cdn.vuetifyjs.com/images/john.jpg",
     bio: "Hallo das ist meine Bio.",
     createdAt: new Date(),
+    locked: false,
   },
   {
     id: 2,
@@ -75,6 +78,7 @@ export const users: User[] = [
     bio: "Hallo das ist meine Bio.",
     createdAt: new Date(),
     birthdate: new Date().toISOString().slice(0, 10),
+    locked: false,
   },
 ];
 

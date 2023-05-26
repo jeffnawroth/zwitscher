@@ -16,17 +16,11 @@
     </template>
     <template #[`item.actions`]="{ item }">
       <v-icon class="me-2" @click="editUser(item.raw)"> mdi-pencil</v-icon>
-      <v-icon @click="toggleDeleteDialog(item.raw)"> mdi-delete </v-icon>
+      <v-icon @click="openDeleteDialog(item.raw)"> mdi-delete </v-icon>
     </template>
   </v-data-table>
   <router-view></router-view>
-  <BaseDeleteDialog
-    v-model="deleteDialog"
-    @cancel="toggleDeleteDialog"
-    @delete="removeUser"
-  >
-    den Nutzer {{ `'${store.user?.username}'` }}
-  </BaseDeleteDialog>
+  <DeleteUserDialog v-model="deleteDialog"></DeleteUserDialog>
 </template>
 
 <script setup lang="ts">
@@ -35,7 +29,7 @@ import { useUsersStore } from "@/store/users";
 import { onMounted } from "vue";
 import router from "@/router";
 import { User } from "@/interfaces";
-import BaseDeleteDialog from "@/components/BaseComponents/BaseDeleteDialog.vue";
+import DeleteUserDialog from "@/components/DeleteUserDialog.vue";
 
 const store = useUsersStore();
 const deleteDialog = ref(false);
@@ -58,17 +52,8 @@ function editUser(user: User) {
   router.push({ name: "edit-user", params: { id: user.id } });
 }
 
-function toggleDeleteDialog(user?: User) {
-  deleteDialog.value = !deleteDialog.value;
-  if (!store.user) store.user = user;
-  else
-    setTimeout(() => {
-      store.user = undefined;
-    }, 200);
-}
-
-function removeUser() {
-  store.deleteUser();
-  toggleDeleteDialog();
+function openDeleteDialog(user?: User) {
+  store.user = user;
+  deleteDialog.value = true;
 }
 </script>

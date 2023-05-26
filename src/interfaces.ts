@@ -15,6 +15,7 @@ export interface User {
   createdAt: Date;
   birthdate?: string;
   interests?: string[];
+  locked: boolean;
 }
 
 export interface UserAdd {

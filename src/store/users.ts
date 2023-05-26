@@ -16,6 +16,7 @@ export const useUsersStore = defineStore("users", () => {
       liked: [],
       disliked: [],
       createdAt: new Date(),
+      locked: false,
     };
 
     users.value.push(addedUser);

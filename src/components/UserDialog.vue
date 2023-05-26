@@ -134,9 +134,20 @@
           <v-spacer></v-spacer>
           <v-btn variant="tonal" @click="cancel(meta.dirty)">Abbrechen</v-btn>
           <v-btn
-            :disabled="!meta.valid || !meta.dirty"
             type="submit"
             variant="tonal"
+            color="orange"
+            prepend-icon="mdi-lock-outline"
+            >Sperren</v-btn
+          >
+          <v-btn
+            prepend-icon="mdi-delete-outline"
+            variant="tonal"
+            color="red"
+            @click="deleteDialog = true"
+            >Löschen</v-btn
+          >
+          <v-btn :disabled="!meta.valid || !meta.dirty" variant="tonal"
             >Speichern</v-btn
           >
         </v-card-actions>
@@ -149,6 +160,8 @@
     @cancel="discardDialog = false"
     @discard="cancel"
   ></BaseDiscardDialog>
+
+  <DeleteUserDialog v-model="deleteDialog"></DeleteUserDialog>
 </template>
 
 <script setup lang="ts">
@@ -174,12 +187,14 @@ import yupLocaleDe from "@/plugins/yupLocaleDe";
 import { useUsersStore } from "@/store/users";
 import { onMounted } from "vue";
 import { UserEdit } from "@/interfaces";
+import DeleteUserDialog from "./DeleteUserDialog.vue";
 
 setLocale(yupLocaleDe);
 
 const store = useUsersStore();
 const dialog = ref(true);
 const discardDialog = ref(false);
+const deleteDialog = ref(false);
 
 const fileInput = ref<HTMLInputElement | null>(null);
 
@@ -265,7 +280,7 @@ onMounted(() => {
     (router.currentRoute.value.name === "edit-user" ||
       router.currentRoute.value.name === "profile-settings")
   ) {
-    const { gender, interests, ...rest } = JSON.parse(
+    const { gender, interests, birthdate, ...rest } = JSON.parse(
       JSON.stringify(store.user)
     );
     let initialValues = {
@@ -274,6 +289,7 @@ onMounted(() => {
       passwordConfirm: "",
       gender,
       interests,
+      birthdate,
     };
 
     form.value?.resetForm({
