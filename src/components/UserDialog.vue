@@ -11,7 +11,7 @@
         <v-row class="justify-center mb-2">
           <v-menu open-on-hover>
             <template #activator="{ props }">
-              <v-btn v-bind="props" icon size="100">
+              <v-btn :disabled="userLocked" v-bind="props" icon size="100">
                 <Field v-slot="{ field }" name="avatar">
                   <v-img>
                     <v-avatar
@@ -38,6 +38,7 @@
                 name="role"
                 label="Rolle"
                 :items="roles"
+                :disabled="userLocked"
               ></BaseSelectWithValidation>
             </v-col>
           </v-row>
@@ -47,6 +48,7 @@
                 name="username"
                 label="Username"
                 type="text"
+                :disabled="userLocked"
               ></BaseInputWithValidation>
             </v-col>
           </v-row>
@@ -56,6 +58,7 @@
                 name="firstName"
                 label="Vorname"
                 type="text"
+                :disabled="userLocked"
               ></BaseInputWithValidation>
             </v-col>
             <v-col>
@@ -63,6 +66,7 @@
                 name="lastName"
                 label="Nachname"
                 type="text"
+                :disabled="userLocked"
               ></BaseInputWithValidation>
             </v-col>
           </v-row>
@@ -72,6 +76,7 @@
                 name="email"
                 label="E-Mail"
                 type="text"
+                :disabled="userLocked"
               ></BaseInputWithValidation>
             </v-col>
           </v-row>
@@ -80,12 +85,14 @@
               <BasePasswordInput
                 name="password"
                 label="Passwort"
+                :disabled="userLocked"
               ></BasePasswordInput>
             </v-col>
             <v-col>
               <BasePasswordInput
                 name="passwordConfirm"
                 label="Passwort bestätigen"
+                :disabled="userLocked"
               ></BasePasswordInput>
             </v-col>
           </v-row>
@@ -97,6 +104,7 @@
                 type="date"
                 :clearable="false"
                 :max="dateToday"
+                :disabled="userLocked"
               ></BaseInputWithValidation>
             </v-col>
           </v-row>
@@ -106,6 +114,7 @@
                 name="gender"
                 label="Geschlecht"
                 :items="gender"
+                :disabled="userLocked"
               ></BaseSelectWithValidation>
             </v-col>
           </v-row>
@@ -117,6 +126,7 @@
                 type="text"
                 name="bio"
                 auto-grow
+                :disabled="userLocked"
               ></BaseTextarea>
             </v-col>
           </v-row>
@@ -126,6 +136,7 @@
                 name="interests"
                 label="Interessen"
                 :items="interests"
+                :disabled="userLocked"
               ></BaseCombobox>
             </v-col>
           </v-row>
@@ -133,21 +144,24 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn variant="tonal" @click="cancel(meta.dirty)">Abbrechen</v-btn>
+
+          <LockButton
+            v-if="!createUserRoute"
+            @click="lockDialog = true"
+          ></LockButton>
+
           <v-btn
-            type="submit"
-            variant="tonal"
-            color="orange"
-            prepend-icon="mdi-lock-outline"
-            >Sperren</v-btn
-          >
-          <v-btn
+            v-if="!createUserRoute"
             prepend-icon="mdi-delete-outline"
             variant="tonal"
             color="red"
             @click="deleteDialog = true"
             >Löschen</v-btn
           >
-          <v-btn :disabled="!meta.valid || !meta.dirty" variant="tonal"
+          <v-btn
+            type="submit"
+            :disabled="!meta.valid || !meta.dirty"
+            variant="tonal"
             >Speichern</v-btn
           >
         </v-card-actions>
@@ -162,6 +176,7 @@
   ></BaseDiscardDialog>
 
   <DeleteUserDialog v-model="deleteDialog"></DeleteUserDialog>
+  <LockUserDialog v-model="lockDialog"></LockUserDialog>
 </template>
 
 <script setup lang="ts">
@@ -188,11 +203,14 @@ import { useUsersStore } from "@/store/users";
 import { onMounted } from "vue";
 import { UserEdit } from "@/interfaces";
 import DeleteUserDialog from "./DeleteUserDialog.vue";
+import LockButton from "./LockButton.vue";
+import LockUserDialog from "./LockUserDialog.vue";
 
 setLocale(yupLocaleDe);
 
 const store = useUsersStore();
 const dialog = ref(true);
+const lockDialog = ref(false);
 const discardDialog = ref(false);
 const deleteDialog = ref(false);
 
@@ -270,8 +288,16 @@ const profileSettings = computed(() => {
   return router.currentRoute.value.name === "profile-settings";
 });
 
+const createUserRoute = computed(() => {
+  return router.currentRoute.value.name === "create-user";
+});
+
 const dateToday = computed(() => {
   return new Date().toISOString().slice(0, 10);
+});
+
+const userLocked = computed(() => {
+  return store.user?.locked;
 });
 
 onMounted(() => {

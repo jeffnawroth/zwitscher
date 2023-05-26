@@ -4,7 +4,10 @@
     @cancel="closeDialog"
     @delete="removeUser"
   >
-    den Nutzer {{ `'${store.user?.username}'` }}
+    den Nutzer
+    {{
+      `'${store.user?.firstName} ${store.user?.lastName}' (${store.user?.username})`
+    }}
   </BaseDeleteDialog>
 </template>
 
