@@ -52,7 +52,7 @@ const lockCardTitleIcon = computed(() => {
 });
 
 const userDisplayName = computed(() => {
-  return `${store.user?.firstName} ${store.user?.lastName} (${store.user?.username})`;
+  return `${store.user?.name} (${store.user?.username})`;
 });
 
 function toggleUserLock() {

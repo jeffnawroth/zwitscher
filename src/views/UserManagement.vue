@@ -55,8 +55,7 @@ const lockDialog = ref(false);
 
 const headers = [
   { title: "Username", key: "username" },
-  { title: "Vorname", key: "firstName" },
-  { title: "Nachname", key: "lastName" },
+  { title: "Name", key: "name" },
   { title: "E-Mail", key: "email" },
   { title: "Rolle", key: "role" },
   { title: "", key: "actions" },

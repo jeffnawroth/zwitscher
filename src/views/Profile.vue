@@ -14,7 +14,7 @@
         <template #title>
           <div class="d-flex mb-1">
             <div>
-              {{ `${usersStore.user?.firstName} ${usersStore.user?.lastName}` }}
+              {{ `${usersStore.user?.name}` }}
               <p class="v-card-subtitle">
                 {{ `@${usersStore.user?.username}` }}
               </p>

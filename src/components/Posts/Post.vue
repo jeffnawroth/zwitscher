@@ -14,7 +14,7 @@
       <span
         :class="{ title: $router.currentRoute.value.name != 'profile' }"
         @click.stop="openProfile"
-        >{{ `${post.firstName} ${post.lastName}` }}</span
+        >{{ `${post.name}` }}</span
       >
     </template>
     <template #text>

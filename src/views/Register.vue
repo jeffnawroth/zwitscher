@@ -3,6 +3,7 @@
     <Form
       v-slot="{ meta }"
       :validation-schema="validationSchema"
+      :initial-values="initialValues"
       @submit="submit"
     >
       <v-card title="Registrieren">
@@ -19,15 +20,8 @@
           <v-row>
             <v-col>
               <BaseInputWithValidation
-                name="firstName"
-                label="Vorname"
-                type="text"
-              ></BaseInputWithValidation>
-            </v-col>
-            <v-col>
-              <BaseInputWithValidation
-                name="lastName"
-                label="Nachname"
+                name="name"
+                label="Name"
                 type="text"
               ></BaseInputWithValidation>
             </v-col>
@@ -94,10 +88,17 @@ setLocale(yupLocaleDe);
 const store = useAuthenticationStore();
 const dialog = ref(true);
 
+const initialValues = {
+  username: "",
+  name: "",
+  email: "",
+  password: "",
+  passwordConfirm: "",
+};
+
 const validationSchema = object({
   username: string().required().label("Username"),
-  firstName: string().required().label("Vorname"),
-  lastName: string().required().label("Nachname"),
+  name: string().required().label("Name"),
   email: string().required().email().label("E-Mail"),
   password: string().required().label("Passwort"),
   passwordConfirm: string()

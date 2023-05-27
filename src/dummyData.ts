@@ -2,7 +2,6 @@ import { AuthUser, Post, User } from "@/interfaces";
 
 async function getAvatar(avatar: string): Promise<File> {
   const response = await fetch(avatar);
-  console.log(response);
   const blob = await response.blob();
   return new File([blob], "avatar.jpg", { type: "image/jpeg" });
 }
@@ -11,8 +10,7 @@ export const userData: AuthUser = {
   id: 0,
   token:
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
-  firstName: "Admin",
-  lastName: "Nimda",
+  name: "Admin Nimda",
   role: "Admin",
   username: "ANimda",
   email: "admin@nimda.de",
@@ -37,8 +35,7 @@ export const userData: AuthUser = {
 export const users: User[] = [
   {
     id: 0,
-    firstName: "Admin",
-    lastName: "Nimda",
+    name: "Admin Nimda",
     role: "Admin",
     username: "ANimda",
     email: "admin@nimda.de",
@@ -59,8 +56,7 @@ export const users: User[] = [
   {
     id: 1,
     username: "JDoe",
-    firstName: "John",
-    lastName: "Doe",
+    name: "John Doe",
     email: "john.doe@example.com",
     role: "Admin",
     follower: [2, 0],
@@ -77,8 +73,7 @@ export const users: User[] = [
   {
     id: 2,
     username: "JaneDoe",
-    firstName: "Jane",
-    lastName: "Doe",
+    name: "Jane Doe",
     email: "jane.doe@example.com",
     role: "Moderator",
     follower: [1, 0],
@@ -99,8 +94,7 @@ export const allPosts: Post[] = [
   {
     id: 1,
     userId: 0,
-    firstName: "Admin",
-    lastName: "Nimda",
+    name: "Admin Nimda",
     username: "ANimda",
     avatar: await getAvatar(
       "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
@@ -115,8 +109,7 @@ export const allPosts: Post[] = [
   {
     id: 2,
     userId: 0,
-    firstName: "Admin",
-    lastName: "Nimda",
+    name: "Admin Nimda",
     username: "ANimda",
     avatar: await getAvatar(
       "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
@@ -131,8 +124,7 @@ export const allPosts: Post[] = [
   {
     id: 3,
     userId: 2,
-    firstName: "Jane",
-    lastName: "Doe",
+    name: "Admin Nimda",
     username: "JaneDoe",
     avatar: await getAvatar(
       "https://avatars0.githubusercontent.com/u/9064066?v=4&s=460"
@@ -147,8 +139,7 @@ export const allPosts: Post[] = [
   {
     id: 4,
     userId: 1,
-    firstName: "John",
-    lastName: "Doe",
+    name: "John Doe",
     username: "JDoe",
     avatar: await getAvatar(
       "https://cdn.pixabay.com/photo/2023/05/23/15/26/bengal-cat-8012976_960_720.jpg"
@@ -166,8 +157,7 @@ export const userPosts: Post[] = [
   {
     id: 1,
     userId: 0,
-    firstName: "Admin",
-    lastName: "Nimda",
+    name: "Admin Nimda",
     username: "ANimda",
     avatar: await getAvatar(
       "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
@@ -182,8 +172,8 @@ export const userPosts: Post[] = [
   {
     id: 2,
     userId: 0,
-    firstName: "Admin",
-    lastName: "Nimda",
+    name: "Admin Nimda",
+
     username: "ANimda",
     avatar: await getAvatar(
       "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
@@ -201,8 +191,7 @@ export const followedUsersPosts: Post[] = [
   {
     id: 3,
     userId: 2,
-    firstName: "Jane",
-    lastName: "Doe",
+    name: "Jane Doe",
     username: "JaneDoe",
     avatar: await getAvatar(
       "https://avatars0.githubusercontent.com/u/9064066?v=4&s=460"
@@ -217,8 +206,7 @@ export const followedUsersPosts: Post[] = [
   {
     id: 4,
     userId: 1,
-    firstName: "John",
-    lastName: "Doe",
+    name: "John Doe",
     username: "JDoe",
     avatar: await getAvatar(
       "https://cdn.pixabay.com/photo/2023/05/23/15/26/bengal-cat-8012976_960_720.jpg"

@@ -3,8 +3,7 @@ export interface User {
   avatar?: File;
   role: string;
   username: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   gender?: string;
   follower: number[];
@@ -22,8 +21,7 @@ export interface UserAdd {
   avatar?: File;
   role: string;
   username: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   gender?: string;
   password: string;
@@ -37,8 +35,7 @@ export interface UserEdit {
   avatar?: File;
   role: string;
   username: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   gender?: string;
   password: string;
@@ -56,8 +53,7 @@ export interface Post {
   id: number;
   userId: number;
   avatar?: File;
-  firstName: string;
-  lastName: string;
+  name: string;
   username: string;
   text?: string;
   upvotes: number;
@@ -81,8 +77,7 @@ export interface AuthUser extends User {
 
 export interface RegisterDto {
   username: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   password: string;
 }

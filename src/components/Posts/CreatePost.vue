@@ -125,7 +125,7 @@ const cardSubtitle = computed(() => {
 
 const cardTitle = computed(() => {
   return router.currentRoute.value.name == "home"
-    ? `${authStore.user?.firstName} ${authStore.user?.lastName}`
+    ? `${authStore.user?.name}`
     : "";
 });
 
