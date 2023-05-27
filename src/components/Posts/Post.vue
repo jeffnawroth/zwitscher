@@ -37,7 +37,11 @@
 
       <v-spacer></v-spacer>
       <v-btn
-        v-if="authStore.loggedIn && post.userId === authStore.user?.id"
+        v-if="
+          authStore.loggedIn &&
+          (post.userId === authStore.user?.id ||
+            authStore.user?.role == 'Admin')
+        "
         icon="mdi-delete-outline"
         @click.stop="deleteDialog = true"
       ></v-btn>

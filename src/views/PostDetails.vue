@@ -1,5 +1,5 @@
 <template>
-  <v-list>
+  <v-list rounded="lg">
     <v-list-item>
       <Post :post="store.post!"></Post>
     </v-list-item>
@@ -8,7 +8,13 @@
       <CreatePost></CreatePost>
     </v-list-item>
     <v-divider></v-divider>
-    <PostList :posts="store.post?.comments"></PostList>
+    <PostList
+      v-if="store.post?.comments?.length && store.post?.comments?.length > 0"
+      :posts="store.post?.comments"
+    ></PostList>
+    <v-list-item v-else class="d-flex justify-center"
+      >Der Beitrag hat noch keine Kommentare.</v-list-item
+    >
   </v-list>
 </template>
 

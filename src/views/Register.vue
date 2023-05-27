@@ -12,7 +12,7 @@
             <v-col>
               <BaseInputWithValidation
                 name="username"
-                label="Username"
+                label="Benutzername"
                 type="text"
               ></BaseInputWithValidation>
             </v-col>
@@ -97,7 +97,7 @@ const initialValues = {
 };
 
 const validationSchema = object({
-  username: string().required().label("Username"),
+  username: string().required().label("Benutzername"),
   name: string().required().label("Name"),
   email: string().required().email().label("E-Mail"),
   password: string().required().label("Passwort"),

@@ -1,12 +1,9 @@
 <template>
   <v-btn icon size="100">
-    <v-img>
-      <v-avatar
-        :size="100"
-        class="avatar"
-        :image="generateFileURL(file)"
-      ></v-avatar>
-    </v-img>
+    <v-avatar class="avatar" size="100">
+      <v-img v-if="file" cover :src="generateFileURL(file)"></v-img>
+      <v-icon v-else size="x-large">mdi-camera-plus-outline</v-icon>
+    </v-avatar>
   </v-btn>
 </template>
 

@@ -40,25 +40,19 @@
             <v-col>
               <BaseInputWithValidation
                 name="username"
-                label="Username"
+                label="Benutzername"
                 type="text"
                 :disabled="userLocked"
+                prefix="@"
+                @keydown.space.prevent
               ></BaseInputWithValidation>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
               <BaseInputWithValidation
-                name="firstName"
-                label="Vorname"
-                type="text"
-                :disabled="userLocked"
-              ></BaseInputWithValidation>
-            </v-col>
-            <v-col>
-              <BaseInputWithValidation
-                name="lastName"
-                label="Nachname"
+                name="name"
+                label="Name"
                 type="text"
                 :disabled="userLocked"
               ></BaseInputWithValidation>
@@ -139,19 +133,6 @@
           <v-spacer></v-spacer>
           <v-btn variant="tonal" @click="cancel(meta.dirty)">Abbrechen</v-btn>
 
-          <LockButton
-            v-if="!createUserRoute"
-            @click="lockDialog = true"
-          ></LockButton>
-
-          <v-btn
-            v-if="!createUserRoute"
-            prepend-icon="mdi-delete-outline"
-            variant="tonal"
-            color="red"
-            @click="deleteDialog = true"
-            >Löschen</v-btn
-          >
           <v-btn
             type="submit"
             :disabled="!meta.valid || !meta.dirty"
@@ -168,9 +149,6 @@
     @cancel="discardDialog = false"
     @discard="cancel"
   ></BaseDiscardDialog>
-
-  <DeleteUserDialog v-model="deleteDialog"></DeleteUserDialog>
-  <LockUserDialog v-model="lockDialog"></LockUserDialog>
 </template>
 
 <script setup lang="ts">
@@ -182,33 +160,21 @@ import BasePasswordInput from "./BaseComponents/BasePasswordInput.vue";
 import BaseCombobox from "./BaseComponents/BaseCombobox.vue";
 import BaseTextarea from "./BaseComponents/BaseTextarea.vue";
 import router from "@/router";
+import { useRoute } from "vue-router";
 import { Form, Field } from "vee-validate";
-import {
-  object,
-  string,
-  number,
-  ref as yupRef,
-  setLocale,
-  array,
-  date,
-  mixed,
-} from "yup";
+import { object, string, ref as yupRef, setLocale, array, mixed } from "yup";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
 import { useUsersStore } from "@/store/users";
 import { onMounted } from "vue";
 import { UserEdit } from "@/interfaces";
-import DeleteUserDialog from "./DeleteUserDialog.vue";
-import LockButton from "./LockButton.vue";
-import LockUserDialog from "./LockUserDialog.vue";
 import Avatar from "./Avatar.vue";
 
 setLocale(yupLocaleDe);
 
 const store = useUsersStore();
 const dialog = ref(true);
-const lockDialog = ref(false);
 const discardDialog = ref(false);
-const deleteDialog = ref(false);
+const route = useRoute();
 
 const fileInput = ref<HTMLInputElement | null>(null);
 const file = ref<File>();
@@ -217,8 +183,7 @@ const initialValues = ref({
   avatar: null,
   role: null,
   username: "",
-  firstName: "",
-  lastName: "",
+  name: "",
   email: "",
   gender: null,
   password: null,
@@ -257,28 +222,34 @@ const interests = [
 
 const validationSchema = object({
   role: string().required().label("Rolle"),
-  username: string().required().label("Username"),
-  firstName: string().required().label("Vorname"),
-  lastName: string().required().label("Nachname"),
+  username: string()
+    .required()
+    .label("Benutzername")
+    .matches(
+      /^[a-zA-Z0-9_-]+$/,
+      "Der Benutzername darf nur Buchstaben, Zahlen, Bindestriche und Unterstriche enthalten"
+    ),
+  name: string().required().label("Name"),
   gender: string().label("Geschlecht").nullable(),
   interests: array().label("Interessen").nullable(),
   email: string().required().email().label("E-Mail"),
   birthdate: string().nullable(),
   bio: string().nullable(),
-  password: string().nullable().label("Passwort"),
-  passwordConfirm: string()
-    .nullable()
-    .oneOf([yupRef("password")], "Passwörter stimmen nicht überein")
-    .label("Passwort bestätigen"),
+  password:
+    route.name === "create-user"
+      ? string().required().label("Passwort")
+      : string().nullable().label("Passwort"),
+  passwordConfirm:
+    route.name === "create-user"
+      ? string()
+          .required()
+          .oneOf([yupRef("password")], "Passwörter stimmen nicht überein")
+      : string().nullable().label("Passwort bestätigen"),
   avatar: mixed().nullable(),
 });
 
 const profileSettings = computed(() => {
   return router.currentRoute.value.name === "profile-settings";
-});
-
-const createUserRoute = computed(() => {
-  return router.currentRoute.value.name === "create-user";
 });
 
 const dateToday = computed(() => {
@@ -287,6 +258,12 @@ const dateToday = computed(() => {
 
 const userLocked = computed(() => {
   return store.user?.locked;
+});
+
+const cardTitle = computed(() => {
+  return router.currentRoute.value.name == "create-user"
+    ? "Nutzer erstellen"
+    : "Nutzer bearbeiten";
 });
 
 onMounted(() => {
@@ -346,10 +323,4 @@ function submit(values: any) {
   }
   close();
 }
-
-const cardTitle = computed(() => {
-  return router.currentRoute.value.name == "create-user"
-    ? "Nutzer erstellen"
-    : "Nutzer bearbeiten";
-});
 </script>
