@@ -25,6 +25,7 @@
       </v-toolbar>
     </template>
     <template #[`item.actions`]="{ item }">
+      <v-icon class="me-2" @click="openProfile(item.raw)"> mdi-account</v-icon>
       <v-icon class="me-2" @click="editUser(item.raw)"> mdi-pencil</v-icon>
       <v-icon class="me-2" @click="openLockDialog(item.raw)">
         {{ item.raw.locked ? "mdi-lock" : "mdi-lock-open" }}</v-icon
@@ -78,5 +79,12 @@ function openDeleteDialog(user?: User) {
 function openLockDialog(user: User) {
   store.user = user;
   lockDialog.value = true;
+}
+
+function openProfile(user: User) {
+  router.push({
+    name: "profile",
+    params: { username: user.username },
+  });
 }
 </script>
