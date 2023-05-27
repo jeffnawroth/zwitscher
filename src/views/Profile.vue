@@ -44,6 +44,20 @@
                 @click="$router.push({ name: 'profile-settings' })"
                 >Profil bearbeiten</v-btn
               >
+              <IconWithTooltip
+                :text="
+                  usersStore.user?.locked
+                    ? 'Nutzer entsperren'
+                    : 'Nutzer sperren'
+                "
+                :icon="usersStore.user?.locked ? 'mdi-lock' : 'mdi-lock-open'"
+                @click="lockDialog = true"
+              ></IconWithTooltip>
+              <IconWithTooltip
+                text="Nutzer löschen"
+                icon="mdi-delete"
+                @click="deleteDialog = true"
+              ></IconWithTooltip>
             </div>
           </div>
         </template>
@@ -57,7 +71,7 @@
             {{ `Geboren: ${birtdate}` }}
           </p>
           <p v-if="usersStore.user?.gender">
-            <v-icon size="small">mdi-gender-male</v-icon>
+            <v-icon size="small">{{ genderIcon }}</v-icon>
             {{ usersStore.user?.gender }}
           </p>
 
@@ -96,22 +110,37 @@
     </v-list-item>
     <v-divider></v-divider>
 
-    <PostList :posts="store.sortedUserPosts"></PostList>
+    <PostList
+      v-if="store.sortedUserPosts.length > 0"
+      :posts="store.sortedUserPosts"
+    ></PostList>
+    <v-list-item v-else class="d-flex justify-center">
+      Der Nutzer hat noch keine Beiträge veröffentlicht.
+    </v-list-item>
   </v-list>
   <router-view></router-view>
+
+  <DeleteUserDialog v-model="deleteDialog"></DeleteUserDialog>
+  <LockUserDialog v-model="lockDialog"></LockUserDialog>
 </template>
 
 <script setup lang="ts">
 import { usePostStore } from "@/store/posts";
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useUsersStore } from "@/store/users";
 import PostList from "@/components/Posts/PostList.vue";
 import { useAuthenticationStore } from "@/store/authentication";
 import { generateFileURL } from "@/helpers";
+import IconWithTooltip from "@/components/IconWithTooltip.vue";
+import LockUserDialog from "@/components/LockUserDialog.vue";
+import DeleteUserDialog from "@/components/DeleteUserDialog.vue";
 
 const store = usePostStore();
 const usersStore = useUsersStore();
 const authStore = useAuthenticationStore();
+
+const lockDialog = ref(false);
+const deleteDialog = ref(false);
 
 onMounted(() => {
   store.getPostsForUser(usersStore.user!.id);
@@ -151,6 +180,18 @@ const created = computed(() => {
     month: "long",
     year: "numeric",
   });
+});
+
+const genderIcon = computed(() => {
+  const gender = usersStore.user?.gender;
+
+  if (gender === "männlich") {
+    return "mdi-gender-male";
+  } else if (gender === "weiblich") {
+    return "mdi-gender-female";
+  } else {
+    return "mdi-gender-non-binary";
+  }
 });
 
 function setFollow() {

@@ -25,12 +25,26 @@
       </v-toolbar>
     </template>
     <template #[`item.actions`]="{ item }">
-      <v-icon class="me-2" @click="openProfile(item.raw)"> mdi-account</v-icon>
-      <v-icon class="me-2" @click="editUser(item.raw)"> mdi-pencil</v-icon>
-      <v-icon class="me-2" @click="openLockDialog(item.raw)">
-        {{ item.raw.locked ? "mdi-lock" : "mdi-lock-open" }}</v-icon
-      >
-      <v-icon @click="openDeleteDialog(item.raw)"> mdi-delete </v-icon>
+      <IconWithTooltip
+        text="Profil aufrufen"
+        icon="mdi-account"
+        @click="openProfile(item.raw)"
+      ></IconWithTooltip>
+      <IconWithTooltip
+        text="Nutzer bearbeiten"
+        icon="mdi-pencil"
+        @click="editUser(item.raw)"
+      ></IconWithTooltip>
+      <IconWithTooltip
+        :text="item.raw.locked ? 'Nutzer entsperren' : 'Nutzer sperren'"
+        :icon="item.raw.locked ? 'mdi-lock' : 'mdi-lock-open'"
+        @click="openLockDialog(item.raw)"
+      ></IconWithTooltip>
+      <IconWithTooltip
+        text="Nutzer löschen"
+        icon="mdi-delete"
+        @click="openDeleteDialog(item.raw)"
+      ></IconWithTooltip>
     </template>
   </v-data-table>
   <router-view></router-view>
@@ -46,6 +60,7 @@ import router from "@/router";
 import { User } from "@/interfaces";
 import DeleteUserDialog from "@/components/DeleteUserDialog.vue";
 import LockUserDialog from "@/components/LockUserDialog.vue";
+import IconWithTooltip from "@/components/IconWithTooltip.vue";
 
 const store = useUsersStore();
 const deleteDialog = ref(false);
@@ -54,7 +69,7 @@ const lockDialog = ref(false);
 // const search = ref("");
 
 const headers = [
-  { title: "Username", key: "username" },
+  { title: "Benutzername", key: "username" },
   { title: "Name", key: "name" },
   { title: "E-Mail", key: "email" },
   { title: "Rolle", key: "role" },
