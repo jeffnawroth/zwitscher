@@ -3,7 +3,7 @@
     <v-col v-for="file in files" :key="file.name" :cols="imgCols">
       <!-- Image -->
       <v-card v-if="file.type === 'image/jpeg'">
-        <v-img cover aspect-ratio="1/1" :src="previewFile(file)">
+        <v-img cover aspect-ratio="1/1" :src="generateFileURL(file)">
           <v-toolbar color="rgba(0, 0, 0, 0)" theme="dark">
             <template v-if="removeFileBtn" #prepend>
               <v-btn
@@ -22,7 +22,7 @@
       <!-- Video -->
       <div v-else-if="file.type === 'video/mp4'" class="video-player">
         <video ref="videoPlayer" controls>
-          <source :src="previewFile(files[0])" type="video/mp4" />
+          <source :src="generateFileURL(files[0])" type="video/mp4" />
         </video>
         <v-btn
           v-if="removeFileBtn"
@@ -42,6 +42,7 @@
 
 <script setup lang="ts">
 import { PropType, computed } from "vue";
+import { generateFileURL } from "@/helpers";
 
 defineEmits<{
   (e: "remove-file", file: File): void;
@@ -58,10 +59,6 @@ const props = defineProps({
     type: Boolean,
   },
 });
-
-function previewFile(file: File) {
-  return URL.createObjectURL(file);
-}
 
 //Test
 const imgCols = computed(() => {

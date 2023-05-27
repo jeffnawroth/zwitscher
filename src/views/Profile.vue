@@ -7,7 +7,7 @@
             <v-avatar
               :size="175"
               class="avatar"
-              :image="usersStore.user?.avatar"
+              :image="generateFileURL(usersStore.user?.avatar)"
             ></v-avatar>
           </v-img>
         </template>
@@ -107,6 +107,7 @@ import { computed, onMounted } from "vue";
 import { useUsersStore } from "@/store/users";
 import PostList from "@/components/Posts/PostList.vue";
 import { useAuthenticationStore } from "@/store/authentication";
+import { generateFileURL } from "@/helpers";
 
 const store = usePostStore();
 const usersStore = useUsersStore();

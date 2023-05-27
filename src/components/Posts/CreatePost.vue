@@ -6,7 +6,7 @@
     @submit="submit"
   >
     <v-card
-      :prepend-avatar="authStore.user?.avatar"
+      :prepend-avatar="generateFileURL(authStore.user?.avatar)"
       :title="cardTitle"
       :subtitle="cardSubtitle"
     >
@@ -79,6 +79,7 @@ import router from "@/router";
 import { useUsersStore } from "@/store/users";
 import FileLayout from "./FileLayout.vue";
 import BaseTextarea from "../BaseComponents/BaseTextarea.vue";
+import { generateFileURL } from "@/helpers";
 
 setLocale(yupLocaleDe);
 

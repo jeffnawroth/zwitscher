@@ -9,27 +9,21 @@
     >
       <v-card width="500" :title="cardTitle">
         <v-row class="justify-center mb-2">
-          <v-menu open-on-hover>
-            <template #activator="{ props }">
-              <v-btn :disabled="userLocked" v-bind="props" icon size="100">
-                <Field v-slot="{ field }" name="avatar">
-                  <v-img>
-                    <v-avatar
-                      :size="100"
-                      class="avatar"
-                      :image="field.value"
-                    ></v-avatar>
-                  </v-img>
-                </Field>
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item>
-                <v-btn @click="fileInput?.click()">Profilbild ändern</v-btn>
-                <input ref="fileInput" hidden type="file" />
-              </v-list-item>
-            </v-list>
-          </v-menu>
+          <Field
+            v-slot="{ handleChange, handleBlur }"
+            v-model="file"
+            name="avatar"
+          >
+            <input
+              ref="fileInput"
+              hidden
+              type="file"
+              accept="image/*, video/*"
+              @change="handleChange($event), onFileChange($event)"
+              @blur="handleBlur"
+            />
+          </Field>
+          <Avatar :file="file" @click="fileInput?.click()"></Avatar>
         </v-row>
         <v-card-text>
           <v-row>
@@ -197,6 +191,7 @@ import {
   setLocale,
   array,
   date,
+  mixed,
 } from "yup";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
 import { useUsersStore } from "@/store/users";
@@ -205,6 +200,7 @@ import { UserEdit } from "@/interfaces";
 import DeleteUserDialog from "./DeleteUserDialog.vue";
 import LockButton from "./LockButton.vue";
 import LockUserDialog from "./LockUserDialog.vue";
+import Avatar from "./Avatar.vue";
 
 setLocale(yupLocaleDe);
 
@@ -215,6 +211,7 @@ const discardDialog = ref(false);
 const deleteDialog = ref(false);
 
 const fileInput = ref<HTMLInputElement | null>(null);
+const file = ref<File>();
 
 const initialValues = ref({
   avatar: null,
@@ -273,16 +270,8 @@ const validationSchema = object({
     .nullable()
     .oneOf([yupRef("password")], "Passwörter stimmen nicht überein")
     .label("Passwort bestätigen"),
-  avatar: string().nullable(),
+  avatar: mixed().nullable(),
 });
-
-function cancel(dirty?: boolean) {
-  if (dirty) {
-    discardDialog.value = true;
-  } else {
-    close();
-  }
-}
 
 const profileSettings = computed(() => {
   return router.currentRoute.value.name === "profile-settings";
@@ -309,6 +298,7 @@ onMounted(() => {
     const { gender, interests, birthdate, ...rest } = JSON.parse(
       JSON.stringify(store.user)
     );
+
     let initialValues = {
       ...rest,
       password: "",
@@ -316,6 +306,7 @@ onMounted(() => {
       gender,
       interests,
       birthdate,
+      avatar: store.user.avatar,
     };
 
     form.value?.resetForm({
@@ -323,6 +314,20 @@ onMounted(() => {
     });
   }
 });
+
+function cancel(dirty?: boolean) {
+  if (dirty) {
+    discardDialog.value = true;
+  } else {
+    close();
+  }
+}
+
+function onFileChange(e: any) {
+  var files = e.target.files || e.dataTransfer.files;
+  if (!files.length) return;
+  file.value = e.target.files[0];
+}
 
 function close() {
   profileSettings.value

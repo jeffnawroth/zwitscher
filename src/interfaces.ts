@@ -1,6 +1,6 @@
 export interface User {
   id: number;
-  avatar?: string;
+  avatar?: File;
   role: string;
   username: string;
   firstName: string;
@@ -19,7 +19,7 @@ export interface User {
 }
 
 export interface UserAdd {
-  avatar?: string;
+  avatar?: File;
   role: string;
   username: string;
   firstName: string;
@@ -34,7 +34,7 @@ export interface UserAdd {
 
 export interface UserEdit {
   id: number;
-  avatar?: string;
+  avatar?: File;
   role: string;
   username: string;
   firstName: string;
@@ -55,7 +55,7 @@ export interface UserEdit {
 export interface Post {
   id: number;
   userId: number;
-  avatar?: string;
+  avatar?: File;
   firstName: string;
   lastName: string;
   username: string;

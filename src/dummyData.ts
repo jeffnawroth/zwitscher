@@ -1,5 +1,12 @@
 import { AuthUser, Post, User } from "@/interfaces";
 
+async function getAvatar(avatar: string): Promise<File> {
+  const response = await fetch(avatar);
+  console.log(response);
+  const blob = await response.blob();
+  return new File([blob], "avatar.jpg", { type: "image/jpeg" });
+}
+
 export const userData: AuthUser = {
   id: 0,
   token:
@@ -10,8 +17,9 @@ export const userData: AuthUser = {
   username: "ANimda",
   email: "admin@nimda.de",
   password: "Admin1!",
-  avatar:
-    "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg",
+  avatar: await getAvatar(
+    "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
+  ),
   follower: [1, 2],
   following: [1, 2],
   liked: [],
@@ -34,8 +42,9 @@ export const users: User[] = [
     role: "Admin",
     username: "ANimda",
     email: "admin@nimda.de",
-    avatar:
-      "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg",
+    avatar: await getAvatar(
+      "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
+    ),
     follower: [1, 2],
     following: [1, 2],
     liked: [],
@@ -58,7 +67,9 @@ export const users: User[] = [
     following: [2, 0],
     liked: [],
     disliked: [],
-    avatar: "https://cdn.vuetifyjs.com/images/john.jpg",
+    avatar: await getAvatar(
+      "https://cdn.pixabay.com/photo/2023/05/23/15/26/bengal-cat-8012976_960_720.jpg"
+    ),
     bio: "Hallo das ist meine Bio.",
     createdAt: new Date(),
     locked: false,
@@ -74,7 +85,9 @@ export const users: User[] = [
     following: [1, 0],
     liked: [],
     disliked: [],
-    avatar: "https://avatars0.githubusercontent.com/u/9064066?v=4&s=460",
+    avatar: await getAvatar(
+      "https://avatars0.githubusercontent.com/u/9064066?v=4&s=460"
+    ),
     bio: "Hallo das ist meine Bio.",
     createdAt: new Date(),
     birthdate: new Date().toISOString().slice(0, 10),
@@ -89,8 +102,9 @@ export const allPosts: Post[] = [
     firstName: "Admin",
     lastName: "Nimda",
     username: "ANimda",
-    avatar:
-      "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg",
+    avatar: await getAvatar(
+      "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
+    ),
     upvotes: 20,
     downvotes: 5,
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
@@ -104,8 +118,9 @@ export const allPosts: Post[] = [
     firstName: "Admin",
     lastName: "Nimda",
     username: "ANimda",
-    avatar:
-      "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg",
+    avatar: await getAvatar(
+      "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
+    ),
     upvotes: 20,
     downvotes: 5,
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
@@ -119,7 +134,9 @@ export const allPosts: Post[] = [
     firstName: "Jane",
     lastName: "Doe",
     username: "JaneDoe",
-    avatar: "https://avatars0.githubusercontent.com/u/9064066?v=4&s=460",
+    avatar: await getAvatar(
+      "https://avatars0.githubusercontent.com/u/9064066?v=4&s=460"
+    ),
     upvotes: 15,
     downvotes: 10,
     text: "I'm planning a road trip across the US this summer. Any recommendations?",
@@ -133,7 +150,9 @@ export const allPosts: Post[] = [
     firstName: "John",
     lastName: "Doe",
     username: "JDoe",
-    avatar: "https://cdn.vuetifyjs.com/images/john.jpg",
+    avatar: await getAvatar(
+      "https://cdn.pixabay.com/photo/2023/05/23/15/26/bengal-cat-8012976_960_720.jpg"
+    ),
     upvotes: 20,
     downvotes: 5,
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
@@ -150,8 +169,9 @@ export const userPosts: Post[] = [
     firstName: "Admin",
     lastName: "Nimda",
     username: "ANimda",
-    avatar:
-      "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg",
+    avatar: await getAvatar(
+      "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
+    ),
     upvotes: 20,
     downvotes: 5,
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
@@ -165,8 +185,9 @@ export const userPosts: Post[] = [
     firstName: "Admin",
     lastName: "Nimda",
     username: "ANimda",
-    avatar:
-      "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg",
+    avatar: await getAvatar(
+      "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
+    ),
     upvotes: 20,
     downvotes: 5,
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
@@ -183,7 +204,9 @@ export const followedUsersPosts: Post[] = [
     firstName: "Jane",
     lastName: "Doe",
     username: "JaneDoe",
-    avatar: "https://avatars0.githubusercontent.com/u/9064066?v=4&s=460",
+    avatar: await getAvatar(
+      "https://avatars0.githubusercontent.com/u/9064066?v=4&s=460"
+    ),
     upvotes: 15,
     downvotes: 10,
     text: "I'm planning a road trip across the US this summer. Any recommendations?",
@@ -197,7 +220,9 @@ export const followedUsersPosts: Post[] = [
     firstName: "John",
     lastName: "Doe",
     username: "JDoe",
-    avatar: "https://cdn.vuetifyjs.com/images/john.jpg",
+    avatar: await getAvatar(
+      "https://cdn.pixabay.com/photo/2023/05/23/15/26/bengal-cat-8012976_960_720.jpg"
+    ),
     upvotes: 20,
     downvotes: 5,
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",

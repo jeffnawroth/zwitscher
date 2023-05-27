@@ -3,7 +3,10 @@
     <template #prepend>
       <v-btn icon variant="text" @click.stop="openProfile">
         <v-img>
-          <v-avatar class="avatar" :image="post?.avatar"></v-avatar>
+          <v-avatar
+            class="avatar"
+            :image="generateFileURL(post?.avatar)"
+          ></v-avatar>
         </v-img>
       </v-btn>
     </template>
@@ -57,6 +60,7 @@ import { usePostStore } from "@/store/posts";
 import { PropType, computed, ref } from "vue";
 import router from "@/router";
 import FileLayout from "./FileLayout.vue";
+import { generateFileURL } from "@/helpers";
 
 const emit = defineEmits<{
   (e: "set-upvotes", upvotes: number): void;
