@@ -78,14 +78,15 @@ import { ref } from "vue";
 import { useAuthenticationStore } from "@/store/authentication";
 import BaseInputWithValidation from "@/components/BaseComponents/BaseInputWithValidation.vue";
 import BasePasswordInput from "@/components/BaseComponents/BasePasswordInput.vue";
-import router from "@/router";
 import { Form } from "vee-validate";
 import { object, string, ref as yupRef, setLocale } from "yup";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
+import { useRouter } from "vue-router";
 
 setLocale(yupLocaleDe);
 
 const store = useAuthenticationStore();
+const router = useRouter();
 const dialog = ref(true);
 
 const initialValues = {

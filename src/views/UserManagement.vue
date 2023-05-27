@@ -19,7 +19,7 @@
           variant="solo"
           flat
         ></v-text-field> -->
-        <v-btn variant="tonal" @click="$router.push({ name: 'create-user' })"
+        <v-btn variant="tonal" @click="router.push({ name: 'create-user' })"
           >Nutzer erstellen</v-btn
         >
       </v-toolbar>
@@ -56,13 +56,15 @@
 import { ref } from "vue";
 import { useUsersStore } from "@/store/users";
 import { onMounted } from "vue";
-import router from "@/router";
 import { User } from "@/interfaces";
 import DeleteUserDialog from "@/components/DeleteUserDialog.vue";
 import LockUserDialog from "@/components/LockUserDialog.vue";
 import IconWithTooltip from "@/components/IconWithTooltip.vue";
+import { useRouter } from "vue-router";
 
 const store = useUsersStore();
+const router = useRouter();
+
 const deleteDialog = ref(false);
 const lockDialog = ref(false);
 

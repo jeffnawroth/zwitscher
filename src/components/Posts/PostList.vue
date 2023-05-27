@@ -15,7 +15,7 @@
 import { Post as IPost } from "@/interfaces";
 import { PropType } from "vue";
 import Post from "./Post.vue";
-import router from "@/router";
+import { useRouter } from "vue-router";
 import { usePostStore } from "@/store/posts";
 
 defineProps({
@@ -28,6 +28,7 @@ defineProps({
 });
 
 const store = usePostStore();
+const router = useRouter();
 
 function openPost(post: IPost) {
   store.post = post;

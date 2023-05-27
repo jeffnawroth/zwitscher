@@ -75,7 +75,7 @@ import { computed, ref } from "vue";
 import { mixed, object, setLocale, string } from "yup";
 import { Form, Field } from "vee-validate";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
-import router from "@/router";
+import { useRouter, useRoute } from "vue-router";
 import { useUsersStore } from "@/store/users";
 import FileLayout from "./FileLayout.vue";
 import BaseTextarea from "../BaseComponents/BaseTextarea.vue";
@@ -86,6 +86,8 @@ setLocale(yupLocaleDe);
 const authStore = useAuthenticationStore();
 const postsStore = usePostStore();
 const usersStore = useUsersStore();
+const router = useRouter();
+const route = useRoute();
 
 const fileInput = ref<HTMLInputElement | null>(null);
 
@@ -108,25 +110,21 @@ const validationSchema = object({
 });
 
 const placeholder = computed(() => {
-  return router.currentRoute.value.name == "home"
-    ? "Was gibt's neues?"
-    : "Antworten";
+  return route.name == "home" ? "Was gibt's neues?" : "Antworten";
 });
 
 const buttonText = computed(() => {
-  return router.currentRoute.value.name == "home" ? "Zwitschern" : "Antworten";
+  return route.name == "home" ? "Zwitschern" : "Antworten";
 });
 
 const cardSubtitle = computed(() => {
-  return router.currentRoute.value.name == "home"
+  return route.name == "home"
     ? `@${authStore.user?.username}`
     : `Antworten auf @${usersStore.user?.username}`;
 });
 
 const cardTitle = computed(() => {
-  return router.currentRoute.value.name == "home"
-    ? `${authStore.user?.name}`
-    : "";
+  return route.name == "home" ? `${authStore.user?.name}` : "";
 });
 
 function removeFile(file: File) {
@@ -141,7 +139,7 @@ function submit(values: any, { resetForm }: any) {
     files: values.file,
   };
 
-  router.currentRoute.value.name == "home"
+  route.name == "home"
     ? postsStore.createPost(post)
     : postsStore.addComment(post);
   resetForm();

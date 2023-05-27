@@ -41,7 +41,7 @@
                   authStore.user?.role === 'Admin'
                 "
                 variant="tonal"
-                @click="$router.push({ name: 'profile-settings' })"
+                @click="router.push({ name: 'profile-settings' })"
                 >Profil bearbeiten</v-btn
               >
               <IconWithTooltip
@@ -134,10 +134,12 @@ import { generateFileURL } from "@/helpers";
 import IconWithTooltip from "@/components/IconWithTooltip.vue";
 import LockUserDialog from "@/components/LockUserDialog.vue";
 import DeleteUserDialog from "@/components/DeleteUserDialog.vue";
+import { useRouter } from "vue-router";
 
 const store = usePostStore();
 const usersStore = useUsersStore();
 const authStore = useAuthenticationStore();
+const router = useRouter();
 
 const lockDialog = ref(false);
 const deleteDialog = ref(false);

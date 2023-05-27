@@ -12,7 +12,7 @@
     </template>
     <template #title>
       <span
-        :class="{ title: $router.currentRoute.value.name != 'profile' }"
+        :class="{ title: route.name != 'profile' }"
         @click.stop="openProfile"
         >{{ `${post.name}` }}</span
       >
@@ -62,7 +62,7 @@ import { useAuthenticationStore } from "@/store/authentication";
 import BaseDeleteDialog from "../BaseComponents/BaseDeleteDialog.vue";
 import { usePostStore } from "@/store/posts";
 import { PropType, computed, ref } from "vue";
-import router from "@/router";
+import { useRouter, useRoute } from "vue-router";
 import FileLayout from "./FileLayout.vue";
 import { generateFileURL } from "@/helpers";
 
@@ -80,6 +80,8 @@ const props = defineProps({
 
 const store = usePostStore();
 const authStore = useAuthenticationStore();
+const router = useRouter();
+const route = useRoute();
 const deleteDialog = ref(false);
 
 const thumbUp = computed(() => {

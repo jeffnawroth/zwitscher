@@ -159,8 +159,7 @@ import BaseDiscardDialog from "./BaseComponents/BaseDiscardDialog.vue";
 import BasePasswordInput from "./BaseComponents/BasePasswordInput.vue";
 import BaseCombobox from "./BaseComponents/BaseCombobox.vue";
 import BaseTextarea from "./BaseComponents/BaseTextarea.vue";
-import router from "@/router";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { Form, Field } from "vee-validate";
 import { object, string, ref as yupRef, setLocale, array, mixed } from "yup";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
@@ -175,6 +174,7 @@ const store = useUsersStore();
 const dialog = ref(true);
 const discardDialog = ref(false);
 const route = useRoute();
+const router = useRouter();
 
 const fileInput = ref<HTMLInputElement | null>(null);
 const file = ref<File>();
@@ -249,7 +249,7 @@ const validationSchema = object({
 });
 
 const profileSettings = computed(() => {
-  return router.currentRoute.value.name === "profile-settings";
+  return route.name === "profile-settings";
 });
 
 const dateToday = computed(() => {
@@ -261,16 +261,13 @@ const userLocked = computed(() => {
 });
 
 const cardTitle = computed(() => {
-  return router.currentRoute.value.name == "create-user"
-    ? "Nutzer erstellen"
-    : "Nutzer bearbeiten";
+  return route.name == "create-user" ? "Nutzer erstellen" : "Nutzer bearbeiten";
 });
 
 onMounted(() => {
   if (
     store.user &&
-    (router.currentRoute.value.name === "edit-user" ||
-      router.currentRoute.value.name === "profile-settings")
+    (route.name === "edit-user" || route.name === "profile-settings")
   ) {
     const { gender, interests, birthdate, ...rest } = JSON.parse(
       JSON.stringify(store.user)
@@ -316,7 +313,7 @@ function submit(values: any) {
   const { passwordConfirm, ...rest } = values;
   let updatedValues: UserEdit = { ...rest };
 
-  if (router.currentRoute.value.name == "create-user") {
+  if (route.name == "create-user") {
     store.createUser(updatedValues);
   } else {
     store.updateUser(updatedValues);

@@ -12,9 +12,10 @@
 <script lang="ts" setup>
 import { useUsersStore } from "@/store/users";
 import BaseDeleteDialog from "./BaseComponents/BaseDeleteDialog.vue";
-import router from "@/router";
+import { useRouter } from "vue-router";
 
 const store = useUsersStore();
+const router = useRouter();
 
 defineProps({
   modelValue: {
