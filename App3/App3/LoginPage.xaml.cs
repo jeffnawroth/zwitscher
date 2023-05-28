@@ -19,10 +19,12 @@ namespace App3
         {
             string username = usernameEntry.Text;
             string password = passwordEntry.Text;
-            if (LoginService.ValidateCredentials(username, password))
+
+            bool isLoginValid = await LoginService.ValidateCredentials(username, password);
+
+            if (isLoginValid)
             {
-                await DisplayAlert("Erfolgreich", "Login erfolgreich", "OK");
-                Application.Current.MainPage = new AppShell();
+                await Application.Current.MainPage.Navigation.PushAsync(new MainPage());
             }
             else
             {
