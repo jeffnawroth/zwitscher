@@ -86,7 +86,6 @@ setLocale(yupLocaleDe);
 const authStore = useAuthenticationStore();
 const postsStore = usePostStore();
 const usersStore = useUsersStore();
-const router = useRouter();
 const route = useRoute();
 
 const fileInput = ref<HTMLInputElement | null>(null);

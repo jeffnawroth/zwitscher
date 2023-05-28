@@ -5,93 +5,46 @@
         <template #prepend>
           <v-img>
             <v-avatar
-              :size="175"
+              size="75"
               class="avatar"
               :image="generateFileURL(usersStore.user?.avatar)"
             ></v-avatar>
           </v-img>
         </template>
-        <template #title>
-          <div class="d-flex mb-1">
-            <div>
-              {{ `${usersStore.user?.name}` }}
-              <p class="v-card-subtitle">
-                {{ `@${usersStore.user?.username}` }}
-              </p>
-            </div>
-            <v-spacer></v-spacer>
-            <div v-if="authStore.loggedIn">
-              <v-hover
-                v-if="$route.params.username !== authStore.user?.username"
-                v-slot="{ isHovering, props }"
-              >
-                <v-btn
-                  v-bind="props"
-                  :color="follow == 'Folge ich' && isHovering ? 'red' : ''"
-                  :variant="followButtonVariant"
-                  @click="setFollow"
-                  >{{
-                    follow == "Folge ich" && isHovering ? "Entfolgen" : follow
-                  }}</v-btn
-                >
-              </v-hover>
-              <v-btn
-                v-if="
-                  $route.params.username === authStore.user?.username ||
-                  authStore.user?.role === 'Admin'
-                "
-                variant="tonal"
-                @click="router.push({ name: 'profile-settings' })"
-                >Profil bearbeiten</v-btn
-              >
-              <IconWithTooltip
-                :text="
-                  usersStore.user?.locked
-                    ? 'Nutzer entsperren'
-                    : 'Nutzer sperren'
-                "
-                :icon="usersStore.user?.locked ? 'mdi-lock' : 'mdi-lock-open'"
-                @click="lockDialog = true"
-              ></IconWithTooltip>
-              <IconWithTooltip
-                text="Nutzer löschen"
-                icon="mdi-delete"
-                @click="deleteDialog = true"
-              ></IconWithTooltip>
-            </div>
+        <template #append>
+          <div v-if="authStore.loggedIn">
+            <IconWithTooltip
+              v-if="$route.params.username !== authStore.user?.username"
+              :text="following ? 'Entfolgen' : 'Folgen'"
+              :icon="following ? 'mdi-account-check' : 'mdi-account-plus'"
+              @click="setFollow"
+            ></IconWithTooltip>
+            <IconWithTooltip
+              text="Nutzer bearbeiten"
+              icon="mdi-pencil"
+              @click="router.push({ name: 'profile-settings' })"
+            ></IconWithTooltip>
+            <IconWithTooltip
+              :text="
+                usersStore.user?.locked ? 'Nutzer entsperren' : 'Nutzer sperren'
+              "
+              :icon="usersStore.user?.locked ? 'mdi-lock' : 'mdi-lock-open'"
+              @click="lockDialog = true"
+            ></IconWithTooltip>
+            <IconWithTooltip
+              text="Nutzer löschen"
+              icon="mdi-delete"
+              @click="deleteDialog = true"
+            ></IconWithTooltip>
           </div>
         </template>
-        <template #subtitle>
-          <p>
-            <v-icon size="small">mdi-calendar-range</v-icon>
-            {{ `Beigetreten: ${created}` }}
-          </p>
-          <p v-if="usersStore.user?.birthdate">
-            <v-icon size="small">mdi-cake</v-icon>
-            {{ `Geboren: ${birtdate}` }}
-          </p>
-          <p v-if="usersStore.user?.gender">
-            <v-icon size="small">{{ genderIcon }}</v-icon>
-            {{ usersStore.user?.gender }}
-          </p>
 
-          <p v-if="usersStore.user?.interests" class="mb-1">
-            <v-icon size="small">mdi-heart-outline</v-icon>
-            Interessen:
-            <span
-              v-for="(interest, index) in usersStore.user?.interests"
-              :key="interest"
-              >{{ interest
-              }}{{
-                usersStore.user?.interests &&
-                index != usersStore.user?.interests?.length - 1
-                  ? ", "
-                  : ""
-              }}
-            </span>
+        <template #title>
+          {{ `${usersStore.user?.name}` }}
+          <p class="v-card-subtitle">
+            {{ `@${usersStore.user?.username}` }}
           </p>
-
-          <p class="text-bold">
+          <p class="v-card-subtitle">
             <span class="font-weight-black">
               {{ `${usersStore.user?.follower.length}` }}
             </span>
@@ -104,7 +57,37 @@
           </p>
         </template>
         <template #text>
-          {{ usersStore.user?.bio }}
+          <v-chip-group selected-class="">
+            <v-chip size="x-small" prepend-icon="mdi-calendar-range">
+              {{ `Beigetreten ${created}` }}
+            </v-chip>
+            <v-chip
+              v-if="usersStore.user?.birthdate"
+              size="x-small"
+              prepend-icon="mdi-cake"
+            >
+              {{ `Geboren ${birtdate}` }}
+            </v-chip>
+            <v-chip
+              v-if="usersStore.user?.gender"
+              size="x-small"
+              :prepend-icon="genderIcon"
+            >
+              {{ usersStore.user?.gender }}
+            </v-chip>
+          </v-chip-group>
+
+          <v-chip-group selected-class="" variant="outlined">
+            <v-chip
+              v-for="interest in usersStore.user?.interests"
+              :key="interest"
+              size="x-small"
+            >
+              {{ interest }}
+            </v-chip>
+          </v-chip-group>
+
+          <span>{{ usersStore.user?.bio }}</span>
         </template>
       </v-card>
     </v-list-item>
@@ -148,16 +131,8 @@ onMounted(() => {
   store.getPostsForUser(usersStore.user!.id);
 });
 
-const follow = computed(() => {
-  return authStore.user?.following.includes(usersStore.user!.id)
-    ? "Folge ich"
-    : "Folgen";
-});
-
-const followButtonVariant = computed(() => {
-  return authStore.user?.following.includes(usersStore.user!.id)
-    ? "tonal"
-    : "outlined";
+const following = computed(() => {
+  return authStore.user?.following.includes(usersStore.user!.id);
 });
 
 const birtdate = computed(() => {
