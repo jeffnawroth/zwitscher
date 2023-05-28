@@ -3,7 +3,6 @@
     :headers="headers"
     :items="store.users"
     :sort-by="[{ key: 'username', order: 'asc' }]"
-    class="elevation-1"
   >
     <!-- :search="search" -->
     <template #top>
