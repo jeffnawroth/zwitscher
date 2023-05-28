@@ -33,7 +33,7 @@
           <v-window-item value="1">
             <v-card-text>
               <v-row>
-                <v-col>
+                <v-col cols="12">
                   <BaseInputWithValidation
                     name="name"
                     label="Name"
@@ -41,9 +41,7 @@
                     :disabled="userLocked"
                   ></BaseInputWithValidation>
                 </v-col>
-              </v-row>
-              <v-row>
-                <v-col>
+                <v-col cols="12">
                   <BaseInputWithValidation
                     name="birthdate"
                     label="Geburtsdatum"
@@ -53,9 +51,7 @@
                     :disabled="userLocked"
                   ></BaseInputWithValidation>
                 </v-col>
-              </v-row>
-              <v-row>
-                <v-col>
+                <v-col cols="12">
                   <BaseSelectWithValidation
                     name="gender"
                     label="Geschlecht"
@@ -63,9 +59,7 @@
                     :disabled="userLocked"
                   ></BaseSelectWithValidation>
                 </v-col>
-              </v-row>
-              <v-row>
-                <v-col>
+                <v-col cols="12">
                   <BaseCombobox
                     name="interests"
                     label="Interessen"
@@ -73,9 +67,7 @@
                     :disabled="userLocked"
                   ></BaseCombobox>
                 </v-col>
-              </v-row>
-              <v-row>
-                <v-col>
+                <v-col cols="12">
                   <BaseTextarea
                     label="Bio"
                     type="text"
@@ -90,7 +82,7 @@
           <v-window-item value="2">
             <v-card-text>
               <v-row>
-                <v-col>
+                <v-col cols="12">
                   <BaseSelectWithValidation
                     name="role"
                     label="Rolle"
@@ -98,9 +90,7 @@
                     :disabled="userLocked"
                   ></BaseSelectWithValidation>
                 </v-col>
-              </v-row>
-              <v-row>
-                <v-col>
+                <v-col cols="12">
                   <BaseInputWithValidation
                     name="username"
                     label="Benutzername"
@@ -110,10 +100,7 @@
                     @keydown.space.prevent
                   ></BaseInputWithValidation>
                 </v-col>
-              </v-row>
-
-              <v-row>
-                <v-col>
+                <v-col cols="12">
                   <BaseInputWithValidation
                     name="email"
                     label="E-Mail"
@@ -121,16 +108,14 @@
                     :disabled="userLocked"
                   ></BaseInputWithValidation>
                 </v-col>
-              </v-row>
-              <v-row>
-                <v-col>
+                <v-col cols="12" sm="6">
                   <BasePasswordInput
                     name="password"
                     label="Passwort"
                     :disabled="userLocked"
                   ></BasePasswordInput>
                 </v-col>
-                <v-col>
+                <v-col cols="12" sm="6">
                   <BasePasswordInput
                     name="passwordConfirm"
                     label="Passwort bestätigen"
