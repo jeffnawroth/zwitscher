@@ -27,17 +27,17 @@
     <template #[`item.actions`]="{ item }">
       <IconWithTooltip
         text="Profil aufrufen"
-        icon="mdi-account"
+        icon="mdi-open-in-app"
         @click="openProfile(item.raw)"
       ></IconWithTooltip>
       <IconWithTooltip
         text="Nutzer bearbeiten"
-        icon="mdi-pencil"
+        icon="mdi-account-edit"
         @click="editUser(item.raw)"
       ></IconWithTooltip>
       <IconWithTooltip
         :text="item.raw.locked ? 'Nutzer entsperren' : 'Nutzer sperren'"
-        :icon="item.raw.locked ? 'mdi-lock' : 'mdi-lock-open'"
+        :icon="item.raw.locked ? 'mdi-account-lock' : 'mdi-account-lock-open'"
         @click="openLockDialog(item.raw)"
       ></IconWithTooltip>
       <IconWithTooltip

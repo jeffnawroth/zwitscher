@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" max-width="500" persistent>
+  <v-dialog v-model="dialog" persistent width="500">
     <Form
       ref="form"
       v-slot="{ meta }"
@@ -7,7 +7,7 @@
       :initial-values="initialValues"
       @submit="submit"
     >
-      <v-card width="500" :title="cardTitle">
+      <v-card :title="cardTitle">
         <v-row class="justify-center mb-2">
           <Field
             v-slot="{ handleChange, handleBlur }"
@@ -25,110 +25,123 @@
           </Field>
           <Avatar :file="file" @click="fileInput?.click()"></Avatar>
         </v-row>
-        <v-card-text>
-          <v-row>
-            <v-col>
-              <BaseSelectWithValidation
-                name="role"
-                label="Rolle"
-                :items="roles"
-                :disabled="userLocked"
-              ></BaseSelectWithValidation>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <BaseInputWithValidation
-                name="username"
-                label="Benutzername"
-                type="text"
-                :disabled="userLocked"
-                prefix="@"
-                @keydown.space.prevent
-              ></BaseInputWithValidation>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <BaseInputWithValidation
-                name="name"
-                label="Name"
-                type="text"
-                :disabled="userLocked"
-              ></BaseInputWithValidation>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <BaseInputWithValidation
-                name="email"
-                label="E-Mail"
-                type="text"
-                :disabled="userLocked"
-              ></BaseInputWithValidation>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <BasePasswordInput
-                name="password"
-                label="Passwort"
-                :disabled="userLocked"
-              ></BasePasswordInput>
-            </v-col>
-            <v-col>
-              <BasePasswordInput
-                name="passwordConfirm"
-                label="Passwort bestätigen"
-                :disabled="userLocked"
-              ></BasePasswordInput>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <BaseInputWithValidation
-                name="birthdate"
-                label="Geburtsdatum"
-                type="date"
-                :clearable="false"
-                :max="dateToday"
-                :disabled="userLocked"
-              ></BaseInputWithValidation>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <BaseSelectWithValidation
-                name="gender"
-                label="Geschlecht"
-                :items="gender"
-                :disabled="userLocked"
-              ></BaseSelectWithValidation>
-            </v-col>
-          </v-row>
+        <v-tabs v-model="tab" fixed-tabs>
+          <v-tab value="1">Profil</v-tab>
+          <v-tab value="2">Account</v-tab>
+        </v-tabs>
+        <v-window v-model="tab">
+          <v-window-item value="1">
+            <v-card-text>
+              <v-row>
+                <v-col>
+                  <BaseInputWithValidation
+                    name="name"
+                    label="Name"
+                    type="text"
+                    :disabled="userLocked"
+                  ></BaseInputWithValidation>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <BaseInputWithValidation
+                    name="birthdate"
+                    label="Geburtsdatum"
+                    type="date"
+                    :clearable="false"
+                    :max="dateToday"
+                    :disabled="userLocked"
+                  ></BaseInputWithValidation>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <BaseSelectWithValidation
+                    name="gender"
+                    label="Geschlecht"
+                    :items="gender"
+                    :disabled="userLocked"
+                  ></BaseSelectWithValidation>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <BaseCombobox
+                    name="interests"
+                    label="Interessen"
+                    :items="interests"
+                    :disabled="userLocked"
+                  ></BaseCombobox>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <BaseTextarea
+                    label="Bio"
+                    type="text"
+                    name="bio"
+                    auto-grow
+                    :disabled="userLocked"
+                  ></BaseTextarea>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-window-item>
+          <v-window-item value="2">
+            <v-card-text>
+              <v-row>
+                <v-col>
+                  <BaseSelectWithValidation
+                    name="role"
+                    label="Rolle"
+                    :items="roles"
+                    :disabled="userLocked"
+                  ></BaseSelectWithValidation>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <BaseInputWithValidation
+                    name="username"
+                    label="Benutzername"
+                    type="text"
+                    :disabled="userLocked"
+                    prefix="@"
+                    @keydown.space.prevent
+                  ></BaseInputWithValidation>
+                </v-col>
+              </v-row>
 
-          <v-row>
-            <v-col>
-              <BaseTextarea
-                label="Bio"
-                type="text"
-                name="bio"
-                auto-grow
-                :disabled="userLocked"
-              ></BaseTextarea>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <BaseCombobox
-                name="interests"
-                label="Interessen"
-                :items="interests"
-                :disabled="userLocked"
-              ></BaseCombobox>
-            </v-col>
-          </v-row>
-        </v-card-text>
+              <v-row>
+                <v-col>
+                  <BaseInputWithValidation
+                    name="email"
+                    label="E-Mail"
+                    type="text"
+                    :disabled="userLocked"
+                  ></BaseInputWithValidation>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <BasePasswordInput
+                    name="password"
+                    label="Passwort"
+                    :disabled="userLocked"
+                  ></BasePasswordInput>
+                </v-col>
+                <v-col>
+                  <BasePasswordInput
+                    name="passwordConfirm"
+                    label="Passwort bestätigen"
+                    :disabled="userLocked"
+                  ></BasePasswordInput>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-window-item>
+        </v-window>
+
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn variant="tonal" @click="cancel(meta.dirty)">Abbrechen</v-btn>
@@ -178,6 +191,8 @@ const router = useRouter();
 
 const fileInput = ref<HTMLInputElement | null>(null);
 const file = ref<File>();
+
+const tab = ref(null);
 
 const initialValues = ref({
   avatar: null,

@@ -21,14 +21,18 @@
             ></IconWithTooltip>
             <IconWithTooltip
               text="Nutzer bearbeiten"
-              icon="mdi-pencil"
+              icon="mdi-account-edit"
               @click="router.push({ name: 'profile-settings' })"
             ></IconWithTooltip>
             <IconWithTooltip
               :text="
                 usersStore.user?.locked ? 'Nutzer entsperren' : 'Nutzer sperren'
               "
-              :icon="usersStore.user?.locked ? 'mdi-lock' : 'mdi-lock-open'"
+              :icon="
+                usersStore.user?.locked
+                  ? 'mdi-account-lock'
+                  : 'mdi-account-lock-open'
+              "
               @click="lockDialog = true"
             ></IconWithTooltip>
             <IconWithTooltip
