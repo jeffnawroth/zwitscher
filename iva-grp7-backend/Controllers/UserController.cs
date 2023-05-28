@@ -123,10 +123,7 @@ namespace iva_grp7_backend.Controllers;
                 // If the model state is invalid, returns a bad request response with the validation errors
                 return BadRequest(ModelState);
             }
-
-            // Sets the username property of the user to be a combination of their first and last name
-            user.UserName = user.FirstName + "." + user.LastName;
-
+            
             // Hashes the user's password using the PasswordHasher service injected into the class and sets the hash as the user's password hash
             user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, user.PasswordHash);
 
@@ -137,10 +134,7 @@ namespace iva_grp7_backend.Controllers;
                 // If a user with the same email already exists, returns a bad request response with an error message
                 return BadRequest(new AuthResult()
                 {
-                    Errors = new List<string>()
-                    {
-                        "Email already exists. Please log in."
-                    }
+                    
                 });
             }
 
@@ -204,8 +198,6 @@ namespace iva_grp7_backend.Controllers;
             // Update the user properties with the properties from the given user object.
             existingUser.Id = user.Id;
             existingUser.UserName = user.UserName;
-            existingUser.FirstName = user.FirstName;
-            existingUser.LastName = user.LastName;
             existingUser.Email = user.Email;
             existingUser.ConcurrencyStamp = user.ConcurrencyStamp;
             existingUser.NormalizedUserName = user.NormalizedUserName;
@@ -219,7 +211,17 @@ namespace iva_grp7_backend.Controllers;
             existingUser.LockoutEnd = user.LockoutEnd;
             existingUser.LockoutEnabled = user.LockoutEnabled;
             existingUser.AccessFailedCount = user.AccessFailedCount;
-
+            existingUser.Bio = user.Bio;
+            existingUser.Followers = user.Followers;
+            existingUser.Following = user.Following;
+            existingUser.Gender = user.Gender;
+            existingUser.Interests = user.Interests;
+            existingUser.Locked = user.Locked;
+            existingUser.Name = user.Name;
+            existingUser.BirthDate = user.BirthDate;
+            existingUser.LikedPosts = user.LikedPosts;
+            existingUser.DislikedPosts = user.DislikedPosts;
+            
             // Check if a user with the given email already exists.
             var userExist = await _userManager.FindByEmailAsync(existingUser.Email);
 
@@ -228,10 +230,7 @@ namespace iva_grp7_backend.Controllers;
             {
                 return BadRequest(new AuthResult()
                 {
-                    Errors = new List<string>()
-                    {
-                        "Nutzer mit der E-Mail Adresse existiert bereits. Bitte wählen Sie eine andere E-Mail."
-                    }
+                    
                 });
             }
 

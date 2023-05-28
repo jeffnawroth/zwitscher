@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using iva_grp7_backend.Models;
 
 namespace iva_grp7_backend.Controllers;
 

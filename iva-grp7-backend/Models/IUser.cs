@@ -25,21 +25,3 @@ public interface IUser
     public List<string> Interests { get; set; }
 
 }
-public enum Role
-{
-    [EnumMember(Value = "1")]
-    Admin = 1,
-
-    [EnumMember(Value = "2")]
-    Moderator = 2,
-
-    [EnumMember(Value = "3")]
-    User = 3
-}
-
-public enum Gender
-{
-    Male,
-    Female,
-    Diverse
-}

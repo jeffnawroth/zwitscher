@@ -1,10 +1,14 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace iva_grp7_backend.Models
 {
 	public class Post
 	{
-		public int Id { get; set; }
-		public int UserId { get; set; }
+		public string Id { get; set; }
+		public string UserId { get; set; }
+		[ForeignKey("UserId")]
+		public ApplicationUser User { get; set; }
 		public string Avatar { get; set; }
 		public string Firstname { get; set; }
 		public string LastName { get; set; }
@@ -15,6 +19,14 @@ namespace iva_grp7_backend.Models
 		public int DownVotes { get; set; }
 		public DateTime CreatedAt { get; set; }
 		public List<Post> Comments { get; set; }
+
+		// Fremdschlüssel für DislikedByUser
+		public string DislikedByUserId { get; set; }
+		public User DislikedByUser { get; set; }
+    
+		// Fremdschlüssel für LikedByUser
+		public string LikedByUserId { get; set; }
+		public User LikedByUser { get; set; }
     }
 }
 

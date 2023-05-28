@@ -62,24 +62,18 @@ public class AuthenticationController : ControllerBase
 
                 if (user_exist != null)
                 {
-                    return BadRequest(new AuthResult()
-                    {
-
-                        Errors = new List<string>()
-                    {
-                        "Email existiert bereits. Bitte einloggen."
-                    }
-                    });
+                    return BadRequest("Email existiert bereits. Bitte einloggen");
                 }
 
                 // Create a user
                 var new_user = new ApplicationUser()
                 {
-                    FirstName = requestDto.FirstName,
-                    LastName = requestDto.LastName,
                     Email = requestDto.Email,
                     UserName = requestDto.Username,
-                    Role = "User"
+                    Name = requestDto.Name,
+                    Role = Role.User,
+                    Gender = null,
+                    BirthDate = null
                 };
 
 
@@ -90,10 +84,7 @@ public class AuthenticationController : ControllerBase
                     // Get the errors from the result
                     var errors = is_created.Errors.Select(e => e.Description);
                     // Return a BadRequest response with the errors
-                    return BadRequest(new AuthResult()
-                    {
-                        Errors2 = errors
-                    });
+                    return BadRequest(errors);
                 }
 
 
@@ -101,24 +92,15 @@ public class AuthenticationController : ControllerBase
                 {
 
                     // Adding role
-                    if (!await roleManager.RoleExistsAsync("User"))
-                        await roleManager.CreateAsync(new IdentityRole("User"));
-                    if (await roleManager.RoleExistsAsync("User"))
-                        await _userManager.AddToRoleAsync(new_user, "User");
+                    if (!await roleManager.RoleExistsAsync(Role.User.ToString()))
+                        await roleManager.CreateAsync(new IdentityRole(Role.User.ToString()));
+                    if (await roleManager.RoleExistsAsync(Role.User.ToString()))
+                        await _userManager.AddToRoleAsync(new_user, Role.User.ToString());
                     // Generate the token
-                    var token = GenerateJwtToken(new_user);
-                    return Ok(new_user);
+                    var token = await GenerateJwtToken(new_user);
+                    return Ok(token);
                 }
-
-                return BadRequest(new AuthResult()
-                {
-
-                    Errors = new List<string>()
-                {
-                    "Server Fehler"
-                },
-
-                }); ;
+                
             }
 
             return BadRequest();
@@ -144,38 +126,27 @@ public class AuthenticationController : ControllerBase
             var existing_user = await _userManager.FindByEmailAsync(loginRequest.Email);
             if (existing_user == null)
                 // Return bad request with error message if user doesn't exist
-                return BadRequest(new AuthResult()
-                {
-                    Errors = new List<string>()
-                    {
-                        "Ungültiger Payload"
-                    },
-                });
+                return BadRequest("Benutzer existiert nicht.");
             var isCorrect = await _userManager.CheckPasswordAsync(existing_user, loginRequest.Password);
 
             if (!isCorrect)
 
                 // Return bad request with error message if email and password don't match
-                return BadRequest(new AuthResult()
-                {
-                    Errors = new List<string>()
-                    {
-                        "Email und Passwort stimmen nicht überein."
-                    },
-                });
+                return BadRequest("Email und Passwort stimmen nicht überein.");
             // Generate JWT token and return it
             var jwtToken = await GenerateJwtToken(existing_user);
 
             return Ok(jwtToken);
         }
         // Return bad request with error message if model state is invalid
-        return BadRequest(new AuthResult()
-        {
-            Errors = new List<string>()
-            {
-                "Ungültiger Payload"
-            },
-        });
+        // Get the error messages from the ModelState
+        var errorMessages = ModelState.Values
+            .SelectMany(v => v.Errors)
+            .Select(e => e.ErrorMessage)
+            .ToList();
+    
+        // Return a BadRequest response with the error messages
+        return BadRequest(new { Errors = errorMessages });
 
 
     }
@@ -198,28 +169,14 @@ public class AuthenticationController : ControllerBase
             if (result == null)
             {
                 // Return bad request if token is invalid
-                return BadRequest(new AuthResult()
-                {
-                    Errors = new List<string>()
-            {
-                "Ungültige Token"
-            },
-
-                });
+                return BadRequest("Token ist ungültig.");
             }
             // Return new token if request is valid
             return Ok(result);
 
         }
         // Return bad request if request is invalid
-        return BadRequest(new AuthResult()
-        {
-            Errors = new List<string>()
-            {
-                "Ungültige Parameter"
-            },
-
-        });
+        return BadRequest("Ungültige Parameter.");
     }
 
     private async Task<AuthResult> VerifyAndGenerateToken(TokenRequest tokenRequest)
@@ -250,12 +207,9 @@ public class AuthenticationController : ControllerBase
         // Check if the access token has expired
         if (expiryDate > DateTime.UtcNow)
         {
+            var errorObject = new { Error = "Token ist noch nicht abgelaufen." };
             return new AuthResult()
             {
-                Errors = new List<string>()
-                    {
-                        "Access Token noch nicht abgelaufen"
-                    }
             };
         }
 
@@ -269,10 +223,6 @@ public class AuthenticationController : ControllerBase
             // If the stored token is null, return an AuthResult with an error message
             return new AuthResult()
             {
-                Errors = new List<string>()
-                    {
-                        "Refresh Token ungültig"
-                    }
             };
 
 
@@ -283,10 +233,6 @@ public class AuthenticationController : ControllerBase
             // If the stored token has already been used, return an AuthResult with an error message
             return new AuthResult()
             {
-                Errors = new List<string>()
-                    {
-                        "Refresh Token ungültig"
-                    }
             };
         }
 
@@ -295,10 +241,6 @@ public class AuthenticationController : ControllerBase
             // If the stored token has been revoked, return an AuthResult with an error message
             return new AuthResult()
             {
-                Errors = new List<string>()
-                    {
-                        "Refresh Token ungültig"
-                    }
             };
         }
 
@@ -310,10 +252,6 @@ public class AuthenticationController : ControllerBase
         {
             return new AuthResult()
             {
-                Errors = new List<string>()
-                    {
-                        "Refresh Token ungültig"
-                    }
             };
         }
 
@@ -322,10 +260,6 @@ public class AuthenticationController : ControllerBase
         {
             return new AuthResult()
             {
-                Errors = new List<string>()
-                    {
-                        "Refreshed Token abgelaufen"
-                    }
             };
         }
 
@@ -381,7 +315,7 @@ public class AuthenticationController : ControllerBase
                 new Claim(JwtRegisteredClaimNames.Email, value: user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToUniversalTime().ToString()),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim(ClaimTypes.Role, user.Role.ToString())
 
             }),
 
@@ -415,14 +349,27 @@ public class AuthenticationController : ControllerBase
         await _context.SaveChangesAsync();
 
         // Return the authentication result with the user's information, the JWT token and refresh token
+        
         return new AuthResult()
         {
-            FirstName = user.FirstName,
-            LastName = user.LastName,
             Email = user.Email,
             RefreshToken = refreshToken.Token,
             Token = jwtToken,
-            Role = user.Role
+            Role = user.Role,
+            Username = user.UserName,
+            Name = user.Name,
+            Gender = user.Gender,
+            BirthDate = user.BirthDate,
+            Followers = user.Followers,
+            Following = user.Following,
+            LikedPosts = user.LikedPosts,
+            DislikedPosts = user.DislikedPosts,
+            CreatedAt = user.CreatedAt,
+            Bio = user.Bio,
+            Interests = user.Interests,
+            Locked = user.Locked,
+            Avatar = user.Avatar,
+            Id = user.Id
         };
 
     }
