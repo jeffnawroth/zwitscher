@@ -1,13 +1,13 @@
 <template>
   <v-dialog v-model="dialog" persistent width="500">
-    <Form
-      ref="form"
-      v-slot="{ meta }"
-      :validation-schema="validationSchema"
-      :initial-values="initialValues"
-      @submit="submit"
-    >
-      <v-card :title="cardTitle">
+    <v-card :title="cardTitle">
+      <Form
+        ref="form"
+        v-slot="{ meta }"
+        :validation-schema="validationSchema"
+        :initial-values="initialValues"
+        @submit="submit"
+      >
         <v-row class="justify-center mb-2">
           <Field
             v-slot="{ handleChange, handleBlur }"
@@ -26,11 +26,11 @@
           <Avatar :file="file" @click="fileInput?.click()"></Avatar>
         </v-row>
         <v-tabs v-model="tab" fixed-tabs>
-          <v-tab value="1">Profil</v-tab>
-          <v-tab value="2">Account</v-tab>
+          <v-tab :value="1">Profil</v-tab>
+          <v-tab :value="2">Konto</v-tab>
         </v-tabs>
         <v-window v-model="tab">
-          <v-window-item value="1">
+          <v-window-item :value="1">
             <v-card-text>
               <v-row>
                 <v-col cols="12">
@@ -79,7 +79,7 @@
               </v-row>
             </v-card-text>
           </v-window-item>
-          <v-window-item value="2">
+          <v-window-item :value="2">
             <v-card-text>
               <v-row>
                 <v-col cols="12">
@@ -128,6 +128,12 @@
         </v-window>
 
         <v-card-actions>
+          <v-btn
+            v-if="tab > 1"
+            variant="plain"
+            icon="mdi-chevron-left"
+            @click="tab--"
+          ></v-btn>
           <v-spacer></v-spacer>
           <v-btn variant="tonal" @click="cancel(meta.dirty)">Abbrechen</v-btn>
 
@@ -137,9 +143,15 @@
             variant="tonal"
             >Speichern</v-btn
           >
+          <v-btn
+            v-if="tab < 2"
+            variant="plain"
+            icon="mdi-chevron-right"
+            @click="tab++"
+          ></v-btn>
         </v-card-actions>
-      </v-card>
-    </Form>
+      </Form>
+    </v-card>
   </v-dialog>
 
   <BaseDiscardDialog
@@ -177,7 +189,7 @@ const router = useRouter();
 const fileInput = ref<HTMLInputElement | null>(null);
 const file = ref<File>();
 
-const tab = ref(null);
+const tab = ref(1);
 
 const initialValues = ref({
   avatar: null,
