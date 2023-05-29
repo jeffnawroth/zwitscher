@@ -7,60 +7,28 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-  // zgeuhrf
 
 namespace App3
 {
-    namespace App3
-    {
-        public partial class MainPage : ContentPage
-        {
-            public MainPage()
-            {
-                InitializeComponent();
-                
-            }
-
-            private void InitializeComponent()
-            {
-                throw new NotImplementedException();
-            }
-        }
-        // help push
-
-        public class MyMainPage
-        {
-            private MainPage mainPage;
-
-            public MyMainPage()
-            {
-                mainPage = new MainPage();
-            }
-
-        }
-    }
-}
-/*{
     public partial class MainPage : ContentPage
     {
         public MainPage()
         {
             InitializeComponent();
         }
-        private void OnLoginButtonClicked(object sender, EventArgs e)
+    }
+
+    public partial class App : Application
+    {
+        public App()
         {
-            string username = UsernameEntry.Text;
-            string password = PasswordEntry.Text;
-            if (username == "admin" && password == "password")
-            {
-                // open the app
-                DisplayAlert("Erfolgreich", "Anmeldung erfolgreich!", "OK");
-            }
-            else
-            {
-                DisplayAlert("Fehler", "Ungültige Anmeldeinformationen!", "OK");
-            }
+            InitializeComponent();
+
+            // Erstelle eine Instanz der AppShell
+            var appShell = new AppShell();
+
+            // Setze die Hauptnavigation auf die AppShell
+            MainPage = appShell;
         }
     }
 }
-*/

@@ -8,24 +8,24 @@ namespace App3
         {
             InitializeComponent();
 
-            FlyoutItem homeItem = new FlyoutItem
+            FlyoutItem searchItem = new FlyoutItem
             {
-                Title = "Home",
+                Title = "Suche",
                 FlyoutDisplayOptions = FlyoutDisplayOptions.AsSingleItem
             };
 
-            ShellSection homeSection = new ShellSection
+            ShellSection searchSection = new ShellSection
             {
-                Title = "Home",
-                Icon = "home_icon.png"
+                Title = "Suche",
+                Icon = "search_icon.png"
             };
-            ShellContent homeContent = new ShellContent
+            ShellContent searchContent = new ShellContent
             {
-                ContentTemplate = new DataTemplate(typeof(MainPage))
+                ContentTemplate = new DataTemplate(typeof(Search))
             };
-            homeSection.Items.Add(homeContent);
-            homeItem.Items.Add(homeSection);
-            Items.Add(homeItem);
+            searchSection.Items.Add(searchContent);
+            searchItem.Items.Add(searchSection);
+            Items.Add(searchItem);
         }
     }
 }
