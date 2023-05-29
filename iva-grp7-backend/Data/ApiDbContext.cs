@@ -15,8 +15,9 @@ namespace iva_grp7_backend
         // Represents a database table of refresh tokens.
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<Following> Following { get; set; }
         public DbSet<Interest> Interests { get; set; }
-        
+
         public ApiDbContext(DbContextOptions<ApiDbContext> options) : base(options)
         {
 
@@ -60,14 +61,15 @@ namespace iva_grp7_backend
                 .HasOne(f => f.User)
                 .WithMany(u => u.Following)
                 .HasForeignKey(f => f.FollowingUserId);
-            
+
             modelBuilder.Entity<Post>()
+                .ToTable("Posts")
                 .HasOne(f => f.User)
                 .WithMany(u => u.Posts)
                 .HasForeignKey(f => f.UserId);
             
         }
-        
+
 
     }
 }

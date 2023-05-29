@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace iva_grp7_backend.Models
 {
-	public class Post
-	{
+	public class Post: IdentityUser
+    {
 		public string Id { get; set; }
 		public string UserId { get; set; }
 		[ForeignKey("UserId")]

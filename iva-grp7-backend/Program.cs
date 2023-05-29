@@ -5,6 +5,7 @@ using iva_grp7_backend.Configurations;
 using iva_grp7_backend.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -107,6 +108,8 @@ builder.Services.AddSingleton(tokenValidationParameter);
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApiDbContext>();
+builder.Services.AddIdentityCore<Post>()
     .AddEntityFrameworkStores<ApiDbContext>();
 
 
