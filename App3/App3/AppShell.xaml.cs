@@ -26,6 +26,31 @@ namespace App3
             searchSection.Items.Add(searchContent);
             searchItem.Items.Add(searchSection);
             Items.Add(searchItem);
+
+            FlyoutItem profileItem = new FlyoutItem
+            {
+                Title = "Profil",
+                FlyoutDisplayOptions = FlyoutDisplayOptions.AsSingleItem
+            };
+
+            ShellSection profileSection = new ShellSection
+            {
+                Title = "Profil",
+                Icon = "profile_icon.png"
+            };
+
+            ShellContent profileContent = new ShellContent
+            {
+                ContentTemplate = new DataTemplate(typeof(Profil))
+            };
+
+            profileSection.Items.Add(profileContent);
+            profileItem.Items.Add(profileSection);
+            Items.Add(profileItem);
+
+            Routing.RegisterRoute("main", typeof(MainPage));
+            Shell.Current.GoToAsync("//main");
         }
+        
     }
 }

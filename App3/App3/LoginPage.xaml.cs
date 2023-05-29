@@ -23,7 +23,7 @@ namespace App3
 
             if (isLoginValid)
             {
-                await Application.Current.MainPage.Navigation.PushAsync(new MainPage());
+                await Navigation.PushAsync(new MainPage());
             }
             else
             {

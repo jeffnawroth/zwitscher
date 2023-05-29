@@ -6,5 +6,8 @@
     <FlyoutItem Title="Suche">
         <ShellContent ContentTemplate="{DataTemplate local:Search}" />
     </FlyoutItem>
+    <FlyoutItem Title="Profil">
+        <ShellContent ContentTemplate="{DataTemplate local:Profil}" />
+    </FlyoutItem>
 
 </Shell>

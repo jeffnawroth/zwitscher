@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="App3.Profil">
+    <StackLayout Spacing="20" VerticalOptions="CenterAndExpand">
+        <Label Text="John Doe" FontSize="24" HorizontalOptions="Center" />
+        <Label Text="john.doe@example.com" FontSize="16" HorizontalOptions="Center" />
+        <Image Source="profile_image.png" HeightRequest="200" WidthRequest="200"
+               Aspect="AspectFill" HorizontalOptions="Center" VerticalOptions="Center" />
+    </StackLayout>
+</ContentView>
