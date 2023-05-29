@@ -1,70 +1,72 @@
+import { Gender, Role } from "./typescript-axios-generated";
+
 export interface User {
-  id: number;
+  id: string;
   avatar?: File;
-  role: string;
+  role: Role;
   username: string;
   name: string;
   email: string;
-  gender?: string;
-  follower: number[];
-  following: number[];
+  gender?: Gender;
+  followers: string[];
+  following: string[];
   bio?: string;
-  liked: number[];
-  disliked: number[];
-  createdAt: Date;
-  birthdate?: string;
+  likedPosts?: string[];
+  dislikedPosts?: string[];
+  createdAt: string;
+  birthDate?: string;
   interests?: string[];
   locked: boolean;
 }
 
 export interface UserAdd {
   avatar?: File;
-  role: string;
+  role: Role;
   username: string;
   name: string;
   email: string;
-  gender?: string;
+  gender?: Gender;
   password: string;
   bio?: string;
-  birthdate?: string;
+  birthDate?: string;
   interests?: string[];
 }
 
 export interface UserEdit {
-  id: number;
+  id: string;
   avatar?: File;
-  role: string;
+  role: Role;
   username: string;
   name: string;
   email: string;
-  gender?: string;
+  gender?: Gender;
   password: string;
-  follower: number[];
-  following: number[];
+  followers: string[];
+  following: string[];
   bio?: string;
-  liked: number[];
-  disliked: number[];
-  birthdate?: string;
+  liked?: string[];
+  disliked?: string[];
+  birthDate?: string;
   interests?: string[];
-  createdAt: Date;
+  createdAt: string;
 }
 
 export interface Post {
-  id: number;
-  userId: number;
+  id: string;
+  userId: string;
   avatar?: File;
   name: string;
   username: string;
   text?: string;
   upvotes: number;
   downvotes: number;
-  date: Date;
+  date: string;
   comments?: Post[];
-  files: File[];
+  files?: File[];
 }
 
 export interface AddPost {
-  userId: number;
+  userId: string;
   text?: string;
   files?: File[];
 }
@@ -75,14 +77,14 @@ export interface AuthUser extends User {
   password: string;
 }
 
-export interface RegisterDto {
-  username: string;
-  name: string;
-  email: string;
-  password: string;
-}
+// export interface RegisterDto {
+//   username: string;
+//   name: string;
+//   email: string;
+//   password: string;
+// }
 
-export interface LoginDto {
-  email: string;
-  password: string;
-}
+// export interface LoginDto {
+//   email: string;
+//   password: string;
+// }

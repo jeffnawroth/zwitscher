@@ -5,11 +5,32 @@
     :validation-schema="validationSchema"
     @submit="submit"
   >
-    <v-card
-      :prepend-avatar="generateFileURL(authStore.user?.avatar)"
-      :title="cardTitle"
-      :subtitle="cardSubtitle"
-    >
+    <v-card :title="cardTitle">
+      <template #subtitle>
+        <div v-if="route.name !== 'home'">
+          Antworten auf
+          <router-link
+            class="text-decoration-none"
+            :to="{
+              name: 'profile',
+              params: { username: postsStore.post?.username },
+            }"
+            >{{ ` @${postsStore.post?.username}` }}</router-link
+          >
+        </div>
+        <div v-else>
+          {{ `@${authStore.user?.username}` }}
+        </div>
+      </template>
+      <template #prepend>
+        <v-avatar v-if="!authStore.user?.avatar" size="40" color="grey">
+          <v-icon icon="mdi-account-circle" size="40"></v-icon>
+        </v-avatar>
+        <v-img v-else>
+          <v-avatar :image="generateFileURL(authStore.user?.avatar)">
+          </v-avatar>
+        </v-img>
+      </template>
       <v-card-text>
         <BaseTextarea
           type="text"
@@ -75,7 +96,7 @@ import { computed, ref } from "vue";
 import { mixed, object, setLocale, string } from "yup";
 import { Form, Field } from "vee-validate";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
-import { useRouter, useRoute } from "vue-router";
+import { useRoute } from "vue-router";
 import { useUsersStore } from "@/store/users";
 import FileLayout from "./FileLayout.vue";
 import BaseTextarea from "../BaseComponents/BaseTextarea.vue";
@@ -119,7 +140,7 @@ const buttonText = computed(() => {
 const cardSubtitle = computed(() => {
   return route.name == "home"
     ? `@${authStore.user?.username}`
-    : `Antworten auf @${usersStore.user?.username}`;
+    : `Antworten auf @${postsStore.post?.username}`;
 });
 
 const cardTitle = computed(() => {

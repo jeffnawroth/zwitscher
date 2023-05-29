@@ -1,4 +1,5 @@
 import { AuthUser, Post, User } from "@/interfaces";
+import { Gender, Role } from "./typescript-axios-generated";
 
 async function getAvatar(avatar: string): Promise<File> {
   const response = await fetch(avatar);
@@ -6,26 +7,30 @@ async function getAvatar(avatar: string): Promise<File> {
   return new File([blob], "avatar.jpg", { type: "image/jpeg" });
 }
 
+const adminId = "b586e624-a6c4-44af-abd3-1180671f7691";
+const johnId = "b586e624-a6c4-44af-abd3-1180671f7692";
+const janeId = "b586e624-a6c4-44af-abd3-1180671f7693";
+
 export const userData: AuthUser = {
-  id: 0,
+  id: adminId,
   token:
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
   name: "Admin Nimda",
-  role: "Admin",
+  role: Role.NUMBER_0,
   username: "ANimda",
   email: "admin@nimda.de",
   password: "Admin1!",
   avatar: await getAvatar(
     "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
   ),
-  follower: [1, 2],
-  following: [1, 2],
-  liked: [],
-  disliked: [],
+  followers: [johnId, janeId],
+  following: [johnId, janeId],
+  likedPosts: [],
+  dislikedPosts: [],
   bio: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere ex illum ad? Tenetur dolore accusantium laborum amet doloribus dignissimos reiciendis eveniet, exercitationem dicta perferendis, ullam cupiditate. Quidem sed non nulla!",
-  createdAt: new Date(),
-  birthdate: new Date().toISOString().slice(0, 10),
-  gender: "männlich",
+  createdAt: new Date().toUTCString(),
+  birthDate: new Date().toISOString().slice(0, 10),
+  gender: Gender.NUMBER_0,
   interests: ["Schach", "Bücher", "Fußball"],
   refreshToken:
     "jfklasjfklajslfjklasjdfjasdkljfklsdjfkljsdlafjlkasdjfkljasdlfjasdklfjasdljflsdj",
@@ -34,66 +39,71 @@ export const userData: AuthUser = {
 
 export const users: User[] = [
   {
-    id: 0,
+    id: adminId,
     name: "Admin Nimda",
-    role: "Admin",
+    role: Role.NUMBER_0,
     username: "ANimda",
     email: "admin@nimda.de",
     avatar: await getAvatar(
       "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
     ),
-    follower: [1, 2],
-    following: [1, 2],
-    liked: [],
-    disliked: [],
+    followers: [johnId, janeId],
+    following: [johnId, janeId],
+    likedPosts: [],
+    dislikedPosts: [],
     bio: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere ex illum ad? Tenetur dolore accusantium laborum amet doloribus dignissimos reiciendis eveniet, exercitationem dicta perferendis, ullam cupiditate. Quidem sed non nulla!",
-    createdAt: new Date(),
-    gender: "männlich",
-    birthdate: new Date().toISOString().slice(0, 10),
+    createdAt: new Date().toUTCString(),
+    gender: Gender.NUMBER_0,
+    birthDate: new Date().toISOString().slice(0, 10),
     interests: ["Schach", "Bücher", "Fußball"],
     locked: false,
   },
   {
-    id: 1,
+    id: johnId,
     username: "JDoe",
     name: "John Doe",
     email: "john.doe@example.com",
-    role: "Admin",
-    follower: [2, 0],
-    following: [2, 0],
-    liked: [],
-    disliked: [],
+    role: Role.NUMBER_2,
+    followers: [janeId, adminId],
+    following: [janeId, adminId],
+    likedPosts: [],
+    dislikedPosts: [],
     avatar: await getAvatar(
       "https://cdn.pixabay.com/photo/2023/05/23/15/26/bengal-cat-8012976_960_720.jpg"
     ),
     bio: "Hallo das ist meine Bio.",
-    createdAt: new Date(),
+    createdAt: new Date().toUTCString(),
     locked: false,
   },
   {
-    id: 2,
+    id: janeId,
     username: "JaneDoe",
     name: "Jane Doe",
     email: "jane.doe@example.com",
-    role: "Moderator",
-    follower: [1, 0],
-    following: [1, 0],
-    liked: [],
-    disliked: [],
+    role: Role.NUMBER_2,
+    followers: [johnId, adminId],
+    following: [johnId, adminId],
+    likedPosts: [],
+    dislikedPosts: [],
     avatar: await getAvatar(
       "https://avatars0.githubusercontent.com/u/9064066?v=4&s=460"
     ),
     bio: "Hallo das ist meine Bio.",
-    createdAt: new Date(),
-    birthdate: new Date().toISOString().slice(0, 10),
+    createdAt: new Date().toUTCString(),
+    birthDate: new Date().toISOString().slice(0, 10),
     locked: false,
   },
 ];
 
+const adminPost1Id = "614c44f0-f28e-41d7-a4a2-3e6e79157d1b";
+const adminPost2Id = "614c44f0-f28e-41d7-a4a2-3e6e79157d2b";
+const janePost3Id = "614c44f0-f28e-41d7-a4a2-3e6e79157d3b";
+const johnPost4Id = "614c44f0-f28e-41d7-a4a2-3e6e79157d4b";
+
 export const allPosts: Post[] = [
   {
-    id: 1,
-    userId: 0,
+    id: adminPost1Id,
+    userId: adminId,
     name: "Admin Nimda",
     username: "ANimda",
     avatar: await getAvatar(
@@ -102,13 +112,13 @@ export const allPosts: Post[] = [
     upvotes: 20,
     downvotes: 5,
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
-    date: new Date("2023-05-1"),
+    date: new Date("2023-05-1").toUTCString(),
     comments: [],
     files: [],
   },
   {
-    id: 2,
-    userId: 0,
+    id: adminPost2Id,
+    userId: adminId,
     name: "Admin Nimda",
     username: "ANimda",
     avatar: await getAvatar(
@@ -117,14 +127,14 @@ export const allPosts: Post[] = [
     upvotes: 20,
     downvotes: 5,
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
-    date: new Date("2023-05-02T18:56:00"),
+    date: new Date("2023-05-02T18:56:00").toUTCString(),
     comments: [],
     files: [],
   },
   {
-    id: 3,
-    userId: 2,
-    name: "Admin Nimda",
+    id: janePost3Id,
+    userId: janeId,
+    name: "Jane Doe",
     username: "JaneDoe",
     avatar: await getAvatar(
       "https://avatars0.githubusercontent.com/u/9064066?v=4&s=460"
@@ -132,13 +142,13 @@ export const allPosts: Post[] = [
     upvotes: 15,
     downvotes: 10,
     text: "I'm planning a road trip across the US this summer. Any recommendations?",
-    date: new Date("2022-04-11"),
+    date: new Date("2022-04-11").toUTCString(),
     comments: [],
     files: [],
   },
   {
-    id: 4,
-    userId: 1,
+    id: johnPost4Id,
+    userId: johnId,
     name: "John Doe",
     username: "JDoe",
     avatar: await getAvatar(
@@ -147,7 +157,7 @@ export const allPosts: Post[] = [
     upvotes: 20,
     downvotes: 5,
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
-    date: new Date("2023-04-27"),
+    date: new Date("2023-04-27").toUTCString(),
     comments: [],
     files: [],
   },
@@ -155,8 +165,8 @@ export const allPosts: Post[] = [
 
 export const userPosts: Post[] = [
   {
-    id: 1,
-    userId: 0,
+    id: adminPost1Id,
+    userId: adminId,
     name: "Admin Nimda",
     username: "ANimda",
     avatar: await getAvatar(
@@ -165,13 +175,13 @@ export const userPosts: Post[] = [
     upvotes: 20,
     downvotes: 5,
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
-    date: new Date("2023-05-1"),
+    date: new Date("2023-05-1").toUTCString(),
     comments: [],
     files: [],
   },
   {
-    id: 2,
-    userId: 0,
+    id: adminPost2Id,
+    userId: adminId,
     name: "Admin Nimda",
 
     username: "ANimda",
@@ -181,7 +191,7 @@ export const userPosts: Post[] = [
     upvotes: 20,
     downvotes: 5,
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
-    date: new Date("2023-05-02T18:56:00"),
+    date: new Date("2023-05-02T18:56:00").toUTCString(),
     comments: [],
     files: [],
   },
@@ -189,8 +199,8 @@ export const userPosts: Post[] = [
 
 export const followedUsersPosts: Post[] = [
   {
-    id: 3,
-    userId: 2,
+    id: janePost3Id,
+    userId: janeId,
     name: "Jane Doe",
     username: "JaneDoe",
     avatar: await getAvatar(
@@ -199,13 +209,13 @@ export const followedUsersPosts: Post[] = [
     upvotes: 15,
     downvotes: 10,
     text: "I'm planning a road trip across the US this summer. Any recommendations?",
-    date: new Date("2022-04-11"),
+    date: new Date("2022-04-11").toUTCString(),
     comments: [],
     files: [],
   },
   {
-    id: 4,
-    userId: 1,
+    id: johnPost4Id,
+    userId: johnId,
     name: "John Doe",
     username: "JDoe",
     avatar: await getAvatar(
@@ -214,7 +224,7 @@ export const followedUsersPosts: Post[] = [
     upvotes: 20,
     downvotes: 5,
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
-    date: new Date("2023-04-27"),
+    date: new Date("2023-04-27").toUTCString(),
     comments: [],
     files: [],
   },

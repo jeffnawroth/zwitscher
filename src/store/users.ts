@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { users as dummyUsers } from "@/dummyData";
 import { User, UserAdd, UserEdit } from "@/interfaces";
+import { v4 as uuidv4 } from "uuid";
 
 export const useUsersStore = defineStore("users", () => {
   const users = ref<User[]>(dummyUsers);
@@ -10,12 +11,10 @@ export const useUsersStore = defineStore("users", () => {
   function createUser(user: UserAdd) {
     const addedUser: User = {
       ...user,
-      id: Math.random(),
-      follower: [],
+      id: uuidv4(),
+      followers: [],
       following: [],
-      liked: [],
-      disliked: [],
-      createdAt: new Date(),
+      createdAt: new Date().toUTCString(),
       locked: false,
     };
 
@@ -26,7 +25,7 @@ export const useUsersStore = defineStore("users", () => {
     users.value = dummyUsers;
   }
 
-  function getUser(id: number) {
+  function getUser(id: string) {
     const userFound = users.value.find((user) => user.id == id);
     user.value = userFound;
   }

@@ -14,6 +14,8 @@
                 name="username"
                 label="Benutzername"
                 type="text"
+                prefix="@"
+                @keydown.space.prevent
               ></BaseInputWithValidation>
             </v-col>
           </v-row>
@@ -109,7 +111,8 @@ const validationSchema = object({
 });
 
 function submit(values: any) {
-  store.register(values);
+  const { passwordConfirm, ...credentials } = values;
+  store.register(credentials);
   router.push({ name: "home" });
 }
 </script>

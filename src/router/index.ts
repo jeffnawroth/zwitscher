@@ -30,8 +30,8 @@ const routes = [
   },
   {
     path: "/:username",
-    name: "user",
-    component: () => import("@/views/User.vue"),
+    name: "profile",
+    component: () => import("@/views/Profile.vue"),
     beforeEnter(
       to: RouteLocationNormalized,
       from: RouteLocationNormalized,
@@ -40,40 +40,36 @@ const routes = [
       //TO-DO: Add api
       const store = useUsersStore();
       const authStore = useAuthenticationStore();
+
       to.params.username === authStore.user?.username
         ? (store.user = authStore.user)
         : store.getUserByUsername(to.params.username as string);
       next();
     },
+
     children: [
       {
-        name: "profile",
-        path: "profile",
-        component: () => import("@/views/Profile.vue"),
-        children: [
-          {
-            path: "settings",
-            name: "profile-settings",
-            component: () => import("@/components/UserDialog.vue"),
-          },
-        ],
-      },
-      {
-        path: "post/:postId",
-        name: "post",
-        component: () => import("@/views/PostDetails.vue"),
-        beforeEnter(
-          to: RouteLocationNormalized,
-          from: RouteLocationNormalized,
-          next: NavigationGuardNext
-        ) {
-          //TO-DO: Add api
-          const store = usePostStore();
-          store.getPost(Number(to.params.postId));
-          next();
-        },
+        path: "settings",
+        name: "profile-settings",
+        component: () => import("@/components/UserDialog.vue"),
       },
     ],
+  },
+
+  {
+    path: "/:username/post/:postId",
+    name: "post",
+    component: () => import("@/views/PostDetails.vue"),
+    beforeEnter(
+      to: RouteLocationNormalized,
+      from: RouteLocationNormalized,
+      next: NavigationGuardNext
+    ) {
+      //TO-DO: Add api
+      const store = usePostStore();
+      store.getPost(to.params.postId as string);
+      next();
+    },
   },
 
   {
@@ -117,7 +113,7 @@ const routes = [
         ) {
           //TO-DO: Add api
           const store = useUsersStore();
-          store.getUser(Number(to.params.id));
+          store.getUser(to.params.id as string);
           next();
         },
       },

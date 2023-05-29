@@ -23,6 +23,9 @@
         >
       </v-toolbar>
     </template>
+    <template #[`item.role`]="{ item }">
+      {{ getUserRole(item.raw.role) }}
+    </template>
     <template #[`item.actions`]="{ item }">
       <IconWithTooltip
         text="Profil aufrufen"
@@ -60,6 +63,7 @@ import DeleteUserDialog from "@/components/DeleteUserDialog.vue";
 import LockUserDialog from "@/components/LockUserDialog.vue";
 import IconWithTooltip from "@/components/IconWithTooltip.vue";
 import { useRouter } from "vue-router";
+import { Role } from "@/typescript-axios-generated/api";
 
 const store = useUsersStore();
 const router = useRouter();
@@ -80,6 +84,16 @@ const headers = [
 onMounted(() => {
   store.getUsers();
 });
+
+function getUserRole(role: Role) {
+  const roleMap = {
+    0: "Admin",
+    1: "Moderator",
+    2: "Nutzer",
+  };
+
+  return roleMap[role];
+}
 
 function editUser(user: User) {
   store.user = user;

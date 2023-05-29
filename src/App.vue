@@ -65,7 +65,7 @@ const items = [
   {
     title: "Profil",
     icon: "mdi-account",
-    route: `/${store.user?.username}/profile`,
+    route: "",
   },
   {
     title: "Benutzerverwaltung",
@@ -98,6 +98,8 @@ onMounted(() => {
   if (userString) {
     const userData = JSON.parse(userString);
     store.setUserData(userData);
+
+    items[1].route = `/${store.user?.username}`;
   }
   /*  axios.interceptors.response.use(
     (response) => response,

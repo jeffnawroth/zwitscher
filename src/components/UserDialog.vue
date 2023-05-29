@@ -43,7 +43,7 @@
                 </v-col>
                 <v-col cols="12">
                   <BaseInputWithValidation
-                    name="birthdate"
+                    name="birthDate"
                     label="Geburtsdatum"
                     type="date"
                     :clearable="false"
@@ -171,12 +171,21 @@ import BaseCombobox from "./BaseComponents/BaseCombobox.vue";
 import BaseTextarea from "./BaseComponents/BaseTextarea.vue";
 import { useRoute, useRouter } from "vue-router";
 import { Form, Field } from "vee-validate";
-import { object, string, ref as yupRef, setLocale, array, mixed } from "yup";
+import {
+  object,
+  string,
+  ref as yupRef,
+  setLocale,
+  array,
+  mixed,
+  number,
+} from "yup";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
 import { useUsersStore } from "@/store/users";
 import { onMounted } from "vue";
 import { UserEdit } from "@/interfaces";
 import Avatar from "./Avatar.vue";
+import { Gender, Role } from "@/typescript-axios-generated";
 
 setLocale(yupLocaleDe);
 
@@ -200,15 +209,23 @@ const initialValues = ref({
   gender: null,
   password: null,
   passwordConfirm: null,
-  birthdate: null,
+  birthDate: null,
   interests: null,
   bio: null,
 });
 
 const form = ref<InstanceType<typeof Form> | null>(null);
 
-const roles = ["Admin", "Moderator", "Nutzer"];
-const gender = ["männlich", "weiblich", "divers"];
+const roles = [
+  { text: "Admin", value: Role.NUMBER_0 },
+  { text: "Moderator", value: Role.NUMBER_1 },
+  { text: "Nutzer", value: Role.NUMBER_2 },
+];
+const gender = [
+  { text: "männlich", value: Gender.NUMBER_0 },
+  { text: "weiblich", value: Gender.NUMBER_1 },
+  { text: "divers", value: Gender.NUMBER_2 },
+];
 const interests = [
   "Sport",
   "Musik",
@@ -233,7 +250,7 @@ const interests = [
 ];
 
 const validationSchema = object({
-  role: string().required().label("Rolle"),
+  role: number().required().label("Rolle"),
   username: string()
     .required()
     .label("Benutzername")
@@ -242,10 +259,10 @@ const validationSchema = object({
       "Der Benutzername darf nur Buchstaben, Zahlen, Bindestriche und Unterstriche enthalten"
     ),
   name: string().required().label("Name"),
-  gender: string().label("Geschlecht").nullable(),
+  gender: number().label("Geschlecht").nullable(),
   interests: array().label("Interessen").nullable(),
   email: string().required().email().label("E-Mail"),
-  birthdate: string().nullable(),
+  birthDate: string().nullable(),
   bio: string().nullable(),
   password:
     route.name === "create-user"
@@ -281,7 +298,7 @@ onMounted(() => {
     store.user &&
     (route.name === "edit-user" || route.name === "profile-settings")
   ) {
-    const { gender, interests, birthdate, ...rest } = JSON.parse(
+    const { gender, interests, birthDate, ...rest } = JSON.parse(
       JSON.stringify(store.user)
     );
 
@@ -291,7 +308,7 @@ onMounted(() => {
       passwordConfirm: "",
       gender,
       interests,
-      birthdate,
+      birthDate,
       avatar: store.user.avatar,
     };
 

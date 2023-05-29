@@ -2,11 +2,11 @@
   <v-card :subtitle="`@${post.username} • ${formattedDate}`">
     <template #prepend>
       <v-btn icon variant="text" @click.stop="openProfile">
-        <v-img>
-          <v-avatar
-            class="avatar"
-            :image="generateFileURL(post?.avatar)"
-          ></v-avatar>
+        <v-avatar v-if="!post.avatar" size="40" color="grey">
+          <v-icon icon="mdi-account-circle" size="40"></v-icon>
+        </v-avatar>
+        <v-img v-else>
+          <v-avatar :image="generateFileURL(post?.avatar)"> </v-avatar>
         </v-img>
       </v-btn>
     </template>
@@ -40,7 +40,7 @@
         v-if="
           authStore.loggedIn &&
           (post.userId === authStore.user?.id ||
-            authStore.user?.role == 'Admin')
+            authStore.user?.role == Role.NUMBER_0)
         "
         icon="mdi-delete-outline"
         @click.stop="deleteDialog = true"
@@ -65,6 +65,7 @@ import { PropType, computed, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import FileLayout from "./FileLayout.vue";
 import { generateFileURL } from "@/helpers";
+import { Role } from "@/typescript-axios-generated";
 
 const emit = defineEmits<{
   (e: "set-upvotes", upvotes: number): void;
@@ -85,13 +86,13 @@ const route = useRoute();
 const deleteDialog = ref(false);
 
 const thumbUp = computed(() => {
-  return authStore.user?.liked.includes(props.post.id)
+  return authStore.user?.likedPosts?.includes(props.post.id)
     ? "mdi-thumb-up"
     : "mdi-thumb-up-outline";
 });
 
 const thumbDown = computed(() => {
-  return authStore.user?.disliked.includes(props.post.id)
+  return authStore.user?.dislikedPosts?.includes(props.post.id)
     ? "mdi-thumb-down"
     : "mdi-thumb-down-outline";
 });
@@ -105,17 +106,17 @@ function likePost() {
     router.push({ name: "login" });
     return;
   }
-  const likedIndex = authStore.user?.liked.indexOf(props.post.id);
-  const dislikedIndex = authStore.user?.disliked.indexOf(props.post.id);
+  const likedIndex = authStore.user?.likedPosts?.indexOf(props.post.id);
+  const dislikedIndex = authStore.user?.dislikedPosts?.indexOf(props.post.id);
 
   if (likedIndex != undefined && likedIndex !== -1) {
-    authStore.user?.liked.splice(likedIndex, 1);
+    authStore.user?.likedPosts?.splice(likedIndex, 1);
     emit("set-upvotes", props.post.upvotes - 1);
   } else {
-    authStore.user?.liked.push(props.post.id);
+    authStore.user?.likedPosts?.push(props.post.id);
     emit("set-upvotes", props.post.upvotes + 1);
     if (dislikedIndex != undefined && dislikedIndex !== -1) {
-      authStore.user?.disliked.splice(dislikedIndex, 1);
+      authStore.user?.dislikedPosts?.splice(dislikedIndex, 1);
       emit("set-downvotes", props.post.downvotes - 1);
     }
   }
@@ -126,17 +127,17 @@ function dislikePost() {
     router.push({ name: "login" });
     return;
   }
-  const likedIndex = authStore.user?.liked.indexOf(props.post.id);
-  const dislikedIndex = authStore.user?.disliked.indexOf(props.post.id);
+  const likedIndex = authStore.user?.likedPosts?.indexOf(props.post.id);
+  const dislikedIndex = authStore.user?.dislikedPosts?.indexOf(props.post.id);
 
   if (dislikedIndex != undefined && dislikedIndex !== -1) {
-    authStore.user?.disliked.splice(dislikedIndex, 1);
+    authStore.user?.dislikedPosts?.splice(dislikedIndex, 1);
     emit("set-downvotes", props.post.downvotes - 1);
   } else {
-    authStore.user?.disliked.push(props.post.id);
+    authStore.user?.dislikedPosts?.push(props.post.id);
     emit("set-downvotes", props.post.downvotes + 1);
     if (likedIndex != undefined && likedIndex !== -1) {
-      authStore.user?.liked.splice(likedIndex, 1);
+      authStore.user?.likedPosts?.splice(likedIndex, 1);
       emit("set-upvotes", props.post.upvotes - 1);
     }
   }
@@ -147,7 +148,7 @@ function deleteUserPost() {
 }
 
 const formattedDate = computed(() => {
-  const { date } = props.post;
+  const date = new Date(props.post.date);
   const now = new Date();
   const diff = now.getTime() - date.getTime();
   const diffInSeconds = Math.round(diff / 1000);

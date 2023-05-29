@@ -3,7 +3,10 @@
     <v-list-item>
       <v-card>
         <template #prepend>
-          <v-img>
+          <v-avatar v-if="!usersStore.user?.avatar" size="75" color="grey">
+            <v-icon icon="mdi-account-circle" size="75"></v-icon>
+          </v-avatar>
+          <v-img v-else>
             <v-avatar
               size="75"
               class="avatar"
@@ -50,7 +53,7 @@
           </p>
           <p class="v-card-subtitle">
             <span class="font-weight-black">
-              {{ `${usersStore.user?.follower.length}` }}
+              {{ `${usersStore.user?.followers.length}` }}
             </span>
             Abonnenten
 
@@ -66,18 +69,18 @@
               {{ `Beigetreten ${created}` }}
             </v-chip>
             <v-chip
-              v-if="usersStore.user?.birthdate"
+              v-if="usersStore.user?.birthDate"
               size="x-small"
               prepend-icon="mdi-cake"
             >
-              {{ `Geboren ${birtdate}` }}
+              {{ `Geboren ${birthDate}` }}
             </v-chip>
             <v-chip
-              v-if="usersStore.user?.gender"
+              v-if="usersStore.user?.gender != null"
               size="x-small"
               :prepend-icon="genderIcon"
             >
-              {{ usersStore.user?.gender }}
+              {{ genderText }}
             </v-chip>
           </v-chip-group>
 
@@ -121,7 +124,7 @@ import { generateFileURL } from "@/helpers";
 import IconWithTooltip from "@/components/IconWithTooltip.vue";
 import LockUserDialog from "@/components/LockUserDialog.vue";
 import DeleteUserDialog from "@/components/DeleteUserDialog.vue";
-import { useRouter } from "vue-router";
+import { onBeforeRouteUpdate, useRouter } from "vue-router";
 
 const store = usePostStore();
 const usersStore = useUsersStore();
@@ -131,6 +134,16 @@ const router = useRouter();
 const lockDialog = ref(false);
 const deleteDialog = ref(false);
 
+onBeforeRouteUpdate(async (to, from) => {
+  if (to.params.username !== from.params.username) {
+    if (to.params.username === authStore.user?.username)
+      usersStore.user = authStore.user;
+    else usersStore.getUserByUsername(to.params.username as string);
+
+    store.getPostsForUser(usersStore.user!.id);
+  }
+});
+
 onMounted(() => {
   store.getPostsForUser(usersStore.user!.id);
 });
@@ -139,14 +152,14 @@ const following = computed(() => {
   return authStore.user?.following.includes(usersStore.user!.id);
 });
 
-const birtdate = computed(() => {
-  const birthdate = usersStore.user?.birthdate;
+const birthDate = computed(() => {
+  const userBirthDate = usersStore.user?.birthDate;
 
-  if (!birthdate) {
+  if (!userBirthDate) {
     return undefined;
   }
 
-  const [year, month, day] = birthdate.split("-");
+  const [year, month, day] = userBirthDate.split("-");
   const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
   return date.toLocaleDateString("de-DE", {
     day: "numeric",
@@ -163,30 +176,40 @@ const created = computed(() => {
   });
 });
 
-const genderIcon = computed(() => {
-  const gender = usersStore.user?.gender;
+const genderText = computed(() => {
+  const genderMap = {
+    0: "männlich",
+    1: "weiblich",
+    2: "divers",
+  };
 
-  if (gender === "männlich") {
-    return "mdi-gender-male";
-  } else if (gender === "weiblich") {
-    return "mdi-gender-female";
-  } else {
-    return "mdi-gender-non-binary";
-  }
+  const genderValue = usersStore.user!.gender!;
+  return genderMap[genderValue];
+});
+
+const genderIcon = computed(() => {
+  const genderMap = {
+    0: "mdi-gender-male",
+    1: "mdi-gender-female",
+    2: "mdi-gender-non-binary",
+  };
+
+  const gender = usersStore.user!.gender!;
+  return genderMap[gender];
 });
 
 function setFollow() {
   const followingIndex = authStore.user?.following.indexOf(usersStore.user!.id);
-  const followerIndex = usersStore.user?.follower.indexOf(authStore.user!.id);
+  const followerIndex = usersStore.user?.followers.indexOf(authStore.user!.id);
 
   if (followingIndex != undefined && followingIndex !== -1) {
     authStore.user?.following.splice(followingIndex, 1);
     if (followerIndex != undefined && followerIndex !== -1) {
-      usersStore.user?.follower.splice(followerIndex, 1);
+      usersStore.user?.followers.splice(followerIndex, 1);
     }
   } else {
     authStore.user?.following.push(usersStore.user!.id);
-    usersStore.user?.follower.push(authStore.user!.id);
+    usersStore.user?.followers.push(authStore.user!.id);
   }
 }
 </script>

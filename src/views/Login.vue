@@ -3,6 +3,7 @@
     <Form
       v-slot="{ meta }"
       :validation-schema="validationSchema"
+      :initial-values="initialValues"
       @submit="submit"
     >
       <v-card title="Anmelden">
@@ -61,6 +62,11 @@ import yupLocaleDe from "@/plugins/yupLocaleDe";
 import { ref } from "vue";
 
 setLocale(yupLocaleDe);
+
+const initialValues = {
+  email: "jeff@zwitscher.de",
+  password: "Jeff123!",
+};
 
 const store = useAuthenticationStore();
 const dialog = ref(true);

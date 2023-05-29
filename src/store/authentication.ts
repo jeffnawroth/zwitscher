@@ -1,25 +1,33 @@
-import { AuthUser, LoginDto, RegisterDto } from "@/interfaces";
+import { AuthUser } from "@/interfaces";
 import router from "@/router";
 import axios from "axios";
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import { userData } from "@/dummyData";
+import {
+  AuthenticationApi,
+  UserLoginRequestDto,
+  UserRegistrationRequestDto,
+} from "@/typescript-axios-generated";
 
 export const useAuthenticationStore = defineStore("authentication", () => {
-  const user = ref<AuthUser | null>(userData);
+  const user = ref<AuthUser | null>();
 
-  async function register(credentials: RegisterDto) {
-    //TO-DO: Register User
-    //const userData = await ...
-
-    setUserData(userData);
+  async function register(credentials: UserRegistrationRequestDto) {
+    const user =
+      await AuthenticationApi.prototype.apiAuthenticationRegisterPost(
+        credentials
+      );
+    setUserData(user.data);
+    // setUserData(userData);
   }
 
-  async function login(credentials: LoginDto) {
-    //TO-DO: Log in user
-    //const userData = await ...
-
-    setUserData(userData);
+  async function login(credentials: UserLoginRequestDto) {
+    const user = await AuthenticationApi.prototype.apiAuthenticationLoginPost(
+      credentials
+    );
+    setUserData(user.data);
+    // setUserData(userData);
   }
 
   function logout() {

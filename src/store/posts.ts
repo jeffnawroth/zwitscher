@@ -8,6 +8,7 @@ import { AddPost, Post } from "@/interfaces";
 import { useAuthenticationStore } from "./authentication";
 import { computed } from "vue";
 import { sortByDateDescending } from "./helpers";
+import { v4 as uuidv4 } from "uuid";
 
 export const usePostStore = defineStore("post", () => {
   const allPosts = ref<Post[]>(posts);
@@ -19,15 +20,15 @@ export const usePostStore = defineStore("post", () => {
     allPosts.value = posts;
   }
 
-  function getPostsForUser(id: number) {
+  function getPostsForUser(id: string) {
     postsOfUser.value = posts.filter((post) => post.userId === id);
   }
 
-  function getFollowedUsersPosts(id: number) {
+  function getFollowedUsersPosts(id: string) {
     postsFollowedUsers.value = postsOfFollowedUsers;
   }
 
-  function getPost(id: number) {
+  function getPost(id: string) {
     post.value = allPosts.value.find((post) => post.id == id);
   }
 
@@ -36,13 +37,13 @@ export const usePostStore = defineStore("post", () => {
     //todo
 
     const post: Post = {
-      id: Math.random(),
+      id: uuidv4(),
       userId: postAdd.userId,
       upvotes: 0,
       downvotes: 0,
-      name: "Admin Nimda",
-      username: "ANimda",
-      date: new Date(),
+      name: authStore.user?.name!,
+      username: authStore.user?.username!,
+      date: new Date().toUTCString(),
       avatar: authStore.user?.avatar,
       comments: [],
       files: postAdd.files ?? [],
@@ -55,13 +56,13 @@ export const usePostStore = defineStore("post", () => {
     const authStore = useAuthenticationStore();
 
     const postAdd: Post = {
-      id: Math.random(),
+      id: uuidv4(),
       userId: comment.userId,
       upvotes: 0,
       downvotes: 0,
-      name: "Admin Nimda",
-      username: "ANimda",
-      date: new Date(),
+      name: authStore.user?.name!,
+      username: authStore.user?.username!,
+      date: new Date().toUTCString(),
       avatar: authStore.user?.avatar,
       comments: [],
       files: comment.files ?? [],
@@ -71,7 +72,7 @@ export const usePostStore = defineStore("post", () => {
     post.value?.comments?.push(postAdd);
   }
 
-  function deletePost(id: number) {
+  function deletePost(id: string) {
     const userPostIndex = postsOfUser.value.findIndex((post) => post.id === id);
     const allPostsIndex = allPosts.value.findIndex((post) => post.id === id);
     postsOfUser.value.splice(userPostIndex, 1);
