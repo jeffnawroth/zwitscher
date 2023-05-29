@@ -17,18 +17,4 @@ namespace App3
             InitializeComponent();
         }
     }
-
-    public partial class App : Application
-    {
-        public App()
-        {
-            InitializeComponent();
-
-            // Erstelle eine Instanz der AppShell
-            var appShell = new AppShell();
-
-            // Setze die Hauptnavigation auf die AppShell
-            MainPage = appShell;
-        }
-    }
 }

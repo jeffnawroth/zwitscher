@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Application xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="App3.App">
+             xmlns:local="clr-namespace:App3"
+             x:Class="App3.CustomApp">
     <Application.Resources>
-
+        <!-- Ressourcen können hier definiert werden -->
     </Application.Resources>
 </Application>

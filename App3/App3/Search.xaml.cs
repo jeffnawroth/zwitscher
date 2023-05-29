@@ -30,9 +30,9 @@ namespace App3
             };
         }
 
-        private void ResultsListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
-            {
-            string searchText = searchEntry.Text;
+        private void SearchEntry_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string searchText = e.NewTextValue;
             if (!string.IsNullOrWhiteSpace(searchText))
             {
                 searchResults = searchData
@@ -45,6 +45,11 @@ namespace App3
             {
                 resultsListView.ItemsSource = null;
             }
+        }
+
+        private void ResultsListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        {
+            // Hier wird der Code für die Auswahl eines Suchergebnisses ausgeführt
         }
     }
 }

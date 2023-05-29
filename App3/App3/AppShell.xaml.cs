@@ -49,7 +49,6 @@ namespace App3
             Items.Add(profileItem);
 
             Routing.RegisterRoute("main", typeof(MainPage));
-            Shell.Current.GoToAsync("//main");
         }
         
     }

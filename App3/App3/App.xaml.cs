@@ -4,25 +4,30 @@ using Xamarin.Forms.Xaml;
 
 namespace App3
 {
-    public partial class App : Application
+    public partial class CustomApp : Xamarin.Forms.Application
     {
-        public App()
+        public CustomApp()
         {
             InitializeComponent();
 
-            MainPage = new NavigationPage(new LoginPage());
+            var appShell = new AppShell();
+
+            MainPage = appShell;
         }
 
         protected override void OnStart()
         {
+            // Hier können Sie Initialisierungslogik für den Start der App hinzufügen
         }
 
         protected override void OnSleep()
         {
+            // Hier können Sie Logik für den Zustand "Schlafend" der App hinzufügen
         }
 
         protected override void OnResume()
         {
+            // Hier können Sie Logik für den Zustand "Wiederaufnahme" der App hinzufügen
         }
     }
 }
