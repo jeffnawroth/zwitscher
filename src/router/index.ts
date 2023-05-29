@@ -3,6 +3,7 @@ import { User } from "@/interfaces";
 import { useAuthenticationStore } from "@/store/authentication";
 import { usePostStore } from "@/store/posts";
 import { useUsersStore } from "@/store/users";
+import { Role } from "@/typescript-axios-generated";
 import {
   NavigationGuardNext,
   RouteLocationNormalized,
@@ -52,6 +53,27 @@ const routes = [
         path: "settings",
         name: "profile-settings",
         component: () => import("@/components/UserDialog.vue"),
+        meta: { requiresAuth: true },
+        beforeEnter(
+          to: RouteLocationNormalized,
+          from: RouteLocationNormalized,
+          next: NavigationGuardNext
+        ) {
+          const authStore = useAuthenticationStore();
+          if (authStore.loggedIn && authStore.user?.role == Role.NUMBER_0) {
+            // Zugriff für Admins und Moderatoren erlauben
+            next();
+          } else if (
+            authStore.loggedIn &&
+            to.params.username === authStore.user?.username
+          ) {
+            // Zugriff für Profilbesitzer erlauben
+            next();
+          } else {
+            // Zugriff verweigern und auf eine andere Route umleiten
+            next({ name: "profile", params: { username: to.params.username } }); // Ändern Sie "home" entsprechend der gewünschten Umleitungsroute
+          }
+        },
       },
     ],
   },
@@ -76,6 +98,8 @@ const routes = [
     path: "/dashboard",
     name: "dashboard",
     component: () => import("@/views/Dashboard.vue"),
+    meta: { requiresAuth: true },
+    beforeEnter: checkAccess,
   },
   {
     path: "/settings",
@@ -92,6 +116,9 @@ const routes = [
     path: "/users",
     name: "users",
     component: () => import("@/views/UserManagement.vue"),
+    meta: { requiresAuth: true },
+    beforeEnter: checkAccess,
+
     children: [
       {
         name: "create-user",
@@ -126,10 +153,28 @@ const router = createRouter({
   routes,
 });
 
-/* router.beforeEach((to, from, next) => {
-  const loggedIn = localStorage.getItem("");
-  if (to.name !== "login" && !loggedIn) next({ name: "login" });
+router.beforeEach((to, from, next) => {
+  const loggedIn = localStorage.getItem("user");
+  if (to.meta.requiresAuth && !loggedIn) next({ name: "login" });
   else next();
-}); */
+});
+
+function checkAccess(
+  to: RouteLocationNormalized,
+  from: RouteLocationNormalized,
+  next: NavigationGuardNext
+) {
+  const authStore = useAuthenticationStore();
+
+  if (
+    authStore.loggedIn &&
+    (authStore.user?.role == Role.NUMBER_0 ||
+      authStore.user?.role == Role.NUMBER_1)
+  ) {
+    next();
+  } else {
+    next({ name: "home" });
+  }
+}
 
 export default router;

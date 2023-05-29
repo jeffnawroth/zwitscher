@@ -23,26 +23,44 @@
               @click="setFollow"
             ></IconWithTooltip>
             <IconWithTooltip
-              text="Nutzer bearbeiten"
+              v-if="
+                $route.params.username == authStore.user?.username ||
+                authStore.user?.role == Role.NUMBER_0
+              "
+              :text="
+                $route.params.username == authStore.user?.username
+                  ? 'Profil bearbeiten'
+                  : 'Nutzer bearbeiten'
+              "
               icon="mdi-account-edit"
               @click="router.push({ name: 'profile-settings' })"
             ></IconWithTooltip>
-            <IconWithTooltip
-              :text="
-                usersStore.user?.locked ? 'Nutzer entsperren' : 'Nutzer sperren'
+            <template
+              v-if="
+                (authStore.user?.role == Role.NUMBER_0 ||
+                  authStore.user?.role == Role.NUMBER_1) &&
+                $route.params.username != authStore.user?.username
               "
-              :icon="
-                usersStore.user?.locked
-                  ? 'mdi-account-lock'
-                  : 'mdi-account-lock-open'
-              "
-              @click="lockDialog = true"
-            ></IconWithTooltip>
-            <IconWithTooltip
-              text="Nutzer löschen"
-              icon="mdi-delete"
-              @click="deleteDialog = true"
-            ></IconWithTooltip>
+            >
+              <IconWithTooltip
+                :text="
+                  usersStore.user?.locked
+                    ? 'Nutzer entsperren'
+                    : 'Nutzer sperren'
+                "
+                :icon="
+                  usersStore.user?.locked
+                    ? 'mdi-account-lock'
+                    : 'mdi-account-lock-open'
+                "
+                @click="lockDialog = true"
+              ></IconWithTooltip>
+              <IconWithTooltip
+                text="Nutzer löschen"
+                icon="mdi-delete"
+                @click="deleteDialog = true"
+              ></IconWithTooltip>
+            </template>
           </div>
         </template>
 
@@ -125,6 +143,7 @@ import IconWithTooltip from "@/components/IconWithTooltip.vue";
 import LockUserDialog from "@/components/LockUserDialog.vue";
 import DeleteUserDialog from "@/components/DeleteUserDialog.vue";
 import { onBeforeRouteUpdate, useRouter } from "vue-router";
+import { Role } from "@/typescript-axios-generated";
 
 const store = usePostStore();
 const usersStore = useUsersStore();

@@ -110,9 +110,9 @@ const validationSchema = object({
     .label("Passwörter"),
 });
 
-function submit(values: any) {
+async function submit(values: any) {
   const { passwordConfirm, ...credentials } = values;
-  store.register(credentials);
+  await store.register(credentials);
   router.push({ name: "home" });
 }
 </script>

@@ -63,7 +63,7 @@ export const users: User[] = [
     username: "JDoe",
     name: "John Doe",
     email: "john.doe@example.com",
-    role: Role.NUMBER_2,
+    role: Role.NUMBER_1,
     followers: [janeId, adminId],
     following: [janeId, adminId],
     likedPosts: [],

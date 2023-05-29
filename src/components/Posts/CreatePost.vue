@@ -7,7 +7,7 @@
   >
     <v-card :title="cardTitle">
       <template #subtitle>
-        <div v-if="route.name !== 'home'">
+        <div v-if="route.name == 'post'">
           Antworten auf
           <router-link
             class="text-decoration-none"

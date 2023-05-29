@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="store.users"
+    :items="filteredUsers"
     :sort-by="[{ key: 'username', order: 'asc' }]"
   >
     <!-- :search="search" -->
@@ -33,6 +33,7 @@
         @click="openProfile(item.raw)"
       ></IconWithTooltip>
       <IconWithTooltip
+        v-if="authStore.user?.role === Role.NUMBER_0"
         text="Nutzer bearbeiten"
         icon="mdi-account-edit"
         @click="editUser(item.raw)"
@@ -55,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useUsersStore } from "@/store/users";
 import { onMounted } from "vue";
 import { User } from "@/interfaces";
@@ -64,9 +65,11 @@ import LockUserDialog from "@/components/LockUserDialog.vue";
 import IconWithTooltip from "@/components/IconWithTooltip.vue";
 import { useRouter } from "vue-router";
 import { Role } from "@/typescript-axios-generated/api";
+import { useAuthenticationStore } from "@/store/authentication";
 
 const store = useUsersStore();
 const router = useRouter();
+const authStore = useAuthenticationStore();
 
 const deleteDialog = ref(false);
 const lockDialog = ref(false);
@@ -83,6 +86,15 @@ const headers = [
 
 onMounted(() => {
   store.getUsers();
+});
+
+const filteredUsers = computed(() => {
+  if (authStore.user?.role == Role.NUMBER_0) return store.users;
+  else if (authStore.user?.role == Role.NUMBER_1)
+    return store.users.filter(
+      (user) => user.role != Role.NUMBER_0 && user.role != Role.NUMBER_1
+    );
+  return store.users;
 });
 
 function getUserRole(role: Role) {

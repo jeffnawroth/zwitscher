@@ -23,12 +23,41 @@
     <v-navigation-drawer location="left" :rail="mdAndDown" permanent>
       <v-list nav>
         <template #append> </template>
-        <div v-for="item in items" :key="item.title">
+        <v-list-item
+          to="/"
+          title="Startseite"
+          prepend-icon="mdi-home"
+          rounded="lg"
+        >
+        </v-list-item>
+        <div v-if="store.loggedIn">
           <v-list-item
-            v-if="store.loggedIn || item.title === 'Startseite'"
-            :to="item.route"
-            :title="item.title"
-            :prepend-icon="item.icon"
+            :to="`/${store.user?.username}`"
+            title="Profil"
+            prepend-icon="mdi-account"
+            rounded="lg"
+          >
+          </v-list-item>
+          <div v-if="store.user?.role != Role.NUMBER_2">
+            <v-list-item
+              to="/users"
+              title="Benutzerverwaltung"
+              prepend-icon="mdi-account-group"
+              rounded="lg"
+            >
+            </v-list-item>
+            <v-list-item
+              to="/dashboard"
+              title="Dashboard"
+              prepend-icon="mdi-view-dashboard"
+              rounded="lg"
+            >
+            </v-list-item>
+          </div>
+          <v-list-item
+            to="/settings"
+            title="Einstellungen"
+            prepend-icon="mdi-cog"
             rounded="lg"
           >
           </v-list-item>
@@ -52,45 +81,13 @@ import { computed, onMounted, ref } from "vue";
 import { useAuthenticationStore } from "@/store/authentication";
 import axios from "axios";
 import { useDisplay } from "vuetify/lib/framework.mjs";
+import { Role } from "./typescript-axios-generated";
 
 const store = useAuthenticationStore();
 const { mdAndDown } = useDisplay();
 
-const items = [
-  {
-    title: "Startseite",
-    icon: "mdi-home",
-    route: "/",
-  },
-  {
-    title: "Profil",
-    icon: "mdi-account",
-    route: "",
-  },
-  {
-    title: "Benutzerverwaltung",
-    icon: "mdi-account-group",
-    route: "/users",
-  },
-  {
-    title: "Dashboard",
-    icon: "mdi-view-dashboard",
-    route: "/dashboard",
-  },
-
-  {
-    title: "Einstellungen",
-    icon: "mdi-cog",
-    route: "/settings",
-  },
-];
-
 const authIcon = computed(() => {
   return store.loggedIn ? "mdi-logout" : "mdi-login";
-});
-
-const showMenuIcon = computed(() => {
-  return mdAndDown.value;
 });
 
 onMounted(() => {
@@ -99,7 +96,7 @@ onMounted(() => {
     const userData = JSON.parse(userString);
     store.setUserData(userData);
 
-    items[1].route = `/${store.user?.username}`;
+    console.log(store.user?.username);
   }
   /*  axios.interceptors.response.use(
     (response) => response,

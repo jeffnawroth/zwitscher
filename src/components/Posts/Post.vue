@@ -40,7 +40,8 @@
         v-if="
           authStore.loggedIn &&
           (post.userId === authStore.user?.id ||
-            authStore.user?.role == Role.NUMBER_0)
+            authStore.user?.role == Role.NUMBER_0 ||
+            authStore.user?.role == Role.NUMBER_1)
         "
         icon="mdi-delete-outline"
         @click.stop="deleteDialog = true"

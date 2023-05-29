@@ -77,8 +77,8 @@ const validationSchema = object({
   password: string().required().label("Passwort"),
 });
 
-function submit(values: any) {
-  store.login(values);
+async function submit(values: any) {
+  await store.login(values);
   router.push({ name: "home" });
 }
 </script>

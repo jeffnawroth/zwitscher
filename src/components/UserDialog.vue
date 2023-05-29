@@ -30,7 +30,7 @@
           <v-tab :value="2">Konto</v-tab>
         </v-tabs>
         <v-window v-model="tab">
-          <v-window-item :value="1">
+          <v-window-item eager :value="1">
             <v-card-text>
               <v-row>
                 <v-col cols="12">
@@ -79,7 +79,7 @@
               </v-row>
             </v-card-text>
           </v-window-item>
-          <v-window-item :value="2">
+          <v-window-item eager :value="2">
             <v-card-text>
               <v-row>
                 <v-col cols="12">
