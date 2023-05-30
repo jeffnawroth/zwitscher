@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms;
+﻿using System;
+using Xamarin.Forms;
 
 namespace App3
 {
@@ -8,48 +9,82 @@ namespace App3
         {
             InitializeComponent();
 
-            FlyoutItem searchItem = new FlyoutItem
+            // FlyoutItem für die MainPage hinzufügen
+            FlyoutItem mainPageItem = new FlyoutItem
             {
-                Title = "Suche",
+                Title = "Startseite",
+                Icon = "home_icon.png",
+                Route = "main",
                 FlyoutDisplayOptions = FlyoutDisplayOptions.AsSingleItem
             };
 
-            ShellSection searchSection = new ShellSection
+            // MainPage zur Shell hinzufügen
+            mainPageItem.Items.Add(new ShellContent
+            {
+                ContentTemplate = new DataTemplate(typeof(MainPage))
+            });
+
+            // Hamburgermenü zur Shell hinzufügen
+            Items.Add(mainPageItem);
+
+            // Weitere FlyoutItems hinzufügen
+            FlyoutItem searchItem = new FlyoutItem
             {
                 Title = "Suche",
-                Icon = "search_icon.png"
+                Icon = "search_icon.png",
+                Route = "search"
             };
-            ShellContent searchContent = new ShellContent
+            searchItem.Items.Add(new ShellContent
             {
                 ContentTemplate = new DataTemplate(typeof(Search))
-            };
-            searchSection.Items.Add(searchContent);
-            searchItem.Items.Add(searchSection);
-            Items.Add(searchItem);
+            });
 
             FlyoutItem profileItem = new FlyoutItem
             {
                 Title = "Profil",
-                FlyoutDisplayOptions = FlyoutDisplayOptions.AsSingleItem
+                Icon = "profile_icon.png",
+                Route = "profile"
             };
-
-            ShellSection profileSection = new ShellSection
-            {
-                Title = "Profil",
-                Icon = "profile_icon.png"
-            };
-
-            ShellContent profileContent = new ShellContent
+            profileItem.Items.Add(new ShellContent
             {
                 ContentTemplate = new DataTemplate(typeof(Profil))
-            };
+            });
 
-            profileSection.Items.Add(profileContent);
-            profileItem.Items.Add(profileSection);
+            // FlyoutItems zur Shell hinzufügen
+            Items.Add(searchItem);
             Items.Add(profileItem);
 
+            FlyoutItem logoutItem = new FlyoutItem
+            {
+                Title = "Logout",
+                Icon = "logout_icon.png",
+                Route = "logout"
+            };
+            logoutItem.Items.Add(new ShellContent
+            {
+                ContentTemplate = new DataTemplate(typeof(Logout))
+            });
+
+            Items.Add(searchItem);
+            Items.Add(profileItem);
+            Items.Add(logoutItem);
+            // Routen registrieren
             Routing.RegisterRoute("main", typeof(MainPage));
+            Routing.RegisterRoute("search", typeof(Search));
+            Routing.RegisterRoute("profile", typeof(Profil));
+            Routing.RegisterRoute("logout", typeof(Logout));
+
+            ShellContent mainContent = new ShellContent
+            {
+                ContentTemplate = new DataTemplate(typeof(MainPage))
+            };
+            Items.Add(mainContent);
         }
-        
+
+        private void OnLogoutButtonClicked()
+        {
+            Application.Current.MainPage = new LoginPage();
+            Settings.IsLoggedIn = false;
+        }
     }
 }

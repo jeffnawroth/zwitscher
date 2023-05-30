@@ -15,27 +15,7 @@ namespace App3
         public MainPage()
         {
             InitializeComponent();
-
-            var logoutButton = new Button
-            {
-                Text = "Logout",
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.Center
-            };
-
-            logoutButton.Clicked += OnLogoutButtonClicked;
-
-            Content = new StackLayout
-            {
-                Children = { logoutButton }
-            };
-
-
         }
-        private async void OnLogoutButtonClicked(object sender, EventArgs e)
-        {
-            Application.Current.MainPage = new LoginPage();
-            Settings.IsLoggedIn = false;
-        }
-        }
+    }
 }
+       

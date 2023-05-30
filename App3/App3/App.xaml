@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:App3"
              x:Class="App3.CustomApp">
     <Application.Resources>
-        <!-- Ressourcen können hier definiert werden -->
+
     </Application.Resources>
 </Application>

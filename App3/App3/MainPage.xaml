@@ -1,11 +1,36 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:shell="clr-namespace:Xamarin.Forms;assembly=Xamarin.Forms.Core"
              x:Class="App3.MainPage">
-    <ContentPage.Content>
-        <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
-            <Label Text="Willkommen bei Zwitscher" FontSize="24" HorizontalOptions="Center" />
-            <Button Text="Logout" Clicked="OnLogoutButtonClicked" VerticalOptions="End"/>
-        </StackLayout>
-    </ContentPage.Content>
+
+    <shell:Shell.ItemTemplate>
+        <DataTemplate>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button Text="Hamburger" Command="{Binding FlyoutIsPresentedCommand}" />
+
+                <Label Text="Willkommen auf Zwitscher"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       FontSize="20"
+                       Grid.Row="0"
+                       Grid.Column="1" />
+
+                <!-- Hier kommt der restliche Inhalt der MainPage -->
+            </Grid>
+        </DataTemplate>
+    </shell:Shell.ItemTemplate>
+
+    <!-- Hier kommt der restliche Inhalt der MainPage -->
+
 </ContentPage>

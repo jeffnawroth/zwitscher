@@ -2,12 +2,23 @@
 <Shell xmlns="http://xamarin.com/schemas/2014/forms"
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:local="clr-namespace:App3"
-       x:Class="App3.AppShell">
+       x:Class="App3.AppShell"
+       FlyoutBehavior="Flyout">
     <FlyoutItem Title="Suche">
-        <ShellContent ContentTemplate="{DataTemplate local:Search}" />
+        <ShellContent Route="search" ContentTemplate="{DataTemplate local:Search}" />
     </FlyoutItem>
     <FlyoutItem Title="Profil">
-        <ShellContent ContentTemplate="{DataTemplate local:Profil}" />
+        <ShellContent Route="profile" ContentTemplate="{DataTemplate local:Profil}" />
+    </FlyoutItem>
+    <FlyoutItem Title="Logout">
+        <ShellContent Route="logout" ContentTemplate="{DataTemplate local:Logout}" />
     </FlyoutItem>
 
+    <Shell.Resources>
+        <ResourceDictionary>
+            <local:Search x:Key="Search" />
+            <local:Profil x:Key="Profil" />
+            <local:Logout x:Key="Logout" />
+        </ResourceDictionary>
+    </Shell.Resources>
 </Shell>
