@@ -16,6 +16,10 @@ namespace App3
         {
             InitializeComponent();
         }
+
+        private async void OnAppShellClicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync("//appShell");
+        }
     }
 }
-       

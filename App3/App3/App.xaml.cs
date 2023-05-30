@@ -12,7 +12,7 @@ namespace App3
 
             if (Settings.IsLoggedIn)
             {
-                MainPage = new MainPage();
+                MainPage = new AppShell();
             }
             else
             {

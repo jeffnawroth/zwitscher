@@ -74,17 +74,7 @@ namespace App3
             Routing.RegisterRoute("profile", typeof(Profil));
             Routing.RegisterRoute("logout", typeof(Logout));
 
-            ShellContent mainContent = new ShellContent
-            {
-                ContentTemplate = new DataTemplate(typeof(MainPage))
-            };
-            Items.Add(mainContent);
-        }
-
-        private void OnLogoutButtonClicked()
-        {
-            Application.Current.MainPage = new LoginPage();
-            Settings.IsLoggedIn = false;
+            
         }
     }
 }
