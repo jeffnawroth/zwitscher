@@ -16,9 +16,15 @@
 
     <Shell.Resources>
         <ResourceDictionary>
-            <local:Search x:Key="Search" />
-            <local:Profil x:Key="Profil" />
-            <local:Logout x:Key="Logout" />
+            <DataTemplate x:Key="SearchTemplate">
+                <local:Search />
+            </DataTemplate>
+            <DataTemplate x:Key="ProfilTemplate">
+                <local:Profil />
+            </DataTemplate> 
+            <DataTemplate x:Key="LogoutTemplate">
+                <local:Logout />
+            </DataTemplate>
         </ResourceDictionary>
     </Shell.Resources>
 </Shell>

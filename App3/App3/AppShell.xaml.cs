@@ -17,17 +17,12 @@ namespace App3
                 Route = "main",
                 FlyoutDisplayOptions = FlyoutDisplayOptions.AsSingleItem
             };
-
-            // MainPage zur Shell hinzufügen
             mainPageItem.Items.Add(new ShellContent
             {
                 ContentTemplate = new DataTemplate(typeof(MainPage))
             });
 
-            // Hamburgermenü zur Shell hinzufügen
-            Items.Add(mainPageItem);
-
-            // Weitere FlyoutItems hinzufügen
+            // FlyoutItem für die Suche hinzufügen
             FlyoutItem searchItem = new FlyoutItem
             {
                 Title = "Suche",
@@ -39,6 +34,7 @@ namespace App3
                 ContentTemplate = new DataTemplate(typeof(Search))
             });
 
+            // FlyoutItem für das Profil hinzufügen
             FlyoutItem profileItem = new FlyoutItem
             {
                 Title = "Profil",
@@ -50,10 +46,7 @@ namespace App3
                 ContentTemplate = new DataTemplate(typeof(Profil))
             });
 
-            // FlyoutItems zur Shell hinzufügen
-            Items.Add(searchItem);
-            Items.Add(profileItem);
-
+            // FlyoutItem für das Logout hinzufügen
             FlyoutItem logoutItem = new FlyoutItem
             {
                 Title = "Logout",
@@ -65,16 +58,17 @@ namespace App3
                 ContentTemplate = new DataTemplate(typeof(Logout))
             });
 
+            // FlyoutItems zur Shell hinzufügen
+            Items.Add(mainPageItem);
             Items.Add(searchItem);
             Items.Add(profileItem);
             Items.Add(logoutItem);
+
             // Routen registrieren
             Routing.RegisterRoute("main", typeof(MainPage));
             Routing.RegisterRoute("search", typeof(Search));
             Routing.RegisterRoute("profile", typeof(Profil));
             Routing.RegisterRoute("logout", typeof(Logout));
-
-            
         }
     }
 }
