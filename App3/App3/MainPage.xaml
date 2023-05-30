@@ -5,6 +5,7 @@
     <ContentPage.Content>
         <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
             <Label Text="Willkommen bei Zwitscher" FontSize="24" HorizontalOptions="Center" />
+            <Button Text="Logout" Clicked="OnLogoutButtonClicked" VerticalOptions="End"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

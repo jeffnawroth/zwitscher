@@ -10,9 +10,14 @@ namespace App3
         {
             InitializeComponent();
 
-            var appShell = new AppShell();
-
-            MainPage = appShell;
+            if (Settings.IsLoggedIn)
+            {
+                MainPage = new MainPage();
+            }
+            else
+            {
+                MainPage = new LoginPage();
+            }
         }
 
         protected override void OnStart()
