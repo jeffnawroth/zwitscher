@@ -5,24 +5,7 @@
     :sort-by="[{ key: 'username', order: 'asc' }]"
   >
     <!-- :search="search" -->
-    <template #top>
-      <v-toolbar flat floating>
-        <v-toolbar-title>Benutzerverwaltung</v-toolbar-title>
-        <!-- <v-text-field
-          v-model="search"
-          clearable
-          density="compact"
-          hide-details="auto"
-          placeholder="Suche"
-          prepend-inner-icon="mdi-magnify"
-          variant="solo"
-          flat
-        ></v-text-field> -->
-        <v-btn variant="tonal" @click="router.push({ name: 'create-user' })"
-          >Nutzer erstellen</v-btn
-        >
-      </v-toolbar>
-    </template>
+
     <template #[`item.role`]="{ item }">
       {{ getUserRole(item.raw.role) }}
     </template>

@@ -22,7 +22,6 @@
 
     <v-navigation-drawer location="left" :rail="mdAndDown" permanent>
       <v-list nav>
-        <template #append> </template>
         <v-list-item
           to="/"
           title="Startseite"
@@ -69,6 +68,17 @@
     <v-main>
       <v-container fluid style="max-width: 980px">
         <v-card>
+          <v-toolbar density="compact" color="white">
+            <v-toolbar-title class="font-weight-bold">{{
+              title
+            }}</v-toolbar-title>
+            <v-btn
+              v-if="route.name == 'users'"
+              variant="tonal"
+              @click="router.push({ name: 'create-user' })"
+              >Nutzer erstellen</v-btn
+            >
+          </v-toolbar>
           <router-view></router-view>
         </v-card>
       </v-container>
@@ -82,12 +92,27 @@ import { useAuthenticationStore } from "@/store/authentication";
 import axios from "axios";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import { Role } from "./typescript-axios-generated";
+import { useRoute, useRouter } from "vue-router";
 
 const store = useAuthenticationStore();
+const route = useRoute();
+const router = useRouter();
 const { mdAndDown } = useDisplay();
 
 const authIcon = computed(() => {
   return store.loggedIn ? "mdi-logout" : "mdi-login";
+});
+
+const title = computed(() => {
+  const routeNameMapper = {
+    home: "Startseite",
+    profile: "Profil",
+    users: "Benutzerverwaltung",
+    dashboard: "Dashboard",
+    settings: "Einstellungen",
+  };
+  //@ts-expect-error
+  return routeNameMapper[route.name];
 });
 
 onMounted(() => {

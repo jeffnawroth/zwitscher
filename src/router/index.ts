@@ -105,6 +105,7 @@ const routes = [
     path: "/settings",
     name: "settings",
     component: () => import("@/views/Settings.vue"),
+    meta: { requiresAuth: true },
   },
   /* {
     path: "/landing-page",
