@@ -5,6 +5,13 @@
     :sort-by="[{ key: 'username', order: 'asc' }]"
   >
     <!-- :search="search" -->
+    <template #top>
+      <PageToolbar title="Benutzerverwaltung">
+        <v-btn variant="tonal" @click="router.push({ name: 'create-user' })"
+          >Nutzer erstellen</v-btn
+        ></PageToolbar
+      >
+    </template>
 
     <template #[`item.role`]="{ item }">
       {{ getUserRole(item.raw.role) }}
@@ -49,6 +56,7 @@ import IconWithTooltip from "@/components/IconWithTooltip.vue";
 import { useRouter } from "vue-router";
 import { Role } from "@/typescript-axios-generated/api";
 import { useAuthenticationStore } from "@/store/authentication";
+import PageToolbar from "@/components/PageToolbar.vue";
 
 const store = useUsersStore();
 const router = useRouter();

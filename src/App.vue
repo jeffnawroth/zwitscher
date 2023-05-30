@@ -68,17 +68,6 @@
     <v-main>
       <v-container fluid style="max-width: 980px">
         <v-card>
-          <v-toolbar density="compact" color="white">
-            <v-toolbar-title class="font-weight-bold">{{
-              title
-            }}</v-toolbar-title>
-            <v-btn
-              v-if="route.name == 'users'"
-              variant="tonal"
-              @click="router.push({ name: 'create-user' })"
-              >Nutzer erstellen</v-btn
-            >
-          </v-toolbar>
           <router-view></router-view>
         </v-card>
       </v-container>

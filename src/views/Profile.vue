@@ -1,4 +1,5 @@
 <template>
+  <PageToolbar title="Profil"></PageToolbar>
   <v-list rounded="lg">
     <v-list-item>
       <v-card>
@@ -144,6 +145,7 @@ import LockUserDialog from "@/components/LockUserDialog.vue";
 import DeleteUserDialog from "@/components/DeleteUserDialog.vue";
 import { onBeforeRouteUpdate, useRouter } from "vue-router";
 import { Role } from "@/typescript-axios-generated";
+import PageToolbar from "@/components/PageToolbar.vue";
 
 const store = usePostStore();
 const usersStore = useUsersStore();

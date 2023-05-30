@@ -1,10 +1,11 @@
 <template>
+  <PageToolbar title="Einstellungen"></PageToolbar>
   <v-list>
+    <v-list-item @click="changeEmailDialog = true">E-Mail ändern</v-list-item>
+    <v-divider></v-divider>
     <v-list-item @click="changePasswordDialog = true"
       >Passwort ändern</v-list-item
     >
-    <v-divider></v-divider>
-    <v-list-item @click="changeEmailDialog = true">E-Mail ändern</v-list-item>
     <v-divider></v-divider>
     <v-list-item @click="deleteAccountDialog = true">Konto löschen</v-list-item>
   </v-list>
@@ -26,6 +27,7 @@ import EmailDialog from "@/components/Settings/EmailDialog.vue";
 import BaseDeleteDialog from "@/components/BaseComponents/BaseDeleteDialog.vue";
 import { useUsersStore } from "@/store/users";
 import { useAuthenticationStore } from "@/store/authentication";
+import PageToolbar from "@/components/PageToolbar.vue";
 
 const changePasswordDialog = ref(false);
 const changeEmailDialog = ref(false);
