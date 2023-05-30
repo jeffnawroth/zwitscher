@@ -7,10 +7,10 @@
   >
     <v-card title="Passwort ändern">
       <Form
+        v-slot="{ meta }"
         :validation-schema="validationSchema"
         :initial-values="initialValues"
-        :on-submit="changePassword"
-        autocomplete="off"
+        @submit="changePassword"
       >
         <v-card-text>
           <v-row>
@@ -39,7 +39,12 @@
           <v-btn variant="tonal" @click="$emit('update:modelValue', false)"
             >Abbrechen</v-btn
           >
-          <v-btn variant="tonal" type="submit">Speichern</v-btn>
+          <v-btn
+            :disabled="!meta.valid || !meta.dirty"
+            variant="tonal"
+            type="submit"
+            >Speichern</v-btn
+          >
         </v-card-actions>
       </Form>
     </v-card>
@@ -47,13 +52,13 @@
 </template>
 
 <script setup lang="ts">
-import BasePasswordInput from "./BaseComponents/BasePasswordInput.vue";
+import BasePasswordInput from "../BaseComponents/BasePasswordInput.vue";
 import { object, ref, setLocale, string } from "yup";
 import { Form } from "vee-validate";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
 setLocale(yupLocaleDe);
 
-defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue"]);
 
 defineProps({
   modelValue: {
@@ -72,14 +77,16 @@ const validationSchema = object({
     .label("Neues Passwort")
     .notOneOf(
       [ref("currentPassword")],
-      "Altes und neues Passwört dürfen nicht übereinstimmen"
+      "Aktuelles und neues Passwort dürfen nicht übereinstimmen"
     ),
   newPasswordConfirm: string()
     .required()
+    .label("Neues Passwort bestätigen")
     .oneOf([ref("newPassword")], "Passwörter stimmen nicht überein"),
 });
 
 function changePassword(values: any) {
   console.log(values);
+  emit("update:modelValue", false);
 }
 </script>
