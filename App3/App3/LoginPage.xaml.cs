@@ -24,7 +24,7 @@ namespace App3
             if (isLoginValid)
             {
                 Settings.IsLoggedIn = true;
-                Application.Current.MainPage = new MainPage();
+                Application.Current.MainPage = new AppShell();
             }
             else
             {

@@ -5,7 +5,5 @@
              x:Class="App3.MainPage">
     <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
         <Label Text="Willkommen bei Zwitscher" FontSize="24" HorizontalTextAlignment="Center" Margin="0,0,0,16" />
-
-        <Button Text="AppShell" Clicked="OnAppShellClicked" />
     </StackLayout>
 </ContentPage>

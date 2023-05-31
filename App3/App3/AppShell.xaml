@@ -4,6 +4,9 @@
        xmlns:local="clr-namespace:App3"
        x:Class="App3.AppShell"
        FlyoutBehavior="Flyout">
+    <FlyoutItem Title="Startseite">
+        <ShellContent Route="main" ContentTemplate="{DataTemplate local:MainPage}" />
+    </FlyoutItem>
     <FlyoutItem Title="Suche">
         <ShellContent Route="search" ContentTemplate="{DataTemplate local:Search}" />
     </FlyoutItem>
@@ -13,17 +16,26 @@
     <FlyoutItem Title="Logout">
         <ShellContent Route="logout" ContentTemplate="{DataTemplate local:Logout}" />
     </FlyoutItem>
+    <FlyoutItem Title="Chat">
+        <ShellContent Route="chat" ContentTemplate="{DataTemplate local:Chat}" />
+    </FlyoutItem>
 
     <Shell.Resources>
         <ResourceDictionary>
+            <DataTemplate x:Key="MainPageTemplate">
+                <local:MainPage />
+            </DataTemplate>
             <DataTemplate x:Key="SearchTemplate">
                 <local:Search />
             </DataTemplate>
             <DataTemplate x:Key="ProfilTemplate">
                 <local:Profil />
-            </DataTemplate> 
+            </DataTemplate>
             <DataTemplate x:Key="LogoutTemplate">
                 <local:Logout />
+            </DataTemplate>
+            <DataTemplate x:Key="ChatTemplate">
+                <local:Chat />
             </DataTemplate>
         </ResourceDictionary>
     </Shell.Resources>
