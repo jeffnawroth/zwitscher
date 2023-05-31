@@ -26,9 +26,6 @@
     <Compile Update="Logout.xaml.cs">
       <DependentUpon>Logout.xaml</DependentUpon>
     </Compile>
-    <Compile Update="ProfilPage.xaml.cs">
-      <DependentUpon>ProfilPage.xaml</DependentUpon>
-    </Compile>
     <Compile Update="Search.xaml.cs">
       <DependentUpon>Search.xaml</DependentUpon>
     </Compile>
@@ -48,9 +45,6 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Profil.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="ProfilPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Search.xaml">
