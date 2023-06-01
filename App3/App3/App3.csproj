@@ -26,6 +26,9 @@
     <Compile Update="Logout.xaml.cs">
       <DependentUpon>Logout.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Profil.xaml.cs">
+      <DependentUpon>Profil.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Search.xaml.cs">
       <DependentUpon>Search.xaml</DependentUpon>
     </Compile>
