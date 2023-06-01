@@ -84,19 +84,19 @@
         </template>
         <template #text>
           <v-chip-group selected-class="">
-            <v-chip size="x-small" prepend-icon="mdi-calendar-range">
+            <v-chip size="small" prepend-icon="mdi-calendar-range">
               {{ `Beigetreten ${created}` }}
             </v-chip>
             <v-chip
               v-if="usersStore.user?.birthDate"
-              size="x-small"
+              size="small"
               prepend-icon="mdi-cake"
             >
               {{ `Geboren ${birthDate}` }}
             </v-chip>
             <v-chip
               v-if="usersStore.user?.gender != null"
-              size="x-small"
+              size="small"
               :prepend-icon="genderIcon"
             >
               {{ genderText }}
@@ -107,7 +107,7 @@
             <v-chip
               v-for="interest in usersStore.user?.interests"
               :key="interest"
-              size="x-small"
+              size="small"
             >
               {{ interest }}
             </v-chip>

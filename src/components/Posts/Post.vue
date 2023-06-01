@@ -114,6 +114,7 @@ function likePost() {
     authStore.user?.likedPosts?.splice(likedIndex, 1);
     emit("set-upvotes", props.post.upvotes - 1);
   } else {
+    if (!authStore.user?.likedPosts) authStore.user!.likedPosts = [];
     authStore.user?.likedPosts?.push(props.post.id);
     emit("set-upvotes", props.post.upvotes + 1);
     if (dislikedIndex != undefined && dislikedIndex !== -1) {
@@ -135,6 +136,7 @@ function dislikePost() {
     authStore.user?.dislikedPosts?.splice(dislikedIndex, 1);
     emit("set-downvotes", props.post.downvotes - 1);
   } else {
+    if (!authStore.user?.dislikedPosts) authStore.user!.dislikedPosts = [];
     authStore.user?.dislikedPosts?.push(props.post.id);
     emit("set-downvotes", props.post.downvotes + 1);
     if (likedIndex != undefined && likedIndex !== -1) {

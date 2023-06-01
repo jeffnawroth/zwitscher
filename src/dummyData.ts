@@ -112,7 +112,7 @@ export const allPosts: Post[] = [
     upvotes: 20,
     downvotes: 5,
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
-    date: new Date("2023-05-1").toUTCString(),
+    date: new Date("2023-05-01").toUTCString(),
     comments: [],
     files: [],
   },

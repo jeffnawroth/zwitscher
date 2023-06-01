@@ -27,7 +27,7 @@
         </v-row>
         <v-tabs v-model="tab" fixed-tabs>
           <v-tab :value="1">Profil</v-tab>
-          <v-tab :value="2">Konto</v-tab>
+          <v-tab v-if="showAccountSettings" :value="2">Konto</v-tab>
         </v-tabs>
         <v-window v-model="tab">
           <v-window-item eager :value="1">
@@ -79,7 +79,7 @@
               </v-row>
             </v-card-text>
           </v-window-item>
-          <v-window-item eager :value="2">
+          <v-window-item v-if="showAccountSettings" eager :value="2">
             <v-card-text>
               <v-row>
                 <v-col cols="12">
@@ -144,7 +144,7 @@
             >Speichern</v-btn
           >
           <v-btn
-            v-if="tab < 2"
+            v-if="tab < 2 && showAccountSettings"
             variant="plain"
             icon="mdi-chevron-right"
             @click="tab++"
@@ -186,10 +186,12 @@ import { onMounted } from "vue";
 import { UserEdit } from "@/interfaces";
 import Avatar from "./Avatar.vue";
 import { Gender, Role } from "@/typescript-axios-generated";
+import { useAuthenticationStore } from "@/store/authentication";
 
 setLocale(yupLocaleDe);
 
 const store = useUsersStore();
+const authStore = useAuthenticationStore();
 const dialog = ref(true);
 const discardDialog = ref(false);
 const route = useRoute();
@@ -279,6 +281,14 @@ const validationSchema = object({
 
 const profileSettings = computed(() => {
   return route.name === "profile-settings";
+});
+
+const showAccountSettings = computed(() => {
+  return (
+    (authStore.user?.role == Role.NUMBER_0 &&
+      authStore.user.id != store.user?.id) ||
+    route.name == "create-user"
+  );
 });
 
 const dateToday = computed(() => {
