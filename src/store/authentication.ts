@@ -9,25 +9,38 @@ import {
   UserLoginRequestDto,
   UserRegistrationRequestDto,
 } from "@/typescript-axios-generated";
+import { showNotification } from "./helpers";
 
 export const useAuthenticationStore = defineStore("authentication", () => {
   const user = ref<AuthUser | null>();
 
   async function register(credentials: UserRegistrationRequestDto) {
-    const user =
-      await AuthenticationApi.prototype.apiAuthenticationRegisterPost(
-        credentials
+    try {
+      const user =
+        await AuthenticationApi.prototype.apiAuthenticationRegisterPost(
+          credentials
+        );
+      setUserData(user.data);
+      showNotification("error", "Registrierung erfolgreich!");
+      router.push({ name: "home" });
+    } catch {
+      showNotification(
+        "error",
+        "Beim Registrieren ist ein Fehler aufgetreten!"
       );
-    setUserData(user.data);
-    // setUserData(userData);
+    }
   }
 
   async function login(credentials: UserLoginRequestDto) {
-    const user = await AuthenticationApi.prototype.apiAuthenticationLoginPost(
-      credentials
-    );
-    setUserData(user.data);
-    // setUserData(userData);
+    try {
+      const user = await AuthenticationApi.prototype.apiAuthenticationLoginPost(
+        credentials
+      );
+      setUserData(user.data);
+      router.push({ name: "home" });
+    } catch {
+      showNotification("error", "Beim Einloggen ist ein Fehler aufgetreten!");
+    }
   }
 
   function logout() {

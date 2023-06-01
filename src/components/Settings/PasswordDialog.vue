@@ -86,7 +86,6 @@ const validationSchema = object({
 });
 
 function changePassword(values: any) {
-  console.log(values);
   emit("update:modelValue", false);
 }
 </script>

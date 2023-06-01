@@ -65,6 +65,8 @@
 
     <v-navigation-drawer location="right"> </v-navigation-drawer>
 
+    <NotificationContainer></NotificationContainer>
+
     <v-main>
       <v-container fluid style="max-width: 980px">
         <v-card>
@@ -82,6 +84,7 @@ import axios from "axios";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import { Role } from "./typescript-axios-generated";
 import { useRoute, useRouter } from "vue-router";
+import NotificationContainer from "./components/Notification/NotificationContainer.vue";
 
 const store = useAuthenticationStore();
 const route = useRoute();
@@ -92,25 +95,11 @@ const authIcon = computed(() => {
   return store.loggedIn ? "mdi-logout" : "mdi-login";
 });
 
-const title = computed(() => {
-  const routeNameMapper = {
-    home: "Startseite",
-    profile: "Profil",
-    users: "Benutzerverwaltung",
-    dashboard: "Dashboard",
-    settings: "Einstellungen",
-  };
-  //@ts-expect-error
-  return routeNameMapper[route.name];
-});
-
 onMounted(() => {
   const userString = localStorage.getItem("user");
   if (userString) {
     const userData = JSON.parse(userString);
     store.setUserData(userData);
-
-    console.log(store.user?.username);
   }
   /*  axios.interceptors.response.use(
     (response) => response,

@@ -64,8 +64,8 @@ import { ref } from "vue";
 setLocale(yupLocaleDe);
 
 const initialValues = {
-  email: "jeff@zwitscher.de",
-  password: "Jeff123!",
+  email: "",
+  password: "",
 };
 
 const store = useAuthenticationStore();
@@ -79,6 +79,5 @@ const validationSchema = object({
 
 async function submit(values: any) {
   await store.login(values);
-  router.push({ name: "home" });
 }
 </script>

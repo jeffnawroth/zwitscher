@@ -88,7 +88,6 @@ const validationSchema = object({
 });
 
 function changeMail(values: any) {
-  console.log(values);
   emit("update:modelValue", false);
 }
 </script>
