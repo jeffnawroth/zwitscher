@@ -21,7 +21,7 @@ export const useAuthenticationStore = defineStore("authentication", () => {
           credentials
         );
       setUserData(user.data);
-      showNotification("error", "Registrierung erfolgreich!");
+      showNotification("success", "Registrierung erfolgreich!");
       router.push({ name: "home" });
     } catch {
       showNotification(
