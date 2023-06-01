@@ -19,7 +19,7 @@ namespace App3
             InitializeComponent();
         }
 
-        private void RegisterButton_Clicked(object sender, EventArgs e)
+        private async void RegisterButton_Clicked(object sender, EventArgs e)
         {
             string username = usernameEntry.Text;
             string vorname = vornameEntry.Text;
@@ -30,25 +30,25 @@ namespace App3
 
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(vorname) || string.IsNullOrWhiteSpace(nachname) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmPassword))
             {
-                DisplayAlert("Fehler", "Bitte füllen Sie alle Felder aus.", "OK");
+                 await DisplayAlert("Fehler", "Bitte füllen Sie alle Felder aus.", "OK");
                 return;
             }
 
             if (Services.DummyBackend.IsUserRegistered(email))
             {
-                DisplayAlert("Fehler", "Die E-Mail-Adresse ist bereits registriert.", "OK");
+                await DisplayAlert("Fehler", "Die E-Mail-Adresse ist bereits registriert.", "OK");
                 return;
             }
 
             bool isRegistrationSuccessful = Services.DummyBackend.SaveRegistrationData(username, vorname, nachname, email, password);
             if (isRegistrationSuccessful)
             {
-                DisplayAlert("Erfolg", "Die Registrierung war erfolgreich.", "OK");
-                Application.Current.MainPage = new LoginPage();
+                Settings.IsLoggedIn = true;
+                Application.Current.MainPage = new AppShell();
             }
             else
             {
-                DisplayAlert("Fehler", "Die Registrierung ist fehlgeschlagen.", "OK");
+                await DisplayAlert("Fehler", "Die Registrierung ist fehlgeschlagen.", "OK");
             }
         }
 

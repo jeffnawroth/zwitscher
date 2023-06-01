@@ -3,32 +3,32 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="App3.Registration">
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Username" />
-            <Entry x:Name="usernameEntry" Placeholder="Enter your username" />
+        <StackLayout Spacing="30">
+            <Label Text="Erstelle jetzt dein Konto" HorizontalOptions="Center" FontSize="40" />
 
-            <StackLayout Orientation="Horizontal">
-                <Label Text="Vorname" />
-                <Entry x:Name="vornameEntry" Placeholder="Vorname" />
-            </StackLayout>
+            <Entry x:Name="usernameEntry" Placeholder="Benutzername" />
 
-            <StackLayout Orientation="Horizontal">
-                <Label Text="Nachname" />
-                <Entry x:Name="nachnameEntry" Placeholder="Nachname" />
-            </StackLayout>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-            <Label Text="E-Mail-Adresse" />
+                <Entry x:Name="vornameEntry" Placeholder="Vorname" Grid.Column="0" />
+                <Entry x:Name="nachnameEntry" Placeholder="Nachname" Grid.Column="1" />
+            </Grid>
+
             <Entry x:Name="emailEntry" Placeholder="E-Mail-Adresse" />
 
-            <StackLayout Orientation="Horizontal">
-                <Label Text="Passwort" />
-                <Entry x:Name="passwordEntry" Placeholder="Passwort" IsPassword="True" />
-            </StackLayout>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-            <StackLayout Orientation="Horizontal">
-                <Label Text="Passwort bestätigen" />
-                <Entry x:Name="confirmPasswordEntry" Placeholder="Passwort bestätigen" IsPassword="True" />
-            </StackLayout>
+                <Entry x:Name="passwordEntry" Placeholder="Passwort" IsPassword="True" Grid.Column="0" />
+                <Entry x:Name="confirmPasswordEntry" Placeholder="Passwort bestätigen" IsPassword="True" Grid.Column="1" />
+            </Grid>
 
             <Button Text="Registrieren" Clicked="RegisterButton_Clicked" />
         </StackLayout>
