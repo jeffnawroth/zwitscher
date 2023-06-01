@@ -130,9 +130,12 @@ public class AuthenticationController : ControllerBase
             var isCorrect = await _userManager.CheckPasswordAsync(existing_user, loginRequest.Password);
 
             if (!isCorrect)
-
                 // Return bad request with error message if email and password don't match
                 return BadRequest("Email und Passwort stimmen nicht überein.");
+
+            if (existing_user.Locked == true)
+                return Forbid();
+                
             // Generate JWT token and return it
             var jwtToken = await GenerateJwtToken(existing_user);
 
