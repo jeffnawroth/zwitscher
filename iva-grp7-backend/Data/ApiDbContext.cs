@@ -40,17 +40,6 @@ namespace iva_grp7_backend
                         j.HasKey("UserId", "InterestId");
                         j.ToTable("UserInterests");
                     });
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.DislikedPosts)
-                .WithOne(p => p.DislikedByUser)
-                .HasForeignKey(p => p.DislikedByUserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.LikedPosts)
-                .WithOne(p => p.LikedByUser)
-                .HasForeignKey(p => p.LikedByUserId)
-                .OnDelete(DeleteBehavior.Restrict);
             
             modelBuilder.Entity<Follower>()
                 .HasOne(f => f.User)
