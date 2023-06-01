@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="App3.Registration">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="Username" />
+            <Entry x:Name="usernameEntry" Placeholder="Enter your username" />
+
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Vorname" />
+                <Entry x:Name="vornameEntry" Placeholder="Vorname" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Nachname" />
+                <Entry x:Name="nachnameEntry" Placeholder="Nachname" />
+            </StackLayout>
+
+            <Label Text="E-Mail-Adresse" />
+            <Entry x:Name="emailEntry" Placeholder="E-Mail-Adresse" />
+
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Passwort" />
+                <Entry x:Name="passwordEntry" Placeholder="Passwort" IsPassword="True" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Passwort bestätigen" />
+                <Entry x:Name="confirmPasswordEntry" Placeholder="Passwort bestätigen" IsPassword="True" />
+            </StackLayout>
+
+            <Button Text="Registrieren" Clicked="RegisterButton_Clicked" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Essentials;
+using App3.Services;
+
 namespace App3
 {
     public partial class LoginPage : ContentPage
@@ -31,10 +33,10 @@ namespace App3
                 await DisplayAlert("Fehler", "Ungültige Anmeldeinformationen", "OK");
             }
         }
-        private void OnSignUpButtonClicked(object sender, EventArgs e)
+
+        private async void OnSignUpButtonClicked(object sender, EventArgs e)
         {
-            Uri uri = new Uri("http://18.198.27.130/register");
-            Launcher.OpenAsync(uri);
+            await Navigation.PushAsync(new Registration());
         }
     }
 }
