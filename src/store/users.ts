@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { showNotification } from "./helpers";
 
 export const useUsersStore = defineStore("users", () => {
-  const users = ref<User[]>([]);
+  const users = ref<User[]>(dummyUsers);
   const user = ref<User>();
 
   function createUser(user: UserAdd) {
