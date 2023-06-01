@@ -3,9 +3,10 @@ import { ref } from "vue";
 import { users as dummyUsers } from "@/dummyData";
 import { User, UserAdd, UserEdit } from "@/interfaces";
 import { v4 as uuidv4 } from "uuid";
+import { showNotification } from "./helpers";
 
 export const useUsersStore = defineStore("users", () => {
-  const users = ref<User[]>(dummyUsers);
+  const users = ref<User[]>([]);
   const user = ref<User>();
 
   function createUser(user: UserAdd) {
@@ -19,10 +20,23 @@ export const useUsersStore = defineStore("users", () => {
     };
 
     users.value.push(addedUser);
+    showNotification("success", "Der Nutzer wurde erfolgreich erstellt!");
   }
 
-  function getUsers() {
-    users.value = dummyUsers;
+  async function getUsers() {
+    const p = new Promise((resolve, reject) => {
+      resolve(dummyUsers);
+    });
+
+    try {
+      const usersData = await p;
+      users.value = usersData as User[];
+    } catch (error) {
+      showNotification(
+        "error",
+        "Beim laden der Nutzer ist ein Problem aufgetreten"
+      );
+    }
   }
 
   function getUser(id: string) {
@@ -40,14 +54,15 @@ export const useUsersStore = defineStore("users", () => {
       (userArray) => userArray.id === user.value?.id
     );
     users.value.splice(userIndex, 1);
+    showNotification("success", "Der Nutzer wurde erfolgreich gelöscht!");
   }
 
   function updateUser(userEdit: User) {
     const userIndex = users.value.findIndex((user) => user.id === userEdit.id);
-
     const store = useUsersStore();
     users.value.splice(userIndex, 1, userEdit);
     store.user = userEdit;
+    showNotification("success", "Die Änderungen wurden gespeichert!");
   }
 
   return {

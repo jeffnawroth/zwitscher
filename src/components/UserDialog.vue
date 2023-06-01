@@ -87,7 +87,7 @@
                     name="role"
                     label="Rolle"
                     :items="roles"
-                    :disabled="userLocked"
+                    :disabled="userLocked || modCreatesUser"
                   ></BaseSelectWithValidation>
                 </v-col>
                 <v-col cols="12">
@@ -202,9 +202,13 @@ const file = ref<File>();
 
 const tab = ref(1);
 
+const modCreatesUser = computed(() => {
+  return route.name == "create-user" && authStore.user?.role == Role.NUMBER_1;
+});
+
 const initialValues = ref({
   avatar: null,
-  role: null,
+  role: modCreatesUser.value ? Role.NUMBER_2 : null,
   username: "",
   name: "",
   email: "",

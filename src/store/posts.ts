@@ -11,7 +11,7 @@ import { sortByDateDescending } from "./helpers";
 import { v4 as uuidv4 } from "uuid";
 
 export const usePostStore = defineStore("post", () => {
-  const allPosts = ref<Post[]>(posts);
+  const allPosts = ref<Post[]>([]);
   const postsOfUser = ref<Post[]>([]);
   const postsFollowedUsers = ref<Post[]>([]);
   const post = ref<Post | undefined>();
@@ -79,7 +79,10 @@ export const usePostStore = defineStore("post", () => {
     allPosts.value.splice(allPostsIndex, 1);
   }
 
-  function updatePost(post: Post) {}
+  function updatePost(post: Post) {
+    const index = allPosts.value.findIndex((x) => x.id === post.id);
+    if (index > -1) allPosts.value.splice(index, 1, post);
+  }
 
   const sortedPosts = computed(() => {
     return sortByDateDescending(allPosts.value);
@@ -107,5 +110,6 @@ export const usePostStore = defineStore("post", () => {
     addComment,
     getFollowedUsersPosts,
     sortedPostsFollowedUsers,
+    updatePost,
   };
 });

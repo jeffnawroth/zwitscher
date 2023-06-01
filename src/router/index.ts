@@ -154,10 +154,9 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to) => {
   const loggedIn = localStorage.getItem("user");
-  if (to.meta.requiresAuth && !loggedIn) next({ name: "login" });
-  else next();
+  if (to.meta.requiresAuth && !loggedIn) return { name: "login" };
 });
 
 function checkAccess(

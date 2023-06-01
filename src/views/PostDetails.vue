@@ -2,7 +2,11 @@
   <PageToolbar title="Beitrag" back-button> </PageToolbar>
   <v-list rounded="lg">
     <v-list-item>
-      <Post :post="store.post!"></Post>
+      <Post
+        :post="store.post!"
+        @set-upvotes="(upvotes: number) => (store.post!.upvotes = upvotes)"
+        @set-downvotes="(downvotes: number) => (store.post!.downvotes = downvotes)"
+      ></Post>
     </v-list-item>
     <v-divider></v-divider>
     <v-list-item v-if="authStore.loggedIn">
