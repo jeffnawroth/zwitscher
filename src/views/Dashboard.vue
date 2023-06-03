@@ -1,7 +1,287 @@
 <template>
   <PageToolbar title="Dashboard"></PageToolbar>
+  <v-row>
+    <v-col cols="12" sm="6">
+      <DashboardCard
+        :title="`Posts pro Tag (KW ${getWeekNumber})`"
+        @click="downloadPostsPerDay"
+      >
+        <canvas id="posts-per-day-chart"></canvas>
+      </DashboardCard>
+    </v-col>
+    <v-col cols="12" sm="6">
+      <DashboardCard
+        :title="`Nutzerzuwachs (${currentYear})`"
+        @download="downloadUserGrowth"
+      >
+        <canvas id="users-growth"></canvas>
+      </DashboardCard>
+    </v-col>
+    <v-col cols="12" sm="6">
+      <DashboardCard
+        :title="`Aktive Nutzer (${currentYear})`"
+        @download="downloadActiveUsers"
+      >
+        <canvas id="active-users-chart"></canvas>
+      </DashboardCard>
+    </v-col>
+    <v-col cols="12" sm="6">
+      <DashboardCard
+        title="Altersverteilung der Nutzer"
+        @click="downloadAgeDistribution"
+      >
+        <canvas id="age-distribution-chart"></canvas>
+      </DashboardCard>
+    </v-col>
+    <v-col cols="12" sm="6">
+      <DashboardCard
+        title="Geschlechterverteilung der Nutzer"
+        @download="downloadGenderDistribution"
+      >
+        <canvas id="gender-distribution-chart"></canvas>
+      </DashboardCard>
+    </v-col>
+  </v-row>
 </template>
 
 <script setup lang="ts">
 import PageToolbar from "@/components/PageToolbar.vue";
+import Chart, { ChartItem } from "chart.js/auto";
+import { computed } from "vue";
+import { onMounted } from "vue";
+import DashboardCard from "@/components/Dashboard/DashboardCard.vue";
+import { utils, write, WorkBook } from "xlsx";
+import { saveAs } from "file-saver";
+
+const genderDistributionData = {
+  labels: ["Männlich", "Weiblich", "Divers"],
+  datasets: [
+    {
+      data: [60, 30, 10],
+      backgroundColor: [
+        "rgba(54, 162, 235, 0.7)",
+        "rgba(255, 99, 132, 0.7)",
+        "rgba(255, 205, 86, 0.7)",
+      ],
+      borderColor: [
+        "rgba(54, 162, 235, 1)",
+        "rgba(255, 99, 132, 1)",
+        "rgba(255, 205, 86, 1)",
+      ],
+      borderWidth: 1,
+    },
+  ],
+};
+
+const ageDistributionData = {
+  labels: ["18-24 Jahre", "25-34 Jahre", "35-44 Jahre", "45-54 Jahre", "55+"],
+  datasets: [
+    {
+      data: [20, 30, 25, 15, 10],
+      backgroundColor: [
+        "rgba(255, 99, 132, 0.7)",
+        "rgba(54, 162, 235, 0.7)",
+        "rgba(255, 205, 86, 0.7)",
+        "rgba(75, 192, 192, 0.7)",
+        "rgba(153, 102, 255, 0.7)",
+      ],
+      borderColor: [
+        "rgba(255, 99, 132, 1)",
+        "rgba(54, 162, 235, 1)",
+        "rgba(255, 205, 86, 1)",
+        "rgba(75, 192, 192, 1)",
+        "rgba(153, 102, 255, 1)",
+      ],
+      borderWidth: 1,
+    },
+  ],
+};
+
+const activeUsersData = {
+  labels: generateMonthLabels(),
+  datasets: [
+    {
+      label: "Aktive Nutzer",
+      data: [500, 600, 800, 700, 900, 1000],
+      backgroundColor: "rgba(75, 192, 192, 0.7)",
+      borderColor: "rgba(75, 192, 192, 1)",
+      borderWidth: 1,
+    },
+  ],
+};
+
+const postsPerDayData = {
+  labels: generateWeekdays(),
+  datasets: [
+    {
+      label: "Posts",
+      data: [10, 15, 7, 20, 12, 18, 25],
+      backgroundColor: "rgba(0, 123, 255, 0.5)",
+      borderColor: "rgba(0, 123, 255, 1)",
+      borderWidth: 1,
+    },
+  ],
+};
+
+const usersGrowthData = {
+  labels: generateMonthLabels(),
+  datasets: [
+    {
+      data: [10, 15, 7, 20, 12, 18, 25],
+      backgroundColor: "rgba(0, 123, 255, 0.5)",
+      borderColor: "rgba(0, 123, 255, 1)",
+      borderWidth: 1,
+    },
+  ],
+};
+
+const currentYear = computed(() => {
+  return new Date().getFullYear();
+});
+
+function generateWeekdays() {
+  const weekdays = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+  return weekdays;
+}
+
+const getWeekNumber = computed(() => {
+  const date = new Date();
+  const d = new Date(
+    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+  );
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  //@ts-expect-error
+  return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+});
+
+onMounted(() => {
+  createNewChart("posts-per-day-chart", "bar", postsPerDayData);
+  createNewChart("users-growth", "line", usersGrowthData);
+  createNewChart("age-distribution-chart", "bar", ageDistributionData);
+  createNewChart("active-users-chart", "line", activeUsersData);
+  createNewChart(
+    "gender-distribution-chart",
+    "doughnut",
+    genderDistributionData,
+    true
+  );
+});
+
+function generateMonthLabels() {
+  const months = [
+    "Jan",
+    "Feb",
+    "März",
+    "Apr",
+    "Mai",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Okt",
+    "Nov",
+    "Dez",
+  ];
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth();
+  const labels = months.slice(0, currentMonth + 1);
+  return labels;
+}
+
+function createNewChart(
+  chartId: string,
+  chartType: any,
+  chartData: any,
+  showLegend: boolean = false
+) {
+  const chartElement = document.getElementById(chartId);
+  if (chartElement) {
+    new Chart(chartElement as ChartItem, {
+      type: chartType,
+      data: chartData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+        },
+        plugins: {
+          legend: {
+            display: showLegend,
+          },
+        },
+      },
+    });
+  }
+}
+
+function createExcelFile(data: any, sheetName: string) {
+  const workbook = utils.book_new();
+  const worksheet = utils.json_to_sheet(data);
+  utils.book_append_sheet(workbook, worksheet, sheetName);
+  return workbook;
+}
+
+// Funktion zum Herunterladen der Excel-Datei
+function downloadExcelFile(workbook: WorkBook, filename: string) {
+  const excelBuffer = write(workbook, { bookType: "xlsx", type: "array" });
+  const blob = new Blob([excelBuffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  saveAs(blob, filename);
+}
+
+// Funktion zum Herunterladen der Posts pro Tag als Excel-Datei
+function downloadPostsPerDay() {
+  const data = postsPerDayData.labels.map((day, index) => ({
+    Tag: day,
+    "Posts pro Tag": postsPerDayData.datasets[0].data[index],
+  }));
+  const workbook = createExcelFile(data, "Posts pro Tag");
+  downloadExcelFile(workbook, "posts_pro_tag.xlsx");
+}
+
+// Funktion zum Herunterladen des Nutzerzuwachses als Excel-Datei
+function downloadUserGrowth() {
+  const data = usersGrowthData.labels.map((month, index) => ({
+    Monat: month,
+    Nutzerzuwachs: usersGrowthData.datasets[0].data[index],
+  }));
+  const workbook = createExcelFile(data, "Nutzerzuwachs");
+  downloadExcelFile(workbook, "nutzerzuwachs.xlsx");
+}
+
+// Funktion zum Herunterladen der Altersverteilung als Excel-Datei
+function downloadAgeDistribution() {
+  const data = ageDistributionData.labels.map((group, index) => ({
+    Altersgruppe: group,
+    Anzahl: ageDistributionData.datasets[0].data[index],
+  }));
+  const workbook = createExcelFile(data, "Altersverteilung");
+  downloadExcelFile(workbook, "altersverteilung.xlsx");
+}
+
+// Funktion zum Herunterladen der Geschlechterverteilung als Excel-Datei
+function downloadGenderDistribution() {
+  const data = genderDistributionData.labels.map((gender, index) => ({
+    Geschlecht: gender,
+    Anzahl: genderDistributionData.datasets[0].data[index],
+  }));
+  const workbook = createExcelFile(data, "Geschlechterverteilung");
+  downloadExcelFile(workbook, "geschlechterverteilung.xlsx");
+}
+
+// Funktion zum Herunterladen der aktiven Nutzer als Excel-Datei
+function downloadActiveUsers() {
+  const data = activeUsersData.labels.map((month, index) => ({
+    Monat: month,
+    "Aktive Nutzer": activeUsersData.datasets[0].data[index],
+  }));
+  const workbook = createExcelFile(data, "Aktive Nutzer");
+  downloadExcelFile(workbook, "aktive_nutzer.xlsx");
+}
 </script>
