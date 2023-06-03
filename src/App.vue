@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar color="white" flat density="compact" border>
+    <v-app-bar flat density="compact" border>
       <v-app-bar-title>Zwitscher</v-app-bar-title>
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>

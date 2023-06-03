@@ -44,9 +44,12 @@ export const useAuthenticationStore = defineStore("authentication", () => {
   }
 
   function logout() {
-    user.value = null;
-    localStorage.removeItem("user");
-    axios.defaults.headers.common["Authorization"] = null;
+    if (user.value != null) {
+      user.value = null;
+      localStorage.removeItem("user");
+      axios.defaults.headers.common["Authorization"] = null;
+      showNotification("success", "Du wurdest erfolgreich ausgeloggt!");
+    }
     router.push({ name: "login" });
   }
 

@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { showNotification } from "./helpers";
 
 export const useUsersStore = defineStore("users", () => {
-  const users = ref<User[]>(dummyUsers);
+  const users = ref<User[]>([]);
   const user = ref<User>();
 
   function createUser(user: UserAdd) {
@@ -45,7 +45,7 @@ export const useUsersStore = defineStore("users", () => {
   }
 
   function getUserByUsername(username: string) {
-    const userFound = users.value.find((user) => user.username == username);
+    const userFound = dummyUsers.find((user) => user.username == username);
     user.value = userFound;
   }
 

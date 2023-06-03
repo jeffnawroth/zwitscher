@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar density="compact" color="white">
+  <v-toolbar density="compact">
     <v-btn
       v-if="backButton"
       variant="plain"
