@@ -69,9 +69,9 @@ const routes = [
     path: "/:username/post/:postId",
     name: "post",
     component: () => import("@/views/PostDetails.vue"),
-    beforeEnter: (to: RouteLocationNormalized) => {
+    beforeEnter: async (to: RouteLocationNormalized) => {
       const store = usePostStore();
-      store.getPost(to.params.postId as string);
+      await store.getPost(to.params.postId as string);
     },
   },
 

@@ -65,7 +65,7 @@ export interface Post {
   files?: File[];
 }
 
-export interface AddPost {
+export interface PostAdd {
   userId: string;
   text?: string;
   files?: File[];

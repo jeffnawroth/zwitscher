@@ -161,12 +161,12 @@ onBeforeRouteUpdate(async (to, from) => {
       usersStore.user = authStore.user;
     else usersStore.getUserByUsername(to.params.username as string);
 
-    store.getPostsForUser(usersStore.user!.id);
+    loadPosts();
   }
 });
 
 onMounted(() => {
-  store.getPostsForUser(usersStore.user!.id);
+  loadPosts();
 });
 
 const following = computed(() => {
@@ -232,5 +232,9 @@ function setFollow() {
     authStore.user?.following.push(usersStore.user!.id);
     usersStore.user?.followers.push(authStore.user!.id);
   }
+}
+
+function loadPosts() {
+  store.getPostsForUser(usersStore.user!.id);
 }
 </script>

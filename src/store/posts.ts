@@ -1,14 +1,18 @@
 import { defineStore } from "pinia";
-import {
-  allPosts as posts,
-  followedUsersPosts as postsOfFollowedUsers,
-} from "@/dummyData";
 import { ref } from "vue";
-import { AddPost, Post } from "@/interfaces";
+import { PostAdd, Post } from "@/interfaces";
 import { useAuthenticationStore } from "./authentication";
 import { computed } from "vue";
-import { sortByDateDescending } from "./helpers";
-import { v4 as uuidv4 } from "uuid";
+import { showNotification, sortByDateDescending } from "./helpers";
+import {
+  createNewPost,
+  getAllPostsFromUser,
+  getAllPublicPosts,
+  getPostsFromFollowedUsers,
+  getSinglePost,
+  modifyPost,
+  removePost,
+} from "@/dummyApi";
 
 export const usePostStore = defineStore("post", () => {
   const allPosts = ref<Post[]>([]);
@@ -16,72 +20,104 @@ export const usePostStore = defineStore("post", () => {
   const postsFollowedUsers = ref<Post[]>([]);
   const post = ref<Post | undefined>();
 
-  function getAllPosts() {
-    allPosts.value = posts;
+  async function getAllPosts() {
+    try {
+      const data = await getAllPublicPosts();
+      allPosts.value = data;
+    } catch (error) {
+      showNotification(
+        "error",
+        "Beim Laden der öffentlichen Beiträge ist ein Fehler aufgetreten!"
+      );
+    }
   }
 
-  function getPostsForUser(id: string) {
-    postsOfUser.value = posts.filter((post) => post.userId === id);
+  async function getPostsForUser(id: string) {
+    try {
+      const data = await getAllPostsFromUser(id);
+      postsOfUser.value = data;
+    } catch (error) {
+      showNotification(
+        "error",
+        "Beim Laden der Beiträge ist ein Fehler aufgetreten!"
+      );
+    }
   }
 
-  function getFollowedUsersPosts(id: string) {
-    postsFollowedUsers.value = postsOfFollowedUsers;
-  }
-
-  function getPost(id: string) {
-    post.value = allPosts.value.find((post) => post.id == id);
-  }
-
-  function createPost(postAdd: AddPost) {
+  async function getFollowedUsersPosts() {
     const authStore = useAuthenticationStore();
-    //todo
-
-    const post: Post = {
-      id: uuidv4(),
-      userId: postAdd.userId,
-      upvotes: 0,
-      downvotes: 0,
-      name: authStore.user?.name!,
-      username: authStore.user?.username!,
-      date: new Date().toUTCString(),
-      avatar: authStore.user?.avatar,
-      comments: [],
-      files: postAdd.files ?? [],
-      text: postAdd.text ?? "",
-    };
-    allPosts.value?.push(post);
+    try {
+      const data = await getPostsFromFollowedUsers(authStore.user!.following);
+      postsFollowedUsers.value = data;
+    } catch (error) {
+      showNotification(
+        "error",
+        "Beim Laden der Beiträge ist ein Fehler aufgetreten!"
+      );
+    }
   }
 
-  function addComment(comment: AddPost) {
-    const authStore = useAuthenticationStore();
-
-    const postAdd: Post = {
-      id: uuidv4(),
-      userId: comment.userId,
-      upvotes: 0,
-      downvotes: 0,
-      name: authStore.user?.name!,
-      username: authStore.user?.username!,
-      date: new Date().toUTCString(),
-      avatar: authStore.user?.avatar,
-      comments: [],
-      files: comment.files ?? [],
-      text: comment.text ?? "",
-    };
-
-    post.value?.comments?.push(postAdd);
+  async function getPost(id: string) {
+    try {
+      const data = await getSinglePost(id);
+      post.value = data;
+    } catch (error) {
+      showNotification(
+        "error",
+        "Beim Laden des Beitrags ist ein Fehler aufgetreten!"
+      );
+    }
   }
 
-  function deletePost(id: string) {
-    const userPostIndex = postsOfUser.value.findIndex((post) => post.id === id);
-    const allPostsIndex = allPosts.value.findIndex((post) => post.id === id);
-    postsOfUser.value.splice(userPostIndex, 1);
-    allPosts.value.splice(allPostsIndex, 1);
+  async function createPost(post: PostAdd) {
+    try {
+      const data = await createNewPost(post);
+      allPosts.value?.push(data);
+    } catch (error) {
+      showNotification(
+        "error",
+        "Beim Erstellen des Beitrags ist ein Fehler aufgetreten!"
+      );
+    }
   }
 
-  function updatePost(post: Post) {
-    const index = allPosts.value.findIndex((x) => x.id === post.id);
-    if (index > -1) allPosts.value.splice(index, 1, post);
+  async function addComment(comment: PostAdd) {
+    try {
+      const data = await createNewPost(comment);
+      post.value?.comments?.push(data);
+    } catch (error) {
+      showNotification(
+        "error",
+        "Beim Erstellen des Kommentars ist ein Fehler aufgetreten!"
+      );
+    }
+  }
+
+  async function deletePost(id: string) {
+    try {
+      await removePost(id);
+      allPosts.value = allPosts.value.filter((post) => post.id !== id);
+      showNotification("success", "Der Beitrag wurde erfolgreich gelöscht!");
+    } catch (error) {
+      showNotification(
+        "error",
+        "Beim Löschen des Beitrags ist ein Fehler aufgetreten!"
+      );
+    }
+  }
+
+  async function updatePost(post: Post) {
+    try {
+      await modifyPost(post);
+      const index = allPosts.value.findIndex((x) => x.id === post.id);
+      if (index > -1) allPosts.value.splice(index, 1, post);
+      showNotification("success", "Der Beitrag wurde erfolgreich bearbeitet!");
+    } catch (error) {
+      showNotification(
+        "error",
+        "Beim Bearbeiten des Beitrags ist ein Fehler aufgetreten!"
+      );
+    }
   }
 
   const sortedPosts = computed(() => {

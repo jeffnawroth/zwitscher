@@ -1,5 +1,5 @@
 <template>
-  <v-card :subtitle="`@${post.username} • ${formattedDate}`">
+  <v-card :subtitle="`@${post.username} • ${formattedDate}`" density="compact">
     <template #prepend>
       <v-btn icon variant="text" @click.stop="openProfile">
         <v-avatar v-if="!post.avatar" size="40" color="grey">
@@ -146,8 +146,9 @@ function dislikePost() {
   }
 }
 
-function deleteUserPost() {
-  store.deletePost(props.post.id);
+async function deleteUserPost() {
+  await store.deletePost(props.post.id);
+  deleteDialog.value = false;
 }
 
 const formattedDate = computed(() => {

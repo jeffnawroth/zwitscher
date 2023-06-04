@@ -89,7 +89,7 @@
 </template>
 
 <script setup lang="ts">
-import { AddPost } from "@/interfaces";
+import { PostAdd } from "@/interfaces";
 import { useAuthenticationStore } from "@/store/authentication";
 import { usePostStore } from "@/store/posts";
 import { computed, ref } from "vue";
@@ -153,7 +153,7 @@ function removeFile(file: File) {
 }
 
 function submit(values: any, { resetForm }: any) {
-  const post: AddPost = {
+  const post: PostAdd = {
     userId: authStore.user!.id,
     text: values.text,
     files: values.file,
