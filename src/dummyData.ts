@@ -229,3 +229,9 @@ export const followedUsersPosts: Post[] = [
     files: [],
   },
 ];
+
+export const postsPerDayData = [10, 15, 7, 20, 12, 18, 25];
+export const usersGrowthData = [10, 15, 7, 20, 12, 18, 25];
+export const activeUsersData = [500, 600, 800, 700, 900, 1000];
+export const ageDistributionData = [20, 30, 25, 15, 10];
+export const genderDistributionData = [70, 30, 10];

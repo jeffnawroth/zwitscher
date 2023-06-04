@@ -1,7 +1,7 @@
 <template>
-  <v-card :title="title">
+  <v-card :title="title" :loading="loading">
     <v-card-text>
-      <slot></slot>
+      <canvas :id="id"></canvas>
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
@@ -14,9 +14,16 @@
 
 <script lang="ts" setup>
 defineProps({
+  id: {
+    type: String,
+    required: true,
+  },
   title: {
     type: String,
     required: true,
+  },
+  loading: {
+    type: Boolean,
   },
 });
 defineEmits(["download"]);

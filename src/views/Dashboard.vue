@@ -1,44 +1,49 @@
 <template>
   <PageToolbar title="Dashboard"></PageToolbar>
-  <v-row>
+  <v-row class="pa-5">
     <v-col cols="12" sm="6">
       <DashboardCard
+        id="posts-per-day-chart"
+        :loading="store.loadingPostsPerDay"
         :title="`Posts pro Tag (KW ${getWeekNumber})`"
-        @click="downloadPostsPerDay"
+        @download="downloadPostsPerDay"
       >
-        <canvas id="posts-per-day-chart"></canvas>
       </DashboardCard>
     </v-col>
     <v-col cols="12" sm="6">
       <DashboardCard
+        id="users-growth"
+        :loading="store.loadingUsersGrowth"
         :title="`Nutzerzuwachs (${currentYear})`"
         @download="downloadUserGrowth"
       >
-        <canvas id="users-growth"></canvas>
       </DashboardCard>
     </v-col>
     <v-col cols="12" sm="6">
       <DashboardCard
+        id="active-users-chart"
+        :loading="store.loadingActiveUsers"
         :title="`Aktive Nutzer (${currentYear})`"
         @download="downloadActiveUsers"
       >
-        <canvas id="active-users-chart"></canvas>
       </DashboardCard>
     </v-col>
     <v-col cols="12" sm="6">
       <DashboardCard
+        id="age-distribution-chart"
+        :loading="store.loadingAgeDistribution"
         title="Altersverteilung der Nutzer"
-        @click="downloadAgeDistribution"
+        @download="downloadAgeDistribution"
       >
-        <canvas id="age-distribution-chart"></canvas>
       </DashboardCard>
     </v-col>
     <v-col cols="12" sm="6">
       <DashboardCard
+        id="gender-distribution-chart"
+        :loading="store.loadingGenderDistribution"
         title="Geschlechterverteilung der Nutzer"
         @download="downloadGenderDistribution"
       >
-        <canvas id="gender-distribution-chart"></canvas>
       </DashboardCard>
     </v-col>
   </v-row>
@@ -47,17 +52,20 @@
 <script setup lang="ts">
 import PageToolbar from "@/components/PageToolbar.vue";
 import Chart, { ChartItem } from "chart.js/auto";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { onMounted } from "vue";
 import DashboardCard from "@/components/Dashboard/DashboardCard.vue";
 import { utils, write, WorkBook } from "xlsx";
 import { saveAs } from "file-saver";
+import { useDashboardStore } from "@/store/dashboard";
+
+const store = useDashboardStore();
 
 const genderDistributionData = {
   labels: ["Männlich", "Weiblich", "Divers"],
   datasets: [
     {
-      data: [60, 30, 10],
+      data: [] as number[],
       backgroundColor: [
         "rgba(54, 162, 235, 0.7)",
         "rgba(255, 99, 132, 0.7)",
@@ -77,7 +85,7 @@ const ageDistributionData = {
   labels: ["18-24 Jahre", "25-34 Jahre", "35-44 Jahre", "45-54 Jahre", "55+"],
   datasets: [
     {
-      data: [20, 30, 25, 15, 10],
+      data: [] as number[],
       backgroundColor: [
         "rgba(255, 99, 132, 0.7)",
         "rgba(54, 162, 235, 0.7)",
@@ -102,7 +110,7 @@ const activeUsersData = {
   datasets: [
     {
       label: "Aktive Nutzer",
-      data: [500, 600, 800, 700, 900, 1000],
+      data: [] as number[],
       backgroundColor: "rgba(75, 192, 192, 0.7)",
       borderColor: "rgba(75, 192, 192, 1)",
       borderWidth: 1,
@@ -115,7 +123,7 @@ const postsPerDayData = {
   datasets: [
     {
       label: "Posts",
-      data: [10, 15, 7, 20, 12, 18, 25],
+      data: [] as number[],
       backgroundColor: "rgba(0, 123, 255, 0.5)",
       borderColor: "rgba(0, 123, 255, 1)",
       borderWidth: 1,
@@ -127,7 +135,7 @@ const usersGrowthData = {
   labels: generateMonthLabels(),
   datasets: [
     {
-      data: [10, 15, 7, 20, 12, 18, 25],
+      data: [] as number[],
       backgroundColor: "rgba(0, 123, 255, 0.5)",
       borderColor: "rgba(0, 123, 255, 1)",
       borderWidth: 1,
@@ -156,18 +164,46 @@ const getWeekNumber = computed(() => {
   return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
 });
 
-onMounted(() => {
+onMounted(async () => {
+  await Promise.all([
+    fetchPostsPerDay(),
+    fetchUserGrowth(),
+    fetchActiveUsers(),
+    fetchAgeDistribution(),
+    fetchGenderDistribution(),
+  ]);
+});
+
+async function fetchPostsPerDay() {
+  await store.getPostsPerDayData();
+  postsPerDayData.datasets[0].data = store.postsPerDayData;
   createNewChart("posts-per-day-chart", "bar", postsPerDayData);
+}
+async function fetchUserGrowth() {
+  await store.getUsersGrowthData();
+  usersGrowthData.datasets[0].data = store.usersGrowthData;
   createNewChart("users-growth", "line", usersGrowthData);
-  createNewChart("age-distribution-chart", "bar", ageDistributionData);
+}
+async function fetchActiveUsers() {
+  await store.getActiveUsersData();
+  activeUsersData.datasets[0].data = store.activeUsersData;
   createNewChart("active-users-chart", "line", activeUsersData);
+}
+async function fetchAgeDistribution() {
+  await store.getAgeDistributionData();
+  ageDistributionData.datasets[0].data = store.ageDistributionData;
+  createNewChart("age-distribution-chart", "bar", ageDistributionData);
+}
+async function fetchGenderDistribution() {
+  await store.getGenderDistributionData();
+  genderDistributionData.datasets[0].data = store.genderDistributionData;
   createNewChart(
     "gender-distribution-chart",
     "doughnut",
     genderDistributionData,
     true
   );
-});
+}
 
 function generateMonthLabels() {
   const months = [
@@ -204,11 +240,11 @@ function createNewChart(
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
-        },
+        // scales: {
+        //   y: {
+        //     beginAtZero: true,
+        //   },
+        // },
         plugins: {
           legend: {
             display: showLegend,
