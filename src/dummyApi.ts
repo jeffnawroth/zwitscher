@@ -5,14 +5,15 @@ import {
   genderDistributionData,
   postsPerDayData,
   usersGrowthData,
-  users,
+  allUsers,
 } from "./dummyData";
-import { PostAdd, Post } from "./interfaces";
+import { PostAdd, Post, User, UserAdd } from "./interfaces";
 import { v4 as uuidv4 } from "uuid";
 
 //Posts
 
 let posts = allPosts;
+let users = allUsers;
 
 export const getAllPublicPosts = (): Promise<Post[]> =>
   new Promise((resolve) => {
@@ -73,6 +74,52 @@ export const modifyPost = (postUpdate: Post) => {
 };
 
 //Users
+
+export const getAllUsers = (): Promise<User[]> =>
+  new Promise((resolve) => resolve(users));
+
+export const getUserById = (id: string): Promise<User> =>
+  new Promise((resolve, reject) => {
+    const user = users.find((user) => user.id === id);
+    if (user) resolve(user);
+    else reject();
+  });
+
+export const fetchUserByUsername = (username: string): Promise<User> =>
+  new Promise((resolve, reject) => {
+    const user = users.find((user) => user.username === username);
+    if (user) resolve(user);
+    else reject();
+  });
+
+export const removeUser = (id: string) =>
+  new Promise((resolve) => {
+    users = users.filter((user) => user.id !== id);
+    resolve("Der Nutzer wurde erfolgreich gelöscht");
+  });
+
+export const modifyUser = (user: User) =>
+  new Promise((resolve) => {
+    const index = users.findIndex((oldUser) => oldUser.id === user.id);
+    if (index > -1) {
+      users.splice(index, 1, user);
+      resolve("Update erfolgreich");
+    }
+  });
+
+export const createNewUser = (userAdd: UserAdd): Promise<User> =>
+  new Promise((resolve) => {
+    const user = {
+      ...userAdd,
+      id: uuidv4(),
+      followers: [],
+      following: [],
+      createdAt: new Date().toUTCString(),
+      locked: false,
+    };
+    users.push(user);
+    resolve(user);
+  });
 
 //Dashboard
 export const getPostsPerDay = (): Promise<number[]> =>

@@ -1,68 +1,92 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { users as dummyUsers } from "@/dummyData";
-import { User, UserAdd, UserEdit } from "@/interfaces";
-import { v4 as uuidv4 } from "uuid";
+import { User, UserAdd } from "@/interfaces";
 import { showNotification } from "./helpers";
+import {
+  createNewUser,
+  fetchUserByUsername,
+  getAllUsers,
+  getUserById,
+  modifyUser,
+  removeUser,
+} from "@/dummyApi";
 
 export const useUsersStore = defineStore("users", () => {
   const users = ref<User[]>([]);
   const user = ref<User>();
 
-  function createUser(user: UserAdd) {
-    const addedUser: User = {
-      ...user,
-      id: uuidv4(),
-      followers: [],
-      following: [],
-      createdAt: new Date().toUTCString(),
-      locked: false,
-    };
-
-    users.value.push(addedUser);
-    showNotification("success", "Der Nutzer wurde erfolgreich erstellt!");
-  }
-
-  async function getUsers() {
-    const p = new Promise((resolve, reject) => {
-      resolve(dummyUsers);
-    });
-
+  async function createUser(user: UserAdd) {
     try {
-      const usersData = await p;
-      users.value = usersData as User[];
-    } catch (error) {
+      await createNewUser(user);
+      showNotification("success", "Der Nutzer wurde erfolgreich erstellt!");
+    } catch {
       showNotification(
         "error",
-        "Beim laden der Nutzer ist ein Problem aufgetreten"
+        "Beim erstellen des Nutzers ist ein Fehler aufgetreten"
       );
     }
   }
 
-  function getUser(id: string) {
-    const userFound = users.value.find((user) => user.id == id);
-    user.value = userFound;
+  async function getUsers() {
+    try {
+      const data = await getAllUsers();
+      users.value = data as User[];
+    } catch (error) {
+      showNotification(
+        "error",
+        "Beim laden der Nutzer ist ein Fehler aufgetreten"
+      );
+    }
   }
 
-  function getUserByUsername(username: string) {
-    const userFound = dummyUsers.find((user) => user.username == username);
-    user.value = userFound;
+  async function getUser(id: string) {
+    try {
+      const data = await getUserById(id);
+      user.value = data;
+    } catch (error) {
+      showNotification(
+        "error",
+        "Beim laden des Nutzers ist ein Fehler aufgetreten"
+      );
+    }
   }
 
-  function deleteUser() {
-    const userIndex = users.value.findIndex(
-      (userArray) => userArray.id === user.value?.id
-    );
-    users.value.splice(userIndex, 1);
-    showNotification("success", "Der Nutzer wurde erfolgreich gelöscht!");
+  async function getUserByUsername(username: string) {
+    try {
+      const data = await fetchUserByUsername(username);
+      user.value = data;
+    } catch (error) {
+      showNotification(
+        "error",
+        "Beim laden des Nutzers ist ein Fehler aufgetreten"
+      );
+    }
   }
 
-  function updateUser(userEdit: User) {
-    const userIndex = users.value.findIndex((user) => user.id === userEdit.id);
-    const store = useUsersStore();
-    users.value.splice(userIndex, 1, userEdit);
-    store.user = userEdit;
-    showNotification("success", "Die Änderungen wurden gespeichert!");
+  async function deleteUser() {
+    try {
+      await removeUser(user.value!.id);
+      showNotification("success", "Der Nutzer wurde erfolgreich gelöscht!");
+    } catch {
+      showNotification(
+        "error",
+        "Beim löschen des Nutzers ist ein Fehler aufgetreten"
+      );
+    }
+  }
+
+  async function updateUser(userEdit: User) {
+    try {
+      await modifyUser(userEdit);
+      const store = useUsersStore();
+      store.user = userEdit;
+      showNotification("success", "Die Änderungen wurden gespeichert!");
+    } catch {
+      showNotification(
+        "error",
+        "Beim Bearbeiten des Nutzers ist ein Fehler aufgetreten"
+      );
+    }
   }
 
   return {

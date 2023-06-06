@@ -32,23 +32,8 @@ export interface UserAdd {
   interests?: string[];
 }
 
-export interface UserEdit {
-  id: string;
-  avatar?: File;
-  role: Role;
-  username: string;
-  name: string;
-  email: string;
-  gender?: Gender;
-  password: string;
-  followers: string[];
-  following: string[];
-  bio?: string;
-  liked?: string[];
-  disliked?: string[];
-  birthDate?: string;
-  interests?: string[];
-  createdAt: string;
+export interface UserEdit extends User {
+  password?: string;
 }
 
 export interface Post {

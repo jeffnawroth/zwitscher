@@ -37,7 +37,7 @@ const janeId = "b586e624-a6c4-44af-abd3-1180671f7693";
 //   locked: false,
 // };
 
-export const users: User[] = [
+export const allUsers: User[] = [
   {
     id: "4cfe63a1-19dc-4703-9551-a90f09ace4f8",
     name: "Admin",
