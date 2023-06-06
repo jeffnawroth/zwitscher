@@ -1,6 +1,9 @@
 using iva_grp7_backend.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace iva_grp7_backend.Controllers;
     
@@ -83,6 +86,53 @@ namespace iva_grp7_backend.Controllers;
 
             return CreatedAtAction(nameof(GetPostById), new { id = post.Id }, post);
         }
-        
 
-    }
+        /// <summary>
+        /// Returns the posts of users that are being followed.
+        /// </summary>
+        /// <returns>The posts of followed users.</returns>
+        /// <response code="200">Returns the posts.</response>
+        /// <response code="500">If an exception occurs while retrieving the posts.</response>
+        [HttpPost("followedUsers")]
+        public async Task<IActionResult> getFollowedUsersPosts()
+        {
+            // Get the current user
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Get the list of users that the current user is following
+            var followingUsers = _context.Following
+                .Where(f => f.FollowingUserId == currentUserId)
+                .Select(f => f.FollowingUserId)
+                .ToList();
+
+            // Get the posts from the following users
+            var followingPosts = await _context.Posts
+                .Where(p => followingUsers.Contains(p.UserId))
+                .ToListAsync();
+
+            return Ok(followingPosts);
+        }
+
+        /// <summary>
+        /// Returns the posts of a specified user.
+        /// </summary>
+        /// <param name="userID">The userID to find the user.</param>
+        /// <returns>The posts of the specified user.</returns>
+        /// <response code="200">Returns the posts.</response>
+        /// <response code="404">If the user is not found.</response>
+        /// <response code="500">If an exception occurs while retrieving the posts.</response>
+        [HttpPost("{userID}")]
+        public async Task<IActionResult> getPostsForUser(string userID)
+        {
+            var postsUser = await _context.Posts
+                .Where(p => p.UserId == userID)
+                .ToListAsync();
+            if(postsUser == null)
+            {
+                return NotFound();
+            }
+            return Ok(postsUser);
+        }
+     
+
+}
