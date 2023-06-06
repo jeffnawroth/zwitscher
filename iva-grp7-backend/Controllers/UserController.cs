@@ -10,8 +10,8 @@ namespace iva_grp7_backend.Controllers;
     /// <summary>
     /// A controller for managing users.
     /// </summary>
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -39,9 +39,16 @@ namespace iva_grp7_backend.Controllers;
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAll()
         {
+            var currentUser = await _userManager.GetUserAsync(User);
             var users = await _userManager.Users.ToListAsync();
+            
             var filteredUsers = new List<User>();
-
+            
+            if (currentUser.Role == Role.Admin)
+            {
+                // Der angemeldete Benutzer ist ein Admin, daher alle Benutzer zur gefilterten Liste hinzufügen
+                
+            }
             foreach (var user in users)
             {
                 // Überprüfe hier die gewünschten Attribute des Benutzers und füge ihn zur Liste "filteredUsers" hinzu, wenn die Bedingungen erfüllt sind.
@@ -82,7 +89,7 @@ namespace iva_grp7_backend.Controllers;
         /// <response code="404">If the user with the specified ID is not found.</response>
         /// <response code="500">If an exception occurs while retrieving the user.</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(200, Type = typeof(ApplicationUser))]
+        [ProducesResponseType(200, Type = typeof(User))]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
 
@@ -135,7 +142,7 @@ namespace iva_grp7_backend.Controllers;
         /// <response code="404">If the user with the username is not found.</response>
         /// <response code="500">If an exception occurs while retrieving the user.</response>
         [HttpGet("GetByUsername/{username}")]
-        [ProducesResponseType(200, Type = typeof(ApplicationUser))]
+        [ProducesResponseType(200, Type = typeof(User))]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
 
@@ -188,12 +195,12 @@ namespace iva_grp7_backend.Controllers;
         /// <response code="400">If the user is invalid.</response>
         /// <response code="500">If an exception occurs while creating the user.</response>
         [HttpPost]
-        [ProducesResponseType(201, Type = typeof(ApplicationUser))]
+        [ProducesResponseType(201, Type = typeof(User))]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
 
         // Creates a new ApplicationUser
-        public async Task<IActionResult> Create([FromBody] ApplicationUser user)
+        public async Task<IActionResult> Create([FromBody] UserAdd user)
         {
             // Checks if the model state is valid
             if (!ModelState.IsValid)
@@ -201,34 +208,63 @@ namespace iva_grp7_backend.Controllers;
                 // If the model state is invalid, returns a bad request response with the validation errors
                 return BadRequest(ModelState);
             }
+
+            string password = user.Password;
+
+            ApplicationUser applicationUser = new ApplicationUser()
+            {
+                Avatar = user.Avatar,
+                Role = user.Role,
+                UserName = user.Username,
+                Name = user.Name,
+                Email = user.Email,
+                Gender = user.Gender,
+                BirthDate = user.BirthDate,
+                Bio = user.Bio,
+                Interests = user.Interests,
+            };
             
-            // Hashes the user's password using the PasswordHasher service injected into the class and sets the hash as the user's password hash
-            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, user.PasswordHash);
+            var is_created = await _userManager.CreateAsync(applicationUser, password);
 
-            // Checks if a user with the same email already exists in the system
-            var user_exist = await _userManager.FindByEmailAsync(user.Email);
-            if (user_exist != null)
+            if (!is_created.Succeeded)
             {
-                // If a user with the same email already exists, returns a bad request response with an error message
-                return BadRequest(new AuthResult()
+                // Get the errors from the result
+                var errors = is_created.Errors.Select(e => e.Description);
+                // Return a BadRequest response with the errors
+                return BadRequest(errors);
+            }
+            
+            if (is_created.Succeeded)
+            {
+                var filteredUser = new User
                 {
-                    
-                });
-            }
-
-            // Creates a new user in the system using the UserManager service injected into the class
-            var result = await _userManager.CreateAsync(user);
-
-            // Adds the user to the role specified in their role property
-            await _userManager.AddToRoleAsync(user, $"{user.Role}");
-            if (result.Succeeded)
-            {
+                    // Wähle hier die gewünschten Attribute des Benutzers aus und weise sie dem entsprechenden Attribut im filteredUser-Objekt zu.
+                    // Beispiel: Nur die Attribute "Name" und "Email" sollen in die filteredUsers-Liste aufgenommen werden:
+                    Id = applicationUser.Id,
+                    Avatar = applicationUser.Avatar,
+                    Role = applicationUser.Role,
+                    Username = applicationUser.UserName,
+                    Name = applicationUser.Name,
+                    Email = applicationUser.Email,
+                    Gender = applicationUser.Gender,
+                    BirthDate = applicationUser.BirthDate,
+                    Followers = applicationUser.Followers,
+                    Following = applicationUser.Following,
+                    LikedPosts = applicationUser.LikedPosts,
+                    DislikedPosts = applicationUser.DislikedPosts,
+                    CreatedAt = applicationUser.CreatedAt,
+                    Bio = applicationUser.Bio,
+                    Interests = applicationUser.Interests,
+                    Locked = applicationUser.Locked
+                };
+                
+                
                 // If the user creation was successful, returns a created response with the newly created user object
-                return CreatedAtAction(nameof(GetById), new {id = user.Id}, user);
+                return CreatedAtAction(nameof(GetById), new {id = filteredUser.Id}, filteredUser);
             }
-
+            
             // If the user creation was not successful, returns a bad request response with the error messages
-            return BadRequest(result.Errors);
+            return BadRequest(is_created.Errors);
         }
 
         /// <summary>
@@ -242,13 +278,13 @@ namespace iva_grp7_backend.Controllers;
         /// <response code="404">If the user with the specified ID is not found.</response>
         /// <response code="500">If an exception occurs while updating the user.</response>
         [HttpPut("{id}")]
-        [ProducesResponseType(200, Type = typeof(ApplicationUser))]
+        [ProducesResponseType(200, Type = typeof(User))]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
 
         // Updates the ApplicationUser.
-        public async Task<IActionResult> Update(string id, [FromBody] ApplicationUser user)
+        public async Task<IActionResult> Update(string id, [FromBody] UserEdit user)
         {
             // Check if the given id matches the user's id.
             if (id != user.Id)
@@ -275,20 +311,8 @@ namespace iva_grp7_backend.Controllers;
 
             // Update the user properties with the properties from the given user object.
             existingUser.Id = user.Id;
-            existingUser.UserName = user.UserName;
+            existingUser.UserName = user.Username;
             existingUser.Email = user.Email;
-            existingUser.ConcurrencyStamp = user.ConcurrencyStamp;
-            existingUser.NormalizedUserName = user.NormalizedUserName;
-            existingUser.NormalizedEmail = user.NormalizedEmail;
-            existingUser.EmailConfirmed = user.EmailConfirmed;
-            existingUser.PasswordHash = user.PasswordHash;
-            existingUser.SecurityStamp = user.SecurityStamp;
-            existingUser.PhoneNumber = user.PhoneNumber;
-            existingUser.PhoneNumberConfirmed = user.PhoneNumberConfirmed;
-            existingUser.TwoFactorEnabled = user.TwoFactorEnabled;
-            existingUser.LockoutEnd = user.LockoutEnd;
-            existingUser.LockoutEnabled = user.LockoutEnabled;
-            existingUser.AccessFailedCount = user.AccessFailedCount;
             existingUser.Bio = user.Bio;
             existingUser.Followers = user.Followers;
             existingUser.Following = user.Following;
@@ -299,17 +323,30 @@ namespace iva_grp7_backend.Controllers;
             existingUser.BirthDate = user.BirthDate;
             existingUser.LikedPosts = user.LikedPosts;
             existingUser.DislikedPosts = user.DislikedPosts;
-            
-            // Check if a user with the given email already exists.
-            var userExist = await _userManager.FindByEmailAsync(existingUser.Email);
+            existingUser.Role = user.Role;
 
-            // If user exists and the email is the same as the one provided, return a bad request with an error message.
-            if (userExist != null && userExist.Email == user.Email)
+            if (user.Password != null)
             {
-                return BadRequest(new AuthResult()
+                // Check if a user with the given email already exists.
+                var userExist = await _userManager.FindByEmailAsync(existingUser.Email);
+
+                var token = await _userManager.GeneratePasswordResetTokenAsync(existingUser);
+
+                var change = await _userManager.ResetPasswordAsync(existingUser, token, user.Password);
+
+                if (!change.Succeeded)
                 {
-                    
-                });
+                    return BadRequest("Password konnte nicht geändert werden");
+                }
+
+                // If user exists and the email is the same as the one provided, return a bad request with an error message.
+                if (userExist != null && userExist.Email == user.Email && userExist.Id != user.Id)
+                {
+                    return BadRequest(new AuthResult()
+                    {
+
+                    });
+                }
             }
 
             // Update the existing user.
@@ -318,7 +355,7 @@ namespace iva_grp7_backend.Controllers;
             // If the update is successful, return an OK response with the updated user object.
             if (result.Succeeded)
             {
-                return Ok(user);
+                return Ok("User wurde erfolgreich aktualisiert");
             }
 
             // If the update fails, return a bad request with the errors from the result object.
