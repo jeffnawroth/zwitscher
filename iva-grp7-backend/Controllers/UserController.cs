@@ -10,8 +10,8 @@ namespace iva_grp7_backend.Controllers;
     /// <summary>
     /// A controller for managing users.
     /// </summary>
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -35,12 +35,42 @@ namespace iva_grp7_backend.Controllers;
         /// <response code="200">Returns the list of users.</response>
         /// <response code="500">If an exception occurs while retrieving the users.</response>
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(List<ApplicationUser>))]
+        [ProducesResponseType(200, Type = typeof(List<User>))]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAll()
         {
             var users = await _userManager.Users.ToListAsync();
-            return Ok(users);
+            var filteredUsers = new List<User>();
+
+            foreach (var user in users)
+            {
+                // Überprüfe hier die gewünschten Attribute des Benutzers und füge ihn zur Liste "filteredUsers" hinzu, wenn die Bedingungen erfüllt sind.
+                // Beispiel: Wenn der Benutzer das Attribut "isActive" haben muss und das Attribut "isAdmin" nicht vorhanden sein darf:
+                var filteredUser = new User
+                    {
+                        // Wähle hier die gewünschten Attribute des Benutzers aus und weise sie dem entsprechenden Attribut im filteredUser-Objekt zu.
+                        // Beispiel: Nur die Attribute "Name" und "Email" sollen in die filteredUsers-Liste aufgenommen werden:
+                        Id = user.Id,
+                        Avatar = user.Avatar,
+                        Role = user.Role,
+                        Username = user.UserName,
+                        Name = user.Name,
+                        Email = user.Email,
+                        Gender = user.Gender,
+                        BirthDate = user.BirthDate,
+                        Followers = user.Followers,
+                        Following = user.Following,
+                        LikedPosts = user.LikedPosts,
+                        DislikedPosts = user.DislikedPosts,
+                        CreatedAt = user.CreatedAt,
+                        Bio = user.Bio,
+                        Interests = user.Interests,
+                        Locked = user.Locked
+                    };
+
+                    filteredUsers.Add(filteredUser);
+                }
+            return Ok(filteredUsers);
         }
 
         /// <summary>
@@ -67,9 +97,33 @@ namespace iva_grp7_backend.Controllers;
 
                 return NotFound();
             }
-
+            
+                // Überprüfe hier die gewünschten Attribute des Benutzers und füge ihn zur Liste "filteredUsers" hinzu, wenn die Bedingungen erfüllt sind.
+                // Beispiel: Wenn der Benutzer das Attribut "isActive" haben muss und das Attribut "isAdmin" nicht vorhanden sein darf:
+                var filteredUser = new User
+                {
+                    // Wähle hier die gewünschten Attribute des Benutzers aus und weise sie dem entsprechenden Attribut im filteredUser-Objekt zu.
+                    // Beispiel: Nur die Attribute "Name" und "Email" sollen in die filteredUsers-Liste aufgenommen werden:
+                    Id = user.Id,
+                    Avatar = user.Avatar,
+                    Role = user.Role,
+                    Username = user.UserName,
+                    Name = user.Name,
+                    Email = user.Email,
+                    Gender = user.Gender,
+                    BirthDate = user.BirthDate,
+                    Followers = user.Followers,
+                    Following = user.Following,
+                    LikedPosts = user.LikedPosts,
+                    DislikedPosts = user.DislikedPosts,
+                    CreatedAt = user.CreatedAt,
+                    Bio = user.Bio,
+                    Interests = user.Interests,
+                    Locked = user.Locked
+                };
+                
             // If a user is found with the given ID, return a 200 OK response with the user object as the response body
-            return Ok(user);
+            return Ok(filteredUser);
         }
         
         /// <summary>
@@ -96,9 +150,33 @@ namespace iva_grp7_backend.Controllers;
 
                 return NotFound();
             }
+            
+            // Überprüfe hier die gewünschten Attribute des Benutzers und füge ihn zur Liste "filteredUsers" hinzu, wenn die Bedingungen erfüllt sind.
+            // Beispiel: Wenn der Benutzer das Attribut "isActive" haben muss und das Attribut "isAdmin" nicht vorhanden sein darf:
+            var filteredUser = new User
+            {
+                // Wähle hier die gewünschten Attribute des Benutzers aus und weise sie dem entsprechenden Attribut im filteredUser-Objekt zu.
+                // Beispiel: Nur die Attribute "Name" und "Email" sollen in die filteredUsers-Liste aufgenommen werden:
+                Id = user.Id,
+                Avatar = user.Avatar,
+                Role = user.Role,
+                Username = user.UserName,
+                Name = user.Name,
+                Email = user.Email,
+                Gender = user.Gender,
+                BirthDate = user.BirthDate,
+                Followers = user.Followers,
+                Following = user.Following,
+                LikedPosts = user.LikedPosts,
+                DislikedPosts = user.DislikedPosts,
+                CreatedAt = user.CreatedAt,
+                Bio = user.Bio,
+                Interests = user.Interests,
+                Locked = user.Locked
+            };
 
             // If a user is found with the given username, return a 200 OK response with the user object as the response body
-            return Ok(user);
+            return Ok(filteredUser);
         }
 
         /// <summary>
@@ -278,7 +356,7 @@ namespace iva_grp7_backend.Controllers;
             // If the deletion is successful, return a 200 OK response.
             if (result.Succeeded)
             {
-                return Ok();
+                return Ok("Der User wurde erfolgreich gelöscht");
             }
 
             // If the deletion is not successful, return a 400 Bad Request response and include any errors that occurred.

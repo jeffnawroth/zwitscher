@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
@@ -6,6 +7,7 @@ namespace iva_grp7_backend.Models;
 
 	public class User
 	{
+		[Key]
 		public string Id { get; set; }
 		public string Avatar { get; set; }
 		public Role Role { get; set; }
@@ -14,20 +16,31 @@ namespace iva_grp7_backend.Models;
 		public string Email { get; set; }
 		public Gender? Gender { get; set; }
 		public DateTime? BirthDate { get; set; }
-		public List<Follower> Followers { get; set; }
-		public List<Following> Following { get; set; }
-        public List<Post> LikedPosts { get; set; }
-        //[ForeignKey("LikedByUserId")]
-        public List<Post> DislikedPosts { get; set; }
-        //[ForeignKey("DislikedByUserId")]
-		public DateTime CreatedAt { get; set; }
+		[NotMapped]
+		public List<string> Followers { get; set; }
+		[NotMapped]
+		public List<string> Following { get; set; }
+		[NotMapped]
+        public List<string> LikedPosts { get; set; }
+        [NotMapped]
+        public List<string> DislikedPosts { get; set; }
+        public DateTime CreatedAt { get; set; }
 		public string? Bio { get; set; }
-		public List<Interest> Interests { get; set; }
+		[NotMapped]
+		public List<string>? Interests { get; set; }
 		public bool Locked { get; set; }
 		
 		// Jedem User werden seine eigenen Posts zugeordnet
-		public ICollection<Post> Posts { get; set; }
+		//public ICollection<Post> Posts { get; set; }
 
+		public User()
+		{
+			Followers = new List<string>();
+			Following = new List<string>();
+			LikedPosts = new List<string>();
+			DislikedPosts = new List<string>();
+			CreatedAt = DateTime.UtcNow;
+		}
 		
 }
 public enum Role

@@ -49,7 +49,7 @@ public class AuthenticationController : ControllerBase
     /// <response code="500">If an exception occurs while registering the user.</response>
     [HttpPost]
         [Route("Register")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(200, Type = typeof(AuthResult))]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> Register([FromBody] UserRegistrationRequestDto requestDto)
@@ -115,7 +115,7 @@ public class AuthenticationController : ControllerBase
     /// <response code="500">If an exception occurs while logging in the user.</response>
     [Route("Login")]
     [HttpPost]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(200, Type = typeof(AuthResult))]
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
     public async Task<IActionResult> Login([FromBody] UserLoginRequestDto loginRequest)
@@ -128,7 +128,6 @@ public class AuthenticationController : ControllerBase
                 // Return bad request with error message if user doesn't exist
                 return BadRequest("Benutzer existiert nicht.");
             var isCorrect = await _userManager.CheckPasswordAsync(existing_user, loginRequest.Password);
-
             if (!isCorrect)
                 // Return bad request with error message if email and password don't match
                 return BadRequest("Email und Passwort stimmen nicht überein.");
@@ -390,6 +389,7 @@ public class AuthenticationController : ControllerBase
         // and finally, convert the resulting sequence to an array of characters and create a new string
         return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
     }
+    /*
     [Route("DBTest")]
     [HttpGet]
     public IActionResult TestConnection()
@@ -408,6 +408,7 @@ public class AuthenticationController : ControllerBase
             return StatusCode(500, $"Database connection error: {ex.Message}");
         }
     }
+    */
 }
 
 

@@ -109,8 +109,7 @@ builder.Services.AddSingleton(tokenValidationParameter);
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApiDbContext>();
-builder.Services.AddIdentityCore<Post>()
-    .AddEntityFrameworkStores<ApiDbContext>();
+
 
 
 var app = builder.Build();

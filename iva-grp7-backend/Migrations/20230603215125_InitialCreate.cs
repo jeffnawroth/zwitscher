@@ -59,6 +59,19 @@ namespace iva_grp7_backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Interests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Interests", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RefreshTokens",
                 columns: table => new
                 {
@@ -75,27 +88,6 @@ namespace iva_grp7_backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RefreshTokens", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "User",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Role = table.Column<int>(type: "int", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Gender = table.Column<int>(type: "int", nullable: true),
-                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Locked = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_User", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -205,70 +197,21 @@ namespace iva_grp7_backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Interests",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Interests", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Interests_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Follower",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FollowerUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Follower", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Follower_AspNetUsers_FollowerUserId",
-                        column: x => x.FollowerUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Follower_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Following",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FollowingUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    FollowingUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Following", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Following_AspNetUsers_FollowingUserId",
-                        column: x => x.FollowingUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Following_User_UserId",
+                        name: "FK_Following_AspNetUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
 
@@ -277,21 +220,16 @@ namespace iva_grp7_backend.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Firstname = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpVotes = table.Column<int>(type: "int", nullable: false),
                     DownVotes = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DislikedByUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LikedByUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ApplicationUserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    PostId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    PostId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -302,63 +240,10 @@ namespace iva_grp7_backend.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Posts_AspNetUsers_ApplicationUserId1",
-                        column: x => x.ApplicationUserId1,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Posts_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Posts_Posts_PostId",
                         column: x => x.PostId,
                         principalTable: "Posts",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Posts_User_DislikedByUserId",
-                        column: x => x.DislikedByUserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Posts_User_LikedByUserId",
-                        column: x => x.LikedByUserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Posts_User_UserId1",
-                        column: x => x.UserId1,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserInterests",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    InterestId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserInterests", x => new { x.UserId, x.InterestId });
-                    table.ForeignKey(
-                        name: "FK_UserInterests_Interests_InterestId",
-                        column: x => x.InterestId,
-                        principalTable: "Interests",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserInterests_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -401,29 +286,9 @@ namespace iva_grp7_backend.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Follower_FollowerUserId",
-                table: "Follower",
-                column: "FollowerUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Follower_UserId",
-                table: "Follower",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Following_FollowingUserId",
-                table: "Following",
-                column: "FollowingUserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Following_UserId",
                 table: "Following",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Interests_ApplicationUserId",
-                table: "Interests",
-                column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_ApplicationUserId",
@@ -431,39 +296,9 @@ namespace iva_grp7_backend.Migrations
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Posts_ApplicationUserId1",
-                table: "Posts",
-                column: "ApplicationUserId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Posts_DislikedByUserId",
-                table: "Posts",
-                column: "DislikedByUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Posts_LikedByUserId",
-                table: "Posts",
-                column: "LikedByUserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Posts_PostId",
                 table: "Posts",
                 column: "PostId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Posts_UserId",
-                table: "Posts",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Posts_UserId1",
-                table: "Posts",
-                column: "UserId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserInterests_InterestId",
-                table: "UserInterests",
-                column: "InterestId");
         }
 
         /// <inheritdoc />
@@ -485,10 +320,10 @@ namespace iva_grp7_backend.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Follower");
+                name: "Following");
 
             migrationBuilder.DropTable(
-                name: "Following");
+                name: "Interests");
 
             migrationBuilder.DropTable(
                 name: "Posts");
@@ -497,16 +332,7 @@ namespace iva_grp7_backend.Migrations
                 name: "RefreshTokens");
 
             migrationBuilder.DropTable(
-                name: "UserInterests");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "Interests");
-
-            migrationBuilder.DropTable(
-                name: "User");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

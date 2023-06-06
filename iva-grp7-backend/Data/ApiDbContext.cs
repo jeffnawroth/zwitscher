@@ -25,22 +25,26 @@ namespace iva_grp7_backend
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            /*
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<ApplicationUser>().Ignore(c => c.AccessFailedCount)
+                .Ignore(c => c.LockoutEnabled)
+                .Ignore(c => c.LockoutEnd)
+                .Ignore(c => c.NormalizedUserName)
+                .Ignore(c => c.NormalizedEmail)
+                .Ignore(c => c.EmailConfirmed)
+                .Ignore(c => c.SecurityStamp)
+                .Ignore(c => c.ConcurrencyStamp)
+                .Ignore(c => c.PhoneNumber)
+                .Ignore(c => c.PhoneNumberConfirmed)
+                .Ignore(c => c.TwoFactorEnabled)
+                .Ignore(c => c.AccessFailedCount);
+
+            modelBuilder.Entity<ApplicationUser>().ToTable("Users");//to change the name of table.
+            */
             
             //modelBuilder.Entity<List<int>>().HasNoKey();
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.Interests)
-                .WithMany() // oder .WithOne(), je nach Ihrer Anforderung
-                .UsingEntity<Dictionary<string, object>>(
-                    "UserInterest",
-                    j => j.HasOne<Interest>().WithMany(),
-                    j => j.HasOne<User>().WithMany().HasForeignKey("UserId"),
-                    j =>
-                    {
-                        j.Property<int>("InterestId");
-                        j.HasKey("UserId", "InterestId");
-                        j.ToTable("UserInterests");
-                    });
-            
+            /*
             modelBuilder.Entity<Follower>()
                 .HasOne(f => f.User)
                 .WithMany(u => u.Followers)
@@ -56,7 +60,7 @@ namespace iva_grp7_backend
                 .HasOne(f => f.User)
                 .WithMany(u => u.Posts)
                 .HasForeignKey(f => f.UserId);
-            
+            */
         }
 
 
