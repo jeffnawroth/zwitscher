@@ -26,236 +26,120 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError } from './base';
 /**
  * 
  * @export
- * @interface ApplicationUser
+ * @interface AuthResult
  */
-export interface ApplicationUser {
+export interface AuthResult {
     /**
      * 
      * @type {string}
-     * @memberof ApplicationUser
+     * @memberof AuthResult
      */
     'id'?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof ApplicationUser
-     */
-    'userName'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'normalizedUserName'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'email'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'normalizedEmail'?: string | null;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof ApplicationUser
-     */
-    'emailConfirmed'?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'passwordHash'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'securityStamp'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'concurrencyStamp'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'phoneNumber'?: string | null;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof ApplicationUser
-     */
-    'phoneNumberConfirmed'?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof ApplicationUser
-     */
-    'twoFactorEnabled'?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'lockoutEnd'?: string | null;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof ApplicationUser
-     */
-    'lockoutEnabled'?: boolean;
-    /**
-     * 
-     * @type {number}
-     * @memberof ApplicationUser
-     */
-    'accessFailedCount'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'name'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
+     * @memberof AuthResult
      */
     'avatar'?: string | null;
     /**
      * 
      * @type {Role}
-     * @memberof ApplicationUser
+     * @memberof AuthResult
      */
     'role'?: Role;
     /**
      * 
+     * @type {string}
+     * @memberof AuthResult
+     */
+    'username'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof AuthResult
+     */
+    'name'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof AuthResult
+     */
+    'email'?: string | null;
+    /**
+     * 
      * @type {Gender}
-     * @memberof ApplicationUser
+     * @memberof AuthResult
      */
     'gender'?: Gender;
     /**
      * 
      * @type {string}
-     * @memberof ApplicationUser
+     * @memberof AuthResult
      */
     'birthDate'?: string | null;
     /**
      * 
-     * @type {Array<Follower>}
-     * @memberof ApplicationUser
+     * @type {Array<string>}
+     * @memberof AuthResult
      */
-    'followers'?: Array<Follower> | null;
+    'followers'?: Array<string> | null;
     /**
      * 
-     * @type {Array<Following>}
-     * @memberof ApplicationUser
+     * @type {Array<string>}
+     * @memberof AuthResult
      */
-    'following'?: Array<Following> | null;
+    'following'?: Array<string> | null;
     /**
      * 
-     * @type {Array<Post>}
-     * @memberof ApplicationUser
+     * @type {Array<string>}
+     * @memberof AuthResult
      */
-    'likedPosts'?: Array<Post> | null;
+    'likedPosts'?: Array<string> | null;
     /**
      * 
-     * @type {Array<Post>}
-     * @memberof ApplicationUser
+     * @type {Array<string>}
+     * @memberof AuthResult
      */
-    'dislikedPosts'?: Array<Post> | null;
+    'dislikedPosts'?: Array<string> | null;
     /**
      * 
      * @type {string}
-     * @memberof ApplicationUser
+     * @memberof AuthResult
      */
     'createdAt'?: string;
     /**
      * 
      * @type {string}
-     * @memberof ApplicationUser
+     * @memberof AuthResult
      */
     'bio'?: string | null;
     /**
      * 
-     * @type {Array<Interest>}
-     * @memberof ApplicationUser
+     * @type {Array<string>}
+     * @memberof AuthResult
      */
-    'interests'?: Array<Interest> | null;
+    'interests'?: Array<string> | null;
     /**
      * 
      * @type {boolean}
-     * @memberof ApplicationUser
+     * @memberof AuthResult
      */
     'locked'?: boolean;
     /**
      * 
-     * @type {Array<Post>}
-     * @memberof ApplicationUser
+     * @type {string}
+     * @memberof AuthResult
      */
-    'posts'?: Array<Post> | null;
-}
-
-
-/**
- * 
- * @export
- * @interface Follower
- */
-export interface Follower {
-    /**
-     * 
-     * @type {number}
-     * @memberof Follower
-     */
-    'id'?: number;
+    'refreshToken'?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Follower
+     * @memberof AuthResult
      */
-    'followerUserId'?: string | null;
-    /**
-     * 
-     * @type {ApplicationUser}
-     * @memberof Follower
-     */
-    'user'?: ApplicationUser;
+    'token'?: string | null;
 }
-/**
- * 
- * @export
- * @interface Following
- */
-export interface Following {
-    /**
-     * 
-     * @type {number}
-     * @memberof Following
-     */
-    'id'?: number | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof Following
-     */
-    'followingUserId'?: string | null;
-    /**
-     * 
-     * @type {ApplicationUser}
-     * @memberof Following
-     */
-    'user'?: ApplicationUser;
-}
+
+
 /**
  * 
  * @export
@@ -271,25 +155,6 @@ export const Gender = {
 export type Gender = typeof Gender[keyof typeof Gender];
 
 
-/**
- * 
- * @export
- * @interface Interest
- */
-export interface Interest {
-    /**
-     * 
-     * @type {number}
-     * @memberof Interest
-     */
-    'id'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof Interest
-     */
-    'name'?: string | null;
-}
 /**
  * 
  * @export
@@ -310,12 +175,6 @@ export interface Post {
     'userId'?: string | null;
     /**
      * 
-     * @type {ApplicationUser}
-     * @memberof Post
-     */
-    'user'?: ApplicationUser;
-    /**
-     * 
      * @type {string}
      * @memberof Post
      */
@@ -325,19 +184,13 @@ export interface Post {
      * @type {string}
      * @memberof Post
      */
-    'firstname'?: string | null;
+    'name'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof Post
      */
-    'lastName'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof Post
-     */
-    'userName'?: string | null;
+    'username'?: string | null;
     /**
      * 
      * @type {string}
@@ -361,37 +214,13 @@ export interface Post {
      * @type {string}
      * @memberof Post
      */
-    'createdAt'?: string;
+    'date'?: string;
     /**
      * 
      * @type {Array<Post>}
      * @memberof Post
      */
     'comments'?: Array<Post> | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof Post
-     */
-    'dislikedByUserId'?: string | null;
-    /**
-     * 
-     * @type {User}
-     * @memberof Post
-     */
-    'dislikedByUser'?: User;
-    /**
-     * 
-     * @type {string}
-     * @memberof Post
-     */
-    'likedByUserId'?: string | null;
-    /**
-     * 
-     * @type {User}
-     * @memberof Post
-     */
-    'likedByUser'?: User;
 }
 /**
  * 
@@ -522,28 +351,28 @@ export interface User {
     'birthDate'?: string | null;
     /**
      * 
-     * @type {Array<Follower>}
+     * @type {Array<string>}
      * @memberof User
      */
-    'followers'?: Array<Follower> | null;
+    'followers'?: Array<string> | null;
     /**
      * 
-     * @type {Array<Following>}
+     * @type {Array<string>}
      * @memberof User
      */
-    'following'?: Array<Following> | null;
+    'following'?: Array<string> | null;
     /**
      * 
-     * @type {Array<Post>}
+     * @type {Array<string>}
      * @memberof User
      */
-    'likedPosts'?: Array<Post> | null;
+    'likedPosts'?: Array<string> | null;
     /**
      * 
-     * @type {Array<Post>}
+     * @type {Array<string>}
      * @memberof User
      */
-    'dislikedPosts'?: Array<Post> | null;
+    'dislikedPosts'?: Array<string> | null;
     /**
      * 
      * @type {string}
@@ -558,22 +387,196 @@ export interface User {
     'bio'?: string | null;
     /**
      * 
-     * @type {Array<Interest>}
+     * @type {Array<string>}
      * @memberof User
      */
-    'interests'?: Array<Interest> | null;
+    'interests'?: Array<string> | null;
     /**
      * 
      * @type {boolean}
      * @memberof User
      */
     'locked'?: boolean;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface UserAdd
+ */
+export interface UserAdd {
     /**
      * 
-     * @type {Array<Post>}
-     * @memberof User
+     * @type {string}
+     * @memberof UserAdd
      */
-    'posts'?: Array<Post> | null;
+    'avatar'?: string | null;
+    /**
+     * 
+     * @type {Role}
+     * @memberof UserAdd
+     */
+    'role'?: Role;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserAdd
+     */
+    'username'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserAdd
+     */
+    'name'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserAdd
+     */
+    'email'?: string | null;
+    /**
+     * 
+     * @type {Gender}
+     * @memberof UserAdd
+     */
+    'gender'?: Gender;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserAdd
+     */
+    'password'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserAdd
+     */
+    'bio'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserAdd
+     */
+    'birthDate'?: string | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof UserAdd
+     */
+    'interests'?: Array<string> | null;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface UserEdit
+ */
+export interface UserEdit {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEdit
+     */
+    'id'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEdit
+     */
+    'avatar'?: string | null;
+    /**
+     * 
+     * @type {Role}
+     * @memberof UserEdit
+     */
+    'role'?: Role;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEdit
+     */
+    'username'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEdit
+     */
+    'name'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEdit
+     */
+    'email'?: string | null;
+    /**
+     * 
+     * @type {Gender}
+     * @memberof UserEdit
+     */
+    'gender'?: Gender;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEdit
+     */
+    'birthDate'?: string | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof UserEdit
+     */
+    'followers'?: Array<string> | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof UserEdit
+     */
+    'following'?: Array<string> | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof UserEdit
+     */
+    'likedPosts'?: Array<string> | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof UserEdit
+     */
+    'dislikedPosts'?: Array<string> | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEdit
+     */
+    'createdAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEdit
+     */
+    'bio'?: string | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof UserEdit
+     */
+    'interests'?: Array<string> | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserEdit
+     */
+    'locked'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEdit
+     */
+    'password'?: string | null;
 }
 
 
@@ -634,39 +637,6 @@ export interface UserRegistrationRequestDto {
  */
 export const AuthenticationApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiAuthenticationDBTestGet: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/Authentication/DBTest`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication Bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
         /**
          * 
          * @summary Logs in a user.
@@ -793,21 +763,12 @@ export const AuthenticationApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async apiAuthenticationDBTestGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiAuthenticationDBTestGet(options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
          * @summary Logs in a user.
          * @param {UserLoginRequestDto} [userLoginRequestDto] The user login request data transfer object (DTO).
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiAuthenticationLoginPost(userLoginRequestDto?: UserLoginRequestDto, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async apiAuthenticationLoginPost(userLoginRequestDto?: UserLoginRequestDto, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthResult>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiAuthenticationLoginPost(userLoginRequestDto, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -829,7 +790,7 @@ export const AuthenticationApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiAuthenticationRegisterPost(userRegistrationRequestDto?: UserRegistrationRequestDto, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async apiAuthenticationRegisterPost(userRegistrationRequestDto?: UserRegistrationRequestDto, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthResult>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiAuthenticationRegisterPost(userRegistrationRequestDto, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -845,20 +806,12 @@ export const AuthenticationApiFactory = function (configuration?: Configuration,
     return {
         /**
          * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiAuthenticationDBTestGet(options?: any): AxiosPromise<void> {
-            return localVarFp.apiAuthenticationDBTestGet(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @summary Logs in a user.
          * @param {UserLoginRequestDto} [userLoginRequestDto] The user login request data transfer object (DTO).
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAuthenticationLoginPost(userLoginRequestDto?: UserLoginRequestDto, options?: any): AxiosPromise<void> {
+        apiAuthenticationLoginPost(userLoginRequestDto?: UserLoginRequestDto, options?: any): AxiosPromise<AuthResult> {
             return localVarFp.apiAuthenticationLoginPost(userLoginRequestDto, options).then((request) => request(axios, basePath));
         },
         /**
@@ -878,7 +831,7 @@ export const AuthenticationApiFactory = function (configuration?: Configuration,
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiAuthenticationRegisterPost(userRegistrationRequestDto?: UserRegistrationRequestDto, options?: any): AxiosPromise<void> {
+        apiAuthenticationRegisterPost(userRegistrationRequestDto?: UserRegistrationRequestDto, options?: any): AxiosPromise<AuthResult> {
             return localVarFp.apiAuthenticationRegisterPost(userRegistrationRequestDto, options).then((request) => request(axios, basePath));
         },
     };
@@ -891,16 +844,6 @@ export const AuthenticationApiFactory = function (configuration?: Configuration,
  * @extends {BaseAPI}
  */
 export class AuthenticationApi extends BaseAPI {
-    /**
-     * 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AuthenticationApi
-     */
-    public apiAuthenticationDBTestGet(options?: AxiosRequestConfig) {
-        return AuthenticationApiFp(this.configuration).apiAuthenticationDBTestGet(options).then((request) => request(this.axios, this.basePath));
-    }
-
     /**
      * 
      * @summary Logs in a user.
@@ -935,6 +878,250 @@ export class AuthenticationApi extends BaseAPI {
      */
     public apiAuthenticationRegisterPost(userRegistrationRequestDto?: UserRegistrationRequestDto, options?: AxiosRequestConfig) {
         return AuthenticationApiFp(this.configuration).apiAuthenticationRegisterPost(userRegistrationRequestDto, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * PostApi - axios parameter creator
+ * @export
+ */
+export const PostApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Gets a list of all posts.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiPostGet: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Post`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Gets a post by its ID.
+         * @param {string} id The ID of the post.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiPostIdGet: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('apiPostIdGet', 'id', id)
+            const localVarPath = `/api/Post/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Creates a new post.
+         * @param {Post} [post] The post to create.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiPostPost: async (post?: Post, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Post`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(post, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * PostApi - functional programming interface
+ * @export
+ */
+export const PostApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = PostApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Gets a list of all posts.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiPostGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Post>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiPostGet(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Gets a post by its ID.
+         * @param {string} id The ID of the post.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiPostIdGet(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Post>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiPostIdGet(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Creates a new post.
+         * @param {Post} [post] The post to create.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiPostPost(post?: Post, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Post>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiPostPost(post, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * PostApi - factory interface
+ * @export
+ */
+export const PostApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = PostApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Gets a list of all posts.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiPostGet(options?: any): AxiosPromise<Array<Post>> {
+            return localVarFp.apiPostGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Gets a post by its ID.
+         * @param {string} id The ID of the post.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiPostIdGet(id: string, options?: any): AxiosPromise<Post> {
+            return localVarFp.apiPostIdGet(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Creates a new post.
+         * @param {Post} [post] The post to create.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiPostPost(post?: Post, options?: any): AxiosPromise<Post> {
+            return localVarFp.apiPostPost(post, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * PostApi - object-oriented interface
+ * @export
+ * @class PostApi
+ * @extends {BaseAPI}
+ */
+export class PostApi extends BaseAPI {
+    /**
+     * 
+     * @summary Gets a list of all posts.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PostApi
+     */
+    public apiPostGet(options?: AxiosRequestConfig) {
+        return PostApiFp(this.configuration).apiPostGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Gets a post by its ID.
+     * @param {string} id The ID of the post.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PostApi
+     */
+    public apiPostIdGet(id: string, options?: AxiosRequestConfig) {
+        return PostApiFp(this.configuration).apiPostIdGet(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Creates a new post.
+     * @param {Post} [post] The post to create.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PostApi
+     */
+    public apiPostPost(post?: Post, options?: AxiosRequestConfig) {
+        return PostApiFp(this.configuration).apiPostPost(post, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -1097,11 +1284,11 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
          * 
          * @summary Updates an existing user.
          * @param {string} id The ID of the user to update.
-         * @param {ApplicationUser} [applicationUser] The updated user information.
+         * @param {UserEdit} [userEdit] The updated user information.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiUserIdPut: async (id: string, applicationUser?: ApplicationUser, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiUserIdPut: async (id: string, userEdit?: UserEdit, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('apiUserIdPut', 'id', id)
             const localVarPath = `/api/User/{id}`
@@ -1128,7 +1315,7 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(applicationUser, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(userEdit, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1138,11 +1325,11 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @summary Creates a new user.
-         * @param {ApplicationUser} [applicationUser] The user to create.
+         * @param {UserAdd} [userAdd] The user to create.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiUserPost: async (applicationUser?: ApplicationUser, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiUserPost: async (userAdd?: UserAdd, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/User`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1166,7 +1353,7 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(applicationUser, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(userAdd, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1189,7 +1376,7 @@ export const UserApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiUserGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ApplicationUser>>> {
+        async apiUserGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<User>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserGet(options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1200,7 +1387,7 @@ export const UserApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiUserGetByUsernameUsernameGet(username: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApplicationUser>> {
+        async apiUserGetByUsernameUsernameGet(username: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserGetByUsernameUsernameGet(username, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1222,7 +1409,7 @@ export const UserApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiUserIdGet(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApplicationUser>> {
+        async apiUserIdGet(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserIdGet(id, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1230,23 +1417,23 @@ export const UserApiFp = function(configuration?: Configuration) {
          * 
          * @summary Updates an existing user.
          * @param {string} id The ID of the user to update.
-         * @param {ApplicationUser} [applicationUser] The updated user information.
+         * @param {UserEdit} [userEdit] The updated user information.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiUserIdPut(id: string, applicationUser?: ApplicationUser, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApplicationUser>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserIdPut(id, applicationUser, options);
+        async apiUserIdPut(id: string, userEdit?: UserEdit, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserIdPut(id, userEdit, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
          * @summary Creates a new user.
-         * @param {ApplicationUser} [applicationUser] The user to create.
+         * @param {UserAdd} [userAdd] The user to create.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiUserPost(applicationUser?: ApplicationUser, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApplicationUser>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserPost(applicationUser, options);
+        async apiUserPost(userAdd?: UserAdd, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserPost(userAdd, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -1265,7 +1452,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiUserGet(options?: any): AxiosPromise<Array<ApplicationUser>> {
+        apiUserGet(options?: any): AxiosPromise<Array<User>> {
             return localVarFp.apiUserGet(options).then((request) => request(axios, basePath));
         },
         /**
@@ -1275,7 +1462,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiUserGetByUsernameUsernameGet(username: string, options?: any): AxiosPromise<ApplicationUser> {
+        apiUserGetByUsernameUsernameGet(username: string, options?: any): AxiosPromise<User> {
             return localVarFp.apiUserGetByUsernameUsernameGet(username, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1295,29 +1482,29 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiUserIdGet(id: string, options?: any): AxiosPromise<ApplicationUser> {
+        apiUserIdGet(id: string, options?: any): AxiosPromise<User> {
             return localVarFp.apiUserIdGet(id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Updates an existing user.
          * @param {string} id The ID of the user to update.
-         * @param {ApplicationUser} [applicationUser] The updated user information.
+         * @param {UserEdit} [userEdit] The updated user information.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiUserIdPut(id: string, applicationUser?: ApplicationUser, options?: any): AxiosPromise<ApplicationUser> {
-            return localVarFp.apiUserIdPut(id, applicationUser, options).then((request) => request(axios, basePath));
+        apiUserIdPut(id: string, userEdit?: UserEdit, options?: any): AxiosPromise<User> {
+            return localVarFp.apiUserIdPut(id, userEdit, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Creates a new user.
-         * @param {ApplicationUser} [applicationUser] The user to create.
+         * @param {UserAdd} [userAdd] The user to create.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiUserPost(applicationUser?: ApplicationUser, options?: any): AxiosPromise<ApplicationUser> {
-            return localVarFp.apiUserPost(applicationUser, options).then((request) => request(axios, basePath));
+        apiUserPost(userAdd?: UserAdd, options?: any): AxiosPromise<User> {
+            return localVarFp.apiUserPost(userAdd, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1380,25 +1567,25 @@ export class UserApi extends BaseAPI {
      * 
      * @summary Updates an existing user.
      * @param {string} id The ID of the user to update.
-     * @param {ApplicationUser} [applicationUser] The updated user information.
+     * @param {UserEdit} [userEdit] The updated user information.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserApi
      */
-    public apiUserIdPut(id: string, applicationUser?: ApplicationUser, options?: AxiosRequestConfig) {
-        return UserApiFp(this.configuration).apiUserIdPut(id, applicationUser, options).then((request) => request(this.axios, this.basePath));
+    public apiUserIdPut(id: string, userEdit?: UserEdit, options?: AxiosRequestConfig) {
+        return UserApiFp(this.configuration).apiUserIdPut(id, userEdit, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @summary Creates a new user.
-     * @param {ApplicationUser} [applicationUser] The user to create.
+     * @param {UserAdd} [userAdd] The user to create.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserApi
      */
-    public apiUserPost(applicationUser?: ApplicationUser, options?: AxiosRequestConfig) {
-        return UserApiFp(this.configuration).apiUserPost(applicationUser, options).then((request) => request(this.axios, this.basePath));
+    public apiUserPost(userAdd?: UserAdd, options?: AxiosRequestConfig) {
+        return UserApiFp(this.configuration).apiUserPost(userAdd, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
