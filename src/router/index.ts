@@ -32,13 +32,13 @@ const routes = [
     path: "/:username",
     name: "profile",
     component: () => import("@/views/Profile.vue"),
-    beforeEnter: (to: RouteLocationNormalized) => {
+    beforeEnter: async (to: RouteLocationNormalized) => {
       const store = useUsersStore();
       const authStore = useAuthenticationStore();
 
       to.params.username === authStore.user?.username
         ? (store.user = authStore.user)
-        : store.getUserByUsername(to.params.username as string);
+        : await store.getUserByUsername(to.params.username as string);
     },
 
     children: [
@@ -113,12 +113,12 @@ const routes = [
       },
       {
         name: "edit-user",
-        path: "user/:id",
+        path: "user/:username",
         component: () => import("@/components/UserDialog.vue"),
         beforeEnter: (to: RouteLocationNormalized) => {
           //TO-DO: Add api
           const store = useUsersStore();
-          store.getUser(to.params.id as string);
+          store.getUserByUsername(to.params.username as string);
         },
       },
     ],

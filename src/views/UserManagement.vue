@@ -3,6 +3,7 @@
     :headers="headers"
     :items="filteredUsers"
     :sort-by="[{ key: 'username', order: 'asc' }]"
+    :loading="store.loadingUsers"
   >
     <!-- :search="search" -->
     <template #top>
@@ -100,7 +101,7 @@ function getUserRole(role: Role) {
 
 function editUser(user: User) {
   store.user = user;
-  router.push({ name: "edit-user", params: { id: user.id } });
+  router.push({ name: "edit-user", params: { username: user.username } });
 }
 
 function openDeleteDialog(user?: User) {

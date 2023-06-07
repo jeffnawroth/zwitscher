@@ -232,6 +232,9 @@ function setFollow() {
     authStore.user?.following.push(usersStore.user!.id);
     usersStore.user?.followers.push(authStore.user!.id);
   }
+  usersStore.updateUser(usersStore.user!);
+  const { token, refreshToken, ...rest } = authStore.user!;
+  usersStore.updateUser(rest);
 }
 
 function loadPosts() {

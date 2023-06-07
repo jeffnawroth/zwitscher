@@ -2,84 +2,90 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { User, UserAdd } from "@/interfaces";
 import { showNotification } from "./helpers";
-import {
-  createNewUser,
-  fetchUserByUsername,
-  getAllUsers,
-  getUserById,
-  modifyUser,
-  removeUser,
-} from "@/dummyApi";
+import { UserApi } from "@/typescript-axios-generated";
 
 export const useUsersStore = defineStore("users", () => {
   const users = ref<User[]>([]);
   const user = ref<User>();
+  const loadingUsers = ref(false);
 
   async function createUser(user: UserAdd) {
     try {
-      await createNewUser(user);
+      const data = await UserApi.prototype.apiUserPost(user);
+      users.value.push(data.data as User);
       showNotification("success", "Der Nutzer wurde erfolgreich erstellt!");
     } catch {
       showNotification(
         "error",
-        "Beim erstellen des Nutzers ist ein Fehler aufgetreten"
+        "Beim Erstellen des Nutzers ist ein Fehler aufgetreten"
       );
     }
   }
 
   async function getUsers() {
     try {
-      const data = await getAllUsers();
-      users.value = data as User[];
+      loadingUsers.value = true;
+      const data = await UserApi.prototype.apiUserGet();
+      users.value = data.data as User[];
     } catch (error) {
       showNotification(
         "error",
-        "Beim laden der Nutzer ist ein Fehler aufgetreten"
+        "Beim Laden der Nutzer ist ein Fehler aufgetreten"
       );
+    } finally {
+      loadingUsers.value = false;
     }
   }
 
-  async function getUser(id: string) {
-    try {
-      const data = await getUserById(id);
-      user.value = data;
-    } catch (error) {
-      showNotification(
-        "error",
-        "Beim laden des Nutzers ist ein Fehler aufgetreten"
-      );
-    }
-  }
+  // async function getUser(id: string) {
+  //   try {
+  //     const data = await UserApi.prototype.apiUserIdGet(id);
+
+  //     user.value = data.data as User;
+  //   } catch (error) {
+  //     showNotification(
+  //       "error",
+  //       "Beim Laden des Nutzers ist ein Fehler aufgetreten"
+  //     );
+  //   }
+  // }
 
   async function getUserByUsername(username: string) {
     try {
-      const data = await fetchUserByUsername(username);
-      user.value = data;
+      const data = await UserApi.prototype.apiUserGetByUsernameUsernameGet(
+        username
+      );
+      user.value = data.data as User;
     } catch (error) {
       showNotification(
         "error",
-        "Beim laden des Nutzers ist ein Fehler aufgetreten"
+        "Beim Laden des Nutzers ist ein Fehler aufgetreten"
       );
     }
   }
 
   async function deleteUser() {
     try {
-      await removeUser(user.value!.id);
+      await UserApi.prototype.apiUserIdDelete(user.value!.id);
+      users.value = users.value.filter(
+        (userDelete) => userDelete.id !== user.value!.id
+      );
       showNotification("success", "Der Nutzer wurde erfolgreich gelöscht!");
     } catch {
       showNotification(
         "error",
-        "Beim löschen des Nutzers ist ein Fehler aufgetreten"
+        "Beim Löschen des Nutzers ist ein Fehler aufgetreten"
       );
     }
   }
 
   async function updateUser(userEdit: User) {
     try {
-      await modifyUser(userEdit);
-      const store = useUsersStore();
-      store.user = userEdit;
+      await UserApi.prototype.apiUserIdPut(userEdit.id, userEdit);
+      user.value = userEdit;
+      const index = users.value.findIndex((user) => user.id === userEdit.id);
+      if (index > -1) users.value.splice(index, 1, userEdit);
+
       showNotification("success", "Die Änderungen wurden gespeichert!");
     } catch {
       showNotification(
@@ -95,8 +101,9 @@ export const useUsersStore = defineStore("users", () => {
     createUser,
     getUsers,
     deleteUser,
-    getUser,
+    // getUser,
     updateUser,
     getUserByUsername,
+    loadingUsers,
   };
 });

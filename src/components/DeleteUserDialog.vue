@@ -32,6 +32,5 @@ function closeDialog() {
 function removeUser() {
   store.deleteUser();
   closeDialog();
-  router.push({ name: "home" });
 }
 </script>

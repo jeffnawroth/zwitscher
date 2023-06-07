@@ -318,8 +318,8 @@ onMounted(() => {
 
     let initialValues = {
       ...rest,
-      password: "",
-      passwordConfirm: "",
+      password: null,
+      passwordConfirm: null,
       gender,
       interests,
       birthDate,
