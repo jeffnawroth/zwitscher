@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using iva_grp7_backend.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -11,7 +12,7 @@ namespace iva_grp7_backend.Controllers;
     /// A controller for managing users.
     /// </summary>
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -39,24 +40,29 @@ namespace iva_grp7_backend.Controllers;
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAll()
         {
-            var currentUser = await _userManager.GetUserAsync(User);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUser = await _userManager.FindByEmailAsync(userId);
+            
+            if(currentUser == null)
+            {
+                return NotFound("Current user not found.");
+            }
+
+            if(currentUser.Role == null)
+            {
+                return NotFound("Current user role not found.");
+            }
+            
             var users = await _userManager.Users.ToListAsync();
             
             var filteredUsers = new List<User>();
             
             if (currentUser.Role == Role.Admin)
             {
-                // Der angemeldete Benutzer ist ein Admin, daher alle Benutzer zur gefilterten Liste hinzufügen
-                
-            }
-            foreach (var user in users)
-            {
-                // Überprüfe hier die gewünschten Attribute des Benutzers und füge ihn zur Liste "filteredUsers" hinzu, wenn die Bedingungen erfüllt sind.
-                // Beispiel: Wenn der Benutzer das Attribut "isActive" haben muss und das Attribut "isAdmin" nicht vorhanden sein darf:
-                var filteredUser = new User
+                foreach (var user in users)
+                {
+                    var filteredUser = new User
                     {
-                        // Wähle hier die gewünschten Attribute des Benutzers aus und weise sie dem entsprechenden Attribut im filteredUser-Objekt zu.
-                        // Beispiel: Nur die Attribute "Name" und "Email" sollen in die filteredUsers-Liste aufgenommen werden:
                         Id = user.Id,
                         Avatar = user.Avatar,
                         Role = user.Role,
@@ -77,6 +83,41 @@ namespace iva_grp7_backend.Controllers;
 
                     filteredUsers.Add(filteredUser);
                 }
+            
+            
+            }
+
+            if (currentUser.Role == Role.Moderator)
+            {
+                foreach (var user in users)
+                {
+                    if (user.Role == Role.User)
+                    {
+                        var filteredUser = new User
+                        {
+                            Id = user.Id,
+                            Avatar = user.Avatar,
+                            Role = user.Role,
+                            Username = user.UserName,
+                            Name = user.Name,
+                            Email = user.Email,
+                            Gender = user.Gender,
+                            BirthDate = user.BirthDate,
+                            Followers = user.Followers,
+                            Following = user.Following,
+                            LikedPosts = user.LikedPosts,
+                            DislikedPosts = user.DislikedPosts,
+                            CreatedAt = user.CreatedAt,
+                            Bio = user.Bio,
+                            Interests = user.Interests,
+                            Locked = user.Locked
+                        };
+
+                        filteredUsers.Add(filteredUser);
+                    }
+                    
+                }
+            }
             return Ok(filteredUsers);
         }
 
