@@ -11,7 +11,7 @@ namespace iva_grp7_backend.Models
 		public string? Avatar { get; set; }
 		public Role Role { get; set; }
 		public Gender? Gender { get; set; }
-		public DateTime? BirthDate { get; set; }
+		public string? BirthDate { get; set; }
 		[NotMapped]
 		public List<string> Followers { get; set; }
 		[NotMapped]

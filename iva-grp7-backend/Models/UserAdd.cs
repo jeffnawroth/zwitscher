@@ -10,6 +10,6 @@ public class UserAdd
     public Gender? Gender { get; set; }
     public string Password { get; set; }
     public string? Bio { get; set; }
-    public DateTime? BirthDate { get; set; }
+    public string? BirthDate { get; set; }
     public List<string>? Interests { get; set; }
 }

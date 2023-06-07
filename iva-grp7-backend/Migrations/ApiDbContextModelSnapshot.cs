@@ -173,8 +173,8 @@ namespace iva_grp7_backend.Migrations
                     b.Property<string>("Bio")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("BirthDate")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("BirthDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -292,9 +292,6 @@ namespace iva_grp7_backend.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Avatar")
                         .HasColumnType("nvarchar(max)");
 
@@ -326,8 +323,6 @@ namespace iva_grp7_backend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("PostId");
 
@@ -433,18 +428,9 @@ namespace iva_grp7_backend.Migrations
 
             modelBuilder.Entity("iva_grp7_backend.Models.Post", b =>
                 {
-                    b.HasOne("iva_grp7_backend.Models.ApplicationUser", null)
-                        .WithMany("Posts")
-                        .HasForeignKey("ApplicationUserId");
-
                     b.HasOne("iva_grp7_backend.Models.Post", null)
                         .WithMany("Comments")
                         .HasForeignKey("PostId");
-                });
-
-            modelBuilder.Entity("iva_grp7_backend.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("Posts");
                 });
 
             modelBuilder.Entity("iva_grp7_backend.Models.Post", b =>
