@@ -2,8 +2,8 @@
   <v-row v-if="files.length > 0">
     <v-col v-for="file in files" :key="file.name" :cols="imgCols">
       <!-- Image -->
-      <v-card v-if="file.type === 'image/jpeg'">
-        <v-img cover aspect-ratio="1/1" :src="generateFileURL(file)">
+      <v-card v-if="file.type.startsWith('image/')">
+        <v-img :src="generateFileURL(file)">
           <v-toolbar color="rgba(0, 0, 0, 0)" theme="dark">
             <template v-if="removeFileBtn" #prepend>
               <v-btn
@@ -20,7 +20,7 @@
         </v-img>
       </v-card>
       <!-- Video -->
-      <div v-else-if="file.type === 'video/mp4'" class="video-player">
+      <div v-else class="video-player">
         <video ref="videoPlayer" controls>
           <source :src="generateFileURL(files[0])" type="video/mp4" />
         </video>
