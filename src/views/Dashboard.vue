@@ -1,5 +1,12 @@
 <template>
-  <PageToolbar icon="mdi-view-dashboard" title="Dashboard"></PageToolbar>
+  <PageToolbar icon="mdi-view-dashboard" title="Dashboard">
+    <v-btn
+      prepend-icon="mdi-download-multiple"
+      variant="tonal"
+      @click="downloadAllCharts"
+      >Alle downloaden</v-btn
+    >
+  </PageToolbar>
   <v-row class="pa-5">
     <v-col cols="12" sm="6">
       <DashboardCard
@@ -319,5 +326,13 @@ function downloadActiveUsers() {
   }));
   const workbook = createExcelFile(data, "Aktive Nutzer");
   downloadExcelFile(workbook, "aktive_nutzer.xlsx");
+}
+
+function downloadAllCharts() {
+  downloadActiveUsers();
+  downloadAgeDistribution();
+  downloadGenderDistribution();
+  downloadPostsPerDay();
+  downloadUserGrowth();
 }
 </script>
