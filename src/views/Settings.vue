@@ -1,13 +1,27 @@
 <template>
-  <PageToolbar title="Einstellungen"></PageToolbar>
+  <PageToolbar icon="mdi-cog" title="Einstellungen"></PageToolbar>
   <v-list>
-    <v-list-item @click="changeEmailDialog = true">E-Mail ändern</v-list-item>
+    <v-list-item
+      prepend-icon="mdi-email-edit-outline"
+      title="E-Mail ändern"
+      @click="changeEmailDialog = true"
+    ></v-list-item>
     <v-divider></v-divider>
-    <v-list-item @click="changePasswordDialog = true"
-      >Passwort ändern</v-list-item
+    <v-list-item
+      prepend-icon="mdi-lock-reset"
+      title="Passwort ändern"
+      @click="changePasswordDialog = true"
     >
+    </v-list-item>
     <v-divider></v-divider>
-    <v-list-item @click="deleteAccountDialog = true">Konto löschen</v-list-item>
+    <v-list-item @click="deleteAccountDialog = true">
+      <template #prepend>
+        <v-icon color="red">mdi-account-remove-outline</v-icon>
+      </template>
+      <template #title>
+        <span class="text-red">Konto löschen</span>
+      </template></v-list-item
+    >
   </v-list>
 
   <PasswordDialog v-model="changePasswordDialog"></PasswordDialog>

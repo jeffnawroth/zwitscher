@@ -1,11 +1,16 @@
 <template>
   <v-toolbar density="compact">
-    <v-btn
-      v-if="backButton"
-      variant="plain"
-      icon="mdi-chevron-left"
-      @click="router.back()"
-    ></v-btn>
+    <template #prepend>
+      <v-btn
+        v-if="backButton"
+        variant="plain"
+        icon="mdi-arrow-left"
+        @click="router.back()"
+      ></v-btn>
+      <v-icon>{{ icon }}</v-icon>
+    </template>
+
+    <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
     <v-toolbar-title class="font-weight-bold">{{ title }}</v-toolbar-title>
     <slot></slot>
   </v-toolbar>
@@ -20,6 +25,10 @@ defineProps({
   },
   backButton: {
     type: Boolean,
+  },
+  icon: {
+    type: String,
+    required: true,
   },
 });
 

@@ -1,5 +1,6 @@
 <template>
-  <PageToolbar title="Beitrag" back-button> </PageToolbar>
+  <PageToolbar icon="mdi-post-outline" title="Beitrag" back-button>
+  </PageToolbar>
   <v-list rounded="lg">
     <v-list-item>
       <Post

@@ -1,5 +1,5 @@
 <template>
-  <PageToolbar title="Startseite"></PageToolbar>
+  <PageToolbar icon="mdi-home" title="Startseite"></PageToolbar>
   <v-tabs
     v-if="authStore.loggedIn"
     v-model="tab"

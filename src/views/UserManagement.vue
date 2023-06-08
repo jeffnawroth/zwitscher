@@ -6,7 +6,7 @@
   >
     <!-- :search="search" -->
     <template #top>
-      <PageToolbar title="Benutzerverwaltung">
+      <PageToolbar icon="mdi-account-group" title="Benutzerverwaltung">
         <v-btn variant="tonal" @click="router.push({ name: 'create-user' })"
           >Nutzer erstellen</v-btn
         ></PageToolbar

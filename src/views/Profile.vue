@@ -1,5 +1,5 @@
 <template>
-  <PageToolbar title="Profil"></PageToolbar>
+  <PageToolbar icon="mdi-account" title="Profil"></PageToolbar>
   <v-list rounded="lg">
     <v-list-item>
       <v-card>

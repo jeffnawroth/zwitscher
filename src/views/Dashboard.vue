@@ -1,5 +1,5 @@
 <template>
-  <PageToolbar title="Dashboard"></PageToolbar>
+  <PageToolbar icon="mdi-view-dashboard" title="Dashboard"></PageToolbar>
   <v-row class="pa-5">
     <v-col cols="12" sm="6">
       <DashboardCard
