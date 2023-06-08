@@ -219,7 +219,7 @@ const genderIcon = computed(() => {
   return genderMap[gender];
 });
 
-function setFollow() {
+async function setFollow() {
   const followingIndex = authStore.user?.following.indexOf(usersStore.user!.id);
   const followerIndex = usersStore.user?.followers.indexOf(authStore.user!.id);
 
@@ -232,9 +232,9 @@ function setFollow() {
     authStore.user?.following.push(usersStore.user!.id);
     usersStore.user?.followers.push(authStore.user!.id);
   }
-  usersStore.updateUser(usersStore.user!);
+  await usersStore.updateUser(usersStore.user!, false);
   const { token, refreshToken, ...rest } = authStore.user!;
-  usersStore.updateUser(rest);
+  await usersStore.updateUser(rest, false);
 }
 
 function loadPosts() {

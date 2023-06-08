@@ -60,12 +60,10 @@ export const useUsersStore = defineStore("users", () => {
     }
   }
 
-  async function deleteUser() {
+  async function deleteUser(id: string) {
     try {
-      await UserApi.prototype.apiUserIdDelete(user.value!.id);
-      users.value = users.value.filter(
-        (userDelete) => userDelete.id !== user.value!.id
-      );
+      await UserApi.prototype.apiUserIdDelete(id);
+      users.value = users.value.filter((user) => user.id !== id);
       showNotification("success", "Der Nutzer wurde erfolgreich gelöscht!");
     } catch {
       showNotification(
@@ -75,14 +73,15 @@ export const useUsersStore = defineStore("users", () => {
     }
   }
 
-  async function updateUser(userEdit: User) {
+  async function updateUser(userEdit: User, notification = true) {
     try {
       await UserApi.prototype.apiUserIdPut(userEdit.id, userEdit);
       user.value = userEdit;
       const index = users.value.findIndex((user) => user.id === userEdit.id);
       if (index > -1) users.value.splice(index, 1, userEdit);
 
-      showNotification("success", "Die Änderungen wurden gespeichert!");
+      if (notification)
+        showNotification("success", "Die Änderungen wurden gespeichert!");
     } catch {
       showNotification(
         "error",

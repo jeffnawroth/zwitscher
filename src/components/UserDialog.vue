@@ -352,14 +352,14 @@ function close() {
     : router.push({ name: "users" });
 }
 
-function submit(values: any) {
+async function submit(values: any) {
   const { passwordConfirm, ...rest } = values;
   let updatedValues: UserEdit = { ...rest };
 
   if (route.name == "create-user") {
-    store.createUser(updatedValues);
+    await store.createUser(updatedValues);
   } else {
-    store.updateUser(updatedValues);
+    await store.updateUser(updatedValues);
   }
   close();
 }
