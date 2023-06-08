@@ -1,9 +1,8 @@
 import { AuthUser } from "@/interfaces";
 import router from "@/router";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
-import { userData } from "@/dummyData";
 import {
   AuthenticationApi,
   TokenRequest,
@@ -39,7 +38,9 @@ export const useAuthenticationStore = defineStore("authentication", () => {
       );
       setUserData(user.data);
       router.push({ name: "home" });
-    } catch {
+    } catch (error: unknown) {
+      if ((error as AxiosError).response?.status === 403)
+        return Promise.reject(error);
       showNotification("error", "Beim Einloggen ist ein Fehler aufgetreten!");
     }
   }

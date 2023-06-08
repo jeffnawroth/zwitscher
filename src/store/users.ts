@@ -7,7 +7,6 @@ import { UserApi } from "@/typescript-axios-generated";
 export const useUsersStore = defineStore("users", () => {
   const users = ref<User[]>([]);
   const user = ref<User>();
-  const loadingUsers = ref(false);
 
   async function createUser(user: UserAdd) {
     try {
@@ -24,7 +23,6 @@ export const useUsersStore = defineStore("users", () => {
 
   async function getUsers() {
     try {
-      loadingUsers.value = true;
       const data = await UserApi.prototype.apiUserGet();
       users.value = data.data as User[];
     } catch (error) {
@@ -32,8 +30,6 @@ export const useUsersStore = defineStore("users", () => {
         "error",
         "Beim Laden der Nutzer ist ein Fehler aufgetreten"
       );
-    } finally {
-      loadingUsers.value = false;
     }
   }
 
@@ -104,6 +100,5 @@ export const useUsersStore = defineStore("users", () => {
     // getUser,
     updateUser,
     getUserByUsername,
-    loadingUsers,
   };
 });

@@ -1,6 +1,11 @@
 <template>
   <v-dialog v-model="dialog" width="500" persistent>
+    <UserLockedCard
+      v-if="locked"
+      @close="router.push({ name: 'home' })"
+    ></UserLockedCard>
     <Form
+      v-else
       v-slot="{ meta }"
       :validation-schema="validationSchema"
       :initial-values="initialValues"
@@ -60,7 +65,8 @@ import BasePasswordInput from "@/components/BaseComponents/BasePasswordInput.vue
 import { useRouter } from "vue-router";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
 import { ref } from "vue";
-
+import UserLockedCard from "@/components/UserLockedCard.vue";
+import { AxiosError } from "axios";
 setLocale(yupLocaleDe);
 
 const initialValues = {
@@ -72,12 +78,18 @@ const store = useAuthenticationStore();
 const dialog = ref(true);
 const router = useRouter();
 
+const locked = ref(false);
+
 const validationSchema = object({
   email: string().required().email().label("E-Mail"),
   password: string().required().label("Passwort"),
 });
 
 async function submit(values: any) {
-  await store.login(values);
+  try {
+    await store.login(values);
+  } catch (error: unknown) {
+    if ((error as AxiosError).response?.status === 403) locked.value = true;
+  }
 }
 </script>

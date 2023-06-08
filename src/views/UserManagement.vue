@@ -3,7 +3,6 @@
     :headers="headers"
     :items="filteredUsers"
     :sort-by="[{ key: 'username', order: 'asc' }]"
-    :loading="store.loadingUsers"
   >
     <!-- :search="search" -->
     <template #top>
