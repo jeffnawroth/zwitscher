@@ -43,7 +43,6 @@ onMounted(() => {
   timeout.value = setTimeout(() => {
     store.deleteNotification(props.notification);
   }, 6000);
-
   interval.value = setInterval(() => {
     if (progress.value === 100) {
       return (progress.value = 0);
@@ -61,9 +60,5 @@ onBeforeUnmount(() => {
 <style scoped>
 #alert {
   z-index: 10000;
-  top: 0;
-  right: 0;
-  position: absolute;
-  margin: 12px;
 }
 </style>

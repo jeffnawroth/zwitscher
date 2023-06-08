@@ -4,6 +4,7 @@
       v-for="notification in store.notifications"
       :key="notification.id"
       :notification="notification"
+      class="my-1"
     />
   </div>
 </template>
@@ -14,3 +15,12 @@ import NotificationAlert from "./NotificationAlert.vue";
 
 const store = useNotificationStore();
 </script>
+
+<style>
+.notification-container {
+  top: 0;
+  right: 0;
+  position: absolute;
+  margin: 12px;
+}
+</style>

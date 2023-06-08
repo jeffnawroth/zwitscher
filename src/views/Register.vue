@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" width="500">
+  <v-dialog v-model="dialog" width="500" persistent>
     <Form
       v-slot="{ meta }"
       :validation-schema="validationSchema"

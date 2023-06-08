@@ -87,8 +87,6 @@ import { useRoute, useRouter } from "vue-router";
 import NotificationContainer from "./components/Notification/NotificationContainer.vue";
 
 const store = useAuthenticationStore();
-const route = useRoute();
-const router = useRouter();
 const { mdAndDown } = useDisplay();
 
 const authIcon = computed(() => {
@@ -101,14 +99,27 @@ onMounted(() => {
     const userData = JSON.parse(userString);
     store.setUserData(userData);
   }
-  /*  axios.interceptors.response.use(
+  axios.interceptors.response.use(
     (response) => response,
-    (error) => {
-      if (error.response.status === 401) {
-        store.logout();
+    async (error) => {
+      const originalConfig = error.config;
+      if (error.response.status === 401 && !originalConfig._retry) {
+        originalConfig._retry = true;
+        try {
+          await store.refreshUserToken({
+            token: store.user!.token,
+            refreshToken: store.user!.refreshToken,
+          });
+          originalConfig.headers[
+            "Authorization"
+          ] = `Bearer ${store.user?.token}`;
+          return await axios(originalConfig);
+        } catch (error) {
+          return Promise.reject(error);
+        }
       }
       return Promise.reject(error);
     }
-  ); */
+  );
 });
 </script>
