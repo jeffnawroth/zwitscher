@@ -7,7 +7,6 @@ import { showNotification, sortByDateDescending } from "./helpers";
 import {
   createNewPost,
   getAllPostsFromUser,
-  getAllPublicPosts,
   getPostsFromFollowedUsers,
   getSinglePost,
   modifyPost,
@@ -35,8 +34,8 @@ export const usePostStore = defineStore("post", () => {
 
   async function getPostsForUser(id: string) {
     try {
-      const data = await getAllPostsFromUser(id);
-      postsOfUser.value = data;
+      const data = await PostApi.prototype.apiPostUserUserIdGet(id);
+      postsOfUser.value = data.data;
     } catch (error) {
       showNotification(
         "error",
@@ -60,8 +59,8 @@ export const usePostStore = defineStore("post", () => {
 
   async function getPost(id: string) {
     try {
-      const data = await getSinglePost(id);
-      post.value = data;
+      const data = await PostApi.prototype.apiPostIdGet(id);
+      post.value = data.data;
     } catch (error) {
       showNotification(
         "error",
@@ -72,8 +71,8 @@ export const usePostStore = defineStore("post", () => {
 
   async function createPost(post: PostAdd) {
     try {
-      const data = await createNewPost(post);
-      allPosts.value?.push(data);
+      const data = await PostApi.prototype.apiPostPost(post);
+      allPosts.value?.push(data.data);
     } catch (error) {
       showNotification(
         "error",
@@ -96,7 +95,7 @@ export const usePostStore = defineStore("post", () => {
 
   async function deletePost(id: string) {
     try {
-      await removePost(id);
+      await PostApi.prototype.apiPostIdDelete(id);
       allPosts.value = allPosts.value.filter((post) => post.id !== id);
       showNotification("success", "Der Beitrag wurde erfolgreich gelöscht!");
     } catch (error) {
@@ -109,7 +108,7 @@ export const usePostStore = defineStore("post", () => {
 
   async function updatePost(post: Post) {
     try {
-      await modifyPost(post);
+      await PostApi.prototype.apiPostPut(post);
       const index = allPosts.value.findIndex((x) => x.id === post.id);
       if (index > -1) allPosts.value.splice(index, 1, post);
       showNotification("success", "Der Beitrag wurde erfolgreich bearbeitet!");

@@ -1,11 +1,12 @@
-import { NotificationAlert, Post } from "@/interfaces";
+import { NotificationAlert } from "@/interfaces";
 import { v4 as uuidv4 } from "uuid";
 import { useNotificationStore } from "./notification";
+import { Post } from "@/typescript-axios-generated";
 
 export function sortByDateDescending(posts: Post[]) {
   return posts.sort((a: Post, b: Post) => {
-    const dateA = new Date(a.date);
-    const dateB = new Date(b.date);
+    const dateA = new Date(a.date!);
+    const dateB = new Date(b.date!);
     return dateB.getTime() - dateA.getTime();
   });
 }
