@@ -38,13 +38,14 @@ export interface UserEdit extends User {
 
 export interface Post {
   id: string;
+  role: Role;
   userId: string;
   avatar?: File;
   name: string;
   username: string;
   text?: string;
-  upvotes: number;
-  downvotes: number;
+  upVotes: number;
+  downVotes: number;
   date: string;
   comments?: Post[];
   files?: File[];

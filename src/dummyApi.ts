@@ -51,8 +51,8 @@ export const createNewPost = (postAdd: PostAdd): Promise<Post> => {
   const post: Post = {
     id: uuidv4(),
     userId: postAdd.userId,
-    upvotes: 0,
-    downvotes: 0,
+    upVotes: 0,
+    downVotes: 0,
     name: user?.name!,
     username: user?.username!,
     date: new Date().toUTCString(),

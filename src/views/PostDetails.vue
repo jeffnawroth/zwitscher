@@ -5,8 +5,8 @@
     <v-list-item>
       <Post
         :post="store.post!"
-        @set-upvotes="(upvotes: number) => (store.post!.upvotes = upvotes)"
-        @set-downvotes="(downvotes: number) => (store.post!.downvotes = downvotes)"
+        @set-upvotes="(upvotes: number) => (store.post!.upVotes = upvotes)"
+        @set-downvotes="(downvotes: number) => (store.post!.downVotes = downvotes)"
       ></Post>
     </v-list-item>
     <v-divider></v-divider>

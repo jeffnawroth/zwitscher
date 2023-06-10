@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { PostAdd, Post } from "@/interfaces";
+import { PostAdd } from "@/interfaces";
 import { useAuthenticationStore } from "./authentication";
 import { computed } from "vue";
 import { showNotification, sortByDateDescending } from "./helpers";
@@ -13,6 +13,7 @@ import {
   modifyPost,
   removePost,
 } from "@/dummyApi";
+import { Post, PostApi } from "@/typescript-axios-generated";
 
 export const usePostStore = defineStore("post", () => {
   const allPosts = ref<Post[]>([]);
@@ -22,8 +23,8 @@ export const usePostStore = defineStore("post", () => {
 
   async function getAllPosts() {
     try {
-      const data = await getAllPublicPosts();
-      allPosts.value = data;
+      const data = await PostApi.prototype.apiPostGet();
+      allPosts.value = data.data;
     } catch (error) {
       showNotification(
         "error",

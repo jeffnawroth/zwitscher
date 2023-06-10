@@ -122,12 +122,13 @@ export const allPosts: Post[] = [
     avatar: await getAvatar(
       "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
     ),
-    upvotes: 20,
-    downvotes: 5,
+    upVotes: 20,
+    downVotes: 5,
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
     date: new Date("2023-05-01").toUTCString(),
     comments: [],
     files: [],
+    role: Role.NUMBER_0,
   },
   {
     id: adminPost2Id,
@@ -137,12 +138,13 @@ export const allPosts: Post[] = [
     avatar: await getAvatar(
       "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
     ),
-    upvotes: 20,
-    downvotes: 5,
+    upVotes: 20,
+    downVotes: 5,
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
     date: new Date("2023-05-02T18:56:00").toUTCString(),
     comments: [],
     files: [],
+    role: Role.NUMBER_0,
   },
   {
     id: janePost3Id,
@@ -152,12 +154,13 @@ export const allPosts: Post[] = [
     avatar: await getAvatar(
       "https://avatars0.githubusercontent.com/u/9064066?v=4&s=460"
     ),
-    upvotes: 15,
-    downvotes: 10,
+    upVotes: 15,
+    downVotes: 10,
     text: "I'm planning a road trip across the US this summer. Any recommendations?",
     date: new Date("2022-04-11").toUTCString(),
     comments: [],
     files: [],
+    role: Role.NUMBER_1,
   },
   {
     id: johnPost4Id,
@@ -167,12 +170,13 @@ export const allPosts: Post[] = [
     avatar: await getAvatar(
       "https://cdn.pixabay.com/photo/2023/05/23/15/26/bengal-cat-8012976_960_720.jpg"
     ),
-    upvotes: 20,
-    downvotes: 5,
+    upVotes: 20,
+    downVotes: 5,
     text: "Just finished reading a great book about astrophysics. Highly recommend it!",
     date: new Date("2023-04-27").toUTCString(),
     comments: [],
     files: [],
+    role: Role.NUMBER_1,
   },
 ];
 

@@ -20,16 +20,17 @@
     <template #text>
       {{ post.text }}
       <FileLayout
+        v-if="post.files"
         :class="post.text === '' ? '' : 'mt-1'"
         :files="post.files"
       ></FileLayout>
     </template>
     <v-card-actions>
       <v-btn :prepend-icon="thumbUp" @click.stop="likePost">{{
-        post.upvotes
+        post.upVotes
       }}</v-btn>
       <v-btn :prepend-icon="thumbDown" @click.stop="dislikePost">{{
-        post.downvotes
+        post.downVotes
       }}</v-btn>
       <v-btn prepend-icon="mdi-comment-outline">{{
         post.comments?.length ?? 0
@@ -112,14 +113,14 @@ function likePost() {
 
   if (likedIndex != undefined && likedIndex !== -1) {
     authStore.user?.likedPosts?.splice(likedIndex, 1);
-    emit("set-upvotes", props.post.upvotes - 1);
+    emit("set-upvotes", props.post.upVotes - 1);
   } else {
     if (!authStore.user?.likedPosts) authStore.user!.likedPosts = [];
     authStore.user?.likedPosts?.push(props.post.id);
-    emit("set-upvotes", props.post.upvotes + 1);
+    emit("set-upvotes", props.post.upVotes + 1);
     if (dislikedIndex != undefined && dislikedIndex !== -1) {
       authStore.user?.dislikedPosts?.splice(dislikedIndex, 1);
-      emit("set-downvotes", props.post.downvotes - 1);
+      emit("set-downvotes", props.post.downVotes - 1);
     }
   }
 }
@@ -134,14 +135,14 @@ function dislikePost() {
 
   if (dislikedIndex != undefined && dislikedIndex !== -1) {
     authStore.user?.dislikedPosts?.splice(dislikedIndex, 1);
-    emit("set-downvotes", props.post.downvotes - 1);
+    emit("set-downvotes", props.post.downVotes - 1);
   } else {
     if (!authStore.user?.dislikedPosts) authStore.user!.dislikedPosts = [];
     authStore.user?.dislikedPosts?.push(props.post.id);
-    emit("set-downvotes", props.post.downvotes + 1);
+    emit("set-downvotes", props.post.downVotes + 1);
     if (likedIndex != undefined && likedIndex !== -1) {
       authStore.user?.likedPosts?.splice(likedIndex, 1);
-      emit("set-upvotes", props.post.upvotes - 1);
+      emit("set-upvotes", props.post.upVotes - 1);
     }
   }
 }

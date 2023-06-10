@@ -3,8 +3,8 @@
     <v-list-item @click="openPost(post)">
       <Post
         :post="post"
-        @set-upvotes="(upvotes: number) => (post.upvotes = upvotes)"
-        @set-downvotes="(downvotes: number) => (post.downvotes = downvotes)"
+        @set-upvotes="(upvotes: number) => (post.upVotes = upvotes)"
+        @set-downvotes="(downvotes: number) => (post.downVotes = downvotes)"
       ></Post>
     </v-list-item>
     <v-divider v-if="index !== posts.length - 1"></v-divider>
