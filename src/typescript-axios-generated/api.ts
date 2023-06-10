@@ -214,13 +214,44 @@ export interface Post {
      * @type {string}
      * @memberof Post
      */
-    'date'?: string;
+    'date'?: string | null;
     /**
      * 
-     * @type {Array<Post>}
+     * @type {Array<string>}
      * @memberof Post
      */
-    'comments'?: Array<Post> | null;
+    'comments'?: Array<string> | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof Post
+     */
+    'files'?: Array<string> | null;
+}
+/**
+ * 
+ * @export
+ * @interface PostAdd
+ */
+export interface PostAdd {
+    /**
+     * 
+     * @type {string}
+     * @memberof PostAdd
+     */
+    'userId'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostAdd
+     */
+    'text'?: string | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof PostAdd
+     */
+    'files'?: Array<string> | null;
 }
 /**
  * 
@@ -890,7 +921,7 @@ export const PostApiAxiosParamCreator = function (configuration?: Configuration)
     return {
         /**
          * 
-         * @summary Gets a list of all posts.
+         * @summary Gets all posts.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -904,6 +935,44 @@ export const PostApiAxiosParamCreator = function (configuration?: Configuration)
             }
 
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Deletes a post.
+         * @param {string} id The ID of the post.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiPostIdDelete: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('apiPostIdDelete', 'id', id)
+            const localVarPath = `/api/Post/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -963,11 +1032,11 @@ export const PostApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @summary Creates a new post.
-         * @param {Post} [post] The post to create.
+         * @param {PostAdd} [postAdd] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiPostPost: async (post?: Post, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiPostPost: async (postAdd?: PostAdd, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/Post`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -991,7 +1060,83 @@ export const PostApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(postAdd, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Updates a post.
+         * @param {Post} [post] The updated post data.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiPostPut: async (post?: Post, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Post`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(post, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Gets all posts from a specific user.
+         * @param {string} userId The ID of the user.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiPostUserUserIdGet: async (userId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('apiPostUserUserIdGet', 'userId', userId)
+            const localVarPath = `/api/Post/user/{userId}`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1010,12 +1155,23 @@ export const PostApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary Gets a list of all posts.
+         * @summary Gets all posts.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         async apiPostGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Post>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiPostGet(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Deletes a post.
+         * @param {string} id The ID of the post.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiPostIdDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiPostIdDelete(id, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1032,12 +1188,34 @@ export const PostApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Creates a new post.
-         * @param {Post} [post] The post to create.
+         * @param {PostAdd} [postAdd] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiPostPost(post?: Post, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Post>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiPostPost(post, options);
+        async apiPostPost(postAdd?: PostAdd, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Post>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiPostPost(postAdd, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Updates a post.
+         * @param {Post} [post] The updated post data.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiPostPut(post?: Post, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiPostPut(post, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Gets all posts from a specific user.
+         * @param {string} userId The ID of the user.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiPostUserUserIdGet(userId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Post>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiPostUserUserIdGet(userId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -1052,12 +1230,22 @@ export const PostApiFactory = function (configuration?: Configuration, basePath?
     return {
         /**
          * 
-         * @summary Gets a list of all posts.
+         * @summary Gets all posts.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         apiPostGet(options?: any): AxiosPromise<Array<Post>> {
             return localVarFp.apiPostGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Deletes a post.
+         * @param {string} id The ID of the post.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiPostIdDelete(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.apiPostIdDelete(id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1072,12 +1260,32 @@ export const PostApiFactory = function (configuration?: Configuration, basePath?
         /**
          * 
          * @summary Creates a new post.
-         * @param {Post} [post] The post to create.
+         * @param {PostAdd} [postAdd] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiPostPost(post?: Post, options?: any): AxiosPromise<Post> {
-            return localVarFp.apiPostPost(post, options).then((request) => request(axios, basePath));
+        apiPostPost(postAdd?: PostAdd, options?: any): AxiosPromise<Post> {
+            return localVarFp.apiPostPost(postAdd, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Updates a post.
+         * @param {Post} [post] The updated post data.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiPostPut(post?: Post, options?: any): AxiosPromise<void> {
+            return localVarFp.apiPostPut(post, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Gets all posts from a specific user.
+         * @param {string} userId The ID of the user.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiPostUserUserIdGet(userId: string, options?: any): AxiosPromise<Array<Post>> {
+            return localVarFp.apiPostUserUserIdGet(userId, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1091,13 +1299,25 @@ export const PostApiFactory = function (configuration?: Configuration, basePath?
 export class PostApi extends BaseAPI {
     /**
      * 
-     * @summary Gets a list of all posts.
+     * @summary Gets all posts.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PostApi
      */
     public apiPostGet(options?: AxiosRequestConfig) {
         return PostApiFp(this.configuration).apiPostGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Deletes a post.
+     * @param {string} id The ID of the post.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PostApi
+     */
+    public apiPostIdDelete(id: string, options?: AxiosRequestConfig) {
+        return PostApiFp(this.configuration).apiPostIdDelete(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1115,13 +1335,37 @@ export class PostApi extends BaseAPI {
     /**
      * 
      * @summary Creates a new post.
-     * @param {Post} [post] The post to create.
+     * @param {PostAdd} [postAdd] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PostApi
      */
-    public apiPostPost(post?: Post, options?: AxiosRequestConfig) {
-        return PostApiFp(this.configuration).apiPostPost(post, options).then((request) => request(this.axios, this.basePath));
+    public apiPostPost(postAdd?: PostAdd, options?: AxiosRequestConfig) {
+        return PostApiFp(this.configuration).apiPostPost(postAdd, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Updates a post.
+     * @param {Post} [post] The updated post data.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PostApi
+     */
+    public apiPostPut(post?: Post, options?: AxiosRequestConfig) {
+        return PostApiFp(this.configuration).apiPostPut(post, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Gets all posts from a specific user.
+     * @param {string} userId The ID of the user.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PostApi
+     */
+    public apiPostUserUserIdGet(userId: string, options?: AxiosRequestConfig) {
+        return PostApiFp(this.configuration).apiPostUserUserIdGet(userId, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
