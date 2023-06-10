@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace iva_grp7_backend.Controllers;
     
@@ -11,57 +12,20 @@ namespace iva_grp7_backend.Controllers;
     /// <summary>
     /// A controller for managing posts.
     /// </summary>
-    [Route("api/[controller]")] // api/authentication
+    [Route("api/[controller]")]
     [ApiController]
 
     public class PostController: ControllerBase
     {
         private readonly ApiDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public PostController(ApiDbContext context)
+        public PostController(ApiDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
         
-        /// <summary>
-        /// Gets a list of all posts.
-        /// </summary>
-        /// <returns>A list of all posts.</returns>
-        /// <response code="200">Returns the list of posts.</response>
-        /// <response code="500">If an exception occurs while retrieving the posts.</response>
-        [HttpGet]
-        [ProducesResponseType(200, Type = typeof(List<Post>))]
-        [ProducesResponseType(500)]
-        public async Task<IActionResult> GetPosts()
-        {
-            var posts = await _context.Posts.ToListAsync();
-            return Ok(posts);
-        }
-        
-        /// <summary>
-        /// Gets a post by its ID.
-        /// </summary>
-        /// <param name="id">The ID of the post.</param>
-        /// <returns>The post with the specified ID.</returns>
-        /// <response code="200">Returns the post.</response>
-        /// <response code="404">If the post is not found.</response>
-        /// <response code="500">If an exception occurs while retrieving the post.</response>
-        [HttpGet("{id}")]
-        [ProducesResponseType(200, Type = typeof(Post))]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
-        public async Task<IActionResult> GetPostById(string id)
-        {
-            var post = await _context.Posts.FindAsync(id);
-
-            if (post == null)
-            {
-                return NotFound();
-            }
-            
-            return Ok(post);
-        }
-
         /// <summary>
         /// Creates a new post.
         /// </summary>
@@ -74,65 +38,194 @@ namespace iva_grp7_backend.Controllers;
         [ProducesResponseType(201, Type = typeof(Post))]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreatePost([FromBody] Post post)
+        public async Task<ActionResult<Post>> CreatePost(PostAdd postAdd)
         {
-            if (!ModelState.IsValid)
+            var user = await _userManager.FindByIdAsync(postAdd.UserId);
+
+            Console.WriteLine(user.Name);
+            
+            if (user.Name == null)
             {
-                return BadRequest();
+                return NotFound("Name ist null");
             }
             
+            
+            var post = new Post
+            {
+                UserId = postAdd.UserId,
+                Text = postAdd.text,
+                Files = postAdd.Files,
+                UpVotes = 0,
+                DownVotes = 0,
+                Name = user.Name,
+                Username = user.UserName,
+                Avatar = user.Avatar,
+                
+            };
+
             _context.Posts.Add(post);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetPostById), new { id = post.Id }, post);
+            return CreatedAtAction("GetPost", new { id = post.Id }, post);
+        }
+        
+        /// <summary>
+        /// Gets all posts.
+        /// </summary>
+        /// <returns>A list of all posts.</returns>
+        /// <response code="200">Returns the list of posts.</response>
+        /// <response code="500">If an exception occurs while retrieving the posts.</response>
+        [HttpGet]
+        [ProducesResponseType(200, Type = typeof(List<Post>))]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<IEnumerable<Post>>> GetAllPublicPosts()
+        {
+            // Alle Posts laden
+            var posts = await _context.Posts.ToListAsync();
+
+            // Für jeden Post die User-Informationen laden und setzen
+            foreach (var post in posts)
+            {
+                var user = await _userManager.FindByIdAsync(post.UserId);
+                if (user != null)
+                {
+                    post.Name = user.Name; // Angenommen, dass es in Ihrer IdentityUser Erweiterung ein "Name" Feld gibt
+                    post.Username = user.UserName;
+                    post.Avatar = user.Avatar; // Sie müssen die Logik zum Abrufen des Avatar-Bildpfades implementieren
+                }
+            }
+
+            return posts;
         }
 
         /// <summary>
-        /// Returns the posts of users that are being followed.
+        /// Gets a post by its ID.
         /// </summary>
-        /// <returns>The posts of followed users.</returns>
-        /// <response code="200">Returns the posts.</response>
-        /// <response code="500">If an exception occurs while retrieving the posts.</response>
-        [HttpPost("followedUsers")]
-        public async Task<IActionResult> getFollowedUsersPosts()
+        /// <param name="id">The ID of the post.</param>
+        /// <returns>The post with the specified ID.</returns>
+        /// <response code="200">Returns the post.</response>
+        /// <response code="404">If the post is not found.</response>
+        /// <response code="500">If an exception occurs while retrieving the post.</response>
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Post>> GetPost(string id)
         {
-            // Get the current user
-            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var post = await _context.Posts.FindAsync(id);
 
-            // Get the list of users that the current user is following
-            var followingUsers = _context.Following
-                .Where(f => f.FollowingUserId == currentUserId)
-                .Select(f => f.FollowingUserId)
-                .ToList();
-
-            // Get the posts from the following users
-            var followingPosts = await _context.Posts
-                .Where(p => followingUsers.Contains(p.UserId))
-                .ToListAsync();
-
-            return Ok(followingPosts);
-        }
-
-        /// <summary>
-        /// Returns the posts of a specified user.
-        /// </summary>
-        /// <param name="userID">The userID to find the user.</param>
-        /// <returns>The posts of the specified user.</returns>
-        /// <response code="200">Returns the posts.</response>
-        /// <response code="404">If the user is not found.</response>
-        /// <response code="500">If an exception occurs while retrieving the posts.</response>
-        [HttpPost("{userID}")]
-        public async Task<IActionResult> getPostsForUser(string userID)
-        {
-            var postsUser = await _context.Posts
-                .Where(p => p.UserId == userID)
-                .ToListAsync();
-            if(postsUser == null)
+            if (post == null)
             {
                 return NotFound();
             }
-            return Ok(postsUser);
-        }
-     
 
-}
+            // User Informationen laden
+            var user = await _userManager.FindByIdAsync(post.UserId);
+            if (user != null)
+            {
+                post.Name = user.Name; // Angenommen, dass es in Ihrer IdentityUser Erweiterung ein "Name" Feld gibt
+                post.Username = user.UserName;
+                post.Avatar = user.Avatar; // Sie müssen die Logik zum Abrufen des Avatar-Bildpfades implementieren
+            }
+
+            return post;
+        }
+        
+        /// <summary>
+        /// Gets all posts from a specific user.
+        /// </summary>
+        /// <param name="userId">The ID of the user.</param>
+        /// <returns>A list of all posts from the user.</returns>
+        /// <response code="200">Returns the list of posts.</response>
+        /// <response code="404">If the user is not found.</response>
+        /// <response code="500">If an exception occurs while retrieving the posts.</response>
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<IEnumerable<Post>>> GetPostsByUser(string userId)
+        {
+            // Überprüfen, ob der Benutzer existiert
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Alle Posts des Benutzers laden
+            var posts = await _context.Posts
+                .Where(p => p.UserId == userId)
+                .ToListAsync();
+
+            // Benutzerinformationen für jeden Post setzen
+            foreach (var post in posts)
+            {
+                post.Name = user.Name; // Angenommen, dass es in Ihrer IdentityUser Erweiterung ein "Name" Feld gibt
+                post.Username = user.UserName;
+                post.Avatar = user.Avatar; // Sie müssen die Logik zum Abrufen des Avatar-Bildpfades implementieren
+            }
+
+            return posts;
+        }
+        
+        /// <summary>
+        /// Deletes a post.
+        /// </summary>
+        /// <param name="id">The ID of the post.</param>
+        /// <returns>No content.</returns>
+        /// <response code="204">If the post is successfully deleted.</response>
+        /// <response code="404">If the post is not found.</response>
+        /// <response code="500">If an exception occurs while deleting the post.</response>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePost(string id)
+        {
+            var post = await _context.Posts.FindAsync(id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            _context.Posts.Remove(post);
+            await _context.SaveChangesAsync();
+
+            return Ok("Post wurde erfolgreich gelöscht");
+        }
+        
+        /// <summary>
+        /// Updates a post.
+        /// </summary>
+        /// <param name="updatedPost">The updated post data.</param>
+        /// <returns>The updated post.</returns>
+        /// <response code="200">If the post is successfully updated.</response>
+        /// <response code="404">If the post is not found.</response>
+        /// <response code="500">If an exception occurs while updating the post.</response>
+        [HttpPut]
+        public async Task<IActionResult> UpdatePost(Post updatedPost)
+        {
+            var post = await _context.Posts.FindAsync(updatedPost.Id);
+            if (post == null)
+            {
+                return NotFound("Post wurde nicht gefunden");
+            }
+
+            post.Text = updatedPost.Text;
+            post.Files = updatedPost.Files;
+            // Hier können Sie andere Felder hinzufügen, die aktualisiert werden sollen...
+            // post.SomeField = updatedPost.SomeField;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.Posts.Any(e => e.Id == updatedPost.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+
+        
+    }
