@@ -35,7 +35,7 @@
       ></IconWithTooltip>
       <IconWithTooltip
         text="Nutzer löschen"
-        icon="mdi-delete"
+        icon="mdi-account-remove"
         @click="openDeleteDialog(item.raw)"
       ></IconWithTooltip>
     </template>
