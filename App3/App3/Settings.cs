@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using Xamarin.Essentials;
 
+
 namespace App3
 {
-    internal class Settings
+    internal partial class Settings
     {
         public static bool IsLoggedIn
         {

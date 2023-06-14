@@ -5,5 +5,14 @@
              x:Class="App3.MainPage">
     <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
         <Label Text="Willkommen bei Zwitscher" FontSize="24" HorizontalTextAlignment="Center" Margin="0,0,0,16" />
+
+        <ListView x:Name="postListView">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </StackLayout>
 </ContentPage>
+

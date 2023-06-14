@@ -7,10 +7,11 @@ namespace App3.Services
     public class DummyBackend
     {
         private static List<User> registeredUsers;
-
+        private static List<Post> posts;
         static DummyBackend()
         {
             registeredUsers = new List<User>();
+
         }
 
         public static bool IsUserRegistered(string email)

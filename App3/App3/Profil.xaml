@@ -1,14 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentView xmlns="http://xamarin.com/schemas/2014/forms"
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="App3.Profil">
-    <ContentView.Content>
-        <ScrollView>
-            <StackLayout Spacing="20" VerticalOptions="CenterAndExpand">
-                <Label Text="John Doe" FontSize="24" HorizontalOptions="Center" />
-                <Label Text="john.doe@example.com" FontSize="16" HorizontalOptions="Center" />
-                <Image Source="profile_image.png" HeightRequest="200" WidthRequest="200" Aspect="AspectFill" HorizontalOptions="Center" VerticalOptions="Center" />
-            </StackLayout>
-        </ScrollView>
-    </ContentView.Content>
-</ContentView>
+             xmlns:local="clr-namespace:App3"
+             x:Class="App3.Profil"
+             Title="Profil">
+    <StackLayout>
+        <StackLayout>
+            <Label x:Name="username" Text="{Binding Username}" />
+
+            <Label x:Name="vorname" Text="{Binding Vorname}" />
+
+            <Label x:Name="nachname" Text="{Binding Nachname}" />
+
+            <Label x:Name="email" Text="{Binding Email}" />
+        </StackLayout>
+    </StackLayout>
+</ContentPage>

@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using App3.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace App3
 {
-    public partial class Profil : ContentPage
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class Notification : ContentPage
     {
-        public Profil()
+        public Notification()
         {
             InitializeComponent();
         }

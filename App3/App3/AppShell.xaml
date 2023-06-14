@@ -7,8 +7,8 @@
     <FlyoutItem Title="Startseite">
         <ShellContent Route="main" ContentTemplate="{DataTemplate local:MainPage}" />
     </FlyoutItem>
-    <FlyoutItem Title="Suche">
-        <ShellContent Route="search" ContentTemplate="{DataTemplate local:Search}" />
+    <FlyoutItem Title="Neuer Post">
+        <ShellContent Route="posting" ContentTemplate="{DataTemplate local:Posting}" />
     </FlyoutItem>
     <FlyoutItem Title="Profil">
         <ShellContent Route="profile" ContentTemplate="{DataTemplate local:Profil}" />
@@ -19,14 +19,17 @@
     <FlyoutItem Title="Chat">
         <ShellContent Route="chat" ContentTemplate="{DataTemplate local:Chat}" />
     </FlyoutItem>
+    <FlyoutItem Title="Einstellungen">
+        <ShellContent Route="settings" ContentTemplate="{StaticResource SettingsTemplate}" />
+    </FlyoutItem>
 
     <Shell.Resources>
         <ResourceDictionary>
             <DataTemplate x:Key="MainPageTemplate">
                 <local:MainPage />
             </DataTemplate>
-            <DataTemplate x:Key="SearchTemplate">
-                <local:Search />
+            <DataTemplate x:Key="PostingTemplate">
+                <local:Posting />
             </DataTemplate>
             <DataTemplate x:Key="ProfilTemplate">
                 <local:Profil />
@@ -36,6 +39,9 @@
             </DataTemplate>
             <DataTemplate x:Key="ChatTemplate">
                 <local:Chat />
+            </DataTemplate>
+            <DataTemplate x:Key="SettingsTemplate">
+                <local:SettingsPage />
             </DataTemplate>
         </ResourceDictionary>
     </Shell.Resources>
