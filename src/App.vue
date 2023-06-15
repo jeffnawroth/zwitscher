@@ -74,8 +74,14 @@
             rounded="lg"
           >
           </v-list-item>
-        </div> </v-list
-    ></v-navigation-drawer>
+        </div>
+      </v-list>
+      <div v-if="store.loggedIn" class="pa-5">
+        <v-btn block variant="tonal" @click="showDialog = true"
+          >Zwitschern</v-btn
+        >
+      </div>
+    </v-navigation-drawer>
 
     <v-navigation-drawer location="right"> </v-navigation-drawer>
 
@@ -84,6 +90,7 @@
     <v-main>
       <v-container fluid style="max-width: 980px">
         <v-card>
+          <CreatePostDialog v-model="showDialog"></CreatePostDialog>
           <router-view></router-view>
         </v-card>
       </v-container>
@@ -92,17 +99,20 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useAuthenticationStore } from "@/store/authentication";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import { Role } from "./typescript-axios-generated";
 import { useSettingsStore } from "./store/settings";
 import IconWithTooltip from "./components/IconWithTooltip.vue";
 import NotificationContainer from "./components/Notification/NotificationContainer.vue";
+import CreatePostDialog from "./components/Posts/CreatePostDialog.vue";
 
 const store = useAuthenticationStore();
 const settingsStore = useSettingsStore();
 const { mdAndDown } = useDisplay();
+
+const showDialog = ref(false);
 
 const authIcon = computed(() => {
   return store.loggedIn ? "mdi-logout" : "mdi-login";
