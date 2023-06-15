@@ -32,6 +32,9 @@
     <Compile Update="Logout.xaml.cs">
       <DependentUpon>Logout.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Postingpage.xaml.cs">
+      <DependentUpon>PostingPage.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Profil.xaml.cs">
       <DependentUpon>Profil.xaml</DependentUpon>
     </Compile>
@@ -56,7 +59,7 @@
     <EmbeddedResource Update="Einstellungen\Notification.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Posting.xaml">
+    <EmbeddedResource Update="PostingPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Profil.xaml">

@@ -7,9 +7,6 @@
     <FlyoutItem Title="Startseite">
         <ShellContent Route="main" ContentTemplate="{DataTemplate local:MainPage}" />
     </FlyoutItem>
-    <FlyoutItem Title="Neuer Post">
-        <ShellContent Route="posting" ContentTemplate="{DataTemplate local:Posting}" />
-    </FlyoutItem>
     <FlyoutItem Title="Profil">
         <ShellContent Route="profile" ContentTemplate="{DataTemplate local:Profil}" />
     </FlyoutItem>
@@ -27,9 +24,6 @@
         <ResourceDictionary>
             <DataTemplate x:Key="MainPageTemplate">
                 <local:MainPage />
-            </DataTemplate>
-            <DataTemplate x:Key="PostingTemplate">
-                <local:Posting />
             </DataTemplate>
             <DataTemplate x:Key="ProfilTemplate">
                 <local:Profil />

@@ -22,13 +22,13 @@ namespace App3
         private async void RegisterButton_Clicked(object sender, EventArgs e)
         {
             string username = usernameEntry.Text;
-            string vorname = vornameEntry.Text;
-            string nachname = nachnameEntry.Text;
+            string name = nameEntry.Text;
             string email = emailEntry.Text;
             string password = passwordEntry.Text;
             string confirmPassword = confirmPasswordEntry.Text;
+            int id = GenerateUserID();
 
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(vorname) || string.IsNullOrWhiteSpace(nachname) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmPassword))
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmPassword))
             {
                  await DisplayAlert("Fehler", "Bitte füllen Sie alle Felder aus.", "OK");
                 return;
@@ -40,7 +40,7 @@ namespace App3
                 return;
             }
 
-            bool isRegistrationSuccessful = Services.DummyBackend.SaveRegistrationData(username, vorname, nachname, email, password);
+            bool isRegistrationSuccessful = Services.DummyBackend.SaveRegistrationData(username, id, name, email, password);
             if (isRegistrationSuccessful)
             {
                 Settings.IsLoggedIn = true;
@@ -50,6 +50,11 @@ namespace App3
             {
                 await DisplayAlert("Fehler", "Die Registrierung ist fehlgeschlagen.", "OK");
             }
+        }
+        private int GenerateUserID()
+        {
+            
+            return new Random().Next(1000, 9999);
         }
 
     }

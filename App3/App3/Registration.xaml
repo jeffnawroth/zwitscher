@@ -8,15 +8,7 @@
 
             <Entry x:Name="usernameEntry" Placeholder="Benutzername" />
 
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <Entry x:Name="vornameEntry" Placeholder="Vorname" Grid.Column="0" />
-                <Entry x:Name="nachnameEntry" Placeholder="Nachname" Grid.Column="1" />
-            </Grid>
+            <Entry x:Name="nameEntry" Placeholder="Name" />
 
             <Entry x:Name="emailEntry" Placeholder="E-Mail-Adresse" />
 
