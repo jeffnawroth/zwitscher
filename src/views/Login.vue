@@ -11,7 +11,7 @@
       :initial-values="initialValues"
       @submit="submit"
     >
-      <v-card title="Anmelden">
+      <v-card title="Anmelden" :loading="store.loading">
         <v-card-text>
           <v-row>
             <v-col>

@@ -6,7 +6,7 @@
       :initial-values="initialValues"
       @submit="submit"
     >
-      <v-card title="Registrieren">
+      <v-card title="Registrieren" :loading="store.loading">
         <v-card-text>
           <v-row>
             <v-col>

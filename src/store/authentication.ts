@@ -13,9 +13,11 @@ import { showNotification } from "./helpers";
 
 export const useAuthenticationStore = defineStore("authentication", () => {
   const user = ref<AuthUser | null>();
+  const loading = ref(false);
 
   async function register(credentials: UserRegistrationRequestDto) {
     try {
+      loading.value = true;
       const user =
         await AuthenticationApi.prototype.apiAuthenticationRegisterPost(
           credentials
@@ -28,11 +30,14 @@ export const useAuthenticationStore = defineStore("authentication", () => {
         "error",
         "Beim Registrieren ist ein Fehler aufgetreten!"
       );
+    } finally {
+      loading.value = false;
     }
   }
 
   async function login(credentials: UserLoginRequestDto) {
     try {
+      loading.value = true;
       const user = await AuthenticationApi.prototype.apiAuthenticationLoginPost(
         credentials
       );
@@ -42,6 +47,8 @@ export const useAuthenticationStore = defineStore("authentication", () => {
       if ((error as AxiosError).response?.status === 403)
         return Promise.reject(error);
       showNotification("error", "Beim Einloggen ist ein Fehler aufgetreten!");
+    } finally {
+      loading.value = false;
     }
   }
 
@@ -88,5 +95,6 @@ export const useAuthenticationStore = defineStore("authentication", () => {
     logout,
     setUserData,
     refreshUserToken,
+    loading,
   };
 });
