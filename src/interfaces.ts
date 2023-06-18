@@ -36,6 +36,13 @@ export interface UserEdit extends User {
   password?: string;
 }
 
+export interface UserLight {
+  id: string;
+  avatar?: File;
+  username: string;
+  name: string;
+}
+
 export interface Post {
   id: string;
   role: Role;

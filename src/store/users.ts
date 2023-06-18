@@ -1,12 +1,14 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { User, UserAdd } from "@/interfaces";
+import { User, UserAdd, UserLight } from "@/interfaces";
 import { showNotification } from "./helpers";
 import { UserApi } from "@/typescript-axios-generated";
+import { getFollowedUsers } from "@/dummyApi";
 
 export const useUsersStore = defineStore("users", () => {
   const users = ref<User[]>([]);
   const user = ref<User>();
+  const followedUsers = ref<UserLight[]>();
 
   async function createUser(user: UserAdd) {
     try {
@@ -29,6 +31,18 @@ export const useUsersStore = defineStore("users", () => {
       showNotification(
         "error",
         "Beim Laden der Nutzer ist ein Fehler aufgetreten"
+      );
+    }
+  }
+
+  async function fetchFollowedUsers(id: string) {
+    try {
+      const data = await getFollowedUsers(id);
+      followedUsers.value = data;
+    } catch (error) {
+      showNotification(
+        "error",
+        "Beim Laden der gefolgten Nutzer ist ein Fehler aufgetreten"
       );
     }
   }
@@ -99,5 +113,7 @@ export const useUsersStore = defineStore("users", () => {
     // getUser,
     updateUser,
     getUserByUsername,
+    fetchFollowedUsers,
+    followedUsers,
   };
 });

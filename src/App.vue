@@ -34,7 +34,13 @@
       </IconWithTooltip>
     </v-app-bar>
 
-    <v-navigation-drawer location="left" :rail="mdAndDown" permanent>
+    <v-navigation-drawer
+      width="300"
+      floating
+      location="left"
+      :rail="mdAndDown"
+      permanent
+    >
       <v-list nav>
         <v-list-item
           to="/"
@@ -83,7 +89,9 @@
       </div>
     </v-navigation-drawer>
 
-    <v-navigation-drawer location="right"> </v-navigation-drawer>
+    <v-navigation-drawer location="right">
+      <FollowedUsersList v-if="store.loggedIn"></FollowedUsersList>
+    </v-navigation-drawer>
 
     <NotificationContainer></NotificationContainer>
 
@@ -107,6 +115,7 @@ import { useSettingsStore } from "./store/settings";
 import IconWithTooltip from "./components/IconWithTooltip.vue";
 import NotificationContainer from "./components/Notification/NotificationContainer.vue";
 import CreatePostDialog from "./components/Posts/CreatePostDialog.vue";
+import FollowedUsersList from "./components/FollowedUsersList.vue";
 
 const store = useAuthenticationStore();
 const settingsStore = useSettingsStore();
