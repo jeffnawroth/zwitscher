@@ -535,4 +535,85 @@ namespace iva_grp7_backend.Controllers;
             return BadRequest(result.Errors);
 
         }
+        
+        /// <summary>
+        /// Allows a user to follow another user.
+        /// </summary>
+        /// <param name="id">The ID of the user to be followed.</param>
+        /// <returns>A 200 OK response on successful follow, a 404 Not Found error if no such user exists to be followed.</returns>
+        /// <response code="200">Returns when the current user successfully follows the specified user.</response>
+        /// <response code="404">If the user with the specified ID to be followed is not found.</response>
+        /// <response code="500">If an exception occurs while following the user.</response>
+        [HttpPost("{id}/follow")]
+        public async Task<IActionResult> Follow(string id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUser = await _userManager.FindByEmailAsync(userId);
+    
+            if(currentUser == null)
+            {
+                return NotFound("Current user not found.");
+            }
+            /*
+            // Finde den aktuellen Benutzer (derjenige, der die Aktion ausführt)
+            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+            */
+            // Finde den Benutzer, dem gefolgt werden soll
+            var userToFollow = await _userManager.FindByIdAsync(id);
+            if (userToFollow == null)
+            {
+                return NotFound();
+            }
+
+            // Erstelle eine neue UserFollowing-Instanz und speichere sie in der Datenbank
+            var userFollowing = new UserFollowing 
+            {
+                UserId = currentUser.Id,
+                FollowingId = userToFollow.Id
+            };
+            _context.UserFollowings.Add(userFollowing);
+            await _context.SaveChangesAsync();
+
+            return Ok("Dem User wird nun erfolgreich gefolgt");
+        }
+        
+        /// <summary>
+        /// Allows a user to unfollow another user.
+        /// </summary>
+        /// <param name="id">The ID of the user to be unfollowed.</param>
+        /// <returns>A 200 OK response on successful unfollow, a 404 Not Found error if no such user exists to be unfollowed.</returns>
+        /// <response code="200">Returns when the current user successfully unfollows the specified user.</response>
+        /// <response code="404">If the user with the specified ID to be unfollowed is not found.</response>
+        /// <response code="500">If an exception occurs while unfollowing the user.</response>
+        [HttpPost("{id}/unfollow")]
+        public async Task<IActionResult> Unfollow(string id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUser = await _userManager.FindByEmailAsync(userId);
+    
+            if(currentUser == null)
+            {
+                return NotFound("Current user not found.");
+            }
+
+            // Finde den Benutzer, dem nicht mehr gefolgt werden soll
+            var userToUnfollow = await _userManager.FindByIdAsync(id);
+            if (userToUnfollow == null)
+            {
+                return NotFound();
+            }
+
+            // Finde die entsprechende UserFollowing-Instanz und lösche sie aus der Datenbank
+            var userFollowing = await _context.UserFollowings.FirstOrDefaultAsync(
+                uf => uf.UserId == currentUser.Id && uf.FollowingId == userToUnfollow.Id
+            );
+            if (userFollowing != null)
+            {
+                _context.UserFollowings.Remove(userFollowing);
+                await _context.SaveChangesAsync();
+            }
+
+            return Ok("Dem User wurde nun erfolgreich entfolgt");
+        }
+
     }
