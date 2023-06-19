@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using iva_grp7_backend;
 
@@ -11,9 +12,11 @@ using iva_grp7_backend;
 namespace iva_grp7_backend.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230614111928_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -355,26 +358,16 @@ namespace iva_grp7_backend.Migrations
                     b.Property<string>("FollowerId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("UserId", "FollowerId");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("FollowerId");
 
                     b.ToTable("UserFollowers");
-                });
-
-            modelBuilder.Entity("iva_grp7_backend.Models.UserFollowing", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("FollowingId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "FollowingId");
-
-                    b.HasIndex("FollowingId");
-
-                    b.ToTable("UserFollowings");
                 });
 
             modelBuilder.Entity("iva_grp7_backend.Models.UserInterest", b =>
@@ -484,6 +477,10 @@ namespace iva_grp7_backend.Migrations
 
             modelBuilder.Entity("iva_grp7_backend.Models.UserFollower", b =>
                 {
+                    b.HasOne("iva_grp7_backend.Models.ApplicationUser", null)
+                        .WithMany("Following")
+                        .HasForeignKey("ApplicationUserId");
+
                     b.HasOne("iva_grp7_backend.Models.ApplicationUser", "Follower")
                         .WithMany()
                         .HasForeignKey("FollowerId")
@@ -494,22 +491,6 @@ namespace iva_grp7_backend.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("Follower");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("iva_grp7_backend.Models.UserFollowing", b =>
-                {
-                    b.HasOne("iva_grp7_backend.Models.ApplicationUser", "Following")
-                        .WithMany()
-                        .HasForeignKey("FollowingId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("iva_grp7_backend.Models.ApplicationUser", "User")
-                        .WithMany("Following")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Following");
 
                     b.Navigation("User");
                 });
