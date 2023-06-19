@@ -66,18 +66,20 @@ public class AuthenticationController : ControllerBase
                 }
 
                 // Create a user
-                var new_user = new ApplicationUser()
+                var newApplicationUser = new ApplicationUser()
                 {
                     Email = requestDto.Email,
                     UserName = requestDto.Username,
                     Name = requestDto.Name,
                     Role = Role.User,
                     Gender = null,
-                    BirthDate = null
+                    BirthDate = null,
+                    Followers = new List<UserFollower>(),
+                    Following = new List<UserFollowing>(),
+                    Interests = new List<UserInterest>()
                 };
 
-
-                var is_created = await _userManager.CreateAsync(new_user, requestDto.Password);
+                var is_created = await _userManager.CreateAsync(newApplicationUser, requestDto.Password);
 
                 if (!is_created.Succeeded)
                 {
@@ -95,9 +97,9 @@ public class AuthenticationController : ControllerBase
                     if (!await roleManager.RoleExistsAsync(Role.User.ToString()))
                         await roleManager.CreateAsync(new IdentityRole(Role.User.ToString()));
                     if (await roleManager.RoleExistsAsync(Role.User.ToString()))
-                        await _userManager.AddToRoleAsync(new_user, Role.User.ToString());
+                        await _userManager.AddToRoleAsync(newApplicationUser, Role.User.ToString());
                     // Generate the token
-                    var token = await GenerateJwtToken(new_user);
+                    var token = await GenerateJwtToken(newApplicationUser);
                     return Ok(token);
                 }
                 
@@ -123,7 +125,13 @@ public class AuthenticationController : ControllerBase
         if (ModelState.IsValid)
         {
             // Check if user exists
-            var existing_user = await _userManager.FindByEmailAsync(loginRequest.Email);
+            var existing_user = await _userManager.Users
+                .Include(u => u.Followers)
+                .Include(u => u.Following)
+                .Include(u => u.Interests)
+                .FirstOrDefaultAsync(u => u.Email == loginRequest.Email);
+
+
             if (existing_user == null)
                 // Return bad request with error message if user doesn't exist
                 return BadRequest("Benutzer existiert nicht.");
@@ -351,6 +359,22 @@ public class AuthenticationController : ControllerBase
         await _context.SaveChangesAsync();
 
         // Return the authentication result with the user's information, the JWT token and refresh token
+
+        // Check if the lists are null before executing the Select-Method
+        var followerIds = user.Followers != null 
+            ? user.Followers.Select(f => f.FollowerId).ToList() 
+            : new List<string>();
+
+        var followingIds = user.Following != null 
+            ? user.Following.Select(f => f.FollowingId).ToList() 
+            : new List<string>();
+
+        
+        var interests = user.Interests != null 
+            ? user.Interests.Select(f => f.Interest).ToList() 
+            : new List<string>();
+            
+
         
         return new AuthResult()
         {
@@ -362,16 +386,14 @@ public class AuthenticationController : ControllerBase
             Name = user.Name,
             Gender = user.Gender,
             BirthDate = user.BirthDate,
-            Followers = user.Followers,
-            Following = user.Following,
-            LikedPosts = user.LikedPosts,
-            DislikedPosts = user.DislikedPosts,
             CreatedAt = user.CreatedAt,
             Bio = user.Bio,
-            Interests = user.Interests,
             Locked = user.Locked,
             Avatar = user.Avatar,
-            Id = user.Id
+            Id = user.Id,
+            Following = followingIds,
+            Followers = followerIds,
+            Interests = interests
         };
 
     }

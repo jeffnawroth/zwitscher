@@ -7,61 +7,88 @@ namespace iva_grp7_backend
 {
     public class ApiDbContext : IdentityDbContext<ApplicationUser>
 	{
-        // Represents a database table of users.
-        //public DbSet<User> Users { get; set; }
-        // Represents a database table of posts.
-        //public DbSet<Post> Posts { get; set; }
-        
         // Represents a database table of refresh tokens.
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Post> Posts { get; set; }
-        public DbSet<Following> Following { get; set; }
-        public DbSet<Interest> Interests { get; set; }
+        public DbSet<UserFollower> UserFollowers { get; set; }
+        public DbSet<UserFollowing> UserFollowings { get; set; }
+        public DbSet<UserInterest> UserInterests { get; set; }
+        public DbSet<PostVote> PostVotes { get; set; }
+        public DbSet<PostFile> PostFiles { get; set; }
 
         public ApiDbContext(DbContextOptions<ApiDbContext> options) : base(options)
         {
 
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-            /*
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<ApplicationUser>().Ignore(c => c.AccessFailedCount)
-                .Ignore(c => c.LockoutEnabled)
-                .Ignore(c => c.LockoutEnd)
-                .Ignore(c => c.NormalizedUserName)
-                .Ignore(c => c.NormalizedEmail)
-                .Ignore(c => c.EmailConfirmed)
-                .Ignore(c => c.SecurityStamp)
-                .Ignore(c => c.ConcurrencyStamp)
-                .Ignore(c => c.PhoneNumber)
-                .Ignore(c => c.PhoneNumberConfirmed)
-                .Ignore(c => c.TwoFactorEnabled)
-                .Ignore(c => c.AccessFailedCount);
+{
+    base.OnModelCreating(modelBuilder); // Ensures identity-related configurations are applied
 
-            modelBuilder.Entity<ApplicationUser>().ToTable("Users");//to change the name of table.
-            */
-            
-            //modelBuilder.Entity<List<int>>().HasNoKey();
-            /*
-            modelBuilder.Entity<Follower>()
-                .HasOne(f => f.User)
-                .WithMany(u => u.Followers)
-                .HasForeignKey(f => f.FollowerUserId);
+    // UserFollower configuration
+    modelBuilder.Entity<UserFollower>()
+        .HasKey(uf => new { uf.UserId, uf.FollowerId }); // Defining composite key
 
-            modelBuilder.Entity<Following>()
-                .HasOne(f => f.User)
-                .WithMany(u => u.Following)
-                .HasForeignKey(f => f.FollowingUserId);
+    modelBuilder.Entity<UserFollower>()
+        .HasOne(uf => uf.User)
+        .WithMany(u => u.Followers)
+        .HasForeignKey(uf => uf.UserId)
+        .IsRequired(false); // This line
 
-            modelBuilder.Entity<Post>()
-                .ToTable("Posts")
-                .HasOne(f => f.User)
-                .WithMany(u => u.Posts)
-                .HasForeignKey(f => f.UserId);
-            */
-        }
+    modelBuilder.Entity<UserFollower>()
+        .HasOne(uf => uf.Follower)
+        .WithMany()
+        .HasForeignKey(uf => uf.FollowerId)
+        .IsRequired(false) // This line
+        .OnDelete(DeleteBehavior.NoAction); // To prevent cyclical delete cascade
+
+    // UserFollowing configuration
+    modelBuilder.Entity<UserFollowing>()
+        .HasKey(uf => new { uf.UserId, uf.FollowingId }); // Defining composite key
+
+    modelBuilder.Entity<UserFollowing>()
+        .HasOne(uf => uf.User)
+        .WithMany(u => u.Following)
+        .HasForeignKey(uf => uf.UserId)
+        .IsRequired(false);
+
+    modelBuilder.Entity<UserFollowing>()
+        .HasOne(uf => uf.Following)
+        .WithMany()
+        .HasForeignKey(uf => uf.FollowingId)
+        .IsRequired(false)
+        .OnDelete(DeleteBehavior.NoAction);
+
+    // Other configurations remain the same
+    modelBuilder.Entity<PostVote>()
+        .HasKey(pv => new { pv.PostId, pv.UserId }); // Defining composite key
+
+    modelBuilder.Entity<PostVote>()
+        .HasOne(pv => pv.Post)
+        .WithMany(p => p.Votes)
+        .HasForeignKey(pv => pv.PostId);
+
+    modelBuilder.Entity<PostVote>()
+        .HasOne(pv => pv.User)
+        .WithMany()
+        .HasForeignKey(pv => pv.UserId)
+        .OnDelete(DeleteBehavior.NoAction); // To prevent cyclical delete cascade
+
+    modelBuilder.Entity<PostFile>()
+        .HasOne(pf => pf.Post)
+        .WithMany(p => p.Files)
+        .HasForeignKey(pf => pf.PostId);
+
+    modelBuilder.Entity<UserInterest>()
+        .HasKey(ui => new { ui.UserId, ui.Interest }); // Defining composite key
+
+    modelBuilder.Entity<UserInterest>()
+        .HasOne(ui => ui.User)
+        .WithMany(u => u.Interests)
+        .HasForeignKey(ui => ui.UserId);
+}
+
+
+
 
 
     }
