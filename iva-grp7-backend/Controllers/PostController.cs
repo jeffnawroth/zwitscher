@@ -54,13 +54,9 @@ namespace iva_grp7_backend.Controllers;
             {
                 UserId = postAdd.UserId,
                 Text = postAdd.text,
-                Files = postAdd.Files,
-                UpVotes = 0,
-                DownVotes = 0,
                 Name = user.Name,
                 Username = user.UserName,
-                Avatar = user.Avatar,
-                
+
             };
 
             _context.Posts.Add(post);
@@ -91,7 +87,7 @@ namespace iva_grp7_backend.Controllers;
                 {
                     post.Name = user.Name; // Angenommen, dass es in Ihrer IdentityUser Erweiterung ein "Name" Feld gibt
                     post.Username = user.UserName;
-                    post.Avatar = user.Avatar; // Sie müssen die Logik zum Abrufen des Avatar-Bildpfades implementieren
+                    //post.Avatar = user.Avatar; // Sie müssen die Logik zum Abrufen des Avatar-Bildpfades implementieren
                 }
             }
 
@@ -122,7 +118,7 @@ namespace iva_grp7_backend.Controllers;
             {
                 post.Name = user.Name; // Angenommen, dass es in Ihrer IdentityUser Erweiterung ein "Name" Feld gibt
                 post.Username = user.UserName;
-                post.Avatar = user.Avatar; // Sie müssen die Logik zum Abrufen des Avatar-Bildpfades implementieren
+                //post.Avatar = user.Avatar; // Sie müssen die Logik zum Abrufen des Avatar-Bildpfades implementieren
             }
 
             return post;
@@ -156,7 +152,7 @@ namespace iva_grp7_backend.Controllers;
             {
                 post.Name = user.Name; // Angenommen, dass es in Ihrer IdentityUser Erweiterung ein "Name" Feld gibt
                 post.Username = user.UserName;
-                post.Avatar = user.Avatar; // Sie müssen die Logik zum Abrufen des Avatar-Bildpfades implementieren
+                //post.Avatar = user.Avatar; // Sie müssen die Logik zum Abrufen des Avatar-Bildpfades implementieren
             }
 
             return posts;
