@@ -32,14 +32,15 @@ namespace iva_grp7_backend
         .HasOne(uf => uf.User)
         .WithMany(u => u.Followers)
         .HasForeignKey(uf => uf.UserId)
-        .IsRequired(false); // This line
+        .IsRequired(false) // This line
+        .OnDelete(DeleteBehavior.Cascade); // Change NoAction to Cascade
 
     modelBuilder.Entity<UserFollower>()
         .HasOne(uf => uf.Follower)
         .WithMany()
         .HasForeignKey(uf => uf.FollowerId)
         .IsRequired(false) // This line
-        .OnDelete(DeleteBehavior.NoAction); // To prevent cyclical delete cascade
+        .OnDelete(DeleteBehavior.Cascade); // To prevent cyclical delete cascade
 
     // UserFollowing configuration
     modelBuilder.Entity<UserFollowing>()
@@ -49,15 +50,16 @@ namespace iva_grp7_backend
         .HasOne(uf => uf.User)
         .WithMany(u => u.Following)
         .HasForeignKey(uf => uf.UserId)
-        .IsRequired(false);
+        .IsRequired(false)
+        .OnDelete(DeleteBehavior.Cascade); // Change NoAction to Cascade
 
     modelBuilder.Entity<UserFollowing>()
         .HasOne(uf => uf.Following)
         .WithMany()
         .HasForeignKey(uf => uf.FollowingId)
         .IsRequired(false)
-        .OnDelete(DeleteBehavior.NoAction);
-
+        .OnDelete(DeleteBehavior.Cascade); // Change NoAction to Cascade
+    
     // Other configurations remain the same
     modelBuilder.Entity<PostVote>()
         .HasKey(pv => new { pv.PostId, pv.UserId }); // Defining composite key
