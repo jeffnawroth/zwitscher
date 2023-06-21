@@ -1347,6 +1347,80 @@ export const PostApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @param {string} postId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiPostPostIdDownvotePost: async (postId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'postId' is not null or undefined
+            assertParamExists('apiPostPostIdDownvotePost', 'postId', postId)
+            const localVarPath = `/api/Post/{postId}/downvote`
+                .replace(`{${"postId"}}`, encodeURIComponent(String(postId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} postId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiPostPostIdUpvotePost: async (postId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'postId' is not null or undefined
+            assertParamExists('apiPostPostIdUpvotePost', 'postId', postId)
+            const localVarPath = `/api/Post/{postId}/upvote`
+                .replace(`{${"postId"}}`, encodeURIComponent(String(postId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Updates a post.
          * @param {Post} [post] The updated post data.
          * @param {*} [options] Override http request option.
@@ -1476,6 +1550,26 @@ export const PostApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {string} postId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiPostPostIdDownvotePost(postId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiPostPostIdDownvotePost(postId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {string} postId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiPostPostIdUpvotePost(postId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiPostPostIdUpvotePost(postId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Updates a post.
          * @param {Post} [post] The updated post data.
          * @param {*} [options] Override http request option.
@@ -1544,6 +1638,24 @@ export const PostApiFactory = function (configuration?: Configuration, basePath?
          */
         apiPostPost(postAdd?: PostAdd, options?: any): AxiosPromise<Post> {
             return localVarFp.apiPostPost(postAdd, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} postId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiPostPostIdDownvotePost(postId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.apiPostPostIdDownvotePost(postId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} postId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiPostPostIdUpvotePost(postId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.apiPostPostIdUpvotePost(postId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1620,6 +1732,28 @@ export class PostApi extends BaseAPI {
      */
     public apiPostPost(postAdd?: PostAdd, options?: AxiosRequestConfig) {
         return PostApiFp(this.configuration).apiPostPost(postAdd, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} postId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PostApi
+     */
+    public apiPostPostIdDownvotePost(postId: string, options?: AxiosRequestConfig) {
+        return PostApiFp(this.configuration).apiPostPostIdDownvotePost(postId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} postId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PostApi
+     */
+    public apiPostPostIdUpvotePost(postId: string, options?: AxiosRequestConfig) {
+        return PostApiFp(this.configuration).apiPostPostIdUpvotePost(postId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
