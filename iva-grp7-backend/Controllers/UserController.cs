@@ -55,11 +55,12 @@ namespace iva_grp7_backend.Controllers;
         return NotFound("Current user role not found.");
     }
     
-    var users = await _userManager.Users.Include(u => u.Followers).ThenInclude(f => f.Follower)
-                                        .ThenInclude(u => u.Following)
+    var users = await _userManager.Users
+                                        .Include(u => u.Followers).ThenInclude(f => f.Follower)
+                                        .Include(u => u.Following).ThenInclude(f => f.Following)
                                         .Include(u => u.Interests)
                                         .ToListAsync();
-    
+
     var filteredUsers = new List<User>();
     
     if (currentUser.Role == Role.Admin)
@@ -549,29 +550,32 @@ namespace iva_grp7_backend.Controllers;
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var currentUser = await _userManager.FindByEmailAsync(userId);
-    
+
             if(currentUser == null)
             {
                 return NotFound("Current user not found.");
             }
-            /*
-            // Finde den aktuellen Benutzer (derjenige, der die Aktion ausführt)
-            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
-            */
-            // Finde den Benutzer, dem gefolgt werden soll
+
             var userToFollow = await _userManager.FindByIdAsync(id);
             if (userToFollow == null)
             {
                 return NotFound();
             }
 
-            // Erstelle eine neue UserFollowing-Instanz und speichere sie in der Datenbank
             var userFollowing = new UserFollowing 
             {
                 UserId = currentUser.Id,
                 FollowingId = userToFollow.Id
             };
             _context.UserFollowings.Add(userFollowing);
+    
+            var userFollower = new UserFollower
+            {
+                UserId = userToFollow.Id,
+                FollowerId = currentUser.Id
+            };
+            _context.UserFollowers.Add(userFollower);
+    
             await _context.SaveChangesAsync();
 
             return Ok("Dem User wird nun erfolgreich gefolgt");
@@ -590,28 +594,37 @@ namespace iva_grp7_backend.Controllers;
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var currentUser = await _userManager.FindByEmailAsync(userId);
-    
+
             if(currentUser == null)
             {
                 return NotFound("Current user not found.");
             }
 
-            // Finde den Benutzer, dem nicht mehr gefolgt werden soll
             var userToUnfollow = await _userManager.FindByIdAsync(id);
             if (userToUnfollow == null)
             {
                 return NotFound();
             }
 
-            // Finde die entsprechende UserFollowing-Instanz und lösche sie aus der Datenbank
             var userFollowing = await _context.UserFollowings.FirstOrDefaultAsync(
                 uf => uf.UserId == currentUser.Id && uf.FollowingId == userToUnfollow.Id
             );
+    
+            var userFollower = await _context.UserFollowers.FirstOrDefaultAsync(
+                uf => uf.UserId == userToUnfollow.Id && uf.FollowerId == currentUser.Id
+            );
+    
             if (userFollowing != null)
             {
                 _context.UserFollowings.Remove(userFollowing);
-                await _context.SaveChangesAsync();
             }
+    
+            if (userFollower != null)
+            {
+                _context.UserFollowers.Remove(userFollower);
+            }
+    
+            await _context.SaveChangesAsync();
 
             return Ok("Dem User wurde nun erfolgreich entfolgt");
         }
