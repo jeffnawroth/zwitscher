@@ -74,25 +74,41 @@ namespace iva_grp7_backend.Controllers;
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(List<Post>))]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<IEnumerable<Post>>> GetAllPublicPosts()
+        public async Task<ActionResult<IEnumerable<PostResult>>> GetAllPublicPosts()
         {
             // Alle Posts laden
-            var posts = await _context.Posts.ToListAsync();
-
-            // Für jeden Post die User-Informationen laden und setzen
+            var posts = await _context.Posts.Include(p => p.Votes).Include(p => p.Files).ToListAsync();
+        
+            // Liste für die PostResults
+            List<PostResult> postResults = new List<PostResult>();
+        
+            // Für jeden Post die User-Informationen und die Votes laden und setzen
             foreach (var post in posts)
             {
                 var user = await _userManager.FindByIdAsync(post.UserId);
                 if (user != null)
                 {
-                    post.Name = user.Name; // Angenommen, dass es in Ihrer IdentityUser Erweiterung ein "Name" Feld gibt
-                    post.Username = user.UserName;
-                    //post.Avatar = user.Avatar; // Sie müssen die Logik zum Abrufen des Avatar-Bildpfades implementieren
+                    PostResult postResult = new PostResult()
+                    {
+                        Id = post.Id,
+                        UserId = post.UserId,
+                        //Avatar = user.Avatar,
+                        Name = user.Name,
+                        Username = user.UserName,
+                        Text = post.Text,
+                        Date = post.Date,
+                        //Files = post.Files?.Select(f => f.FilePath).ToList(), // Sie müssen die Logik zum Abrufen des Dateipfades implementieren
+                        UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
+                        DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList()
+                    };
+                    postResults.Add(postResult);
                 }
             }
-
-            return posts;
+        
+            return postResults;
         }
+
+
 
         /// <summary>
         /// Gets a post by its ID.
@@ -220,7 +236,99 @@ namespace iva_grp7_backend.Controllers;
             }
 
             return NoContent();
+        } 
+        [HttpPost("{postId}/upvote")]
+public async Task<IActionResult> UpvotePost(string postId)
+{
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var currentUser = await _userManager.FindByEmailAsync(userId);
+    
+    var post = await _context.Posts.FindAsync(postId);
+
+    if (post == null)
+    {
+        return NotFound();
+    }
+
+    var existingVote = await _context.PostVotes
+        .SingleOrDefaultAsync(v => v.PostId == postId && v.UserId == currentUser.Id);
+
+    if (existingVote != null)
+    {
+        if (!existingVote.IsUpvote)
+        {
+            // Benutzer hat bereits Downvote abgegeben, jetzt ändert er seine Meinung
+            existingVote.IsUpvote = true;
         }
+        else
+        {
+            // Benutzer hat bereits Upvote abgegeben, entfernt jetzt seine Stimme
+            _context.PostVotes.Remove(existingVote);
+        }
+    }
+    else
+    {
+        // Erstellen Sie eine neue Abstimmung
+        var vote = new PostVote
+        {
+            PostId = postId,
+            UserId = currentUser.Id,
+            IsUpvote = true
+        };
+        _context.PostVotes.Add(vote);
+    }
+
+    await _context.SaveChangesAsync();
+
+    return Ok("Post wurde ein UpVote gegeben!");
+}
+
+
+[HttpPost("{postId}/downvote")]
+public async Task<IActionResult> DownvotePost(string postId)
+{
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var currentUser = await _userManager.FindByEmailAsync(userId);
+    
+    var post = await _context.Posts.FindAsync(postId);
+
+    if (post == null)
+    {
+        return NotFound();
+    }
+
+    var existingVote = await _context.PostVotes
+        .SingleOrDefaultAsync(v => v.PostId == postId && v.UserId == currentUser.Id);
+
+    if (existingVote != null)
+    {
+        if (existingVote.IsUpvote)
+        {
+            // Benutzer hat bereits Upvote abgegeben, jetzt ändert er seine Meinung
+            existingVote.IsUpvote = false;
+        }
+        else
+        {
+            // Benutzer hat bereits Downvote abgegeben, entfernt jetzt seine Stimme
+            _context.PostVotes.Remove(existingVote);
+        }
+    }
+    else
+    {
+        // Erstellen Sie eine neue Abstimmung
+        var vote = new PostVote
+        {
+            PostId = postId,
+            UserId = currentUser.Id,
+            IsUpvote = false
+        };
+        _context.PostVotes.Add(vote);
+    }
+
+    await _context.SaveChangesAsync();
+
+    return Ok("Post wurde ein DownVote gegeben!");
+}
 
 
         
