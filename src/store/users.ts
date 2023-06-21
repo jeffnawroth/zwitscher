@@ -104,6 +104,27 @@ export const useUsersStore = defineStore("users", () => {
     }
   }
 
+  async function followUser(id: string) {
+    try {
+        await UserApi.prototype.apiUserIdFollowPost(id)
+    } catch (error) {
+      showNotification(
+        "error",
+        "Beim Folgen des Nutzers ist ein Fehler aufgetreten"
+      );
+    }
+  }
+  async function unfollowUser(id: string) {
+    try {
+        await UserApi.prototype.apiUserIdUnfollowPost(id)
+    } catch (error) {
+      showNotification(
+        "error",
+        "Beim Entfolgen des Nutzers ist ein Fehler aufgetreten"
+      );
+    }
+  }
+
   return {
     user,
     users,
@@ -115,5 +136,7 @@ export const useUsersStore = defineStore("users", () => {
     getUserByUsername,
     fetchFollowedUsers,
     followedUsers,
+    followUser,
+    unfollowUser
   };
 });

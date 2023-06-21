@@ -223,18 +223,19 @@ async function setFollow() {
   const followingIndex = authStore.user?.following.indexOf(usersStore.user!.id);
   const followerIndex = usersStore.user?.followers.indexOf(authStore.user!.id);
 
-  if (followingIndex != undefined && followingIndex !== -1) {
+  if (followingIndex !== undefined && followingIndex !== -1) {
+
     authStore.user?.following.splice(followingIndex, 1);
     if (followerIndex != undefined && followerIndex !== -1) {
       usersStore.user?.followers.splice(followerIndex, 1);
     }
+    usersStore.unfollowUser(usersStore.user!.id)
   } else {
     authStore.user?.following.push(usersStore.user!.id);
     usersStore.user?.followers.push(authStore.user!.id);
+    usersStore.followUser(usersStore.user!.id)
   }
-  await usersStore.updateUser(usersStore.user!, false);
-  const { token, refreshToken, ...rest } = authStore.user!;
-  await usersStore.updateUser(rest, false);
+  authStore.setUserData(authStore.user)
 }
 
 function loadPosts() {
