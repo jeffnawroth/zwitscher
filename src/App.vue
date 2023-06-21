@@ -6,8 +6,7 @@
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
       <v-text-field
-        bg-color="grey-lighten-2"
-        variant="solo"
+      variant="solo-filled"
         placeholder="Suche..."
         density="compact"
         flat
@@ -80,13 +79,19 @@
             rounded="lg"
           >
           </v-list-item>
+
+          <v-list-item v-if="mdAndDown" variant="tonal" rounded="lg"  prepend-icon="mdi-alpha-z" @click="showDialog = true">
+        </v-list-item>
+        <v-list-item v-else >
+          <v-btn block variant="tonal" @click="showDialog = true"
+          >Zwitschern</v-btn
+          >
+        </v-list-item>
         </div>
       </v-list>
-      <div v-if="store.loggedIn" class="pa-5">
-        <v-btn block variant="tonal" @click="showDialog = true"
-          >Zwitschern</v-btn
-        >
-      </div>
+      <div v-if="store.loggedIn">
+        
+        </div>
     </v-navigation-drawer>
 
     <v-navigation-drawer location="right">
