@@ -434,6 +434,81 @@ export interface PostFile {
 /**
  * 
  * @export
+ * @interface PostResult
+ */
+export interface PostResult {
+    /**
+     * 
+     * @type {string}
+     * @memberof PostResult
+     */
+    'id'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostResult
+     */
+    'userId'?: string | null;
+    /**
+     * 
+     * @type {Role}
+     * @memberof PostResult
+     */
+    'userRole'?: Role;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostResult
+     */
+    'avatar'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostResult
+     */
+    'name'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostResult
+     */
+    'username'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostResult
+     */
+    'text'?: string | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof PostResult
+     */
+    'upVotes'?: Array<string> | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof PostResult
+     */
+    'downVotes'?: Array<string> | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostResult
+     */
+    'date'?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof PostResult
+     */
+    'files'?: Array<string> | null;
+}
+
+
+/**
+ * 
+ * @export
  * @interface PostVote
  */
 export interface PostVote {
@@ -1511,7 +1586,7 @@ export const PostApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiPostGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Post>>> {
+        async apiPostGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PostResult>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiPostGet(options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1533,7 +1608,7 @@ export const PostApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiPostIdGet(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Post>> {
+        async apiPostIdGet(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PostResult>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiPostIdGet(id, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1544,7 +1619,7 @@ export const PostApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiPostPost(postAdd?: PostAdd, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Post>> {
+        async apiPostPost(postAdd?: PostAdd, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostResult>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiPostPost(postAdd, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1586,7 +1661,7 @@ export const PostApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiPostUserUserIdGet(userId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Post>>> {
+        async apiPostUserUserIdGet(userId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PostResult>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiPostUserUserIdGet(userId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1606,7 +1681,7 @@ export const PostApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiPostGet(options?: any): AxiosPromise<Array<Post>> {
+        apiPostGet(options?: any): AxiosPromise<Array<PostResult>> {
             return localVarFp.apiPostGet(options).then((request) => request(axios, basePath));
         },
         /**
@@ -1626,7 +1701,7 @@ export const PostApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiPostIdGet(id: string, options?: any): AxiosPromise<Post> {
+        apiPostIdGet(id: string, options?: any): AxiosPromise<Array<PostResult>> {
             return localVarFp.apiPostIdGet(id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1636,7 +1711,7 @@ export const PostApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiPostPost(postAdd?: PostAdd, options?: any): AxiosPromise<Post> {
+        apiPostPost(postAdd?: PostAdd, options?: any): AxiosPromise<PostResult> {
             return localVarFp.apiPostPost(postAdd, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1674,7 +1749,7 @@ export const PostApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiPostUserUserIdGet(userId: string, options?: any): AxiosPromise<Array<Post>> {
+        apiPostUserUserIdGet(userId: string, options?: any): AxiosPromise<Array<PostResult>> {
             return localVarFp.apiPostUserUserIdGet(userId, options).then((request) => request(axios, basePath));
         },
     };
