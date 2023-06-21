@@ -10,6 +10,7 @@ namespace iva_grp7_backend.Models
 	    public string Id { get; set; } = Guid.NewGuid().ToString();
 	    public string UserId { get; set; }
 	    public ApplicationUser User { get; set; }
+	    
 	    [NotMapped]
 	    public string? Avatar { get; set; }
 	    [NotMapped]
