@@ -515,27 +515,42 @@ namespace iva_grp7_backend.Controllers;
         // This method deletes a user with a given id.
         public async Task<IActionResult> Delete(string id)
         {
-            // Find the user with the given id using the UserManager.
             var user = await _userManager.FindByIdAsync(id);
-            // If the user is not found, return a 404 Not Found response.
+
             if (user == null)
             {
                 return NotFound();
             }
 
-            // Attempt to delete the user using the UserManager.
+            var userFollowers = await _context.UserFollowers.Where(uf => uf.UserId == id).ToListAsync();
+            _context.UserFollowers.RemoveRange(userFollowers);
+
+            var userFollowingUsers = await _context.UserFollowings.Where(uf => uf.UserId == id).ToListAsync();
+            _context.UserFollowings.RemoveRange(userFollowingUsers);
+
+            var userFollowedUsers = await _context.UserFollowings.Where(uf => uf.FollowingId == id).ToListAsync();
+            _context.UserFollowings.RemoveRange(userFollowedUsers);
+
+            // New code here
+            var userInterests = await _context.UserInterests.Where(ui => ui.UserId == id).ToListAsync();
+            _context.UserInterests.RemoveRange(userInterests);
+
+            await _context.SaveChangesAsync();
+
             var result = await _userManager.DeleteAsync(user);
 
-            // If the deletion is successful, return a 200 OK response.
             if (result.Succeeded)
             {
                 return Ok("Der User wurde erfolgreich gelöscht");
             }
 
-            // If the deletion is not successful, return a 400 Bad Request response and include any errors that occurred.
             return BadRequest(result.Errors);
-
         }
+
+
+
+
+
         
         /// <summary>
         /// Allows a user to follow another user.
