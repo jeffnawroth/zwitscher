@@ -26,6 +26,171 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError } from './base';
 /**
  * 
  * @export
+ * @interface ApplicationUser
+ */
+export interface ApplicationUser {
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationUser
+     */
+    'id'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationUser
+     */
+    'userName'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationUser
+     */
+    'normalizedUserName'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationUser
+     */
+    'normalizedEmail'?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ApplicationUser
+     */
+    'emailConfirmed'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationUser
+     */
+    'passwordHash'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationUser
+     */
+    'securityStamp'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationUser
+     */
+    'concurrencyStamp'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationUser
+     */
+    'phoneNumber'?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ApplicationUser
+     */
+    'phoneNumberConfirmed'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ApplicationUser
+     */
+    'twoFactorEnabled'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationUser
+     */
+    'lockoutEnd'?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ApplicationUser
+     */
+    'lockoutEnabled'?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApplicationUser
+     */
+    'accessFailedCount'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationUser
+     */
+    'avatar'?: string | null;
+    /**
+     * 
+     * @type {Role}
+     * @memberof ApplicationUser
+     */
+    'role'?: Role;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationUser
+     */
+    'name'?: string | null;
+    /**
+     * 
+     * @type {Gender}
+     * @memberof ApplicationUser
+     */
+    'gender'?: Gender;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationUser
+     */
+    'birthDate'?: string | null;
+    /**
+     * 
+     * @type {Array<UserFollower>}
+     * @memberof ApplicationUser
+     */
+    'followers'?: Array<UserFollower> | null;
+    /**
+     * 
+     * @type {Array<UserFollowing>}
+     * @memberof ApplicationUser
+     */
+    'following'?: Array<UserFollowing> | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationUser
+     */
+    'createdAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationUser
+     */
+    'bio'?: string | null;
+    /**
+     * 
+     * @type {Array<UserInterest>}
+     * @memberof ApplicationUser
+     */
+    'interests'?: Array<UserInterest> | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ApplicationUser
+     */
+    'locked'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationUser
+     */
+    'email'?: string | null;
+}
+
+
+/**
+ * 
+ * @export
  * @interface AuthResult
  */
 export interface AuthResult {
@@ -89,18 +254,6 @@ export interface AuthResult {
      * @memberof AuthResult
      */
     'following'?: Array<string> | null;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof AuthResult
-     */
-    'likedPosts'?: Array<string> | null;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof AuthResult
-     */
-    'dislikedPosts'?: Array<string> | null;
     /**
      * 
      * @type {string}
@@ -175,6 +328,12 @@ export interface Post {
     'userId'?: string | null;
     /**
      * 
+     * @type {ApplicationUser}
+     * @memberof Post
+     */
+    'user'?: ApplicationUser;
+    /**
+     * 
      * @type {string}
      * @memberof Post
      */
@@ -199,34 +358,22 @@ export interface Post {
     'text'?: string | null;
     /**
      * 
-     * @type {number}
+     * @type {Array<PostVote>}
      * @memberof Post
      */
-    'upVotes'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Post
-     */
-    'downVotes'?: number;
+    'votes'?: Array<PostVote> | null;
     /**
      * 
      * @type {string}
      * @memberof Post
      */
-    'date'?: string | null;
+    'date'?: string;
     /**
      * 
-     * @type {Array<string>}
+     * @type {Array<PostFile>}
      * @memberof Post
      */
-    'comments'?: Array<string> | null;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof Post
-     */
-    'files'?: Array<string> | null;
+    'files'?: Array<PostFile> | null;
 }
 /**
  * 
@@ -252,6 +399,74 @@ export interface PostAdd {
      * @memberof PostAdd
      */
     'files'?: Array<string> | null;
+}
+/**
+ * 
+ * @export
+ * @interface PostFile
+ */
+export interface PostFile {
+    /**
+     * 
+     * @type {string}
+     * @memberof PostFile
+     */
+    'id'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostFile
+     */
+    'postId'?: string | null;
+    /**
+     * 
+     * @type {Post}
+     * @memberof PostFile
+     */
+    'post'?: Post;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostFile
+     */
+    'files'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface PostVote
+ */
+export interface PostVote {
+    /**
+     * 
+     * @type {string}
+     * @memberof PostVote
+     */
+    'postId'?: string | null;
+    /**
+     * 
+     * @type {Post}
+     * @memberof PostVote
+     */
+    'post'?: Post;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostVote
+     */
+    'userId'?: string | null;
+    /**
+     * 
+     * @type {ApplicationUser}
+     * @memberof PostVote
+     */
+    'user'?: ApplicationUser;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PostVote
+     */
+    'isUpvote'?: boolean;
 }
 /**
  * 
@@ -392,18 +607,6 @@ export interface User {
      * @memberof User
      */
     'following'?: Array<string> | null;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof User
-     */
-    'likedPosts'?: Array<string> | null;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof User
-     */
-    'dislikedPosts'?: Array<string> | null;
     /**
      * 
      * @type {string}
@@ -568,18 +771,6 @@ export interface UserEdit {
     'following'?: Array<string> | null;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof UserEdit
-     */
-    'likedPosts'?: Array<string> | null;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof UserEdit
-     */
-    'dislikedPosts'?: Array<string> | null;
-    /**
-     * 
      * @type {string}
      * @memberof UserEdit
      */
@@ -611,6 +802,93 @@ export interface UserEdit {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface UserFollower
+ */
+export interface UserFollower {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserFollower
+     */
+    'userId'?: string | null;
+    /**
+     * 
+     * @type {ApplicationUser}
+     * @memberof UserFollower
+     */
+    'user'?: ApplicationUser;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserFollower
+     */
+    'followerId'?: string | null;
+    /**
+     * 
+     * @type {ApplicationUser}
+     * @memberof UserFollower
+     */
+    'follower'?: ApplicationUser;
+}
+/**
+ * 
+ * @export
+ * @interface UserFollowing
+ */
+export interface UserFollowing {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserFollowing
+     */
+    'userId'?: string | null;
+    /**
+     * 
+     * @type {ApplicationUser}
+     * @memberof UserFollowing
+     */
+    'user'?: ApplicationUser;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserFollowing
+     */
+    'followingId'?: string | null;
+    /**
+     * 
+     * @type {ApplicationUser}
+     * @memberof UserFollowing
+     */
+    'following'?: ApplicationUser;
+}
+/**
+ * 
+ * @export
+ * @interface UserInterest
+ */
+export interface UserInterest {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserInterest
+     */
+    'userId'?: string | null;
+    /**
+     * 
+     * @type {ApplicationUser}
+     * @memberof UserInterest
+     */
+    'user'?: ApplicationUser;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserInterest
+     */
+    'interest'?: string | null;
+}
 /**
  * 
  * @export
@@ -1488,6 +1766,44 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @summary Allows a user to follow another user.
+         * @param {string} id The ID of the user to be followed.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiUserIdFollowPost: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('apiUserIdFollowPost', 'id', id)
+            const localVarPath = `/api/User/{id}/follow`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Gets a user with the specified ID.
          * @param {string} id The ID of the user to get.
          * @param {*} [options] Override http request option.
@@ -1560,6 +1876,44 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(userEdit, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Allows a user to unfollow another user.
+         * @param {string} id The ID of the user to be unfollowed.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiUserIdUnfollowPost: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('apiUserIdUnfollowPost', 'id', id)
+            const localVarPath = `/api/User/{id}/unfollow`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1648,6 +2002,17 @@ export const UserApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Allows a user to follow another user.
+         * @param {string} id The ID of the user to be followed.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiUserIdFollowPost(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserIdFollowPost(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Gets a user with the specified ID.
          * @param {string} id The ID of the user to get.
          * @param {*} [options] Override http request option.
@@ -1667,6 +2032,17 @@ export const UserApiFp = function(configuration?: Configuration) {
          */
         async apiUserIdPut(id: string, userEdit?: UserEdit, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserIdPut(id, userEdit, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Allows a user to unfollow another user.
+         * @param {string} id The ID of the user to be unfollowed.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiUserIdUnfollowPost(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserIdUnfollowPost(id, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1721,6 +2097,16 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
+         * @summary Allows a user to follow another user.
+         * @param {string} id The ID of the user to be followed.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiUserIdFollowPost(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.apiUserIdFollowPost(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Gets a user with the specified ID.
          * @param {string} id The ID of the user to get.
          * @param {*} [options] Override http request option.
@@ -1739,6 +2125,16 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          */
         apiUserIdPut(id: string, userEdit?: UserEdit, options?: any): AxiosPromise<User> {
             return localVarFp.apiUserIdPut(id, userEdit, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Allows a user to unfollow another user.
+         * @param {string} id The ID of the user to be unfollowed.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiUserIdUnfollowPost(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.apiUserIdUnfollowPost(id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1797,6 +2193,18 @@ export class UserApi extends BaseAPI {
 
     /**
      * 
+     * @summary Allows a user to follow another user.
+     * @param {string} id The ID of the user to be followed.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public apiUserIdFollowPost(id: string, options?: AxiosRequestConfig) {
+        return UserApiFp(this.configuration).apiUserIdFollowPost(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary Gets a user with the specified ID.
      * @param {string} id The ID of the user to get.
      * @param {*} [options] Override http request option.
@@ -1818,6 +2226,18 @@ export class UserApi extends BaseAPI {
      */
     public apiUserIdPut(id: string, userEdit?: UserEdit, options?: AxiosRequestConfig) {
         return UserApiFp(this.configuration).apiUserIdPut(id, userEdit, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Allows a user to unfollow another user.
+     * @param {string} id The ID of the user to be unfollowed.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public apiUserIdUnfollowPost(id: string, options?: AxiosRequestConfig) {
+        return UserApiFp(this.configuration).apiUserIdUnfollowPost(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
