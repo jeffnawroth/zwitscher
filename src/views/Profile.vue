@@ -224,18 +224,17 @@ async function setFollow() {
   const followerIndex = usersStore.user?.followers.indexOf(authStore.user!.id);
 
   if (followingIndex !== undefined && followingIndex !== -1) {
-
     authStore.user?.following.splice(followingIndex, 1);
     if (followerIndex != undefined && followerIndex !== -1) {
       usersStore.user?.followers.splice(followerIndex, 1);
     }
-    usersStore.unfollowUser(usersStore.user!.id)
+    usersStore.unfollowUser(usersStore.user!.id);
   } else {
     authStore.user?.following.push(usersStore.user!.id);
     usersStore.user?.followers.push(authStore.user!.id);
-    usersStore.followUser(usersStore.user!.id)
+    usersStore.followUser(usersStore.user!.id);
   }
-  authStore.setUserData(authStore.user)
+  authStore.setUserData(authStore.user);
 }
 
 function loadPosts() {
