@@ -35,7 +35,7 @@ namespace iva_grp7_backend.Controllers;
         /// <response code="400">If the post data is invalid.</response>
         /// <response code="500">If an exception occurs while creating the post.</response>
         [HttpPost]
-        [ProducesResponseType(201, Type = typeof(Post))]
+        [ProducesResponseType(201, Type = typeof(PostResult))]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         public async Task<ActionResult<Post>> CreatePost(PostAdd postAdd)
@@ -72,12 +72,15 @@ namespace iva_grp7_backend.Controllers;
         /// <response code="200">Returns the list of posts.</response>
         /// <response code="500">If an exception occurs while retrieving the posts.</response>
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(List<Post>))]
+        [ProducesResponseType(200, Type = typeof(List<PostResult>))]
         [ProducesResponseType(500)]
         public async Task<ActionResult<IEnumerable<PostResult>>> GetAllPublicPosts()
         {
             // Alle Posts laden
-            var posts = await _context.Posts.Include(p => p.Votes).Include(p => p.Files).ToListAsync();
+            var posts = await _context.Posts
+                .Include(p => p.Votes)
+                .Include(p => p.Files)
+                .ToListAsync();
         
             // Liste für die PostResults
             List<PostResult> postResults = new List<PostResult>();
@@ -119,10 +122,12 @@ namespace iva_grp7_backend.Controllers;
         /// <response code="200">Returns the post.</response>
         /// <response code="404">If the post is not found.</response>
         /// <response code="500">If an exception occurs while retrieving the post.</response>
+        [ProducesResponseType(200, Type = typeof(List<PostResult>))]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Post>> GetPost(string id)
+        public async Task<ActionResult<PostResult>> GetPost(string id)
         {
-            var post = await _context.Posts.FindAsync(id);
+            // Find the post, include the Votes and Files in the query
+            var post = await _context.Posts.Include(p => p.Votes).Include(p => p.Files).SingleOrDefaultAsync(p => p.Id == id);
 
             if (post == null)
             {
@@ -133,13 +138,28 @@ namespace iva_grp7_backend.Controllers;
             var user = await _userManager.FindByIdAsync(post.UserId);
             if (user != null)
             {
-                post.Name = user.Name; // Angenommen, dass es in Ihrer IdentityUser Erweiterung ein "Name" Feld gibt
-                post.Username = user.UserName;
-                //post.Avatar = user.Avatar; // Sie müssen die Logik zum Abrufen des Avatar-Bildpfades implementieren
+                // Erstellen Sie ein PostResult-Objekt und füllen Sie die Informationen aus Post und User aus
+                var postResult = new PostResult
+                {
+                    Id = post.Id,
+                    UserId = post.UserId,
+                    UserRole = user.Role,
+                    //Avatar = _avatarHandler.GetAvatarFilePath(user.Avatar),
+                    Name = user.Name,
+                    Username = user.UserName,
+                    Text = post.Text,
+                    Date = post.Date,
+                    //Files = post.Files.Select(f => f.FilePath).ToList(),
+                    UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
+                    DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList()
+                };
+
+                return postResult;
             }
 
-            return post;
+            return NotFound();
         }
+
         
         /// <summary>
         /// Gets all posts from a specific user.
@@ -149,8 +169,9 @@ namespace iva_grp7_backend.Controllers;
         /// <response code="200">Returns the list of posts.</response>
         /// <response code="404">If the user is not found.</response>
         /// <response code="500">If an exception occurs while retrieving the posts.</response>
+        [ProducesResponseType(200, Type = typeof(List<PostResult>))]
         [HttpGet("user/{userId}")]
-        public async Task<ActionResult<IEnumerable<Post>>> GetPostsByUser(string userId)
+        public async Task<ActionResult<IEnumerable<PostResult>>> GetPostsByUser(string userId)
         {
             // Überprüfen, ob der Benutzer existiert
             var user = await _userManager.FindByIdAsync(userId);
@@ -159,21 +180,36 @@ namespace iva_grp7_backend.Controllers;
                 return NotFound();
             }
 
-            // Alle Posts des Benutzers laden
-            var posts = await _context.Posts
+            // Alle Posts des Benutzers laden, including the Votes and Files
+            var posts = await _context.Posts.Include(p => p.Votes).Include(p => p.Files)
                 .Where(p => p.UserId == userId)
                 .ToListAsync();
+
+            List<PostResult> postResults = new List<PostResult>();
 
             // Benutzerinformationen für jeden Post setzen
             foreach (var post in posts)
             {
-                post.Name = user.Name; // Angenommen, dass es in Ihrer IdentityUser Erweiterung ein "Name" Feld gibt
-                post.Username = user.UserName;
-                //post.Avatar = user.Avatar; // Sie müssen die Logik zum Abrufen des Avatar-Bildpfades implementieren
+                PostResult postResult = new PostResult()
+                {
+                    Id = post.Id,
+                    UserId = post.UserId,
+                    UserRole = user.Role,
+                    //Avatar = _avatarHandler.GetAvatarFilePath(user.Avatar),
+                    Name = user.Name,
+                    Username = user.UserName,
+                    Text = post.Text,
+                    Date = post.Date,
+                    //Files = post.Files.Select(f => f.FilePath).ToList(),
+                    UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
+                    DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList()
+                };
+                postResults.Add(postResult);
             }
 
-            return posts;
+            return postResults;
         }
+
         
         /// <summary>
         /// Deletes a post.
@@ -236,7 +272,7 @@ namespace iva_grp7_backend.Controllers;
                 }
             }
 
-            return NoContent();
+            return Ok("Post wurde aktualisiert");
         } 
         [HttpPost("{postId}/upvote")]
 public async Task<IActionResult> UpvotePost(string postId)
