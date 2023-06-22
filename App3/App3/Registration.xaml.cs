@@ -30,7 +30,7 @@ namespace App3
 
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmPassword))
             {
-                 await DisplayAlert("Fehler", "Bitte füllen Sie alle Felder aus.", "OK");
+                await DisplayAlert("Fehler", "Bitte füllen Sie alle Felder aus.", "OK");
                 return;
             }
 
@@ -51,11 +51,10 @@ namespace App3
                 await DisplayAlert("Fehler", "Die Registrierung ist fehlgeschlagen.", "OK");
             }
         }
+
         private int GenerateUserID()
         {
-            
             return new Random().Next(1000, 9999);
         }
-
     }
 }

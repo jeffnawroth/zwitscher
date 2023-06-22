@@ -22,8 +22,8 @@ namespace App3.Services
                 PostId = 1,
                 UserId = 1,
                 UserAvatar = "avatar_1.jpg",
-                ThumbsUpUserIds = new int[] { 2, 3, 4 },
-                ThumbsDownUserIds = new int[] { 5 },
+                ThumbsUpUserIds = new List<int> { 2, 3, 4 },
+                ThumbsDownUserIds = new List<int> { 5 },
                 Timestamp = DateTime.Now.AddDays(-1)
             };
 
@@ -33,8 +33,8 @@ namespace App3.Services
                 PostId = 2,
                 UserId = 2,
                 UserAvatar = "avatar_2.jpg",
-                ThumbsUpUserIds = new int[] { 1, 3 },
-                ThumbsDownUserIds = new int[] { 4, 5 },
+                ThumbsUpUserIds = new List<int> { 1, 3 },
+                ThumbsDownUserIds = new List<int> { 4, 5 },
                 Timestamp = DateTime.Now.AddDays(-2)
             };
 
@@ -44,8 +44,8 @@ namespace App3.Services
                 PostId = 3,
                 UserId = 3,
                 UserAvatar = "avatar_3.jpg",
-                ThumbsUpUserIds = new int[] { 1, 2, 4 },
-                ThumbsDownUserIds = new int[] { 5 },
+                ThumbsUpUserIds = new List<int> { 1, 2, 4 },
+                ThumbsDownUserIds = new List<int> { 5 },
                 Timestamp = DateTime.Now.AddDays(-3)
             };
 

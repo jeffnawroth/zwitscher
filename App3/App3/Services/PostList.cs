@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using App3.Services;
 
-using System.Collections.Generic;
-
 namespace App3.Services
 {
     public class PostList

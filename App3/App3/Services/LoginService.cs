@@ -1,5 +1,7 @@
 ﻿using Xamarin.Forms;
 using System.Threading.Tasks;
+using App3.Services;
+using System;
 
 namespace App3.Services
 {
@@ -9,7 +11,6 @@ namespace App3.Services
         {
             await Task.Delay(2000);
 
-            // Dummy-Überprüfung der Anmeldeinformationen
             bool isUserRegistered = DummyBackend.IsUserRegistered(username);
             bool isPasswordValid = DummyBackend.ValidatePassword(username, password);
 
@@ -18,3 +19,8 @@ namespace App3.Services
         }
     }
 }
+
+
+
+
+

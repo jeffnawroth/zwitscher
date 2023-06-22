@@ -1,26 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using App3.Services;
+﻿using App3.Services;
+using Xamarin.Forms;
+using System;
 
 
 namespace App3.Services
 {
-    public class PostView
+    public class PostView : ContentView
     {
         private Post post;
 
         public PostView(Post post)
         {
             this.post = post;
+            Display();
         }
 
         public void Display()
         {
-            Console.WriteLine($"{post.UserName}");
-            Console.WriteLine($"User Avatar: {post.UserAvatar}");
-            Console.WriteLine($"Thumbs Up User IDs: {string.Join(", ", post.ThumbsUpUserIds)}");
-            Console.WriteLine($"Thumbs Down User IDs: {string.Join(", ", post.ThumbsDownUserIds)}");
+            Console.WriteLine($"Post ID: {post.PostId}");
+            Console.WriteLine($"User ID: {post.UserId}");
+            Console.WriteLine($"Content: {post.Content}");
             Console.WriteLine($"Timestamp: {post.Timestamp}");
             Console.WriteLine();
         }
