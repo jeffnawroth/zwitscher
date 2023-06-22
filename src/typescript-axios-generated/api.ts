@@ -1267,6 +1267,364 @@ export class AuthenticationApi extends BaseAPI {
 
 
 /**
+ * DashboardApi - axios parameter creator
+ * @export
+ */
+export const DashboardApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Returns an array with amount of active users in the last 6 months.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDashboardActiveUsersGet: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Dashboard/ActiveUsers`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Returns an array with amount of users ages.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDashboardAgeDistributionGet: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Dashboard/AgeDistribution`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Returns an array with amount of users gender.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDashboardGenderDistributionGet: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Dashboard/GenderDistribution`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Returns an array with amount of posts in weekday.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDashboardPostsPerDayGet: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Dashboard/PostsPerDay`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Returns an array with amount of users created at each month.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDashboardUsersGrowthGet: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Dashboard/UsersGrowth`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * DashboardApi - functional programming interface
+ * @export
+ */
+export const DashboardApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = DashboardApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Returns an array with amount of active users in the last 6 months.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiDashboardActiveUsersGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<number>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiDashboardActiveUsersGet(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Returns an array with amount of users ages.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiDashboardAgeDistributionGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<number>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiDashboardAgeDistributionGet(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Returns an array with amount of users gender.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiDashboardGenderDistributionGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<number>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiDashboardGenderDistributionGet(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Returns an array with amount of posts in weekday.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiDashboardPostsPerDayGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<number>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiDashboardPostsPerDayGet(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Returns an array with amount of users created at each month.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiDashboardUsersGrowthGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<number>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiDashboardUsersGrowthGet(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * DashboardApi - factory interface
+ * @export
+ */
+export const DashboardApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = DashboardApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Returns an array with amount of active users in the last 6 months.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDashboardActiveUsersGet(options?: any): AxiosPromise<Array<number>> {
+            return localVarFp.apiDashboardActiveUsersGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Returns an array with amount of users ages.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDashboardAgeDistributionGet(options?: any): AxiosPromise<Array<number>> {
+            return localVarFp.apiDashboardAgeDistributionGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Returns an array with amount of users gender.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDashboardGenderDistributionGet(options?: any): AxiosPromise<Array<number>> {
+            return localVarFp.apiDashboardGenderDistributionGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Returns an array with amount of posts in weekday.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDashboardPostsPerDayGet(options?: any): AxiosPromise<Array<number>> {
+            return localVarFp.apiDashboardPostsPerDayGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Returns an array with amount of users created at each month.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDashboardUsersGrowthGet(options?: any): AxiosPromise<Array<number>> {
+            return localVarFp.apiDashboardUsersGrowthGet(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * DashboardApi - object-oriented interface
+ * @export
+ * @class DashboardApi
+ * @extends {BaseAPI}
+ */
+export class DashboardApi extends BaseAPI {
+    /**
+     * 
+     * @summary Returns an array with amount of active users in the last 6 months.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DashboardApi
+     */
+    public apiDashboardActiveUsersGet(options?: AxiosRequestConfig) {
+        return DashboardApiFp(this.configuration).apiDashboardActiveUsersGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Returns an array with amount of users ages.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DashboardApi
+     */
+    public apiDashboardAgeDistributionGet(options?: AxiosRequestConfig) {
+        return DashboardApiFp(this.configuration).apiDashboardAgeDistributionGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Returns an array with amount of users gender.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DashboardApi
+     */
+    public apiDashboardGenderDistributionGet(options?: AxiosRequestConfig) {
+        return DashboardApiFp(this.configuration).apiDashboardGenderDistributionGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Returns an array with amount of posts in weekday.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DashboardApi
+     */
+    public apiDashboardPostsPerDayGet(options?: AxiosRequestConfig) {
+        return DashboardApiFp(this.configuration).apiDashboardPostsPerDayGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Returns an array with amount of users created at each month.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DashboardApi
+     */
+    public apiDashboardUsersGrowthGet(options?: AxiosRequestConfig) {
+        return DashboardApiFp(this.configuration).apiDashboardUsersGrowthGet(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
  * PostApi - axios parameter creator
  * @export
  */
