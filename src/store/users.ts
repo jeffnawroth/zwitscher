@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { User, UserAdd, UserLight } from "@/interfaces";
 import { showNotification } from "./helpers";
 import { UserApi } from "@/typescript-axios-generated";
-import { getFollowedUsers } from "@/dummyApi";
+
 
 export const useUsersStore = defineStore("users", () => {
   const users = ref<User[]>([]);
@@ -35,10 +35,10 @@ export const useUsersStore = defineStore("users", () => {
     }
   }
 
-  async function fetchFollowedUsers(id: string) {
+  async function fetchFollowedUsers() {
     try {
-      const data = await getFollowedUsers(id);
-      followedUsers.value = data;
+      // const data = await getFollowedUsers();
+      // followedUsers.value = data;
     } catch (error) {
       showNotification(
         "error",
@@ -106,7 +106,7 @@ export const useUsersStore = defineStore("users", () => {
 
   async function followUser(id: string) {
     try {
-        await UserApi.prototype.apiUserIdFollowPost(id)
+      await UserApi.prototype.apiUserIdFollowPost(id);
     } catch (error) {
       showNotification(
         "error",
@@ -116,7 +116,7 @@ export const useUsersStore = defineStore("users", () => {
   }
   async function unfollowUser(id: string) {
     try {
-        await UserApi.prototype.apiUserIdUnfollowPost(id)
+      await UserApi.prototype.apiUserIdUnfollowPost(id);
     } catch (error) {
       showNotification(
         "error",
@@ -137,6 +137,6 @@ export const useUsersStore = defineStore("users", () => {
     fetchFollowedUsers,
     followedUsers,
     followUser,
-    unfollowUser
+    unfollowUser,
   };
 });

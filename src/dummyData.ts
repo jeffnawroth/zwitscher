@@ -1,4 +1,4 @@
-import { AuthUser, Post, User, UserLight } from "@/interfaces";
+import { AuthUser, Post, UserLight } from "@/interfaces";
 import { Gender, Role } from "./typescript-axios-generated";
 
 async function getAvatar(avatar: string): Promise<File> {
@@ -46,8 +46,6 @@ export const userData: AuthUser = {
   ),
   followers: [johnId, janeId],
   following: [johnId, janeId],
-  likedPosts: [],
-  dislikedPosts: [],
   bio: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere ex illum ad? Tenetur dolore accusantium laborum amet doloribus dignissimos reiciendis eveniet, exercitationem dicta perferendis, ullam cupiditate. Quidem sed non nulla!",
   createdAt: new Date().toUTCString(),
   birthDate: new Date().toISOString().slice(0, 10),
@@ -129,10 +127,10 @@ export const userData: AuthUser = {
 //   },
 // ];
 
-const adminPost1Id = "614c44f0-f28e-41d7-a4a2-3e6e79157d1b";
-const adminPost2Id = "614c44f0-f28e-41d7-a4a2-3e6e79157d2b";
-const janePost3Id = "614c44f0-f28e-41d7-a4a2-3e6e79157d3b";
-const johnPost4Id = "614c44f0-f28e-41d7-a4a2-3e6e79157d4b";
+// const adminPost1Id = "614c44f0-f28e-41d7-a4a2-3e6e79157d1b";
+// const adminPost2Id = "614c44f0-f28e-41d7-a4a2-3e6e79157d2b";
+// const janePost3Id = "614c44f0-f28e-41d7-a4a2-3e6e79157d3b";
+// const johnPost4Id = "614c44f0-f28e-41d7-a4a2-3e6e79157d4b";
 
 export const allPosts: Post[] = [
   // {

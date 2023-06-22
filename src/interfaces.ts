@@ -11,8 +11,6 @@ export interface User {
   followers: string[];
   following: string[];
   bio?: string;
-  likedPosts?: string[];
-  dislikedPosts?: string[];
   createdAt: string;
   birthDate?: string;
   interests?: string[];
@@ -51,8 +49,8 @@ export interface Post {
   name: string;
   username: string;
   text?: string;
-  upVotes: number;
-  downVotes: number;
+  upVotes: string[];
+  downVotes: string[];
   date: string;
   comments?: Post[];
   files?: File[];

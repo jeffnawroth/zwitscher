@@ -1,78 +1,78 @@
 import {
   activeUsersData,
   ageDistributionData,
-  allPosts,
-  followedUsers,
+  // allPosts,
+  // followedUsers,
   genderDistributionData,
   postsPerDayData,
   usersGrowthData,
   // allUsers,
 } from "./dummyData";
-import { PostAdd, Post, User, UserAdd, UserLight } from "./interfaces";
-import { v4 as uuidv4 } from "uuid";
+// import { PostAdd, Post, User, UserAdd, UserLight } from "./interfaces";
+// import { v4 as uuidv4 } from "uuid";
 
 //Posts
 
-let posts = allPosts;
+// let posts = allPosts;
 // let users = allUsers;
 
-export const getAllPublicPosts = (): Promise<Post[]> =>
-  new Promise((resolve) => {
-    resolve(posts.slice());
-  });
-export const getAllPostsFromUser = (id: string): Promise<Post[]> =>
-  new Promise((resolve) => {
-    resolve(posts.filter((post) => post.userId === id));
-  });
+// export const getAllPublicPosts = (): Promise<Post[]> =>
+//   new Promise((resolve) => {
+//     resolve(posts.slice());
+//   });
+// export const getAllPostsFromUser = (id: string): Promise<Post[]> =>
+//   new Promise((resolve) => {
+//     resolve(posts.filter((post) => post.userId === id));
+//   });
 
-export const getPostsFromFollowedUsers = (ids: string[]): Promise<Post[]> => {
-  const followedUsersPosts = posts.filter((post) => ids.includes(post.userId));
-  return new Promise((resolve) => {
-    resolve(followedUsersPosts);
-  });
-};
+// export const getPostsFromFollowedUsers = (ids: string[]): Promise<Post[]> => {
+//   const followedUsersPosts = posts.filter((post) => ids.includes(post.userId));
+//   return new Promise((resolve) => {
+//     resolve(followedUsersPosts);
+//   });
+// };
 
-export const getSinglePost = (id: string): Promise<Post> => {
-  const post = posts.find((post) => post.id === id);
-  return new Promise((resolve, reject) => {
-    if (post) resolve(post);
-    else reject();
-  });
-};
+// export const getSinglePost = (id: string): Promise<Post> => {
+//   const post = posts.find((post) => post.id === id);
+//   return new Promise((resolve, reject) => {
+//     if (post) resolve(post);
+//     else reject();
+//   });
+// };
 
-export const removePost = (id: string) => {
-  return new Promise((resolve) => {
-    posts = posts.filter((post) => post.id !== id);
-    resolve("Erfolgreich gelöscht");
-  });
-};
+// export const removePost = (id: string) => {
+//   return new Promise((resolve) => {
+//     posts = posts.filter((post) => post.id !== id);
+//     resolve("Erfolgreich gelöscht");
+//   });
+// };
 
-export const createNewPost = (postAdd: PostAdd): Promise<Post> => {
-  const user = users.find((user) => user.id === postAdd.userId);
-  const post: Post = {
-    id: uuidv4(),
-    userId: postAdd.userId,
-    upVotes: 0,
-    downVotes: 0,
-    name: user?.name!,
-    username: user?.username!,
-    date: new Date().toUTCString(),
-    avatar: user?.avatar,
-    comments: [],
-    files: postAdd.files,
-    text: postAdd.text,
-  };
-  posts.push(post);
-  return new Promise((resolve) => {
-    resolve(post);
-  });
-};
+// export const createNewPost = (postAdd: PostAdd): Promise<Post> => {
+//   const user = users.find((user) => user.id === postAdd.userId);
+//   const post: Post = {
+//     id: uuidv4(),
+//     userId: postAdd.userId,
+//     upVotes: 0,
+//     downVotes: 0,
+//     name: user?.name!,
+//     username: user?.username!,
+//     date: new Date().toUTCString(),
+//     avatar: user?.avatar,
+//     comments: [],
+//     files: postAdd.files,
+//     text: postAdd.text,
+//   };
+//   posts.push(post);
+//   return new Promise((resolve) => {
+//     resolve(post);
+//   });
+// };
 
-export const modifyPost = (postUpdate: Post) => {
-  const index = posts.findIndex((post) => post.id === postUpdate.id);
-  if (index > -1) posts.splice(index, 1, postUpdate);
-  return new Promise((resolve) => resolve("Update erfolgreich"));
-};
+// export const modifyPost = (postUpdate: Post) => {
+//   const index = posts.findIndex((post) => post.id === postUpdate.id);
+//   if (index > -1) posts.splice(index, 1, postUpdate);
+//   return new Promise((resolve) => resolve("Update erfolgreich"));
+// };
 
 //Users
 
@@ -122,10 +122,10 @@ export const modifyPost = (postUpdate: Post) => {
 //     resolve(user);
 //   });
 
-export const getFollowedUsers = (id: string): Promise<UserLight[]> =>
-  new Promise((resolve) => {
-    resolve(followedUsers);
-  });
+// export const getFollowedUsers = (): Promise<UserLight[]> =>
+//   new Promise((resolve) => {
+//     resolve(followedUsers);
+//   });
 
 //Dashboard
 export const getPostsPerDay = (): Promise<number[]> =>

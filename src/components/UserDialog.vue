@@ -183,7 +183,6 @@ import {
 import yupLocaleDe from "@/plugins/yupLocaleDe";
 import { useUsersStore } from "@/store/users";
 import { onMounted } from "vue";
-import { UserEdit } from "@/interfaces";
 import Avatar from "./Avatar.vue";
 import { Gender, Role } from "@/typescript-axios-generated";
 import { useAuthenticationStore } from "@/store/authentication";
@@ -353,8 +352,9 @@ function close() {
 }
 
 async function submit(values: any) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { passwordConfirm, ...rest } = values;
-  let updatedValues: UserEdit = { ...rest };
+  let updatedValues = { ...rest };
 
   if (route.name == "create-user") {
     await store.createUser(updatedValues);

@@ -1,7 +1,7 @@
 <template>
   <v-list nav>
     <v-list-item
-      v-for="user in store.followedUsers"
+      v-for="user in store.users"
       :key="user.id"
       :title="user.name"
       :subtitle="user.username"
@@ -12,23 +12,22 @@
           <v-icon icon="mdi-account-circle" size="40"></v-icon>
         </v-avatar>
         <v-img v-else>
-          <!-- <v-avatar :image="generateFileURL(post?.avatar)"> </v-avatar> -->
+          <v-avatar :image="generateFileURL(user?.avatar)"> </v-avatar>
         </v-img>
       </template>
-      <!-- :prepend-avatar="user.avatar ? user.avatar : 'mdi-account-circle'" -->
     </v-list-item>
   </v-list>
 </template>
 
 <script setup lang="ts">
-import { useAuthenticationStore } from "@/store/authentication";
 import { useUsersStore } from "@/store/users";
 import { onMounted } from "vue";
+import { generateFileURL } from "@/helpers";
 
 const store = useUsersStore();
-const authStore = useAuthenticationStore();
 
 onMounted(() => {
-  store.fetchFollowedUsers("jkldsjfklsjfkljsdlkjfsdklf");
+  store.fetchFollowedUsers();
+  store.getUsers();
 });
 </script>

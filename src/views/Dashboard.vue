@@ -59,7 +59,7 @@
 <script setup lang="ts">
 import PageToolbar from "@/components/PageToolbar.vue";
 import Chart, { ChartItem } from "chart.js/auto";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { onMounted } from "vue";
 import DashboardCard from "@/components/Dashboard/DashboardCard.vue";
 import { utils, write, WorkBook } from "xlsx";
