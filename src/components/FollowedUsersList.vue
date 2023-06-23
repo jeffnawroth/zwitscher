@@ -8,8 +8,8 @@
       :to="`/${user.username}`"
     >
       <template #prepend>
-        <v-avatar v-if="!user.avatar" size="40" color="grey">
-          <v-icon icon="mdi-account-circle" size="40"></v-icon>
+        <v-avatar v-if="!user.avatar" color="grey">
+          <v-icon icon="mdi-account-circle" size="x-large"></v-icon>
         </v-avatar>
         <v-img v-else>
           <v-avatar :image="generateFileURL(user?.avatar)"> </v-avatar>

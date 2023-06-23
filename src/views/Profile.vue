@@ -5,7 +5,7 @@
       <v-card>
         <template #prepend>
           <v-avatar v-if="!usersStore.user?.avatar" size="75" color="grey">
-            <v-icon icon="mdi-account-circle" size="75"></v-icon>
+            <v-icon icon="mdi-account-circle" size="60"></v-icon>
           </v-avatar>
           <v-img v-else>
             <v-avatar

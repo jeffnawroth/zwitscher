@@ -23,8 +23,8 @@
         </div>
       </template>
       <template #prepend>
-        <v-avatar v-if="!authStore.user?.avatar" size="40" color="grey">
-          <v-icon icon="mdi-account-circle" size="40"></v-icon>
+        <v-avatar v-if="!authStore.user?.avatar" color="grey">
+          <v-icon icon="mdi-account-circle" size="x-large"></v-icon>
         </v-avatar>
         <v-img v-else>
           <v-avatar :image="generateFileURL(authStore.user?.avatar)">
@@ -97,7 +97,6 @@ import { mixed, object, setLocale, string } from "yup";
 import { Form, Field } from "vee-validate";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
 import { useRoute } from "vue-router";
-import { useUsersStore } from "@/store/users";
 import FileLayout from "./FileLayout.vue";
 import BaseTextarea from "../BaseComponents/BaseTextarea.vue";
 import { generateFileURL } from "@/helpers";
@@ -106,7 +105,6 @@ setLocale(yupLocaleDe);
 
 const authStore = useAuthenticationStore();
 const postsStore = usePostStore();
-const usersStore = useUsersStore();
 const route = useRoute();
 
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -135,12 +133,6 @@ const placeholder = computed(() => {
 
 const buttonText = computed(() => {
   return route.name == "home" ? "Zwitschern" : "Antworten";
-});
-
-const cardSubtitle = computed(() => {
-  return route.name == "home"
-    ? `@${authStore.user?.username}`
-    : `Antworten auf @${postsStore.post?.username}`;
 });
 
 const cardTitle = computed(() => {

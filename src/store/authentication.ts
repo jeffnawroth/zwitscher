@@ -10,10 +10,9 @@ import {
   UserRegistrationRequestDto,
 } from "@/typescript-axios-generated";
 import { showNotification } from "./helpers";
-import { userData } from "@/dummyData";
 
 export const useAuthenticationStore = defineStore("authentication", () => {
-  const user = ref<AuthUser | null>(userData);
+  const user = ref<AuthUser | null>();
   const loading = ref(false);
 
   async function register(credentials: UserRegistrationRequestDto) {
