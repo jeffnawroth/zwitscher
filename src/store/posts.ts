@@ -4,24 +4,18 @@ import { PostAdd } from "@/interfaces";
 import { useAuthenticationStore } from "./authentication";
 import { computed } from "vue";
 import { showNotification, sortByDateDescending } from "./helpers";
-import {
-  createNewPost,
-  getAllPostsFromUser,
-  getPostsFromFollowedUsers,
-  getSinglePost,
-  modifyPost,
-  removePost,
-} from "@/dummyApi";
-import { Post, PostApi } from "@/typescript-axios-generated";
+import { PostApi, PostResult } from "@/typescript-axios-generated";
+import { Post } from "@/interfaces";
 
 export const usePostStore = defineStore("post", () => {
-  const allPosts = ref<Post[]>([]);
-  const postsOfUser = ref<Post[]>([]);
-  const postsFollowedUsers = ref<Post[]>([]);
-  const post = ref<Post | undefined>();
+  const allPosts = ref<PostResult[]>([]);
+  const postsOfUser = ref<PostResult[]>([]);
+  const postsFollowedUsers = ref<PostResult[]>([]);
+  const post = ref<PostResult | undefined>();
 
   async function getAllPosts() {
     try {
+      allPosts.value = []
       const data = await PostApi.prototype.apiPostGet();
       allPosts.value = data.data;
     } catch (error) {
@@ -29,26 +23,27 @@ export const usePostStore = defineStore("post", () => {
         "error",
         "Beim Laden der öffentlichen Beiträge ist ein Fehler aufgetreten!"
       );
-    }
+    } 
   }
 
   async function getPostsForUser(id: string) {
     try {
+      allPosts.value = []
       const data = await PostApi.prototype.apiPostUserUserIdGet(id);
-      postsOfUser.value = data.data;
+      allPosts.value = data.data;
     } catch (error) {
       showNotification(
         "error",
         "Beim Laden der Beiträge ist ein Fehler aufgetreten!"
       );
-    }
+    } 
   }
 
   async function getFollowedUsersPosts() {
-    const authStore = useAuthenticationStore();
+    // const authStore = useAuthenticationStore();
     try {
-      const data = await getPostsFromFollowedUsers(authStore.user!.following);
-      postsFollowedUsers.value = data;
+      // const data = await getPostsFromFollowedUsers(authStore.user!.following);
+      // allPosts.value = data;
     } catch (error) {
       showNotification(
         "error",
@@ -83,8 +78,8 @@ export const usePostStore = defineStore("post", () => {
 
   async function addComment(comment: PostAdd) {
     try {
-      const data = await createNewPost(comment);
-      post.value?.comments?.push(data);
+      // const data = await createNewPost(comment);
+      // post.value?.comments?.push(data);
     } catch (error) {
       showNotification(
         "error",
@@ -120,16 +115,61 @@ export const usePostStore = defineStore("post", () => {
     }
   }
 
+  async function upvotePost(id: string) {
+    try {
+      await PostApi.prototype.apiPostPostIdUpvotePost(id);
+      const post = allPosts.value.find((post) => post.id === id)!;
+      const authStore = useAuthenticationStore();
+      const likedIndex = post?.upVotes?.indexOf(authStore.user!.id);
+      const dislikedIndex = post?.downVotes?.indexOf(authStore.user!.id);
+      if (likedIndex !== undefined && likedIndex !== -1) {
+        post.upVotes?.splice(likedIndex, 1);
+      } else {
+        post.upVotes?.push(authStore.user!.id);
+        if (dislikedIndex !== undefined && dislikedIndex !== -1) {
+          post.downVotes?.splice(dislikedIndex, 1);
+        }
+      }
+    } catch (error) {
+      showNotification(
+        "error",
+        "Beim liken des Beitrags ist ein Fehler aufgetreten!"
+      );
+    }
+  }
+  async function downvotePost(id: string) {
+    try {
+      await PostApi.prototype.apiPostPostIdDownvotePost(id);
+      const post = allPosts.value.find((post) => post.id === id)!;
+      const authStore = useAuthenticationStore();
+      const likedIndex = post?.upVotes?.indexOf(authStore.user!.id);
+      const dislikedIndex = post?.downVotes?.indexOf(authStore.user!.id);
+      if (dislikedIndex !== undefined && dislikedIndex !== -1) {
+        post.downVotes?.splice(dislikedIndex, 1);
+      } else {
+        post.downVotes?.push(authStore.user!.id);
+        if (likedIndex !== undefined && likedIndex !== -1) {
+          post.upVotes?.splice(likedIndex, 1);
+        }
+      }
+    } catch (error) {
+      showNotification(
+        "error",
+        "Beim disliken des Beitrags ist ein Fehler aufgetreten!"
+      );
+    }
+  }
+
   const sortedPosts = computed(() => {
     return sortByDateDescending(allPosts.value);
   });
 
   const sortedUserPosts = computed(() => {
-    return sortByDateDescending(postsOfUser.value);
+    return sortByDateDescending(allPosts.value);
   });
 
   const sortedPostsFollowedUsers = computed(() => {
-    return sortByDateDescending(postsFollowedUsers.value);
+    return sortByDateDescending(allPosts.value);
   });
 
   return {
@@ -147,5 +187,7 @@ export const usePostStore = defineStore("post", () => {
     getFollowedUsersPosts,
     sortedPostsFollowedUsers,
     updatePost,
+    upvotePost,
+    downvotePost,
   };
 });

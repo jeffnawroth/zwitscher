@@ -2,11 +2,11 @@
   <v-card :subtitle="`@${post.username} • ${formattedDate}`" density="compact">
     <template #prepend>
       <v-btn icon variant="text" @click.stop="openProfile">
-        <v-avatar v-if="!post.avatar" size="40" color="grey">
-          <v-icon icon="mdi-account-circle" size="40"></v-icon>
+        <v-avatar v-if="!post.avatar" color="grey">
+          <v-icon icon="mdi-account-circle" size="x-large"></v-icon>
         </v-avatar>
         <v-img v-else>
-          <v-avatar :image="generateFileURL(post?.avatar)"> </v-avatar>
+          <v-avatar :image="generateFileURL(post.avatar)"> </v-avatar>
         </v-img>
       </v-btn>
     </template>
@@ -27,22 +27,32 @@
     </template>
     <v-card-actions>
       <v-btn :prepend-icon="thumbUp" @click.stop="likePost">{{
-        post.upVotes
+        post.upVotes?.length
       }}</v-btn>
       <v-btn :prepend-icon="thumbDown" @click.stop="dislikePost">{{
-        post.downVotes
+        post.downVotes?.length
       }}</v-btn>
       <v-btn prepend-icon="mdi-comment-outline">{{
         post.comments?.length ?? 0
       }}</v-btn>
 
       <v-spacer></v-spacer>
+      <!-- <v-btn
+        v-if="
+          authStore.loggedIn &&
+          (post.userId === authStore.user?.id ||
+            authStore.user?.role == Role.NUMBER_0)
+        "
+        icon="mdi-pencil-outline"
+        @click.stop="deleteDialog = true"
+      ></v-btn>-->
       <v-btn
         v-if="
           authStore.loggedIn &&
           (post.userId === authStore.user?.id ||
             authStore.user?.role == Role.NUMBER_0 ||
-            authStore.user?.role == Role.NUMBER_1)
+            (authStore.user?.role == Role.NUMBER_1 &&
+              post.userRole == Role.NUMBER_2))
         "
         icon="mdi-delete-outline"
         @click.stop="deleteDialog = true"
@@ -59,7 +69,7 @@
 </template>
 
 <script setup lang="ts">
-import { Post } from "@/interfaces";
+import { PostResult } from "@/typescript-axios-generated";
 import { useAuthenticationStore } from "@/store/authentication";
 import BaseDeleteDialog from "../BaseComponents/BaseDeleteDialog.vue";
 import { usePostStore } from "@/store/posts";
@@ -69,14 +79,14 @@ import FileLayout from "./FileLayout.vue";
 import { generateFileURL } from "@/helpers";
 import { Role } from "@/typescript-axios-generated";
 
-const emit = defineEmits<{
-  (e: "set-upvotes", upvotes: number): void;
-  (e: "set-downvotes", downvotes: number): void;
-}>();
+// const emit = defineEmits<{
+//   (e: "set-upvotes"): void;
+//   (e: "set-downvotes", downvotes: number): void;
+// }>();
 
 const props = defineProps({
   post: {
-    type: Object as PropType<Post>,
+    type: Object as PropType<PostResult>,
     required: true,
   },
 });
@@ -88,13 +98,13 @@ const route = useRoute();
 const deleteDialog = ref(false);
 
 const thumbUp = computed(() => {
-  return authStore.user?.likedPosts?.includes(props.post.id)
+  return props.post.upVotes?.includes(authStore.user!.id)
     ? "mdi-thumb-up"
     : "mdi-thumb-up-outline";
 });
 
 const thumbDown = computed(() => {
-  return authStore.user?.dislikedPosts?.includes(props.post.id)
+  return props.post.downVotes?.includes(authStore.user!.id)
     ? "mdi-thumb-down"
     : "mdi-thumb-down-outline";
 });
@@ -108,21 +118,7 @@ function likePost() {
     router.push({ name: "login" });
     return;
   }
-  const likedIndex = authStore.user?.likedPosts?.indexOf(props.post.id);
-  const dislikedIndex = authStore.user?.dislikedPosts?.indexOf(props.post.id);
-
-  if (likedIndex != undefined && likedIndex !== -1) {
-    authStore.user?.likedPosts?.splice(likedIndex, 1);
-    emit("set-upvotes", props.post.upVotes - 1);
-  } else {
-    if (!authStore.user?.likedPosts) authStore.user!.likedPosts = [];
-    authStore.user?.likedPosts?.push(props.post.id);
-    emit("set-upvotes", props.post.upVotes + 1);
-    if (dislikedIndex != undefined && dislikedIndex !== -1) {
-      authStore.user?.dislikedPosts?.splice(dislikedIndex, 1);
-      emit("set-downvotes", props.post.downVotes - 1);
-    }
-  }
+  store.upvotePost(props.post.id!);
 }
 
 function dislikePost() {
@@ -130,30 +126,16 @@ function dislikePost() {
     router.push({ name: "login" });
     return;
   }
-  const likedIndex = authStore.user?.likedPosts?.indexOf(props.post.id);
-  const dislikedIndex = authStore.user?.dislikedPosts?.indexOf(props.post.id);
-
-  if (dislikedIndex != undefined && dislikedIndex !== -1) {
-    authStore.user?.dislikedPosts?.splice(dislikedIndex, 1);
-    emit("set-downvotes", props.post.downVotes - 1);
-  } else {
-    if (!authStore.user?.dislikedPosts) authStore.user!.dislikedPosts = [];
-    authStore.user?.dislikedPosts?.push(props.post.id);
-    emit("set-downvotes", props.post.downVotes + 1);
-    if (likedIndex != undefined && likedIndex !== -1) {
-      authStore.user?.likedPosts?.splice(likedIndex, 1);
-      emit("set-upvotes", props.post.upVotes - 1);
-    }
-  }
+  store.downvotePost(props.post.id!);
 }
 
 async function deleteUserPost() {
-  await store.deletePost(props.post.id);
+  await store.deletePost(props.post.id!);
   deleteDialog.value = false;
 }
 
 const formattedDate = computed(() => {
-  const date = new Date(props.post.date);
+  const date = new Date(props.post.date!);
   const now = new Date();
   const diff = now.getTime() - date.getTime();
   const diffInSeconds = Math.round(diff / 1000);
