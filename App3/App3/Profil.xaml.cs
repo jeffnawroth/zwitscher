@@ -85,9 +85,7 @@ namespace App3
 
         private void EditProfile()
         {
-            // Implement your logic to handle the profile editing functionality
-            // This method will be executed when the EditProfileCommand is triggered
-            // You can navigate to a different page or display a modal popup for editing the profile
+            Navigation.PushAsync(new EditProfilePage(currentUser));
         }
     }
 }
