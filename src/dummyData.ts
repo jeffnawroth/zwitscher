@@ -1,60 +1,60 @@
-import { AuthUser, Post, UserLight } from "@/interfaces";
-import { Gender, Role } from "./typescript-axios-generated";
+// import { AuthUser, Post, UserLight } from "@/interfaces";
+// import { Gender, Role } from "./typescript-axios-generated";
 
-async function getAvatar(avatar: string): Promise<File> {
-  const response = await fetch(avatar);
-  const blob = await response.blob();
-  return new File([blob], "avatar.jpg", { type: "image/jpeg" });
-}
+// async function getAvatar(avatar: string): Promise<File> {
+//   const response = await fetch(avatar);
+//   const blob = await response.blob();
+//   return new File([blob], "avatar.jpg", { type: "image/jpeg" });
+// }
 
-const adminId = "b586e624-a6c4-44af-abd3-1180671f7691";
-const johnId = "b586e624-a6c4-44af-abd3-1180671f7692";
-const janeId = "b586e624-a6c4-44af-abd3-1180671f7693";
+// const adminId = "b586e624-a6c4-44af-abd3-1180671f7691";
+// const johnId = "b586e624-a6c4-44af-abd3-1180671f7692";
+// const janeId = "b586e624-a6c4-44af-abd3-1180671f7693";
 
-export const followedUsers: UserLight[] = [
-  {
-    id: adminId,
-    username: "ANimda",
-    name: "Admin Nimda",
-    avatar: undefined,
-  },
-  {
-    id: janeId,
-    username: "jDoe",
-    name: "Jane Doe",
-    avatar: undefined,
-  },
-  {
-    id: johnId,
-    username: "jDoe",
-    name: "John Doe",
-    avatar: undefined,
-  },
-];
+// export const followedUsers: UserLight[] = [
+//   {
+//     id: adminId,
+//     username: "ANimda",
+//     name: "Admin Nimda",
+//     avatar: undefined,
+//   },
+//   {
+//     id: janeId,
+//     username: "jDoe",
+//     name: "Jane Doe",
+//     avatar: undefined,
+//   },
+//   {
+//     id: johnId,
+//     username: "jDoe",
+//     name: "John Doe",
+//     avatar: undefined,
+//   },
+// ];
 
-export const userData: AuthUser = {
-  id: adminId,
-  token:
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
-  name: "Admin Nimda",
-  role: Role.NUMBER_0,
-  username: "ANimda",
-  email: "admin@nimda.de",
-  password: "Admin1!",
-  avatar: await getAvatar(
-    "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
-  ),
-  followers: [johnId, janeId],
-  following: [johnId, janeId],
-  bio: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere ex illum ad? Tenetur dolore accusantium laborum amet doloribus dignissimos reiciendis eveniet, exercitationem dicta perferendis, ullam cupiditate. Quidem sed non nulla!",
-  createdAt: new Date().toUTCString(),
-  birthDate: new Date().toISOString().slice(0, 10),
-  gender: Gender.NUMBER_0,
-  interests: ["Schach", "Bücher", "Fußball"],
-  refreshToken:
-    "jfklasjfklajslfjklasjdfjasdkljfklsdjfkljsdlafjlkasdjfkljasdlfjasdklfjasdljflsdj",
-  locked: false,
-};
+// export const userData: AuthUser = {
+//   id: adminId,
+//   token:
+//     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+//   name: "Admin Nimda",
+//   role: Role.NUMBER_0,
+//   username: "ANimda",
+//   email: "admin@nimda.de",
+//   password: "Admin1!",
+//   avatar: await getAvatar(
+//     "https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
+//   ),
+//   followers: [johnId, janeId],
+//   following: [johnId, janeId],
+//   bio: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere ex illum ad? Tenetur dolore accusantium laborum amet doloribus dignissimos reiciendis eveniet, exercitationem dicta perferendis, ullam cupiditate. Quidem sed non nulla!",
+//   createdAt: new Date().toUTCString(),
+//   birthDate: new Date().toISOString().slice(0, 10),
+//   gender: Gender.NUMBER_0,
+//   interests: ["Schach", "Bücher", "Fußball"],
+//   refreshToken:
+//     "jfklasjfklajslfjklasjdfjasdkljfklsdjfkljsdlafjlkasdjfkljasdlfjasdklfjasdljflsdj",
+//   locked: false,
+// };
 
 // export const allUsers: User[] = [
 //   {
@@ -132,7 +132,7 @@ export const userData: AuthUser = {
 // const janePost3Id = "614c44f0-f28e-41d7-a4a2-3e6e79157d3b";
 // const johnPost4Id = "614c44f0-f28e-41d7-a4a2-3e6e79157d4b";
 
-export const allPosts: Post[] = [
+// export const allPosts: Post[] = [
   // {
   //   id: adminPost1Id,
   //   userId: adminId,
@@ -197,7 +197,7 @@ export const allPosts: Post[] = [
   //   files: [],
   //   role: Role.NUMBER_1,
   // },
-];
+// ];
 
 // export const userPosts: Post[] = [
 //   {
@@ -266,8 +266,8 @@ export const allPosts: Post[] = [
 //   },
 // ];
 
-export const postsPerDayData = [10, 15, 7, 20, 12, 18, 25];
-export const usersGrowthData = [10, 15, 7, 20, 12, 18, 25];
-export const activeUsersData = [500, 600, 800, 700, 900, 1000];
-export const ageDistributionData = [20, 30, 25, 15, 10];
-export const genderDistributionData = [70, 30, 10];
+// export const postsPerDayData = [10, 15, 7, 20, 12, 18, 25];
+// export const usersGrowthData = [10, 15, 7, 20, 12, 18, 25];
+// export const activeUsersData = [500, 600, 800, 700, 900, 1000];
+// export const ageDistributionData = [20, 30, 25, 15, 10];
+// export const genderDistributionData = [70, 30, 10];

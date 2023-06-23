@@ -1,13 +1,13 @@
-import {
-  activeUsersData,
-  ageDistributionData,
-  // allPosts,
-  // followedUsers,
-  genderDistributionData,
-  postsPerDayData,
-  usersGrowthData,
-  // allUsers,
-} from "./dummyData";
+// import {
+//   activeUsersData,
+//   ageDistributionData,
+//   // allPosts,
+//   // followedUsers,
+//   genderDistributionData,
+//   postsPerDayData,
+//   usersGrowthData,
+//   // allUsers,
+// } from "./dummyData";
 // import { PostAdd, Post, User, UserAdd, UserLight } from "./interfaces";
 // import { v4 as uuidv4 } from "uuid";
 
@@ -128,23 +128,23 @@ import {
 //   });
 
 //Dashboard
-export const getPostsPerDay = (): Promise<number[]> =>
-  new Promise((resolve) => {
-    resolve(postsPerDayData);
-  });
-export const getUsersGrowth = (): Promise<number[]> =>
-  new Promise((resolve) => {
-    resolve(usersGrowthData);
-  });
-export const getActiveUsers = (): Promise<number[]> =>
-  new Promise((resolve) => {
-    resolve(activeUsersData);
-  });
-export const getAgeDistribution = (): Promise<number[]> =>
-  new Promise((resolve) => {
-    resolve(ageDistributionData);
-  });
-export const getGenderDistribution = (): Promise<number[]> =>
-  new Promise((resolve) => {
-    resolve(genderDistributionData);
-  });
+// export const getPostsPerDay = (): Promise<number[]> =>
+//   new Promise((resolve) => {
+//     resolve(postsPerDayData);
+//   });
+// export const getUsersGrowth = (): Promise<number[]> =>
+//   new Promise((resolve) => {
+//     resolve(usersGrowthData);
+//   });
+// export const getActiveUsers = (): Promise<number[]> =>
+//   new Promise((resolve) => {
+//     resolve(activeUsersData);
+//   });
+// export const getAgeDistribution = (): Promise<number[]> =>
+//   new Promise((resolve) => {
+//     resolve(ageDistributionData);
+//   });
+// export const getGenderDistribution = (): Promise<number[]> =>
+//   new Promise((resolve) => {
+//     resolve(genderDistributionData);
+//   });

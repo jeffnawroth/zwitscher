@@ -1,10 +1,4 @@
-import {
-  getActiveUsers,
-  getAgeDistribution,
-  getGenderDistribution,
-  getPostsPerDay,
-  getUsersGrowth,
-} from "@/dummyApi";
+import { DashboardApi } from "@/typescript-axios-generated";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
@@ -23,8 +17,8 @@ export const useDashboardStore = defineStore("dashboard", () => {
   async function getPostsPerDayData() {
     try {
       loadingPostsPerDay.value = true;
-      const data = await getPostsPerDay();
-      postsPerDayData.value = data;
+      const data = await DashboardApi.prototype.apiDashboardPostsPerDayGet();
+      postsPerDayData.value = data.data;
     } catch {
       console.log("error");
     } finally {
@@ -34,8 +28,8 @@ export const useDashboardStore = defineStore("dashboard", () => {
   async function getUsersGrowthData() {
     try {
       loadingUsersGrowth.value = true;
-      const data = await getUsersGrowth();
-      usersGrowthData.value = data;
+      const data = await DashboardApi.prototype.apiDashboardUsersGrowthGet();
+      usersGrowthData.value = data.data;
     } catch {
       console.log("error");
     } finally {
@@ -45,8 +39,8 @@ export const useDashboardStore = defineStore("dashboard", () => {
   async function getActiveUsersData() {
     try {
       loadingActiveUsers.value = true;
-      const data = await getActiveUsers();
-      activeUsersData.value = data;
+      const data = await DashboardApi.prototype.apiDashboardActiveUsersGet();
+      activeUsersData.value = data.data;
     } catch {
       console.log("error");
     } finally {
@@ -56,8 +50,8 @@ export const useDashboardStore = defineStore("dashboard", () => {
   async function getAgeDistributionData() {
     try {
       loadingAgeDistribution.value = true;
-      const data = await getAgeDistribution();
-      ageDistributionData.value = data;
+      const data = await DashboardApi.prototype.apiDashboardAgeDistributionGet();
+      ageDistributionData.value = data.data;
     } catch {
       console.log("error");
     } finally {
@@ -67,8 +61,8 @@ export const useDashboardStore = defineStore("dashboard", () => {
   async function getGenderDistributionData() {
     try {
       loadingGenderDistribution.value = true;
-      const data = await getGenderDistribution();
-      genderDistributionData.value = data;
+      const data = await DashboardApi.prototype.apiDashboardGenderDistributionGet();
+      genderDistributionData.value = data.data;
     } catch {
       console.log("error");
     } finally {
