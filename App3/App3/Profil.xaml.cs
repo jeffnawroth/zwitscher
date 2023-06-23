@@ -1,27 +1,31 @@
-﻿using System;
+﻿using App3.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-using App3.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace App3
 {
+    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Profil : ContentPage
     {
         private User currentUser;
 
+        public Command EditProfileCommand { get; }
+
         public Profil()
         {
             InitializeComponent();
+            EditProfileCommand = new Command(EditProfile);
         }
 
         public Profil(User user) : this()
         {
             currentUser = user;
+            OnAppearing();
         }
 
         protected override void OnAppearing()
@@ -37,7 +41,7 @@ namespace App3
             // Set the user avatar
             if (currentUser.Avatar != null)
             {
-                AvatarImage.Source = currentUser.Avatar.Path;  // Beispiel: Verwende die Path-Eigenschaft des AvatarFile-Objekts
+                AvatarImage.Source = currentUser.Avatar.Path;
             }
             else
             {
@@ -77,6 +81,13 @@ namespace App3
             };
 
             return posts;
+        }
+
+        private void EditProfile()
+        {
+            // Implement your logic to handle the profile editing functionality
+            // This method will be executed when the EditProfileCommand is triggered
+            // You can navigate to a different page or display a modal popup for editing the profile
         }
     }
 }

@@ -53,8 +53,6 @@ namespace App3.Services
             dummyPostings.Add(dummyPost1);
             dummyPostings.Add(dummyPost2);
             dummyPostings.Add(dummyPost3);
-
-            // Weitere Dummy-Postings können auf ähnliche Weise hinzugefügt werden
         }
 
         public static List<Post> GetDummyPostings()

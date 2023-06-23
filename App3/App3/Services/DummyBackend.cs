@@ -19,9 +19,9 @@ using System.Linq;
                 userIdCounter = 0;
             }
 
-            public static bool IsUserRegistered(string email)
+            public static bool IsUserRegistered(string username)
             {
-                return registeredUsers.Any(user => user.Email == email);
+                return registeredUsers.Any(user => user.Username == username);
             }
 
             public static bool SaveRegistrationData(string name, int id, string email, string username, string password)
@@ -42,9 +42,9 @@ using System.Linq;
                 return true;
             }
 
-            public static bool ValidatePassword(string email, string password)
+            public static bool ValidatePassword(string username, string password)
             {
-                User user = registeredUsers.FirstOrDefault(u => u.Email == email);
+                User user = registeredUsers.FirstOrDefault(u => u.Username == username);
                 if (user != null)
                 {
                     // Check if the password matches
