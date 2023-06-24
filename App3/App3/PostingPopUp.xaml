@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                  xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+                  x:Class="App3.PostingPopUp">
+    <StackLayout BackgroundColor="White"
+                 VerticalOptions="Center"
+                 HorizontalOptions="Center"
+                 Padding="20">
+        <Label Text="Posting Page"
+               FontSize="24"
+               HorizontalOptions="CenterAndExpand"
+               VerticalOptions="CenterAndExpand" />
+        <Button Text="Close"
+                Clicked="OnCloseButtonClicked"
+                HorizontalOptions="Center"
+                Margin="10,20,10,0" />
+    </StackLayout>
+</pages:PopupPage>

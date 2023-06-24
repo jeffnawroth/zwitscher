@@ -13,8 +13,8 @@
     <FlyoutItem Title="Logout">
         <ShellContent Route="logout" ContentTemplate="{DataTemplate local:Logout}" />
     </FlyoutItem>
-    <FlyoutItem Title="Chat">
-        <ShellContent Route="chat" ContentTemplate="{DataTemplate local:Chat}" />
+    <FlyoutItem Title="Posting">
+        <ShellContent Route="posting" ContentTemplate="{DataTemplate local:PostingPage}" />
     </FlyoutItem>
     <FlyoutItem Title="Einstellungen">
         <ShellContent Route="settings" ContentTemplate="{StaticResource SettingsTemplate}" />
@@ -31,8 +31,8 @@
             <DataTemplate x:Key="LogoutTemplate">
                 <local:Logout />
             </DataTemplate>
-            <DataTemplate x:Key="ChatTemplate">
-                <local:Chat />
+            <DataTemplate x:Key="PostingPageTemplate">
+                <local:PostingPage />
             </DataTemplate>
             <DataTemplate x:Key="SettingsTemplate">
                 <local:SettingsPage />
