@@ -10,7 +10,7 @@ namespace iva_grp7_backend.Controllers;
     /// <summary>
     /// A controller for the dashboard.
     /// </summary>
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     //[Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
@@ -198,13 +198,16 @@ namespace iva_grp7_backend.Controllers;
                         case int n when (n >= 45 && n <= 54): age_value[3] = users[i].Count; break;
                         case int n when (n >= 55): age_value[4] = users[i].Count; break;
                     }
-                    age_count++;
+                    age_count += users[i].Count;
                 }
             }
 
             for(int i = 0; i < age_value.Length; i++)
             {
-                ages[i] = (int)((age_value[i] / age_count) * 100); 
+                if(age_value[i] != 0)
+                {
+                    ages[i] = (int)((age_value[i] / age_count) * 100); 
+                }
             }
 
             return ages;
@@ -241,13 +244,16 @@ namespace iva_grp7_backend.Controllers;
                         case Gender.Female: gender_value[1] = users[i].Count; break;
                         case Gender.Diverse: gender_value[2] = users[i].Count; break;
                     }
-                    gender_count++;
+                    gender_count += users[i].Count;
                 }
             }
 
             for(int i = 0; i < gender_value.Length; i++)
-            {                
-                gender[i] = (int)((gender_value[i] / gender_count) * 100);
+            {
+                if (gender_value[i] != 0)
+                {
+                    gender[i] = (int)((gender_value[i] / gender_count) * 100);
+                }
             }
 
             return gender;
