@@ -38,7 +38,7 @@ namespace iva_grp7_backend.Controllers;
         [ProducesResponseType(201, Type = typeof(PostResult))]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<Post>> CreatePost(PostAdd postAdd)
+        public async Task<ActionResult<PostAdd>> CreatePost(PostAdd postAdd)
         {
             var user = await _userManager.FindByIdAsync(postAdd.UserId);
 
@@ -53,16 +53,23 @@ namespace iva_grp7_backend.Controllers;
             var post = new Post
             {
                 UserId = postAdd.UserId,
-                Text = postAdd.text,
+                Text = postAdd.Text,
                 Name = user.Name,
-                Username = user.UserName,
+                Username = user.UserName
 
+            };
+
+            var postResult = new PostAdd
+            {
+                UserId = postAdd.UserId,
+                Text = postAdd.Text,
+                Files = postAdd.Files
             };
 
             _context.Posts.Add(post);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPost", new { id = post.Id }, post);
+            return CreatedAtAction("GetPost", new { id = post.Id }, postResult);
         }
         
         /// <summary>
