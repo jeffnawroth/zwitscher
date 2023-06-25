@@ -38,31 +38,42 @@ namespace iva_grp7_backend.Controllers;
         [ProducesResponseType(201, Type = typeof(PostResult))]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<Post>> CreatePost(PostAdd postAdd)
+        public async Task<ActionResult<PostResult>> CreatePost(PostAdd postAdd)
         {
             var user = await _userManager.FindByIdAsync(postAdd.UserId);
-
-            Console.WriteLine(user.Name);
             
             if (user.Name == null)
             {
-                return NotFound("Name ist null");
+                return NotFound("User wurde nicht gefunden");
             }
             
             
             var post = new Post
             {
                 UserId = postAdd.UserId,
-                Text = postAdd.text,
+                Text = postAdd.Text,
+                Name = user.Name,
+                Username = user.UserName
+
+            };
+
+            var postResult = new PostResult()
+            {
+                Id = post.Id,
+                UserId = post.UserId,
+                UserRole = user.Role,
+                //Avatar = user.Avatar,
                 Name = user.Name,
                 Username = user.UserName,
-
+                Text = post.Text,
+                Date = post.Date,
+                //Files = post.Files?.Select(f => f.FilePath).ToList(), // Sie müssen die Logik zum Abrufen des Dateipfades implementieren
             };
 
             _context.Posts.Add(post);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPost", new { id = post.Id }, post);
+            return CreatedAtAction("GetPost", new { id = post.Id }, postResult);
         }
         
         /// <summary>
