@@ -525,13 +525,15 @@ namespace iva_grp7_backend.Controllers;
             var userFollowers = await _context.UserFollowers.Where(uf => uf.UserId == id).ToListAsync();
             _context.UserFollowers.RemoveRange(userFollowers);
 
+            var followedByUsers = await _context.UserFollowers.Where(uf => uf.FollowerId == id).ToListAsync();
+            _context.UserFollowers.RemoveRange(followedByUsers);
+
             var userFollowingUsers = await _context.UserFollowings.Where(uf => uf.UserId == id).ToListAsync();
             _context.UserFollowings.RemoveRange(userFollowingUsers);
 
             var userFollowedUsers = await _context.UserFollowings.Where(uf => uf.FollowingId == id).ToListAsync();
             _context.UserFollowings.RemoveRange(userFollowedUsers);
 
-            // New code here
             var userInterests = await _context.UserInterests.Where(ui => ui.UserId == id).ToListAsync();
             _context.UserInterests.RemoveRange(userInterests);
 
@@ -546,6 +548,7 @@ namespace iva_grp7_backend.Controllers;
 
             return BadRequest(result.Errors);
         }
+
 
 
 
