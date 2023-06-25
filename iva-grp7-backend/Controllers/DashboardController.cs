@@ -2,14 +2,16 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Numerics;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace iva_grp7_backend.Controllers;
 
     /// <summary>
     /// A controller for the dashboard.
     /// </summary>
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
 
@@ -163,16 +165,18 @@ namespace iva_grp7_backend.Controllers;
         }
 
         /// <summary>
-        /// Returns an array with amount of users ages.
+        /// Returns an array with percentage of users ages.
         /// </summary>
-        /// <returns>An array with the amount of users that gave their birthdate.</returns>
-        /// <response code="200">Returns the array of amount of users ranges of age.</response>
+        /// <returns>An array with the percentages of users that gave their birthdate.</returns>
+        /// <response code="200">Returns the array of percentages of users ranges of age.</response>
         /// <response code="500">If an exception occurs while retrieving the dates of the users.</response>
         [HttpGet("AgeDistribution")]
         public async Task<int[]> getAgeDistribution()
         {
             //labels: ["18-24 Jahre", "25-34 Jahre", "35-44 Jahre", "45-54 Jahre", "55+"],
             int[] ages = {0,0,0,0,0};
+            float[] age_value = {0,0,0,0,0};
+            int age_count = 0;
             var today = DateTime.Today.Year;
 
             var users = await _userManager.Users
@@ -188,13 +192,19 @@ namespace iva_grp7_backend.Controllers;
                     var age = today - parsedDate;
                     switch(age) 
                     {
-                        case int n when (n >= 18 && n <= 24): ages[0] = users[i].Count; break;
-                        case int n when (n >= 25 && n <= 34): ages[1] = users[i].Count; break;
-                        case int n when (n >= 35 && n <= 44): ages[2] = users[i].Count; break;
-                        case int n when (n >= 45 && n <= 54): ages[3] = users[i].Count; break;
-                        case int n when (n >= 55): ages[4] = users[i].Count; break;
+                        case int n when (n >= 18 && n <= 24): age_value[0] = users[i].Count; break;
+                        case int n when (n >= 25 && n <= 34): age_value[1] = users[i].Count; break;
+                        case int n when (n >= 35 && n <= 44): age_value[2] = users[i].Count; break;
+                        case int n when (n >= 45 && n <= 54): age_value[3] = users[i].Count; break;
+                        case int n when (n >= 55): age_value[4] = users[i].Count; break;
                     }
+                    age_count++;
                 }
+            }
+
+            for(int i = 0; i < age_value.Length; i++)
+            {
+                ages[i] = (int)((age_value[i] / age_count) * 100); 
             }
 
             return ages;
@@ -202,22 +212,24 @@ namespace iva_grp7_backend.Controllers;
 
 
         /// <summary>
-        /// Returns an array with amount of users gender.
+        /// Returns an array with percentages of users gender.
         /// </summary>
-        /// <returns>An array with the amount of users that gave their gender.</returns>
-        /// <response code="200">Returns the array of amount of users gender.</response>
+        /// <returns>An array with the percentages of users that gave their gender.</returns>
+        /// <response code="200">Returns the array of percentages of users gender.</response>
         /// <response code="500">If an exception occurs while retrieving the dates of the users.</response>
         [HttpGet("GenderDistribution")]
         public async Task<int[]> getGenderDistribution()
         {
             //labels: ["Männlich", "Weiblich", "Divers"],
-            int[] gender = {0,0,0}; 
+            int[] gender = {0,0,0};
+            float[] gender_value = {0,0,0};
+            int gender_count = 0;
 
             var users = await _userManager.Users
-                    .OrderBy(x => x.Gender)
-                    .GroupBy(x => x.Gender)
-                    .Select(g => new { Gender = g.Key, Count = g.Count() })
-                    .ToListAsync();
+                        .OrderBy(x => x.Gender)
+                        .GroupBy(x => x.Gender)
+                        .Select(g => new { Gender = g.Key, Count = g.Count() })
+                        .ToListAsync();
 
             for(int i = 0; i < users.Count;i++)
             {
@@ -225,11 +237,17 @@ namespace iva_grp7_backend.Controllers;
                 {
                     switch (users[i].Gender)
                     {
-                        case Gender.Male: gender[0] = users[i].Count; break;
-                        case Gender.Female: gender[1] = users[i].Count; break;
-                        case Gender.Diverse: gender[2] = users[i].Count; break;
+                        case Gender.Male: gender_value[0] = users[i].Count; break;
+                        case Gender.Female: gender_value[1] = users[i].Count; break;
+                        case Gender.Diverse: gender_value[2] = users[i].Count; break;
                     }
+                    gender_count++;
                 }
+            }
+
+            for(int i = 0; i < gender_value.Length; i++)
+            {                
+                gender[i] = (int)((gender_value[i] / gender_count) * 100);
             }
 
             return gender;
