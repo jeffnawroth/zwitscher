@@ -2,9 +2,9 @@
   <v-list nav>
     <v-list-item
       v-for="user in store.users"
-      :key="user.id"
-      :title="user.name"
-      :subtitle="user.username"
+      :key="user.id!"
+      :title="user.name!"
+      :subtitle="user.username!"
       :to="`/${user.username}`"
     >
       <template #prepend>

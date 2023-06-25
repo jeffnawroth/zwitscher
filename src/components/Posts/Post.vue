@@ -6,7 +6,8 @@
           <v-icon icon="mdi-account-circle" size="x-large"></v-icon>
         </v-avatar>
         <v-img v-else>
-          <v-avatar :image="generateFileURL(post.avatar)"> </v-avatar>
+          <v-avatar :image="generateFileURL(post.avatar as unknown as File)">
+          </v-avatar>
         </v-img>
       </v-btn>
     </template>
@@ -27,10 +28,10 @@
     </template>
     <v-card-actions>
       <v-btn :prepend-icon="thumbUp" @click.stop="likePost">{{
-        post.upVotes?.length
+        post.upVotes?.length ?? 0
       }}</v-btn>
       <v-btn :prepend-icon="thumbDown" @click.stop="dislikePost">{{
-        post.downVotes?.length
+        post.downVotes?.length ?? 0
       }}</v-btn>
       <v-btn prepend-icon="mdi-comment-outline">{{
         post.comments?.length ?? 0
@@ -98,13 +99,13 @@ const route = useRoute();
 const deleteDialog = ref(false);
 
 const thumbUp = computed(() => {
-  return props.post.upVotes?.includes(authStore.user!.id)
+  return props.post.upVotes?.includes(authStore.user?.id!)
     ? "mdi-thumb-up"
     : "mdi-thumb-up-outline";
 });
 
 const thumbDown = computed(() => {
-  return props.post.downVotes?.includes(authStore.user!.id)
+  return props.post.downVotes?.includes(authStore.user?.id!)
     ? "mdi-thumb-down"
     : "mdi-thumb-down-outline";
 });

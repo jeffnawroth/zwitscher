@@ -72,12 +72,12 @@
           </p>
           <p class="v-card-subtitle">
             <span class="font-weight-black">
-              {{ `${usersStore.user?.followers.length}` }}
+              {{ `${usersStore.user?.followers?.length}` }}
             </span>
             Abonnenten
 
             <span class="font-weight-black">{{
-              `${usersStore.user?.following.length}`
+              `${usersStore.user?.following?.length}`
             }}</span>
             Folge ich
           </p>
@@ -170,7 +170,7 @@ onMounted(() => {
 });
 
 const following = computed(() => {
-  return authStore.user?.following.includes(usersStore.user!.id);
+  return authStore.user?.following.includes(usersStore.user!.id!);
 });
 
 const birthDate = computed(() => {
@@ -220,24 +220,26 @@ const genderIcon = computed(() => {
 });
 
 async function setFollow() {
-  const followingIndex = authStore.user?.following.indexOf(usersStore.user!.id);
-  const followerIndex = usersStore.user?.followers.indexOf(authStore.user!.id);
+  const followingIndex = authStore.user?.following?.indexOf(
+    usersStore.user!.id!
+  );
+  const followerIndex = usersStore.user?.followers?.indexOf(authStore.user!.id);
 
   if (followingIndex !== undefined && followingIndex !== -1) {
     authStore.user?.following.splice(followingIndex, 1);
     if (followerIndex != undefined && followerIndex !== -1) {
-      usersStore.user?.followers.splice(followerIndex, 1);
+      usersStore.user?.followers?.splice(followerIndex, 1);
     }
-    usersStore.unfollowUser(usersStore.user!.id);
+    usersStore.unfollowUser(usersStore.user!.id!);
   } else {
-    authStore.user?.following.push(usersStore.user!.id);
-    usersStore.user?.followers.push(authStore.user!.id);
-    usersStore.followUser(usersStore.user!.id);
+    authStore.user?.following.push(usersStore.user!.id!);
+    usersStore.user?.followers?.push(authStore.user!.id);
+    usersStore.followUser(usersStore.user!.id!);
   }
   authStore.setUserData(authStore.user);
 }
 
 function loadPosts() {
-  store.getPostsForUser(usersStore.user!.id);
+  store.getPostsForUser(usersStore.user!.id!);
 }
 </script>

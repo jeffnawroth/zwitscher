@@ -31,7 +31,7 @@ function closeDialog() {
 }
 
 async function removeUser() {
-  await store.deleteUser(store.user!.id);
+  await store.deleteUser(store.user!.id!);
   closeDialog();
   if (route.name === "profile") router.push({ name: "home" });
 }

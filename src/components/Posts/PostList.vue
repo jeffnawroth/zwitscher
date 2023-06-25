@@ -1,12 +1,10 @@
 <template>
-  <v-card variant="flat" :loading="store.loading">
-    <div v-for="(post, index) in posts" :key="post.id!">
-      <v-list-item @click="openPost(post)">
-        <Post :post="post"></Post>
-      </v-list-item>
-      <v-divider v-if="index !== posts.length - 1"></v-divider>
-    </div>
-  </v-card>
+  <div v-for="(post, index) in posts" :key="post.id!">
+    <v-list-item @click="openPost(post)">
+      <Post :post="post"></Post>
+    </v-list-item>
+    <v-divider v-if="index !== posts.length - 1"></v-divider>
+  </div>
 </template>
 
 <script setup lang="ts">

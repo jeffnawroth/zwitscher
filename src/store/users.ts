@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { User, UserAdd, UserLight } from "@/interfaces";
 import { showNotification } from "./helpers";
-import { UserApi } from "@/typescript-axios-generated";
+import { User, UserAdd, UserApi, UserEdit } from "@/typescript-axios-generated";
+import { UserLight } from "@/interfaces";
 
 
 export const useUsersStore = defineStore("users", () => {
@@ -87,9 +87,9 @@ export const useUsersStore = defineStore("users", () => {
     }
   }
 
-  async function updateUser(userEdit: User, notification = true) {
+  async function updateUser(userEdit: UserEdit, notification = true) {
     try {
-      await UserApi.prototype.apiUserIdPut(userEdit.id, userEdit);
+      await UserApi.prototype.apiUserIdPut(userEdit.id!, userEdit);
       user.value = userEdit;
       const index = users.value.findIndex((user) => user.id === userEdit.id);
       if (index > -1) users.value.splice(index, 1, userEdit);

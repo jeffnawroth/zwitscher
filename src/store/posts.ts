@@ -5,7 +5,6 @@ import { useAuthenticationStore } from "./authentication";
 import { computed } from "vue";
 import { showNotification, sortByDateDescending } from "./helpers";
 import { PostApi, PostResult } from "@/typescript-axios-generated";
-import { Post } from "@/interfaces";
 
 export const usePostStore = defineStore("post", () => {
   const allPosts = ref<PostResult[]>([]);
@@ -55,6 +54,7 @@ export const usePostStore = defineStore("post", () => {
   async function getPost(id: string) {
     try {
       const data = await PostApi.prototype.apiPostIdGet(id);
+      //@ts-expect-error
       post.value = data.data;
     } catch (error) {
       showNotification(
@@ -66,6 +66,7 @@ export const usePostStore = defineStore("post", () => {
 
   async function createPost(post: PostAdd) {
     try {
+      //@ts-ignore
       const data = await PostApi.prototype.apiPostPost(post);
       allPosts.value?.push(data.data);
     } catch (error) {
@@ -101,10 +102,12 @@ export const usePostStore = defineStore("post", () => {
     }
   }
 
-  async function updatePost(post: Post) {
+  async function updatePost(post: PostResult) {
     try {
+      //@ts-ignore
       await PostApi.prototype.apiPostPut(post);
       const index = allPosts.value.findIndex((x) => x.id === post.id);
+      //@ts-ignore
       if (index > -1) allPosts.value.splice(index, 1, post);
       showNotification("success", "Der Beitrag wurde erfolgreich bearbeitet!");
     } catch (error) {
@@ -125,6 +128,7 @@ export const usePostStore = defineStore("post", () => {
       if (likedIndex !== undefined && likedIndex !== -1) {
         post.upVotes?.splice(likedIndex, 1);
       } else {
+        post.upVotes = post.upVotes? post.upVotes : []
         post.upVotes?.push(authStore.user!.id);
         if (dislikedIndex !== undefined && dislikedIndex !== -1) {
           post.downVotes?.splice(dislikedIndex, 1);
@@ -147,6 +151,7 @@ export const usePostStore = defineStore("post", () => {
       if (dislikedIndex !== undefined && dislikedIndex !== -1) {
         post.downVotes?.splice(dislikedIndex, 1);
       } else {
+        post.downVotes = post.downVotes? post.downVotes : []
         post.downVotes?.push(authStore.user!.id);
         if (likedIndex !== undefined && likedIndex !== -1) {
           post.upVotes?.splice(likedIndex, 1);

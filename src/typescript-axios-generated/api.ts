@@ -398,7 +398,7 @@ export interface PostAdd {
      * @type {Array<string>}
      * @memberof PostAdd
      */
-    'files'?: Array<string> | null;
+    'files'?: Array<File> | null;
 }
 /**
  * 
@@ -503,6 +503,12 @@ export interface PostResult {
      * @memberof PostResult
      */
     'files'?: Array<string> | null;
+     /**
+     * 
+     * @type {Array<PostResult>}
+     * @memberof PostResult
+     */
+     'comments'?: Array<PostResult> | null;
 }
 
 
@@ -633,7 +639,7 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    'avatar'?: string | null;
+    'avatar'?: File | null;
     /**
      * 
      * @type {Role}
@@ -720,7 +726,7 @@ export interface UserAdd {
      * @type {string}
      * @memberof UserAdd
      */
-    'avatar'?: string | null;
+    'avatar'?: File | null;
     /**
      * 
      * @type {Role}
@@ -795,7 +801,7 @@ export interface UserEdit {
      * @type {string}
      * @memberof UserEdit
      */
-    'avatar'?: string | null;
+    'avatar'?: File | null;
     /**
      * 
      * @type {Role}
