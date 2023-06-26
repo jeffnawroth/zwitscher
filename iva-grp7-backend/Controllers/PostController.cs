@@ -122,9 +122,7 @@ namespace iva_grp7_backend.Controllers;
         
             return postResults;
         }
-
-
-
+        
         /// <summary>
         /// Gets a post by its ID.
         /// </summary>
@@ -170,6 +168,67 @@ namespace iva_grp7_backend.Controllers;
 
             return NotFound();
         }
+        
+        /// <summary>
+        /// Gets all posts from following users.
+        /// </summary>
+        /// <returns>A list of all posts from following users.</returns>
+        /// <response code="200">Returns the list of all posts from following users.</response>
+        /// <response code="500">If an exception occurs while retrieving the posts.</response>
+        [ProducesResponseType(200, Type = typeof(List<PostResult>))]
+        [HttpGet("followingPosts")]
+        public async Task<ActionResult<IEnumerable<PostResult>>> GetPostsFromFollowedUsers()
+        {
+            
+            // Benutzer ermitteln
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userManager.FindByEmailAsync(userId);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            // Finden Sie alle Benutzer, denen der aktuelle Benutzer folgt
+            var followedUserIds = await _context.UserFollowings
+                .Where(f => f.UserId == user.Id)
+                .Select(f => f.FollowingId)
+                .ToListAsync();
+
+            // Alle Posts laden, die von den gefolgten Benutzern erstellt wurden
+            var posts = await _context.Posts
+                .Include(p => p.Votes)
+                .Include(p => p.Files)
+                .Where(p => followedUserIds.Contains(p.UserId))
+                .ToListAsync();
+
+            // Liste für die PostResults
+            List<PostResult> postResults = new List<PostResult>();
+
+            // Für jeden Post die User-Informationen und die Votes laden und setzen
+            foreach (var post in posts)
+            {
+                var postUser = await _userManager.FindByIdAsync(post.UserId);
+                if (postUser != null)
+                {
+                    PostResult postResult = new PostResult()
+                    {
+                        Id = post.Id,
+                        UserId = post.UserId,
+                        UserRole = postUser.Role,
+                        Name = postUser.Name,
+                        Username = postUser.UserName,
+                        Text = post.Text,
+                        Date = post.Date,
+                        UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
+                        DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList()
+                    };
+                    postResults.Add(postResult);
+                }
+            }
+
+            return postResults;
+        }
+
 
         
         /// <summary>
