@@ -133,7 +133,7 @@ namespace iva_grp7_backend.Controllers;
         /// <response code="200">Returns the post.</response>
         /// <response code="404">If the post is not found.</response>
         /// <response code="500">If an exception occurs while retrieving the post.</response>
-        [ProducesResponseType(200, Type = typeof(List<PostResult>))]
+        [ProducesResponseType(200, Type = typeof(PostResult))]
         [HttpGet("{id}")]
         public async Task<ActionResult<PostResult>> GetPost(string id)
         {
@@ -254,18 +254,36 @@ namespace iva_grp7_backend.Controllers;
         /// <response code="404">If the post is not found.</response>
         /// <response code="500">If an exception occurs while updating the post.</response>
         [HttpPut]
-        public async Task<IActionResult> UpdatePost(Post updatedPost)
+        public async Task<IActionResult> UpdatePost([FromBody] PostEdit updatedPost)
         {
-            var post = await _context.Posts.FindAsync(updatedPost.Id);
+            var post = await _context.Posts
+                .Include(p => p.Files)
+                .FirstOrDefaultAsync(p => p.Id == updatedPost.Id);
+
             if (post == null)
             {
                 return NotFound("Post wurde nicht gefunden");
             }
 
             post.Text = updatedPost.Text;
-            post.Files = updatedPost.Files;
-            // Hier können Sie andere Felder hinzufügen, die aktualisiert werden sollen...
-            // post.SomeField = updatedPost.SomeField;
+
+            // Aktualisieren der Dateien...
+            if (updatedPost.Files != null)
+            {
+                var updatedFiles = updatedPost.Files;
+
+                // Entfernen Sie alle Dateien, die nicht in der aktualisierten Liste enthalten sind...
+                post.Files.RemoveAll(file => !updatedFiles.Contains(file));
+
+                // Fügen Sie alle neuen Dateien hinzu...
+                foreach (var updatedFile in updatedFiles)
+                {
+                    if (!post.Files.Any(file => file == updatedFile))
+                    {
+                        post.Files.Add(updatedFile);
+                    }
+                }
+            }
 
             try
             {
@@ -284,7 +302,9 @@ namespace iva_grp7_backend.Controllers;
             }
 
             return Ok("Post wurde aktualisiert");
-        } 
+        }
+
+
         [HttpPost("{postId}/upvote")]
 public async Task<IActionResult> UpvotePost(string postId)
 {
