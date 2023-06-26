@@ -2,7 +2,7 @@ namespace iva_grp7_backend.Models;
 
 public class UserAdd
 {
-    public byte[]? Avatar { get; set; }
+    public IFormFile Avatar { get; set; }
     public Role Role { get; set; }
     public string Username { get; set; }
     public string Name { get; set; }

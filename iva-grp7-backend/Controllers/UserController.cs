@@ -300,20 +300,27 @@ namespace iva_grp7_backend.Controllers;
         [ProducesResponseType(500)]
 
         // Creates a new ApplicationUser
-        public async Task<IActionResult> Create([FromBody] UserAdd user)
-{
+        public async Task<IActionResult> Create([FromForm] UserAdd user)
+    {
     // Checks if the model state is valid
     if (!ModelState.IsValid)
     {
         // If the model state is invalid, returns a bad request response with the validation errors
         return BadRequest(ModelState);
     }
+    
+    byte[] avatarData = null;
+    if (user.Avatar != null)
+    {
+        avatarData = await ProcessFormFile(user.Avatar);
+    }
+    
 
     string password = user.Password;
 
     ApplicationUser applicationUser = new ApplicationUser()
     {
-        Avatar = user.Avatar,
+        Avatar = avatarData,
         Role = user.Role,
         UserName = user.Username,
         Name = user.Name,
@@ -645,6 +652,19 @@ namespace iva_grp7_backend.Controllers;
             await _context.SaveChangesAsync();
 
             return Ok("Dem User wurde nun erfolgreich entfolgt");
+        }
+        
+        private async Task<byte[]> ProcessFormFile(IFormFile file)
+        {
+            if (file.Length > 0)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream);
+                    return memoryStream.ToArray();
+                }
+            }
+            return null;
         }
 
     }
