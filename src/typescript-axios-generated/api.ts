@@ -398,7 +398,32 @@ export interface PostAdd {
      * @type {Array<string>}
      * @memberof PostAdd
      */
-    'files'?: Array<File> | null;
+    'files'?: Array<string> | null;
+}
+/**
+ * 
+ * @export
+ * @interface PostEdit
+ */
+export interface PostEdit {
+    /**
+     * 
+     * @type {string}
+     * @memberof PostEdit
+     */
+    'id'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostEdit
+     */
+    'text'?: string | null;
+    /**
+     * 
+     * @type {Array<PostFile>}
+     * @memberof PostEdit
+     */
+    'files'?: Array<PostFile> | null;
 }
 /**
  * 
@@ -503,12 +528,6 @@ export interface PostResult {
      * @memberof PostResult
      */
     'files'?: Array<string> | null;
-     /**
-     * 
-     * @type {Array<PostResult>}
-     * @memberof PostResult
-     */
-     'comments'?: Array<PostResult> | null;
 }
 
 
@@ -639,7 +658,7 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    'avatar'?: File | null;
+    'avatar'?: string | null;
     /**
      * 
      * @type {Role}
@@ -718,75 +737,6 @@ export interface User {
 /**
  * 
  * @export
- * @interface UserAdd
- */
-export interface UserAdd {
-    /**
-     * 
-     * @type {string}
-     * @memberof UserAdd
-     */
-    'avatar'?: File | null;
-    /**
-     * 
-     * @type {Role}
-     * @memberof UserAdd
-     */
-    'role'?: Role;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserAdd
-     */
-    'username'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserAdd
-     */
-    'name'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserAdd
-     */
-    'email'?: string | null;
-    /**
-     * 
-     * @type {Gender}
-     * @memberof UserAdd
-     */
-    'gender'?: Gender;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserAdd
-     */
-    'password'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserAdd
-     */
-    'bio'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserAdd
-     */
-    'birthDate'?: string | null;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof UserAdd
-     */
-    'interests'?: Array<string> | null;
-}
-
-
-/**
- * 
- * @export
  * @interface UserEdit
  */
 export interface UserEdit {
@@ -801,7 +751,7 @@ export interface UserEdit {
      * @type {string}
      * @memberof UserEdit
      */
-    'avatar'?: File | null;
+    'avatar'?: string | null;
     /**
      * 
      * @type {Role}
@@ -1314,7 +1264,7 @@ export const DashboardApiAxiosParamCreator = function (configuration?: Configura
         },
         /**
          * 
-         * @summary Returns an array with amount of users ages.
+         * @summary Returns an array with percentage of users ages.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1348,7 +1298,7 @@ export const DashboardApiAxiosParamCreator = function (configuration?: Configura
         },
         /**
          * 
-         * @summary Returns an array with amount of users gender.
+         * @summary Returns an array with percentages of users gender.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1470,7 +1420,7 @@ export const DashboardApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Returns an array with amount of users ages.
+         * @summary Returns an array with percentage of users ages.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1480,7 +1430,7 @@ export const DashboardApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Returns an array with amount of users gender.
+         * @summary Returns an array with percentages of users gender.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1529,7 +1479,7 @@ export const DashboardApiFactory = function (configuration?: Configuration, base
         },
         /**
          * 
-         * @summary Returns an array with amount of users ages.
+         * @summary Returns an array with percentage of users ages.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1538,7 +1488,7 @@ export const DashboardApiFactory = function (configuration?: Configuration, base
         },
         /**
          * 
-         * @summary Returns an array with amount of users gender.
+         * @summary Returns an array with percentages of users gender.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1586,7 +1536,7 @@ export class DashboardApi extends BaseAPI {
 
     /**
      * 
-     * @summary Returns an array with amount of users ages.
+     * @summary Returns an array with percentage of users ages.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DashboardApi
@@ -1597,7 +1547,7 @@ export class DashboardApi extends BaseAPI {
 
     /**
      * 
-     * @summary Returns an array with amount of users gender.
+     * @summary Returns an array with percentages of users gender.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DashboardApi
@@ -1636,6 +1586,40 @@ export class DashboardApi extends BaseAPI {
  */
 export const PostApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
+        /**
+         * 
+         * @summary Gets all posts from following users.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiPostFollowingPostsGet: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Post/followingPosts`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
         /**
          * 
          * @summary Gets all posts.
@@ -1861,11 +1845,11 @@ export const PostApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @summary Updates a post.
-         * @param {Post} [post] The updated post data.
+         * @param {PostEdit} [postEdit] The updated post data.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiPostPut: async (post?: Post, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiPostPut: async (postEdit?: PostEdit, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/Post`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1889,7 +1873,7 @@ export const PostApiAxiosParamCreator = function (configuration?: Configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(post, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(postEdit, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1946,6 +1930,16 @@ export const PostApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary Gets all posts from following users.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiPostFollowingPostsGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PostResult>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiPostFollowingPostsGet(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Gets all posts.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1972,7 +1966,7 @@ export const PostApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiPostIdGet(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PostResult>>> {
+        async apiPostIdGet(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostResult>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiPostIdGet(id, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -2010,12 +2004,12 @@ export const PostApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Updates a post.
-         * @param {Post} [post] The updated post data.
+         * @param {PostEdit} [postEdit] The updated post data.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiPostPut(post?: Post, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiPostPut(post, options);
+        async apiPostPut(postEdit?: PostEdit, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiPostPut(postEdit, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -2039,6 +2033,15 @@ export const PostApiFp = function(configuration?: Configuration) {
 export const PostApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
     const localVarFp = PostApiFp(configuration)
     return {
+        /**
+         * 
+         * @summary Gets all posts from following users.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiPostFollowingPostsGet(options?: any): AxiosPromise<Array<PostResult>> {
+            return localVarFp.apiPostFollowingPostsGet(options).then((request) => request(axios, basePath));
+        },
         /**
          * 
          * @summary Gets all posts.
@@ -2065,7 +2068,7 @@ export const PostApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiPostIdGet(id: string, options?: any): AxiosPromise<Array<PostResult>> {
+        apiPostIdGet(id: string, options?: any): AxiosPromise<PostResult> {
             return localVarFp.apiPostIdGet(id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -2099,12 +2102,12 @@ export const PostApiFactory = function (configuration?: Configuration, basePath?
         /**
          * 
          * @summary Updates a post.
-         * @param {Post} [post] The updated post data.
+         * @param {PostEdit} [postEdit] The updated post data.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiPostPut(post?: Post, options?: any): AxiosPromise<void> {
-            return localVarFp.apiPostPut(post, options).then((request) => request(axios, basePath));
+        apiPostPut(postEdit?: PostEdit, options?: any): AxiosPromise<void> {
+            return localVarFp.apiPostPut(postEdit, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -2126,6 +2129,17 @@ export const PostApiFactory = function (configuration?: Configuration, basePath?
  * @extends {BaseAPI}
  */
 export class PostApi extends BaseAPI {
+    /**
+     * 
+     * @summary Gets all posts from following users.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PostApi
+     */
+    public apiPostFollowingPostsGet(options?: AxiosRequestConfig) {
+        return PostApiFp(this.configuration).apiPostFollowingPostsGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary Gets all posts.
@@ -2198,13 +2212,13 @@ export class PostApi extends BaseAPI {
     /**
      * 
      * @summary Updates a post.
-     * @param {Post} [post] The updated post data.
+     * @param {PostEdit} [postEdit] The updated post data.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PostApi
      */
-    public apiPostPut(post?: Post, options?: AxiosRequestConfig) {
-        return PostApiFp(this.configuration).apiPostPut(post, options).then((request) => request(this.axios, this.basePath));
+    public apiPostPut(postEdit?: PostEdit, options?: AxiosRequestConfig) {
+        return PostApiFp(this.configuration).apiPostPut(postEdit, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2496,11 +2510,20 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @summary Creates a new user.
-         * @param {UserAdd} [userAdd] The user to create.
+         * @param {File} [avatar] 
+         * @param {Role} [role] 
+         * @param {string} [username] 
+         * @param {string} [name] 
+         * @param {string} [email] 
+         * @param {Gender} [gender] 
+         * @param {string} [password] 
+         * @param {string} [bio] 
+         * @param {string} [birthDate] 
+         * @param {Array<string>} [interests] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiUserPost: async (userAdd?: UserAdd, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        apiUserPost: async (avatar?: File, role?: Role, username?: string, name?: string, email?: string, gender?: Gender, password?: string, bio?: string, birthDate?: string, interests?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/User`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -2512,19 +2535,62 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
             // authentication Bearer required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
+            if (avatar !== undefined) { 
+                localVarFormParams.append('Avatar', avatar as any);
+            }
     
-            localVarHeaderParameter['Content-Type'] = 'application/json';
+            if (role !== undefined) { 
+                localVarFormParams.append('Role', new Blob([JSON.stringify(role)], { type: "application/json", }));
+            }
+    
+            if (username !== undefined) { 
+                localVarFormParams.append('Username', username as any);
+            }
+    
+            if (name !== undefined) { 
+                localVarFormParams.append('Name', name as any);
+            }
+    
+            if (email !== undefined) { 
+                localVarFormParams.append('Email', email as any);
+            }
+    
+            if (gender !== undefined) { 
+                localVarFormParams.append('Gender', new Blob([JSON.stringify(gender)], { type: "application/json", }));
+            }
+    
+            if (password !== undefined) { 
+                localVarFormParams.append('Password', password as any);
+            }
+    
+            if (bio !== undefined) { 
+                localVarFormParams.append('Bio', bio as any);
+            }
+    
+            if (birthDate !== undefined) { 
+                localVarFormParams.append('BirthDate', birthDate as any);
+            }
+                if (interests) {
+                interests.forEach((element) => {
+                    localVarFormParams.append('Interests', element as any);
+                })
+            }
 
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(userAdd, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = localVarFormParams;
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -2621,12 +2687,21 @@ export const UserApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Creates a new user.
-         * @param {UserAdd} [userAdd] The user to create.
+         * @param {File} [avatar] 
+         * @param {Role} [role] 
+         * @param {string} [username] 
+         * @param {string} [name] 
+         * @param {string} [email] 
+         * @param {Gender} [gender] 
+         * @param {string} [password] 
+         * @param {string} [bio] 
+         * @param {string} [birthDate] 
+         * @param {Array<string>} [interests] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiUserPost(userAdd?: UserAdd, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserPost(userAdd, options);
+        async apiUserPost(avatar?: File, role?: Role, username?: string, name?: string, email?: string, gender?: Gender, password?: string, bio?: string, birthDate?: string, interests?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserPost(avatar, role, username, name, email, gender, password, bio, birthDate, interests, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -2712,12 +2787,21 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
         /**
          * 
          * @summary Creates a new user.
-         * @param {UserAdd} [userAdd] The user to create.
+         * @param {File} [avatar] 
+         * @param {Role} [role] 
+         * @param {string} [username] 
+         * @param {string} [name] 
+         * @param {string} [email] 
+         * @param {Gender} [gender] 
+         * @param {string} [password] 
+         * @param {string} [bio] 
+         * @param {string} [birthDate] 
+         * @param {Array<string>} [interests] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiUserPost(userAdd?: UserAdd, options?: any): AxiosPromise<User> {
-            return localVarFp.apiUserPost(userAdd, options).then((request) => request(axios, basePath));
+        apiUserPost(avatar?: File, role?: Role, username?: string, name?: string, email?: string, gender?: Gender, password?: string, bio?: string, birthDate?: string, interests?: Array<string>, options?: any): AxiosPromise<User> {
+            return localVarFp.apiUserPost(avatar, role, username, name, email, gender, password, bio, birthDate, interests, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -2816,13 +2900,22 @@ export class UserApi extends BaseAPI {
     /**
      * 
      * @summary Creates a new user.
-     * @param {UserAdd} [userAdd] The user to create.
+     * @param {File} [avatar] 
+     * @param {Role} [role] 
+     * @param {string} [username] 
+     * @param {string} [name] 
+     * @param {string} [email] 
+     * @param {Gender} [gender] 
+     * @param {string} [password] 
+     * @param {string} [bio] 
+     * @param {string} [birthDate] 
+     * @param {Array<string>} [interests] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserApi
      */
-    public apiUserPost(userAdd?: UserAdd, options?: AxiosRequestConfig) {
-        return UserApiFp(this.configuration).apiUserPost(userAdd, options).then((request) => request(this.axios, this.basePath));
+    public apiUserPost(avatar?: File, role?: Role, username?: string, name?: string, email?: string, gender?: Gender, password?: string, bio?: string, birthDate?: string, interests?: Array<string>, options?: AxiosRequestConfig) {
+        return UserApiFp(this.configuration).apiUserPost(avatar, role, username, name, email, gender, password, bio, birthDate, interests, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
