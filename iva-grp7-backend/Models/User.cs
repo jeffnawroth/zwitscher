@@ -57,3 +57,11 @@ public class Following
 	public string? FollowingUserId { get; set; } // Benutzer-ID des Following
 	public ApplicationUser? User { get; set; } // Navigationseigenschaft zum Benutzer
 }
+
+public class UserLight
+{
+    public string Id { get; set; }
+    public byte[]? Avatar { get; set; }
+    public string Username { get; set; }
+    public string Name { get; set; }
+}
