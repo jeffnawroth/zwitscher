@@ -6,11 +6,11 @@
         <StackLayout Spacing="30">
             <Label Text="Erstelle jetzt dein Konto" HorizontalOptions="Center" FontSize="40" />
 
-            <Entry x:Name="usernameEntry" Placeholder="Benutzername" />
+            <Entry x:Name="usernameEntry" Placeholder="Benutzername" PlaceholderColor="LightGray"/>
 
-            <Entry x:Name="nameEntry" Placeholder="Name" />
+            <Entry x:Name="nameEntry" Placeholder="Name" PlaceholderColor="LightGray" />
 
-            <Entry x:Name="emailEntry" Placeholder="E-Mail-Adresse" />
+            <Entry x:Name="emailEntry" Placeholder="E-Mail-Adresse" PlaceholderColor="LightGray"/>
 
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -18,11 +18,11 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <Entry x:Name="passwordEntry" Placeholder="Passwort" IsPassword="True" Grid.Column="0" />
-                <Entry x:Name="confirmPasswordEntry" Placeholder="Passwort bestätigen" IsPassword="True" Grid.Column="1" />
+                <Entry x:Name="passwordEntry" Placeholder="Passwort" PlaceholderColor="LightGray" IsPassword="True" Grid.Column="0" />
+                <Entry x:Name="confirmPasswordEntry" Placeholder="Passwort bestätigen" PlaceholderColor="LightGray" IsPassword="True" Grid.Column="1" />
             </Grid>
 
-            <Button Text="Registrieren" Clicked="RegisterButton_Clicked" />
+            <Button Text="Registrieren" Clicked="RegisterButton_Clicked" BackgroundColor="LightGray" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

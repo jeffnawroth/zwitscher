@@ -23,6 +23,16 @@ namespace App3
         protected override void OnStart()
         {
             // Hier können Sie Initialisierungslogik für den Start der App hinzufügen
+            InitializeComponent();
+
+            if (Settings.IsLoggedIn)
+            {
+                MainPage = new NavigationPage(new AppShell());
+            }
+            else
+            {
+                MainPage = new NavigationPage(new LoginPage());
+            }
         }
 
         protected override void OnSleep()

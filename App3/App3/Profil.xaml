@@ -13,30 +13,30 @@
     
     <ContentPage.Content>
         <StackLayout>
-            <Label x:Name="ProfileNameLabel" FontSize="24" FontAttributes="Bold" />
-            <Label x:Name="UsernameLabel" FontSize="16" />
-            <Label x:Name="FollowersLabel" FontSize="16" />
-            <Label x:Name="FollowingLabel" FontSize="16" />
+            <Label x:Name="ProfileNameLabel" FontSize="24" FontAttributes="Bold" TextColor="LightGray"/>
+            <Label x:Name="UsernameLabel" FontSize="16" TextColor="LightGray" />
+            <Label x:Name="FollowersLabel" FontSize="16" TextColor="LightGray"/>
+            <Label x:Name="FollowingLabel" FontSize="16" TextColor="LightGray" />
             <Image x:Name="AvatarImage" HeightRequest="100" WidthRequest="100" />
 
             <!-- StackLayout für Profilinformationen -->
             <StackLayout Orientation="Horizontal">
-                <Label Text="Beitrittsdatum:" />
-                <Label x:Name="JoinDateLabel" />
+                <Label Text="Beitrittsdatum:" TextColor="LightGray"/>
+                <Label x:Name="JoinDateLabel" TextColor="LightGray"/>
             </StackLayout>
 
             <StackLayout Orientation="Horizontal">
-                <Label Text="Geburtsdatum:" />
-                <Label x:Name="BirthDateLabel" />
+                <Label Text="Geburtsdatum:" TextColor="LightGray" />
+                <Label x:Name="BirthDateLabel" TextColor="LightGray"/>
             </StackLayout>
 
             <StackLayout Orientation="Horizontal">
-                <Label Text="Geschlecht:" />
-                <Label x:Name="GenderLabel" />
+                <Label Text="Geschlecht:" TextColor="LightGray" />
+                <Label x:Name="GenderLabel" TextColor="LightGray"/>
             </StackLayout>
 
             <!-- Profilbeschreibung -->
-            <Label x:Name="ProfileDescriptionLabel" FontSize="16" />
+            <Label x:Name="ProfileDescriptionLabel" TextColor="LightGray" FontSize="16" />
 
             <!-- Weitere Inhalte der Seite -->
             <StackLayout x:Name="PostListLayout">

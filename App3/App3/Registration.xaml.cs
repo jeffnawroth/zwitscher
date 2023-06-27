@@ -9,7 +9,6 @@ using Xamarin.Forms.Xaml;
 
 using App3.Services;
 
-
 namespace App3
 {
     public partial class Registration : ContentPage

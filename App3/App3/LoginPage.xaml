@@ -4,13 +4,13 @@
              x:Class="App3.LoginPage">
 
     <StackLayout Spacing="30" VerticalOptions="Center">
-        <Label Text="Melde dich an..." FontSize="30" FontAttributes="Bold" HorizontalOptions="Center" />
-        <Entry x:Name="usernameEntry" Placeholder="E-Mail-Adresse/ Benutzername" />
-        <Entry x:Name="passwordEntry" Placeholder="Passwort" IsPassword="True" />
-        <Button Text="Login" Clicked="OnLoginButtonClicked" />
+        <Label Text="Melde dich an..." FontSize="30" FontAttributes="Bold" HorizontalOptions="Center" TextColor="LightGray"/>
+        <Entry x:Name="usernameEntry" Placeholder="E-Mail-Adresse/ Benutzername" PlaceholderColor="LightGray"/>
+        <Entry x:Name="passwordEntry" Placeholder="Passwort" IsPassword="True" PlaceholderColor="LightGray" />
+        <Button Text="Login" Clicked="OnLoginButtonClicked" BackgroundColor="LightGray" />
         <StackLayout Spacing="30" Orientation="Vertical" VerticalOptions="End">
-            <Label Text="Noch kein Konto?" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
-            <Button Text="Jetzt anmelden" Clicked="OnSignUpButtonClicked" />
+            <Label Text="Noch kein Konto?" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" TextColor="LightGray"/>
+            <Button Text="Jetzt anmelden" Clicked="OnSignUpButtonClicked" BackgroundColor="LightGray" />
         </StackLayout>
     </StackLayout>
 

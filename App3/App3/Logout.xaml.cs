@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+﻿using Xamarin.Forms;
 
 namespace App3
 {
@@ -26,10 +19,13 @@ namespace App3
             };
         }
 
-        private void OnLogoutButtonClicked()
+        private async void OnLogoutButtonClicked()
         {
-            Application.Current.MainPage = new LoginPage();
+            // Setzen Sie den IsLoggedIn-Status auf false
             Settings.IsLoggedIn = false;
+
+            // Navigieren Sie zur LoginPage
+            await Application.Current.MainPage.Navigation.PushAsync(new LoginPage());
         }
     }
 }

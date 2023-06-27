@@ -1,9 +1,5 @@
 ﻿using App3.Services;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -25,31 +21,33 @@ namespace App3
         public Profil(User user) : this()
         {
             currentUser = user;
-            OnAppearing();
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
 
-            // Set the profile information
-            ProfileNameLabel.Text = currentUser.Name;
-            UsernameLabel.Text = $"@{currentUser.Username}";
-            FollowersLabel.Text = $"{currentUser.Followers.Count} Abonnenten";
-            FollowingLabel.Text = $"{currentUser.Following.Count} Folge ich";
-
-            // Set the user avatar
-            if (currentUser.Avatar != null)
+            if (currentUser != null)
             {
-                AvatarImage.Source = currentUser.Avatar.Path;
-            }
-            else
-            {
-                AvatarImage.Source = "placeholder_avatar.png";
-            }
+                // Set the profile information
+                ProfileNameLabel.Text = currentUser.Name;
+                UsernameLabel.Text = $"@{currentUser.Username}";
+                FollowersLabel.Text = $"{currentUser.Followers.Count} Abonnenten";
+                FollowingLabel.Text = $"{currentUser.Following.Count} Folge ich";
 
-            // Load and display user's posts
-            LoadUserPosts();
+                // Set the user avatar
+                if (currentUser.Avatar != null)
+                {
+                    AvatarImage.Source = currentUser.Avatar.Path;
+                }
+                else
+                {
+                    AvatarImage.Source = "placeholder_avatar.png";
+                }
+
+                // Load and display user's posts
+                LoadUserPosts();
+            }
         }
 
         private void LoadUserPosts()
