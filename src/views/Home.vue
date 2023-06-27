@@ -44,9 +44,9 @@ const tab = ref("one");
 
 onMounted(() => {
   store.getAllPosts();
-  if (authStore.loggedIn) {
-    store.getFollowedUsersPosts();
-  }
+  // if (authStore.loggedIn) {
+  //   store.getFollowedUsersPosts();
+  // }
 });
 
 watch(
@@ -58,9 +58,9 @@ watch(
 
 watch(tab, (newVal) => {
   if (newVal === "two") {
-    if (authStore.loggedIn) {
-      store.getFollowedUsersPosts();
-    }
+    store.getFollowedUsersPosts();
+  } else {
+    store.getAllPosts();
   }
 });
 </script>

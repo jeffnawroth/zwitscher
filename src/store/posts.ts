@@ -39,10 +39,9 @@ export const usePostStore = defineStore("post", () => {
   }
 
   async function getFollowedUsersPosts() {
-    // const authStore = useAuthenticationStore();
     try {
-      // const data = await getPostsFromFollowedUsers(authStore.user!.following);
-      // allPosts.value = data;
+      const data = await PostApi.prototype.apiPostFollowingPostsGet();
+      allPosts.value = data.data;
     } catch (error) {
       showNotification(
         "error",
