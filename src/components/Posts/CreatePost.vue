@@ -1,5 +1,6 @@
 <template>
   <Form
+    ref="form"
     v-slot="{ meta, validate }"
     :initial-values="initialValues"
     :validation-schema="validationSchema"
@@ -80,9 +81,19 @@
         <v-btn :disabled="files.length >= 1" icon="mdi-file-gif-box"></v-btn>
         <v-btn icon="mdi-emoticon-happy-outline"></v-btn>
         <v-spacer></v-spacer>
-        <v-btn variant="tonal" type="submit" :disabled="!meta.valid">{{
-          buttonText
-        }}</v-btn>
+        <v-btn
+          v-if="!props.editMode"
+          variant="tonal"
+          type="submit"
+          :disabled="!meta.valid"
+          >{{ buttonText }}</v-btn
+        >
+
+        <template v-if="editMode">
+          <v-btn icon="mdi-close" @click="$emit('set-edit-mode', false)">
+          </v-btn>
+          <v-btn icon="mdi-check" type="submit"></v-btn>
+        </template>
       </v-card-actions>
     </v-card>
   </Form>
@@ -100,6 +111,23 @@ import { useRoute } from "vue-router";
 import FileLayout from "./FileLayout.vue";
 import BaseTextarea from "../BaseComponents/BaseTextarea.vue";
 import { generateFileURL } from "@/helpers";
+import { onMounted } from "vue";
+import { PropType } from "vue";
+import { PostResult } from "@/typescript-axios-generated";
+
+const emit = defineEmits<{
+  (e: "set-edit-mode", value: boolean): void;
+}>();
+
+const props = defineProps({
+  post: {
+    type: Object as PropType<PostResult>,
+    default: null,
+  },
+  editMode: {
+    type: Boolean,
+  },
+});
 
 setLocale(yupLocaleDe);
 
@@ -111,9 +139,11 @@ const fileInput = ref<HTMLInputElement | null>(null);
 
 const files = ref<File[]>([]);
 
+const form = ref<InstanceType<typeof Form> | null>(null);
+
 const initialValues = {
   text: "",
-  file: [],
+  file: [] as File[],
 };
 
 const validationSchema = object({
@@ -139,22 +169,47 @@ const cardTitle = computed(() => {
   return route.name == "home" ? `${authStore.user?.name}` : "";
 });
 
+onMounted(() => {
+  if (props.post) {
+    if (props.post.text) {
+      initialValues.text = props.post.text;
+    } else if (props.post.files) {
+      initialValues.file = props.post.files;
+    }
+
+    form.value?.resetForm({
+      values: initialValues,
+    });
+  }
+});
+
 function removeFile(file: File) {
   const fileIndex = files.value.indexOf(file);
   files.value.splice(fileIndex, 1);
 }
 
-function submit(values: any, { resetForm }: any) {
-  const post: PostAdd = {
-    userId: authStore.user!.id,
-    text: values.text,
-    files: values.file,
-  };
+async function submit(values: any, { resetForm }: any) {
+  if (props.editMode) {
+    const { text, files, ...rest } = props.post;
+    const postEdit = {
+      ...rest,
+      text: values.text,
+      files: values.file,
+    };
+    await postsStore.updatePost(postEdit);
+    emit("set-edit-mode", false);
+  } else {
+    const post: PostAdd = {
+      userId: authStore.user!.id,
+      text: values.text,
+      files: values.file,
+    };
 
-  route.name == "home"
-    ? postsStore.createPost(post)
-    : postsStore.addComment(post);
-  resetForm();
+    route.name == "home"
+      ? await postsStore.createPost(post)
+      : await postsStore.addComment(post);
+    resetForm();
+  }
 }
 </script>
 

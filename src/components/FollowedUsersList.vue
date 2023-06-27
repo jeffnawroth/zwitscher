@@ -4,7 +4,7 @@
       v-for="user in store.users"
       :key="user.id!"
       :title="user.name!"
-      :subtitle="user.username!"
+      :subtitle="`@${user.username!}`"
       :to="`/${user.username}`"
     >
       <template #prepend>

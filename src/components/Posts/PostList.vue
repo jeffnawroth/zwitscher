@@ -1,6 +1,6 @@
 <template>
   <div v-for="(post, index) in posts" :key="post.id!">
-    <v-list-item @click="openPost(post)">
+    <v-list-item>
       <Post :post="post"></Post>
     </v-list-item>
     <v-divider v-if="index !== posts.length - 1"></v-divider>
@@ -10,8 +10,6 @@
 <script setup lang="ts">
 import { PropType } from "vue";
 import Post from "./Post.vue";
-import { useRouter } from "vue-router";
-import { usePostStore } from "@/store/posts";
 import { PostResult } from "@/typescript-axios-generated";
 
 defineProps({
@@ -22,15 +20,4 @@ defineProps({
     },
   },
 });
-
-const store = usePostStore();
-const router = useRouter();
-
-function openPost(post: PostResult) {
-  store.post = post;
-  router.push({
-    name: "post",
-    params: { username: post.username, postId: post.id },
-  });
-}
 </script>

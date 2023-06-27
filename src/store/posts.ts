@@ -74,6 +74,7 @@ export const usePostStore = defineStore("post", () => {
         "error",
         "Beim Erstellen des Beitrags ist ein Fehler aufgetreten!"
       );
+      return Promise.reject(error)
     }
   }
 
@@ -115,6 +116,8 @@ export const usePostStore = defineStore("post", () => {
         "error",
         "Beim Bearbeiten des Beitrags ist ein Fehler aufgetreten!"
       );
+      return Promise.reject(error)
+
     }
   }
 

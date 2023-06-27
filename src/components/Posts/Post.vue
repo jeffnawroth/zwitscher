@@ -1,5 +1,11 @@
 <template>
-  <v-card :subtitle="`@${post.username} • ${formattedDate}`" density="compact">
+  <v-card
+    v-if="!editMode"
+    :subtitle="`@${post.username} • ${formattedDate}`"
+    density="compact"
+    rounded="lg"
+    @click="openPost"
+  >
     <template #prepend>
       <v-btn icon variant="text" @click.stop="openProfile">
         <v-avatar v-if="!post.avatar" color="grey">
@@ -38,15 +44,15 @@
       }}</v-btn>
 
       <v-spacer></v-spacer>
-      <!-- <v-btn
+      <v-btn
         v-if="
           authStore.loggedIn &&
           (post.userId === authStore.user?.id ||
             authStore.user?.role == Role.NUMBER_0)
         "
         icon="mdi-pencil-outline"
-        @click.stop="deleteDialog = true"
-      ></v-btn>-->
+        @click.stop="editMode = true"
+      ></v-btn>
       <v-btn
         v-if="
           authStore.loggedIn &&
@@ -60,6 +66,13 @@
       ></v-btn>
     </v-card-actions>
   </v-card>
+
+  <CreatePost
+    v-else
+    :post="post"
+    :edit-mode="editMode"
+    @set-edit-mode="(value) => (editMode = value)"
+  ></CreatePost>
 
   <BaseDeleteDialog
     v-model="deleteDialog"
@@ -79,11 +92,7 @@ import { useRouter, useRoute } from "vue-router";
 import FileLayout from "./FileLayout.vue";
 import { generateFileURL } from "@/helpers";
 import { Role } from "@/typescript-axios-generated";
-
-// const emit = defineEmits<{
-//   (e: "set-upvotes"): void;
-//   (e: "set-downvotes", downvotes: number): void;
-// }>();
+import CreatePost from "./CreatePost.vue";
 
 const props = defineProps({
   post: {
@@ -97,6 +106,7 @@ const authStore = useAuthenticationStore();
 const router = useRouter();
 const route = useRoute();
 const deleteDialog = ref(false);
+const editMode = ref(false);
 
 const thumbUp = computed(() => {
   return props.post.upVotes?.includes(authStore.user?.id!)
@@ -133,6 +143,14 @@ function dislikePost() {
 async function deleteUserPost() {
   await store.deletePost(props.post.id!);
   deleteDialog.value = false;
+}
+
+function openPost() {
+  store.post = props.post;
+  router.push({
+    name: "post",
+    params: { username: props.post.username, postId: props.post.id },
+  });
 }
 
 const formattedDate = computed(() => {
