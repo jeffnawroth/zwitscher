@@ -17,12 +17,17 @@ public class UserLightController : ControllerBase
     {
         _userManager = userManager;
     }
-
+    /// <summary>
+    /// Gets a list of all followed users with specified attributes.
+    /// </summary>
+    /// <returns>A list of all followed users from the current user.</returns>
+    /// <response code="200">Returns the list of followed users with the specified attributes.</response>
+    /// <response code="500">If an exception occurs while retrieving the users.</response>
     [HttpGet]
     public async Task<IActionResult> GetFollowerdUsersLight()
     {
         //A light-user should only contain: id, avatar, name, username
-        var userEmail = "admin@zwitscher.de";//User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userEmail = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var currentUser = await _userManager.FindByEmailAsync(userEmail);
         var followingIds = new List<string>();
         var followingUsers = new List<UserLight>();
