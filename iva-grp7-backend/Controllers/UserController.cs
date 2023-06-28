@@ -314,15 +314,24 @@ namespace iva_grp7_backend.Controllers;
     byte[] avatarData = null;
     if (!string.IsNullOrEmpty(user.Avatar))
     {
-        try
+        var avatarSplit = user.Avatar.Split(',');
+        if (avatarSplit.Length == 2 && avatarSplit[0].StartsWith("data:") && avatarSplit[0].EndsWith("base64"))
         {
-            avatarData = Convert.FromBase64String(user.Avatar);
+            try
+            {
+                avatarData = Convert.FromBase64String(avatarSplit[1]);
+            }
+            catch (FormatException)
+            {
+                return BadRequest("Invalid Avatar format. Please provide a Base64 string.");
+            }
         }
-        catch (FormatException)
+        else
         {
-            return BadRequest("Invalid Avatar format. Please provide a Base64 string.");
+            return BadRequest("Invalid Avatar format. Please provide a data URI with base64 data.");
         }
     }
+
     
     // Rest der Nutzerinformationen
     string password = user.Password;
