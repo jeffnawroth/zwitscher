@@ -12,7 +12,7 @@ namespace iva_grp7_backend.Controllers;
     /// <summary>
     /// A controller for managing users.
     /// </summary>
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     //[Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
