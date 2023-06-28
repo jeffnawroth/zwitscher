@@ -13,8 +13,8 @@ namespace App3.Services
         public string Email { get; set; }
         public string Password { get; set; }
         public Gender Gender { get; set; }
-        public List<string> Followers { get; set; }
-        public List<string> Following { get; set; }
+        public List<int> Followers { get; set; }
+        public List<int> Following { get; set; }
         public string Bio { get; set; }
         public List<string> LikedPosts { get; set; }
         public List<string> DislikedPosts { get; set; }

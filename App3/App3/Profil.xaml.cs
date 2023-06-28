@@ -1,6 +1,6 @@
-﻿using App3.Services;
+﻿using Xamarin.Forms;
 using System.Collections.Generic;
-using Xamarin.Forms;
+using App3.Services;
 using Xamarin.Forms.Xaml;
 
 namespace App3

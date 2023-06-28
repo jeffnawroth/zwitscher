@@ -1,12 +1,18 @@
-﻿using Xamarin.Forms;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using App3.Services;
-using System;
 
 namespace App3.Services
 {
     public static class LoginService
     {
+        public static User CurrentUser { get; private set; }
+
+        public static void SetCurrentUser(User user)
+        {
+            CurrentUser = user;
+        }
+
         public static async Task<bool> ValidateCredentials(string username, string password)
         {
             await Task.Delay(2000);
@@ -15,12 +21,12 @@ namespace App3.Services
             bool isPasswordValid = DummyBackend.ValidatePassword(username, password);
 
             bool isLoginValid = isUserRegistered && isPasswordValid;
+            if (isLoginValid)
+            {
+                User user = DummyBackend.GetRegisteredUsers().FirstOrDefault(u => u.Username == username);
+                SetCurrentUser(user);
+            }
             return isLoginValid;
         }
     }
 }
-
-
-
-
-
