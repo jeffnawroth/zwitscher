@@ -12,5 +12,5 @@ public class PostResult
     public List<string>? UpVotes { get; set; }
     public List<string>? DownVotes { get; set; }
     public DateTime Date { get; set; }
-    public List<string>? Files { get; set; }
+    public List<byte[]>? Files { get; set; }
 }

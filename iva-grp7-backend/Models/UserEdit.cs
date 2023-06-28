@@ -5,4 +5,5 @@ namespace iva_grp7_backend.Models;
 public class UserEdit: User
 {
     public string? Password { get; set; }
+    public IFormFile Avatar { get; set; }
 }
