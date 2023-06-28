@@ -923,6 +923,37 @@ export interface UserInterest {
 /**
  * 
  * @export
+ * @interface UserLight
+ */
+export interface UserLight {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserLight
+     */
+    'id'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserLight
+     */
+    'avatar'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserLight
+     */
+    'username'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserLight
+     */
+    'name'?: string | null;
+}
+/**
+ * 
+ * @export
  * @interface UserLoginRequestDto
  */
 export interface UserLoginRequestDto {
@@ -1230,7 +1261,7 @@ export const DashboardApiAxiosParamCreator = function (configuration?: Configura
     return {
         /**
          * 
-         * @summary Returns an array with amount of active users in the last 6 months.
+         * @summary Returns an array with amount of active users in the last 12 months.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1332,7 +1363,7 @@ export const DashboardApiAxiosParamCreator = function (configuration?: Configura
         },
         /**
          * 
-         * @summary Returns an array with amount of posts in weekday.
+         * @summary Returns an array with amount of posts in the last 7 days.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1366,7 +1397,7 @@ export const DashboardApiAxiosParamCreator = function (configuration?: Configura
         },
         /**
          * 
-         * @summary Returns an array with amount of users created at each month.
+         * @summary Returns an array with amount of users created at each month in the last 12 months.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1410,7 +1441,7 @@ export const DashboardApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary Returns an array with amount of active users in the last 6 months.
+         * @summary Returns an array with amount of active users in the last 12 months.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1440,7 +1471,7 @@ export const DashboardApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Returns an array with amount of posts in weekday.
+         * @summary Returns an array with amount of posts in the last 7 days.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1450,7 +1481,7 @@ export const DashboardApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Returns an array with amount of users created at each month.
+         * @summary Returns an array with amount of users created at each month in the last 12 months.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1470,7 +1501,7 @@ export const DashboardApiFactory = function (configuration?: Configuration, base
     return {
         /**
          * 
-         * @summary Returns an array with amount of active users in the last 6 months.
+         * @summary Returns an array with amount of active users in the last 12 months.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1497,7 +1528,7 @@ export const DashboardApiFactory = function (configuration?: Configuration, base
         },
         /**
          * 
-         * @summary Returns an array with amount of posts in weekday.
+         * @summary Returns an array with amount of posts in the last 7 days.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1506,7 +1537,7 @@ export const DashboardApiFactory = function (configuration?: Configuration, base
         },
         /**
          * 
-         * @summary Returns an array with amount of users created at each month.
+         * @summary Returns an array with amount of users created at each month in the last 12 months.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1525,7 +1556,7 @@ export const DashboardApiFactory = function (configuration?: Configuration, base
 export class DashboardApi extends BaseAPI {
     /**
      * 
-     * @summary Returns an array with amount of active users in the last 6 months.
+     * @summary Returns an array with amount of active users in the last 12 months.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DashboardApi
@@ -1558,7 +1589,7 @@ export class DashboardApi extends BaseAPI {
 
     /**
      * 
-     * @summary Returns an array with amount of posts in weekday.
+     * @summary Returns an array with amount of posts in the last 7 days.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DashboardApi
@@ -1569,7 +1600,7 @@ export class DashboardApi extends BaseAPI {
 
     /**
      * 
-     * @summary Returns an array with amount of users created at each month.
+     * @summary Returns an array with amount of users created at each month in the last 12 months.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DashboardApi
@@ -2243,6 +2274,40 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
     return {
         /**
          * 
+         * @summary Gets a list of all followed users with specified attributes.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiUserFollowedUsersLightGet: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/User/FollowedUsersLight`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Gets a list of all users.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2609,6 +2674,16 @@ export const UserApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary Gets a list of all followed users with specified attributes.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiUserFollowedUsersLightGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserLight>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserFollowedUsersLightGet(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Gets a list of all users.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2716,6 +2791,15 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
     return {
         /**
          * 
+         * @summary Gets a list of all followed users with specified attributes.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiUserFollowedUsersLightGet(options?: any): AxiosPromise<Array<UserLight>> {
+            return localVarFp.apiUserFollowedUsersLightGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Gets a list of all users.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2813,6 +2897,17 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
  * @extends {BaseAPI}
  */
 export class UserApi extends BaseAPI {
+    /**
+     * 
+     * @summary Gets a list of all followed users with specified attributes.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public apiUserFollowedUsersLightGet(options?: AxiosRequestConfig) {
+        return UserApiFp(this.configuration).apiUserFollowedUsersLightGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary Gets a list of all users.
