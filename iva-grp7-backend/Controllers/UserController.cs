@@ -301,22 +301,30 @@ namespace iva_grp7_backend.Controllers;
         [ProducesResponseType(500)]
 
         // Creates a new ApplicationUser
-        public async Task<IActionResult> Create([FromForm] UserAdd user)
-    {
-    // Checks if the model state is valid
+        
+        public async Task<IActionResult> Create([FromBody] UserAdd user)
+{
+    // Überprüfen Sie, ob der Modellzustand gültig ist
     if (!ModelState.IsValid)
     {
-        // If the model state is invalid, returns a bad request response with the validation errors
+        // Wenn der Modellzustand ungültig ist, geben Sie eine BadRequest-Antwort mit den Validierungsfehlern zurück
         return BadRequest(ModelState);
     }
     
     byte[] avatarData = null;
-    if (user.Avatar != null)
+    if (!string.IsNullOrEmpty(user.Avatar))
     {
-        avatarData = await ProcessFormFile(user.Avatar);
+        try
+        {
+            avatarData = Convert.FromBase64String(user.Avatar);
+        }
+        catch (FormatException)
+        {
+            return BadRequest("Invalid Avatar format. Please provide a Base64 string.");
+        }
     }
     
-
+    // Rest der Nutzerinformationen
     string password = user.Password;
 
     ApplicationUser applicationUser = new ApplicationUser()
@@ -335,37 +343,37 @@ namespace iva_grp7_backend.Controllers;
 
     if (!is_created.Succeeded)
     {
-        // Get the errors from the result
+        // Holen Sie die Fehler aus dem Ergebnis
         var errors = is_created.Errors.Select(e => e.Description);
-        // Return a BadRequest response with the errors
+        // Geben Sie eine BadRequest-Antwort mit den Fehlern zurück
         return BadRequest(errors);
     }
 
     if (is_created.Succeeded)
     {
-        // If user has interests
+        // Wenn der Benutzer Interessen hat
         if (user.Interests != null)
         {
-            // Initialize a list to store the UserInterests
+            // Initialisieren Sie eine Liste, um die UserInterests zu speichern
             List<UserInterest> userInterests = new List<UserInterest>();
 
             foreach (string interestName in user.Interests)
             {
-                // Create a new UserInterest that links the user and the interest
+                // Erstellen Sie ein neues UserInterest, das den Benutzer und das Interesse verknüpft
                 UserInterest userInterest = new UserInterest
                 {
                     Interest = interestName,
                     User = applicationUser
                 };
 
-                // Add the UserInterest to the list
+                // Fügen Sie das UserInterest der Liste hinzu
                 userInterests.Add(userInterest);
             }
 
-            // Assign the list of UserInterests to the user's Interests
+            // Weisen Sie die Liste der UserInterests den Interessen des Benutzers zu
             applicationUser.Interests = userInterests;
 
-            // Update the user in the database
+            // Aktualisieren Sie den Benutzer in der Datenbank
             _context.Entry(applicationUser).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
@@ -385,14 +393,14 @@ namespace iva_grp7_backend.Controllers;
             Locked = applicationUser.Locked,
             Followers = new List<string>(),
             Following = new List<string>(),
-            Interests = user.Interests // Use the interests from the input, since they're the same as in the database
+            Interests = user.Interests // Benutzen Sie die Interessen aus der Eingabe, da sie die gleichen sind wie in der Datenbank
         };
 
-        // If the user creation was successful, returns a created response with the newly created user object
+        // Wenn die Benutzererstellung erfolgreich war, geben Sie eine erstellte Antwort mit dem neu erstellten Benutzerobjekt zurück
         return CreatedAtAction(nameof(GetById), new {id = filteredUser.Id}, filteredUser);
     }
 
-    // If the user creation was not successful, returns a bad request response with the error messages
+    // Wenn die Benutzererstellung nicht erfolgreich war, geben Sie eine BadRequest-Antwort mit den Fehlermeldungen zurück
     return BadRequest(is_created.Errors);
 }
 
@@ -400,6 +408,7 @@ namespace iva_grp7_backend.Controllers;
 
 
 
+/*
         /// <summary>
         /// Updates an existing user.
         /// </summary>
@@ -417,93 +426,106 @@ namespace iva_grp7_backend.Controllers;
         [ProducesResponseType(500)]
 
         // Updates the ApplicationUser.
-        public async Task<IActionResult> Update(string id, [FromBody] UserEdit user)
+        public async Task<IActionResult> Update(string id, [FromForm] UserEdit user)
+{
+    // Check if the given id matches the user's id.
+    if (id != user.Id)
+    {
+        // Return bad request if they don't match.
+        return BadRequest();
+    }
+
+    // Check if the user object is valid.
+    if (!ModelState.IsValid)
+    {
+        // Return bad request with model state errors if it's not valid.
+        return BadRequest(ModelState);
+    }
+
+    // Find the existing user based on the id.
+    var existingUser = await _userManager.FindByIdAsync(id);
+
+    // Return not found if the user doesn't exist.
+    if (existingUser == null)
+    {
+        return NotFound();
+    }
+    
+    // Process the new avatar file.
+    byte[] avatarData = await ProcessFormFile(user.Avatar);
+    if (avatarData == null)
+    {
+        return BadRequest("Ungültige Datei. Stellen Sie sicher, dass die Datei ein Bild ist und nicht größer als 5MB ist.");
+    }
+    
+    // Check if avatar data is the same as the existing one
+    if (!existingUser.Avatar.SequenceEqual(avatarData))
+    {
+        existingUser.Avatar = avatarData;
+    }
+
+    // Update the user properties with the properties from the given user object.
+    existingUser.UserName = user.Username;
+    existingUser.Email = user.Email;
+    existingUser.Bio = user.Bio;
+    existingUser.Gender = user.Gender;
+    existingUser.Locked = user.Locked;
+    existingUser.Name = user.Name;
+    existingUser.BirthDate = user.BirthDate;
+    existingUser.Role = user.Role;
+
+    // If user has interests
+    if (user.Interests != null)
+    {
+        // Delete existing interests of the user
+        var existingInterests = _context.UserInterests.Where(ui => ui.UserId == existingUser.Id);
+        _context.UserInterests.RemoveRange(existingInterests);
+
+        // Initialize a list to store the UserInterests
+        List<UserInterest> userInterests = new List<UserInterest>();
+
+        foreach (string interestName in user.Interests)
         {
-            // Check if the given id matches the user's id.
-            if (id != user.Id)
+            // Create a new UserInterest that links the user and the interest
+            UserInterest userInterest = new UserInterest
             {
-                // Return bad request if they don't match.
-                return BadRequest();
-            }
-        
-            // Check if the user object is valid.
-            if (!ModelState.IsValid)
-            {
-                // Return bad request with model state errors if it's not valid.
-                return BadRequest(ModelState);
-            }
-        
-            // Find the existing user based on the id.
-            var existingUser = await _userManager.FindByIdAsync(id);
-        
-            // Return not found if the user doesn't exist.
-            if (existingUser == null)
-            {
-                return NotFound();
-            }
-        
-            // Update the user properties with the properties from the given user object.
-            existingUser.Id = user.Id;
-            existingUser.UserName = user.Username;
-            existingUser.Email = user.Email;
-            existingUser.Bio = user.Bio;
-            existingUser.Gender = user.Gender;
-            existingUser.Locked = user.Locked;
-            existingUser.Name = user.Name;
-            existingUser.BirthDate = user.BirthDate;
-            existingUser.Role = user.Role;
-        
-            // If user has interests
-            if (user.Interests != null)
-            {
-                // Delete existing interests of the user
-                var existingInterests = _context.UserInterests.Where(ui => ui.UserId == existingUser.Id);
-                _context.UserInterests.RemoveRange(existingInterests);
-        
-                // Initialize a list to store the UserInterests
-                List<UserInterest> userInterests = new List<UserInterest>();
-        
-                foreach (string interestName in user.Interests)
-                {
-                    // Create a new UserInterest that links the user and the interest
-                    UserInterest userInterest = new UserInterest
-                    {
-                        Interest = interestName,
-                        User = existingUser
-                    };
-        
-                    // Add the UserInterest to the list
-                    userInterests.Add(userInterest);
-                }
-        
-                // Assign the list of UserInterests to the user's Interests
-                existingUser.Interests = userInterests;
-            }
-        
-            // Handle password update
-            if (user.Password != null)
-            {
-                var token = await _userManager.GeneratePasswordResetTokenAsync(existingUser);
-                var change = await _userManager.ResetPasswordAsync(existingUser, token, user.Password);
-                if (!change.Succeeded)
-                {
-                    return BadRequest("Password konnte nicht geändert werden");
-                }
-            }
-        
-            // Update the existing user.
-            var result = await _userManager.UpdateAsync(existingUser);
-        
-            // If the update is successful, return an OK response with the updated user object.
-            if (result.Succeeded)
-            {
-                await _context.SaveChangesAsync();
-                return Ok("User wurde erfolgreich aktualisiert");
-            }
-        
-            // If the update fails, return a bad request with the errors from the result object.
-            return BadRequest(result.Errors);
+                Interest = interestName,
+                User = existingUser
+            };
+
+            // Add the UserInterest to the list
+            userInterests.Add(userInterest);
         }
+
+        // Assign the list of UserInterests to the user's Interests
+        existingUser.Interests = userInterests;
+    }
+
+    // Handle password update
+    if (user.Password != null)
+    {
+        var token = await _userManager.GeneratePasswordResetTokenAsync(existingUser);
+        var change = await _userManager.ResetPasswordAsync(existingUser, token, user.Password);
+        if (!change.Succeeded)
+        {
+            return BadRequest("Password konnte nicht geändert werden");
+        }
+    }
+
+    // Update the existing user.
+    var result = await _userManager.UpdateAsync(existingUser);
+
+    // If the update is successful, return an OK response with the updated user object.
+    if (result.Succeeded)
+    {
+        await _context.SaveChangesAsync();
+        return Ok("User wurde erfolgreich aktualisiert");
+    }
+
+    // If the update fails, return a bad request with the errors from the result object.
+    return BadRequest(result.Errors);
+}
+*/
 
 
 
