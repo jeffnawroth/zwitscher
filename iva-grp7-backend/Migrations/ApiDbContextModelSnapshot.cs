@@ -167,8 +167,8 @@ namespace iva_grp7_backend.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("AvatarId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<byte[]>("Avatar")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Bio")
                         .HasColumnType("nvarchar(max)");
@@ -239,8 +239,6 @@ namespace iva_grp7_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AvatarId");
-
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -250,32 +248,6 @@ namespace iva_grp7_backend.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("iva_grp7_backend.Models.File", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<byte[]>("Data")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("PostId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PostId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("iva_grp7_backend.Models.Post", b =>
@@ -298,6 +270,26 @@ namespace iva_grp7_backend.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("iva_grp7_backend.Models.PostFile", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<byte[]>("Files")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("PostId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("PostFiles");
                 });
 
             modelBuilder.Entity("iva_grp7_backend.Models.PostVote", b =>
@@ -449,34 +441,6 @@ namespace iva_grp7_backend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("iva_grp7_backend.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("iva_grp7_backend.Models.File", "Avatar")
-                        .WithMany()
-                        .HasForeignKey("AvatarId");
-
-                    b.Navigation("Avatar");
-                });
-
-            modelBuilder.Entity("iva_grp7_backend.Models.File", b =>
-                {
-                    b.HasOne("iva_grp7_backend.Models.Post", "Post")
-                        .WithMany("Files")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("iva_grp7_backend.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Post");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("iva_grp7_backend.Models.Post", b =>
                 {
                     b.HasOne("iva_grp7_backend.Models.ApplicationUser", "User")
@@ -486,6 +450,17 @@ namespace iva_grp7_backend.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("iva_grp7_backend.Models.PostFile", b =>
+                {
+                    b.HasOne("iva_grp7_backend.Models.Post", "Post")
+                        .WithMany("Files")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
                 });
 
             modelBuilder.Entity("iva_grp7_backend.Models.PostVote", b =>

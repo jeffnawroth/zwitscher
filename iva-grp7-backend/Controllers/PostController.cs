@@ -326,7 +326,6 @@ namespace iva_grp7_backend.Controllers;
 
             post.Text = updatedPost.Text;
 
-            /*
             // Aktualisieren der Dateien...
             if (updatedPost.Files != null)
             {
@@ -343,7 +342,7 @@ namespace iva_grp7_backend.Controllers;
                         post.Files.Add(updatedFile);
                     }
                 }
-            }*/
+            }
 
             try
             {
