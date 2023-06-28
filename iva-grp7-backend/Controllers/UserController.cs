@@ -5,13 +5,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics.Internal;
 
 namespace iva_grp7_backend.Controllers;
 
     /// <summary>
     /// A controller for managing users.
     /// </summary>
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     //[Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
@@ -667,4 +668,45 @@ namespace iva_grp7_backend.Controllers;
             return null;
         }
 
+        /// <summary>
+        /// Gets a list of all followed users with specified attributes.
+        /// </summary>
+        /// <returns>A list of all followed users from the current user.</returns>
+        /// <response code="200">Returns the list of followed users with the specified attributes.</response>
+        /// <response code="500">If an exception occurs while retrieving the users.</response>
+        [HttpGet("FollowedUsersLight")]
+        public async Task<ActionResult<IEnumerable<UserLight>>> GetFollowerdUsersLight()
+        {
+            //A light-user should only contain: id, avatar, name, username
+            var userEmail = "admin@zwitscher.de";//User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUser = await _userManager.FindByEmailAsync(userEmail);
+            var followingUsers = new List<UserLight>();
+
+            if (currentUser == null)
+            {
+                return NotFound("Current user not found.");
+            }
+
+            var followingIds = await _context.UserFollowings
+                                .Where(f => f.UserId == currentUser.Id)
+                                .Select(f => f.FollowingId)
+                                .ToListAsync();
+
+            var follower = await _userManager.Users
+                                .Where(u => followingIds.Contains(u.Id))
+                                .ToListAsync();
+
+            foreach(var user in follower)
+            {
+                var followingUser = new UserLight()
+                {
+                    Id = user.Id,
+                    Avatar = user.Avatar,
+                    Username = user.UserName,
+                    Name = user.Name
+                };
+                followingUsers.Add(followingUser);
+            }
+            return followingUsers;
+        }
     }

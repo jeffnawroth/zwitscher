@@ -32,10 +32,10 @@ namespace iva_grp7_backend.Controllers;
         }
 
         /// <summary>
-        /// Returns an array with amount of posts in weekday.
+        /// Returns an array with amount of posts in the last 7 days.
         /// </summary>
-        /// <returns>An array with the amount of posts that got created in each weekday.</returns>
-        /// <response code="200">Returns the array of amount of posts in each weekday.</response>
+        /// <returns>An array with the amount of posts that got created in each weekday in the last 7 days.</returns>
+        /// <response code="200">Returns the array of amount of posts in each weekday last 7 days.</response>
         /// <response code="500">If an exception occurs while retrieving the dates of the posts.</response>
         [HttpGet("PostsPerDay")]
         public async Task<int[]> GetPostsPerDay()
@@ -44,8 +44,9 @@ namespace iva_grp7_backend.Controllers;
             int[] weekdays = {0,0,0,0,0,0,0};
 
             var posts = await _context.Posts
+                .Where(x => x.Date.Date >= DateTime.Today.Date.AddDays(-7) && x.Date.Date < DateTime.Today.Date)
                 .GroupBy(x => x.Date.Date)
-                .Select(g => new { Date = g.Key, Count = g.Count() })
+                .Select(g => new { Date = g.Key, Count = g.Count()})
                 .ToListAsync();
             
             for(int i = 0; i < posts.Count;i++)
@@ -79,9 +80,9 @@ namespace iva_grp7_backend.Controllers;
         }
 
         /// <summary>
-        /// Returns an array with amount of users created at each month.
+        /// Returns an array with amount of users created at each month in the last 12 months.
         /// </summary>
-        /// <returns>An array with the amount of users that got created in each month.</returns>
+        /// <returns>An array with the amount of users that got created in each month the past 12 months.</returns>
         /// <response code="200">Returns the array of amount of users in each month.</response>
         /// <response code="500">If an exception occurs while retrieving the dates of the users.</response>
         [HttpGet("UsersGrowth")]
@@ -91,6 +92,7 @@ namespace iva_grp7_backend.Controllers;
             int[] months = {0,0,0,0,0,0,0,0,0,0,0,0};
 
             var users = await _userManager.Users
+                .Where(x => x.CreatedAt >= DateTime.Today.AddMonths(-12) && x.CreatedAt <= DateTime.Today.AddMonths(-1))
                 .GroupBy(x => x.CreatedAt.Month)
                 .Select(g => new { Month = g.Key, Count = g.Count() })
                 .ToListAsync();
@@ -118,9 +120,9 @@ namespace iva_grp7_backend.Controllers;
         }
 
         /// <summary>
-        /// Returns an array with amount of active users in the last 6 months.
+        /// Returns an array with amount of active users in the last 12 months.
         /// </summary>
-        /// <returns>An array with the amount of users that posted in the last 6 months.</returns>
+        /// <returns>An array with the amount of users that posted in the last 12 months.</returns>
         /// <response code="200">Returns the array of amount of active users with 6 month deadline.</response>
         /// <response code="500">If an exception occurs while retrieving the dates of the users.</response>
         [HttpGet("ActiveUsers")]
@@ -128,10 +130,9 @@ namespace iva_grp7_backend.Controllers;
         {
             //Array für Monate
             int[] months = {0,0,0,0,0,0,0,0,0,0,0,0};
-            int deadline = 6;
 
             var posts = await _context.Posts
-                .Where(x => x.Date.Month > (DateTime.Today.Month - deadline))
+                .Where(x => x.Date >= DateTime.Today.AddMonths(-12) && x.Date <= DateTime.Today.AddMonths(-1))
                 .GroupBy(x => x.UserId)
                 .Select(g => new {Id = g.Key})
                 .ToListAsync();
