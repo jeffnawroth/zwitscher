@@ -4,19 +4,19 @@
        xmlns:local="clr-namespace:App3"
        x:Class="App3.AppShell"
        FlyoutBehavior="Flyout">
-    <FlyoutItem Title="Startseite">
+    <FlyoutItem Title="Startseite" Icon="home.png">
         <ShellContent Route="main" ContentTemplate="{DataTemplate local:MainPage}" />
     </FlyoutItem>
-    <FlyoutItem Title="Profil">
+    <FlyoutItem Title="Profil" Icon="placeholder_avatar.png">
         <ShellContent Route="profile" ContentTemplate="{DataTemplate local:Profil}" />
     </FlyoutItem>
-    <FlyoutItem Title="Logout">
+    <FlyoutItem Title="Logout" Icon="logout.png">
         <ShellContent Route="logout" ContentTemplate="{DataTemplate local:Logout}" />
     </FlyoutItem>
-    <FlyoutItem Title="Posting">
+    <FlyoutItem Title="Posting" Icon="posting.png">
         <ShellContent Route="posting" ContentTemplate="{DataTemplate local:PostingPage}" />
     </FlyoutItem>
-    <FlyoutItem Title="Einstellungen">
+    <FlyoutItem Title="Einstellungen" Icon="settings.png">
         <ShellContent Route="settings" ContentTemplate="{StaticResource SettingsTemplate}" />
     </FlyoutItem>
 

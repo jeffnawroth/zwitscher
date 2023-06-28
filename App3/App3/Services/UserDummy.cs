@@ -35,7 +35,7 @@ namespace App3.Services
                 new User
                 {
                     Id = 2,
-                    Avatar = new AvatarFile { /* Dateiinformationen */ },
+                    Avatar = new AvatarFile { Path = "placeholder_avatar" },
                     Role = Role.User,
                     Username = "user2",
                     Name = "Dummy User 2",
