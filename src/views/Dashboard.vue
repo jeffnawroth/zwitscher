@@ -8,11 +8,41 @@
     >
   </PageToolbar>
   <v-row class="pa-5">
+    <v-col cols="12" sm="4">
+      <DashboardCard
+        id="posts-today"
+        :loading="store.loadingPostsToday"
+        title="Posts (heute) "
+        @download="downloadPostsToday"
+      >
+        <span class="text-h2">{{ `+ ${store.numberOfPostsToday}` }}</span>
+      </DashboardCard>
+    </v-col>
+    <v-col cols="12" sm="4">
+      <DashboardCard
+        id="user-growth-today"
+        :loading="store.loadingUsersGrowthToday"
+        title="Nutzerzuwachs (heute) "
+        @download="downloadUserGrowthToday"
+      >
+        <span class="text-h2">{{ `+ ${store.numberOfUserGrowthToday}` }}</span>
+      </DashboardCard>
+    </v-col>
+    <v-col cols="12" sm="4">
+      <DashboardCard
+        id="active-users-today"
+        :loading="store.loadingActiveUsersToday"
+        title="Aktive Nutzer (heute) "
+        @download="downloadActiveUsersToday"
+      >
+        <span class="text-h2">{{ `${store.numberOfActiveUsersToday}` }}</span>
+      </DashboardCard>
+    </v-col>
     <v-col cols="12" sm="6">
       <DashboardCard
         id="posts-per-day-chart"
         :loading="store.loadingPostsPerDay"
-        :title="`Posts pro Tag (KW ${getWeekNumber})`"
+        :title="`Posts pro Tag (letzte 7 Tage)`"
         @download="downloadPostsPerDay"
       >
       </DashboardCard>
@@ -21,7 +51,7 @@
       <DashboardCard
         id="users-growth"
         :loading="store.loadingUsersGrowth"
-        :title="`Nutzerzuwachs (${currentYear})`"
+        :title="`Nutzerzuwachs (letzte 12 Monate)`"
         @download="downloadUserGrowth"
       >
       </DashboardCard>
@@ -30,7 +60,7 @@
       <DashboardCard
         id="active-users-chart"
         :loading="store.loadingActiveUsers"
-        :title="`Aktive Nutzer (${currentYear})`"
+        :title="`Aktive Nutzer (letzte 12 Monate)`"
         @download="downloadActiveUsers"
       >
       </DashboardCard>
@@ -39,7 +69,7 @@
       <DashboardCard
         id="age-distribution-chart"
         :loading="store.loadingAgeDistribution"
-        title="Altersverteilung der Nutzer"
+        title="Altersverteilung"
         @download="downloadAgeDistribution"
       >
       </DashboardCard>
@@ -48,7 +78,7 @@
       <DashboardCard
         id="gender-distribution-chart"
         :loading="store.loadingGenderDistribution"
-        title="Geschlechterverteilung der Nutzer"
+        title="Geschlechterverteilung"
         @download="downloadGenderDistribution"
       >
       </DashboardCard>
@@ -59,7 +89,6 @@
 <script setup lang="ts">
 import PageToolbar from "@/components/PageToolbar.vue";
 import Chart, { ChartItem } from "chart.js/auto";
-import { computed } from "vue";
 import { onMounted } from "vue";
 import DashboardCard from "@/components/Dashboard/DashboardCard.vue";
 import { utils, write, WorkBook } from "xlsx";
@@ -150,26 +179,20 @@ const usersGrowthData = {
   ],
 };
 
-const currentYear = computed(() => {
-  return new Date().getFullYear();
-});
-
 function generateWeekdays() {
-  const weekdays = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
-  return weekdays;
-}
+  const days = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
 
-const getWeekNumber = computed(() => {
-  const date = new Date();
-  const d = new Date(
-    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-  );
-  const dayNum = d.getUTCDay() || 7;
-  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  //@ts-expect-error
-  return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
-});
+  const currentDate = new Date();
+  const currentDayIndex = currentDate.getDay(); // Aktueller Tag der Woche (0-6)
+
+  const last7Days = [];
+  for (let i = 1; i <= 7; i++) {
+    const dayIndex = (currentDayIndex - i + 7) % 7; // Index des Tages im Array (rückwärts)
+    last7Days.unshift(days[dayIndex]);
+  }
+
+  return last7Days;
+}
 
 onMounted(async () => {
   await Promise.all([
@@ -178,6 +201,9 @@ onMounted(async () => {
     fetchActiveUsers(),
     fetchAgeDistribution(),
     fetchGenderDistribution(),
+    store.getNumberOfPostsToday(),
+    store.getNumberOfActiveUsersToday(),
+    store.getNumberOfTodaysUserGrowth(),
   ]);
 });
 
@@ -228,9 +254,15 @@ function generateMonthLabels() {
     "Dez",
   ];
   const currentDate = new Date();
-  const currentMonth = currentDate.getMonth();
-  const labels = months.slice(0, currentMonth + 1);
-  return labels;
+  const currentMonth = currentDate.getMonth(); // Aktueller Monat (0-11)
+
+  const last12Months = [];
+  for (let i = 1; i <= 12; i++) {
+    const monthIndex = (currentMonth - i + 12) % 12; // Index des Monats im Array (rückwärts)
+    last12Months.unshift(months[monthIndex]);
+  }
+
+  return last12Months;
 }
 
 function createNewChart(
@@ -302,7 +334,7 @@ function downloadUserGrowth() {
 function downloadAgeDistribution() {
   const data = ageDistributionData.labels.map((group, index) => ({
     Altersgruppe: group,
-    Anzahl: ageDistributionData.datasets[0].data[index],
+    Anzahl: ageDistributionData.datasets[0].data[index] + "%",
   }));
   const workbook = createExcelFile(data, "Altersverteilung");
   downloadExcelFile(workbook, "altersverteilung.xlsx");
@@ -312,7 +344,7 @@ function downloadAgeDistribution() {
 function downloadGenderDistribution() {
   const data = genderDistributionData.labels.map((gender, index) => ({
     Geschlecht: gender,
-    Anzahl: genderDistributionData.datasets[0].data[index],
+    Anzahl: genderDistributionData.datasets[0].data[index] + "%",
   }));
   const workbook = createExcelFile(data, "Geschlechterverteilung");
   downloadExcelFile(workbook, "geschlechterverteilung.xlsx");
@@ -328,11 +360,45 @@ function downloadActiveUsers() {
   downloadExcelFile(workbook, "aktive_nutzer.xlsx");
 }
 
+function downloadPostsToday() {
+  const data = [
+    {
+      Tag: new Date(),
+      Anzahl: store.numberOfPostsToday,
+    },
+  ];
+  const workbook = createExcelFile(data, "Posts (heute)");
+  downloadExcelFile(workbook, "posts_heute.xlsx");
+}
+
+function downloadUserGrowthToday() {
+  const data = [
+    {
+      Tag: new Date(),
+      Anzahl: store.numberOfUserGrowthToday,
+    },
+  ];
+  const workbook = createExcelFile(data, "Nutzerzuwachs (heute)");
+  downloadExcelFile(workbook, "nutzerzuwachs_heute.xlsx");
+}
+
+function downloadActiveUsersToday() {
+  const data = [
+    {
+      Tag: new Date(),
+      Anzahl: store.numberOfActiveUsersToday,
+    },
+  ];
+  const workbook = createExcelFile(data, "Aktive Nutzer (heute)");
+  downloadExcelFile(workbook, "aktive_nutzer_heute.xlsx");
+}
+
 function downloadAllCharts() {
   downloadActiveUsers();
   downloadAgeDistribution();
   downloadGenderDistribution();
   downloadPostsPerDay();
   downloadUserGrowth();
+  downloadPostsToday(), downloadActiveUsersToday(), downloadUserGrowthToday();
 }
 </script>

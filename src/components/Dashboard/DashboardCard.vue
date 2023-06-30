@@ -1,7 +1,9 @@
 <template>
   <v-card :title="title" :loading="loading">
     <v-card-text>
-      <canvas :id="id"></canvas>
+      <slot>
+        <canvas :id="id"></canvas>
+      </slot>
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
