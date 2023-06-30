@@ -1265,6 +1265,40 @@ export const DashboardApiAxiosParamCreator = function (configuration?: Configura
         },
         /**
          * 
+         * @summary Returns the amount of active users today.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDashboardActiveUsersTodayGet: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Dashboard/ActiveUsersToday`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Returns an array with percentage of users ages.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1367,12 +1401,80 @@ export const DashboardApiAxiosParamCreator = function (configuration?: Configura
         },
         /**
          * 
+         * @summary Returns the amount of new posts today.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDashboardPostsTodayGet: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Dashboard/PostsToday`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Returns an array with amount of users created at each month in the last 12 months.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         apiDashboardUsersGrowthGet: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/Dashboard/UsersGrowth`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Returns the amount of new users today.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDashboardUsersGrowthTodayGet: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Dashboard/UsersGrowthToday`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1421,6 +1523,16 @@ export const DashboardApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Returns the amount of active users today.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiDashboardActiveUsersTodayGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<number>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiDashboardActiveUsersTodayGet(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Returns an array with percentage of users ages.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1451,12 +1563,32 @@ export const DashboardApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Returns the amount of new posts today.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiDashboardPostsTodayGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<number>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiDashboardPostsTodayGet(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Returns an array with amount of users created at each month in the last 12 months.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         async apiDashboardUsersGrowthGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<number>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiDashboardUsersGrowthGet(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Returns the amount of new users today.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiDashboardUsersGrowthTodayGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<number>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiDashboardUsersGrowthTodayGet(options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -1477,6 +1609,15 @@ export const DashboardApiFactory = function (configuration?: Configuration, base
          */
         apiDashboardActiveUsersGet(options?: any): AxiosPromise<Array<number>> {
             return localVarFp.apiDashboardActiveUsersGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Returns the amount of active users today.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDashboardActiveUsersTodayGet(options?: any): AxiosPromise<number> {
+            return localVarFp.apiDashboardActiveUsersTodayGet(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1507,12 +1648,30 @@ export const DashboardApiFactory = function (configuration?: Configuration, base
         },
         /**
          * 
+         * @summary Returns the amount of new posts today.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDashboardPostsTodayGet(options?: any): AxiosPromise<number> {
+            return localVarFp.apiDashboardPostsTodayGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Returns an array with amount of users created at each month in the last 12 months.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         apiDashboardUsersGrowthGet(options?: any): AxiosPromise<Array<number>> {
             return localVarFp.apiDashboardUsersGrowthGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Returns the amount of new users today.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDashboardUsersGrowthTodayGet(options?: any): AxiosPromise<number> {
+            return localVarFp.apiDashboardUsersGrowthTodayGet(options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1533,6 +1692,17 @@ export class DashboardApi extends BaseAPI {
      */
     public apiDashboardActiveUsersGet(options?: AxiosRequestConfig) {
         return DashboardApiFp(this.configuration).apiDashboardActiveUsersGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Returns the amount of active users today.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DashboardApi
+     */
+    public apiDashboardActiveUsersTodayGet(options?: AxiosRequestConfig) {
+        return DashboardApiFp(this.configuration).apiDashboardActiveUsersTodayGet(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1570,6 +1740,17 @@ export class DashboardApi extends BaseAPI {
 
     /**
      * 
+     * @summary Returns the amount of new posts today.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DashboardApi
+     */
+    public apiDashboardPostsTodayGet(options?: AxiosRequestConfig) {
+        return DashboardApiFp(this.configuration).apiDashboardPostsTodayGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary Returns an array with amount of users created at each month in the last 12 months.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1577,6 +1758,17 @@ export class DashboardApi extends BaseAPI {
      */
     public apiDashboardUsersGrowthGet(options?: AxiosRequestConfig) {
         return DashboardApiFp(this.configuration).apiDashboardUsersGrowthGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Returns the amount of new users today.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DashboardApi
+     */
+    public apiDashboardUsersGrowthTodayGet(options?: AxiosRequestConfig) {
+        return DashboardApiFp(this.configuration).apiDashboardUsersGrowthTodayGet(options).then((request) => request(this.axios, this.basePath));
     }
 }
 
