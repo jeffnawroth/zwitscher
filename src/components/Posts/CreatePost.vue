@@ -117,6 +117,7 @@ import { PostResult } from "@/typescript-axios-generated";
 
 const emit = defineEmits<{
   (e: "set-edit-mode", value: boolean): void;
+  (e: "close-dialog"): void;
 }>();
 
 const props = defineProps({
@@ -209,6 +210,7 @@ async function submit(values: any, { resetForm }: any) {
       ? await postsStore.createPost(post)
       : await postsStore.addComment(post);
     resetForm();
+    emit("close-dialog");
   }
 }
 </script>

@@ -4,7 +4,7 @@
     width="500"
     @update:model-value="$emit('update:model-value', $event)"
   >
-    <CreatePost></CreatePost>
+    <CreatePost @close-dialog="$emit('update:model-value', false)"></CreatePost>
   </v-dialog>
 </template>
 
