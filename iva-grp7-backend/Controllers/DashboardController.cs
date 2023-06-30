@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.OpenApi.Validations;
 
 namespace iva_grp7_backend.Controllers;
 
@@ -51,29 +52,15 @@ namespace iva_grp7_backend.Controllers;
             
             for(int i = 0; i < posts.Count;i++)
             {
-                var day = posts[i].Date.Day;
-                var month = posts[i].Date.Month;
-                switch (month)
+                switch((int)(posts[i].Date.Date - DateTime.Today.Date.AddDays(-7)).TotalDays) 
                 {
-                    case 1: month = 11; break;
-                    case 2: month = 12; break;
-                    default: month -= 2; break;
-                }
-                var century = posts[i].Date.Year / 100;
-                var year = posts[i].Date.Year % 100;
-                
-                //Calculating which weekday the post was created on 0 = Sunday ; 1 = Monday ; ... 6 = Saturday; (GREGORIAN CALENDAR ONLY)
-                var weekday = (day + (int)(2.6 * month - 0.2) - (2 * century) + year + (int)(year / 4) + (int)(century / 4)) % 7;
-
-                switch(weekday) 
-                {
-                    case 1: weekdays[0] += posts[i].Count; break;
-                    case 2: weekdays[1] += posts[i].Count; break;
-                    case 3: weekdays[2] += posts[i].Count; break;
-                    case 4: weekdays[3] += posts[i].Count; break;
-                    case 5: weekdays[4] += posts[i].Count; break;
-                    case 6: weekdays[5] += posts[i].Count; break;
-                    case 0: weekdays[6] += posts[i].Count; break;
+                    case 0: weekdays[0] += posts[i].Count; break;
+                    case 1: weekdays[1] += posts[i].Count; break;
+                    case 2: weekdays[2] += posts[i].Count; break;
+                    case 3: weekdays[3] += posts[i].Count; break;
+                    case 4: weekdays[4] += posts[i].Count; break;
+                    case 5: weekdays[5] += posts[i].Count; break;
+                    case 6: weekdays[6] += posts[i].Count; break;
                 }   
             }
             return weekdays;
@@ -88,34 +75,33 @@ namespace iva_grp7_backend.Controllers;
         [HttpGet("UsersGrowth")]
         public async Task<int[]> getUsersGrowth()
         {
-            //Array for months
             int[] months = {0,0,0,0,0,0,0,0,0,0,0,0};
+            var startMonth = DateTime.Today.Date.AddDays(-(DateTime.Today.Date.Day - 1)); //Rounding down to month start
 
             var users = await _userManager.Users
-                .Where(x => x.CreatedAt >= DateTime.Today.AddMonths(-12) && x.CreatedAt <= DateTime.Today.AddMonths(-1))
-                .GroupBy(x => x.CreatedAt.Month)
-                .Select(g => new { Month = g.Key, Count = g.Count() })
+                .Where(x => x.CreatedAt.Date >= startMonth.AddMonths(-12) && x.CreatedAt.Date < startMonth)
+                .GroupBy(x => x.CreatedAt.Date)
+                .Select(g => new { Date = g.Key, Count = g.Count() })
                 .ToListAsync();
 
             for(int i = 0; i < users.Count; i++)
             {
-                switch(users[i].Month)
+                switch (((startMonth.Year - users[i].Date.Year) * 12 + startMonth.Month - users[i].Date.Month + 12) % 12)
                 {
-                    case 1: months[0] += users[i].Count; break;
-                    case 2: months[1] += users[i].Count; break;
-                    case 3: months[2] += users[i].Count; break;
-                    case 4: months[3] += users[i].Count; break;
-                    case 5: months[4] += users[i].Count; break;
-                    case 6: months[5] += users[i].Count; break;
-                    case 7: months[6] += users[i].Count; break;
-                    case 8: months[7] += users[i].Count; break;
-                    case 9: months[8] += users[i].Count; break;
-                    case 10: months[9] += users[i].Count; break;
-                    case 11: months[10] += users[i].Count; break;
-                    case 12: months[11] += users[i].Count; break;
+                    case 0: months[0] += users[i].Count; break;
+                    case 1: months[11] += users[i].Count; break;
+                    case 2: months[10] += users[i].Count; break;
+                    case 3: months[9] += users[i].Count; break;
+                    case 4: months[8] += users[i].Count; break;
+                    case 5: months[7] += users[i].Count; break;
+                    case 6: months[6] += users[i].Count; break;
+                    case 7: months[5] += users[i].Count; break;
+                    case 8: months[4] += users[i].Count; break;
+                    case 9: months[3] += users[i].Count; break;
+                    case 10: months[2] += users[i].Count; break;
+                    case 11: months[1] += users[i].Count; break;
                 }
             }
-
             return months;
         }
 
@@ -123,45 +109,44 @@ namespace iva_grp7_backend.Controllers;
         /// Returns an array with amount of active users in the last 12 months.
         /// </summary>
         /// <returns>An array with the amount of users that posted in the last 12 months.</returns>
-        /// <response code="200">Returns the array of amount of active users with 6 month deadline.</response>
+        /// <response code="200">Returns the array of amount of active users with 12 month deadline.</response>
         /// <response code="500">If an exception occurs while retrieving the dates of the users.</response>
         [HttpGet("ActiveUsers")]
         public async Task<int[]> getActiveUsers()
         {
             //Array für Monate
-            int[] months = {0,0,0,0,0,0,0,0,0,0,0,0};
+            int[] months = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            var startMonth = DateTime.Today.Date.AddDays(-(DateTime.Today.Date.Day - 1)); //Rounding down to month start
 
             var posts = await _context.Posts
-                .Where(x => x.Date >= DateTime.Today.AddMonths(-12) && x.Date <= DateTime.Today.AddMonths(-1))
-                .GroupBy(x => x.UserId)
-                .Select(g => new {Id = g.Key})
-                .ToListAsync();
+                    .Where(x => x.Date.Date >= startMonth.AddMonths(-12) && x.Date.Date < startMonth)
+                    .GroupBy(x => x.UserId)
+                    .Select(x => new { UserId = x.Key, PostDates = x.Select(x => new { Year = x.Date.Year, Month = x.Date.Month }).Take(1) })
+                    .ToListAsync();
 
-            var users = await _userManager.Users
-                .Select(g => new {g.CreatedAt.Month})
-                .ToListAsync();
-            
-            for(int i = 0; i < posts.Count; i++)
-            { 
-                switch (users[i].Month)
+            var result = posts
+                            .SelectMany(post => post.PostDates)
+                            .Select(postDate => ((startMonth.Year - postDate.Year) * 12 + startMonth.Month - postDate.Month + 12) % 12);
+
+
+            foreach (var value in result)
+            {   
+                switch (value)
                 {
-                    case 1: months[0] += 1; break;
-                    case 2: months[1] += 1; break;
-                    case 3: months[2] += 1; break;
-                    case 4: months[3] += 1; break;
-                    case 5: months[4] += 1; break;
-                    case 6: months[5] += 1; break;
-                    case 7: months[6] += 1; break;
-                    case 8: months[7] += 1; break;
-                    case 9: months[8] += 1; break;
-                    case 10: months[9] += 1; break;
-                    case 11: months[10] += 1; break;
-                    case 12: months[11] += 1; break;
+                    case 0: months[0] += 1; break;
+                    case 1: months[11] += 1; break;
+                    case 2: months[10] += 1; break;
+                    case 3: months[9] += 1; break;
+                    case 4: months[8] += 1; break;
+                    case 5: months[7] += 1; break;
+                    case 6: months[6] += 1; break;
+                    case 7: months[5] += 1; break;
+                    case 8: months[4] += 1; break;
+                    case 9: months[3] += 1; break;
+                    case 10: months[2] += 1; break;
+                    case 11: months[1] += 1; break;
                 }
-                
-            }
-        
-
+            } 
             return months;
         }
 
@@ -259,4 +244,82 @@ namespace iva_grp7_backend.Controllers;
 
             return gender;
         }
-    }
+
+        /// <summary>
+        /// Returns the amount of new posts today.
+        /// </summary>
+        /// <returns>The amount of posts that got created today.</returns>
+        /// <response code="200">Returns the amount of new posts from today.</response>
+        /// <response code="500">If an exception occurs while retrieving the amount of the posts.</response>
+        [HttpGet("PostsToday")]
+        public async Task<int> getPostsToday()
+        {
+            int amount = 0;
+
+            var posts = await _context.Posts
+                                    .Where(x => x.Date.Date == DateTime.Today.Date)
+                                    .GroupBy(x => x.Date.Date)
+                                    .Select(x => new {Count = x.Count()})
+                                    .ToListAsync();
+            
+            foreach(var post in posts)
+            {
+                amount = post.Count;
+            }
+
+            return amount;
+        }
+
+        /// <summary>
+        /// Returns the amount of new users today.
+        /// </summary>
+        /// <returns>The amount of users that got created today.</returns>
+        /// <response code="200">Returns the amount of new users from today.</response>
+        /// <response code="500">If an exception occurs while retrieving the amount of the users.</response>
+        [HttpGet("UsersGrowthToday")]
+        public async Task<int> getUsersGrowthToday()
+        {
+            int amount = 0;
+
+            var users = await _userManager.Users
+                                    .Where(u => u.CreatedAt.Date == DateTime.Today.Date)
+                                    .GroupBy(u => u.CreatedAt.Date)
+                                    .Select(u => new {Count = u.Count()})
+                                    .ToListAsync();
+
+            foreach(var user in users)
+            {
+                amount = user.Count;
+            }
+
+            return amount;
+        }
+
+        /// <summary>
+        /// Returns the amount of active users today.
+        /// </summary>
+        /// <returns>The amount of users that created at least one post today.</returns>
+        /// <response code="200">Returns the amount of users that posted something from today.</response>
+        /// <response code="500">If an exception occurs while retrieving the amount of the posts.</response>
+        [HttpGet("ActiveUsersToday")]
+        public async Task<int> getActiveUsersToday()
+        {
+            int amount = 0;
+
+            var posts = await _context.Posts
+                                        .Where(x => x.Date.Date == DateTime.Today.Date)
+                                        .GroupBy(x => x.UserId)
+                                        .Select(x => new { UserId = x.Key, PostDates = x.Select(x => new { Year = x.Date.Year, Month = x.Date.Month }).Take(1) })
+                                        .ToListAsync();
+
+            foreach(var post in posts)
+            {
+                amount++;
+            }
+
+            return amount;
+        }
+
+
+    
+}

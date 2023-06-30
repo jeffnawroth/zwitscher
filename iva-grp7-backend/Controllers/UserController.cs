@@ -709,7 +709,7 @@ namespace iva_grp7_backend.Controllers;
         public async Task<ActionResult<IEnumerable<UserLight>>> GetFollowerdUsersLight()
         {
             //A light-user should only contain: id, avatar, name, username
-            var userEmail = "admin@zwitscher.de";//User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userEmail = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var currentUser = await _userManager.FindByEmailAsync(userEmail);
             var followingUsers = new List<UserLight>();
 
