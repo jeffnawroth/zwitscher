@@ -1,22 +1,11 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+﻿<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="App3.MainPage">
-
-    <StackLayout>
-        <StackLayout Padding="10" BackgroundColor="#F2F2F2">
-            <Label x:Name="ProfileNameLabel" FontSize="20" FontAttributes="Bold" TextColor="Black" />
-            <Label x:Name="UsernameLabel" FontSize="16" TextColor="Gray" />
-            <Label x:Name="FollowersLabel" FontSize="16" TextColor="Gray" />
-            <Label x:Name="FollowingLabel" FontSize="16" TextColor="Gray" />
-            <Image x:Name="AvatarImage" WidthRequest="75" HeightRequest="75" Aspect="AspectFill" />
-        </StackLayout>
-
+    <ContentPage.Content>
         <ScrollView>
-            <StackLayout x:Name="PostListLayout" Padding="10" Spacing="10">
-                <!-- PostViews will be dynamically added here -->
+            <StackLayout x:Name="mainLayout"
+                         Padding="10">
             </StackLayout>
         </ScrollView>
-    </StackLayout>
-
+    </ContentPage.Content>
 </ContentPage>

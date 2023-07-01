@@ -12,6 +12,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\UserDummy.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Icons\edit_profile.png" />
   </ItemGroup>
 
@@ -99,5 +103,9 @@
 
   <ItemGroup>
     <Folder Include="Resources\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Services\UserDummy.cs" />
   </ItemGroup>
 </Project>
