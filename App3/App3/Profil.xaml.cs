@@ -21,6 +21,7 @@ namespace App3
         public Profil(User user) : this()
         {
             currentUser = user;
+            BindingContext = currentUser;
         }
 
         protected override void OnAppearing()

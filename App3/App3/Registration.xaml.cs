@@ -33,17 +33,27 @@ namespace App3
                 return;
             }
 
-            if (Services.DummyBackend.IsUserRegistered(email))
+            if (Database.IsUserRegistered(email))
             {
                 await DisplayAlert("Fehler", "Die E-Mail-Adresse ist bereits registriert.", "OK");
                 return;
             }
 
-            bool isRegistrationSuccessful = Services.DummyBackend.SaveRegistrationData(username, id, name, email, password);
+            User user = new User
+            {
+                Id = id,
+                Username = username,
+                Name = name,
+                Email = email,
+                Password = password,
+                // Setzen Sie weitere Eigenschaften des Benutzers...
+            };
+
+            bool isRegistrationSuccessful = Database.SaveRegistrationData(user);
             if (isRegistrationSuccessful)
             {
                 Settings.IsLoggedIn = true;
-                Application.Current.MainPage = new AppShell();
+                Application.Current.MainPage = new AppShell(user);
             }
             else
             {

@@ -26,7 +26,8 @@ namespace App3
             if (isLoginValid)
             {
                 Settings.IsLoggedIn = true;
-                Application.Current.MainPage = new AppShell();
+                User currentUser = new User();
+                Application.Current.MainPage = new AppShell(currentUser);
             }
             else
             {
@@ -36,7 +37,8 @@ namespace App3
 
         private async void OnSignUpButtonClicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new Registration());
+            await Navigation.PushAsync(new NavigationPage(new Registration()));
         }
+
     }
 }

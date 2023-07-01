@@ -1,19 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Shell xmlns="http://xamarin.com/schemas/2014/forms"
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-       xmlns:local="clr-namespace:App3"
+       xmlns:local="clr-namespace:App3" xmlns:local1="clr-namespace:App3.Services"
        x:Class="App3.AppShell"
        FlyoutBehavior="Flyout">
-    <FlyoutItem Title="Startseite" Icon="home.png">
+
+
+    <FlyoutItem Title="Startseite"
+                Icon="Logo.png">
         <ShellContent Route="main" ContentTemplate="{DataTemplate local:MainPage}" />
     </FlyoutItem>
     <FlyoutItem Title="Profil" Icon="placeholder_avatar.png">
-        <ShellContent Route="profile" ContentTemplate="{DataTemplate local:Profil}" />
+        <ShellContent Route="profile">
+            <local:Profil />
+        </ShellContent>
     </FlyoutItem>
     <FlyoutItem Title="Logout" Icon="logout.png">
         <ShellContent Route="logout" ContentTemplate="{DataTemplate local:Logout}" />
     </FlyoutItem>
-    <FlyoutItem Title="Posting" Icon="posting.png">
+    <FlyoutItem Title="Posting" Icon="@Icon/posting.png">
         <ShellContent Route="posting" ContentTemplate="{DataTemplate local:PostingPage}" />
     </FlyoutItem>
     <FlyoutItem Title="Einstellungen" Icon="settings.png">
@@ -22,16 +27,13 @@
 
     <Shell.Resources>
         <ResourceDictionary>
-            <DataTemplate x:Key="MainPageTemplate">
+            <DataTemplate x:Key="MainPage">
                 <local:MainPage />
             </DataTemplate>
-            <DataTemplate x:Key="ProfilTemplate">
-                <local:Profil />
-            </DataTemplate>
-            <DataTemplate x:Key="LogoutTemplate">
+            <DataTemplate x:Key="Logout">
                 <local:Logout />
             </DataTemplate>
-            <DataTemplate x:Key="PostingPageTemplate">
+            <DataTemplate x:Key="PostingPage">
                 <local:PostingPage />
             </DataTemplate>
             <DataTemplate x:Key="SettingsTemplate">

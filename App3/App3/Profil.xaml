@@ -10,41 +10,38 @@
             Order="Primary"
             />
     </ContentPage.ToolbarItems>
-    
+
     <ContentPage.Content>
         <StackLayout>
-            <Label x:Name="ProfileNameLabel" FontSize="24" FontAttributes="Bold" TextColor="LightGray"/>
-            <Label x:Name="UsernameLabel" FontSize="16" TextColor="LightGray" />
-            <Label x:Name="FollowersLabel" FontSize="16" TextColor="LightGray"/>
-            <Label x:Name="FollowingLabel" FontSize="16" TextColor="LightGray" />
-            <Image x:Name="AvatarImage" HeightRequest="100" WidthRequest="100" />
+            <Label x:Name="ProfileNameLabel" FontSize="24" FontAttributes="Bold" TextColor="LightGray" Text="{Binding Name}" />
+            <Label x:Name="UsernameLabel" FontSize="16" TextColor="LightGray" Text="{Binding Username}" />
+            <Label x:Name="FollowersLabel" FontSize="16" TextColor="LightGray" Text="{Binding Followers.Count, StringFormat='{0} Abonnenten'}" />
+            <Label x:Name="FollowingLabel" FontSize="16" TextColor="LightGray" Text="{Binding Following.Count, StringFormat='{0} Folge ich'}" />
+            <Image x:Name="AvatarImage" HeightRequest="100" WidthRequest="100" Source="{Binding Avatar.Path, TargetNullValue='placeholder_avatar.png'}" />
 
             <!-- StackLayout für Profilinformationen -->
             <StackLayout Orientation="Horizontal">
                 <Label Text="Beitrittsdatum:" TextColor="LightGray"/>
-                <Label x:Name="JoinDateLabel" TextColor="LightGray"/>
+                <Label x:Name="JoinDateLabel" TextColor="LightGray" Text="{Binding JoinDate}" />
             </StackLayout>
 
             <StackLayout Orientation="Horizontal">
                 <Label Text="Geburtsdatum:" TextColor="LightGray" />
-                <Label x:Name="BirthDateLabel" TextColor="LightGray"/>
+                <Label x:Name="BirthDateLabel" TextColor="LightGray" Text="{Binding BirthDate}" />
             </StackLayout>
 
             <StackLayout Orientation="Horizontal">
                 <Label Text="Geschlecht:" TextColor="LightGray" />
-                <Label x:Name="GenderLabel" TextColor="LightGray"/>
+                <Label x:Name="GenderLabel" TextColor="LightGray" Text="{Binding Gender}" />
             </StackLayout>
 
             <!-- Profilbeschreibung -->
-            <Label x:Name="ProfileDescriptionLabel" TextColor="LightGray" FontSize="16" />
+            <Label x:Name="ProfileDescriptionLabel" TextColor="LightGray" FontSize="16" Text="{Binding ProfileDescription}" />
 
             <!-- Weitere Inhalte der Seite -->
             <StackLayout x:Name="PostListLayout">
                 <!-- Post views will be added dynamically here -->
             </StackLayout>
         </StackLayout>
-        
-        
-
     </ContentPage.Content>
 </ContentPage>
