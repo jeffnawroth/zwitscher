@@ -84,7 +84,7 @@
     <AndroidResource Include="Resources\mipmap-xxxhdpi\launcher_foreground.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\drawable\" />
+    <AndroidResource Include="Resources\drawable\dislike_pushed.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\App3\App3.csproj">
@@ -97,6 +97,39 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\mipmap-hdpi\launcher_foreground.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\edit_profile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\home.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\logout.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\placeholder_avatar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\posting.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\drawable\thumb_down.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\drawable\thumb_up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\comment.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\like_pushed.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>
