@@ -414,11 +414,141 @@ namespace iva_grp7_backend.Controllers;
 }
 
 
-
-
-
-/*
         /// <summary>
+        /// Updates a users email.
+        /// </summary>
+        /// <param name="new_email">The new email of the user.</param>
+        /// <param name="old_users_email">The old email of a users that a admin is changing.</param>
+        /// <returns>An Ok if everything went correctly, 404 if the user is not found.</returns>
+        /// <response code="200">Returns the message that the Email got updated correctly.</response>
+        /// <response code="404">If the user is not found.</response>
+        /// <response code="500">If an exception occurs while creating the user.</response>
+        [HttpPut("EmailChange")]
+        public async Task<IActionResult> UpdateEmail(string new_email, string? old_users_email)
+        {
+        var userEmail = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUser = await _userManager.FindByEmailAsync(userEmail);
+
+            if (currentUser == null)
+            {
+                return NotFound("User not found");
+            }
+
+            if (currentUser.Role == Role.User) //User himself
+            {
+                try
+                {
+                    await _userManager.SetEmailAsync(currentUser, new_email);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_userManager.Users.Any(u => u.Id == currentUser.Id))
+                    {
+                        return NotFound();
+                    }
+                    else { throw; }
+                }
+
+                return Ok("Email wurde aktualisiert");
+            }
+            else //Admin
+            {
+                var change_user = await _userManager.FindByEmailAsync(old_users_email);
+
+                if (change_user == null)
+                {
+                    return NotFound("User not found");
+                }
+
+                try
+                {
+                    await _userManager.SetEmailAsync(change_user, new_email);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_userManager.Users.Any(u => u.Id == change_user.Id))
+                    {
+                        return NotFound();
+                    }
+                    else { throw; }
+                }
+                return Ok("Email vomn Account wurde aktualisiert");
+            }
+        }
+
+        /// <summary>
+        /// Updates a users password.
+        /// </summary>
+        /// <param name="new_password">The new password of the user.</param>
+        /// <param name="users_email">The email of the user who the password should get changed.</param>
+        /// <returns>An Ok if everything went correctly, 404 if the user is not found.</returns>
+        /// <response code="200">Returns the message that the passowrd got updated correctly.</response>
+        /// <response code="400">There was an error updating the password.</response>
+        /// <response code="404">If the user is not found.</response>
+        /// <response code="500">If an exception occurs while creating the user.</response>
+        [HttpPut("PasswordChange")]
+        public async Task<IActionResult> UpdatePassword(string new_password, string? users_email)
+        {
+            var userEmail = "admin@zwitscher.de";// User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUser = await _userManager.FindByEmailAsync(userEmail);
+
+            if (currentUser == null)
+            {
+                return NotFound("User not found");
+            }
+            if (currentUser.Role == Role.User) //User himself
+            {
+                try
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(currentUser);
+                    var change = await _userManager.ResetPasswordAsync(currentUser, token, new_password);
+                    if (!change.Succeeded)
+                    {
+                        return BadRequest("Password konnte nicht geändert werden");
+                    }
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_userManager.Users.Any(u => u.Id == currentUser.Id))
+                    {
+                        return NotFound();
+                    }
+                    else { throw; }
+                }
+                return Ok("Password wurde aktualisiert");
+            }
+            else //Admin
+            {
+                var change_user = await _userManager.FindByEmailAsync(users_email);
+
+                if (change_user == null) 
+                {
+                    return NotFound("User not found");
+                }
+
+                try
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(change_user);
+                    var change = await _userManager.ResetPasswordAsync(change_user, token, new_password);
+                    if (!change.Succeeded)
+                    {
+                        return BadRequest("Password konnte nicht geändert werden");
+                    }
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_userManager.Users.Any(u => u.Id == change_user.Id))
+                    {
+                        return NotFound();
+                    }
+                    else { throw; }
+                }
+                return Ok("Password vom Account wurde aktualisiert");
+            }
+        }
+    /*
+     * 
+     /// <summary>
         /// Updates an existing user.
         /// </summary>
         /// <param name="id">The ID of the user to update.</param>
@@ -433,120 +563,121 @@ namespace iva_grp7_backend.Controllers;
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-
-        // Updates the ApplicationUser.
-        public async Task<IActionResult> Update(string id, [FromForm] UserEdit user)
-{
+    
+    // Updates the ApplicationUser.
+    public async Task<IActionResult> Update(string id, [FromForm] UserEdit user)
+    
+    {
     // Check if the given id matches the user's id.
-    if (id != user.Id)
-    {
-        // Return bad request if they don't match.
-        return BadRequest();
-    }
-
-    // Check if the user object is valid.
-    if (!ModelState.IsValid)
-    {
-        // Return bad request with model state errors if it's not valid.
-        return BadRequest(ModelState);
-    }
-
-    // Find the existing user based on the id.
-    var existingUser = await _userManager.FindByIdAsync(id);
-
-    // Return not found if the user doesn't exist.
-    if (existingUser == null)
-    {
-        return NotFound();
-    }
-    
-    // Process the new avatar file.
-    byte[] avatarData = await ProcessFormFile(user.Avatar);
-    if (avatarData == null)
-    {
-        return BadRequest("Ungültige Datei. Stellen Sie sicher, dass die Datei ein Bild ist und nicht größer als 5MB ist.");
-    }
-    
-    // Check if avatar data is the same as the existing one
-    if (!existingUser.Avatar.SequenceEqual(avatarData))
-    {
-        existingUser.Avatar = avatarData;
-    }
-
-    // Update the user properties with the properties from the given user object.
-    existingUser.UserName = user.Username;
-    existingUser.Email = user.Email;
-    existingUser.Bio = user.Bio;
-    existingUser.Gender = user.Gender;
-    existingUser.Locked = user.Locked;
-    existingUser.Name = user.Name;
-    existingUser.BirthDate = user.BirthDate;
-    existingUser.Role = user.Role;
-
-    // If user has interests
-    if (user.Interests != null)
-    {
-        // Delete existing interests of the user
-        var existingInterests = _context.UserInterests.Where(ui => ui.UserId == existingUser.Id);
-        _context.UserInterests.RemoveRange(existingInterests);
-
-        // Initialize a list to store the UserInterests
-        List<UserInterest> userInterests = new List<UserInterest>();
-
-        foreach (string interestName in user.Interests)
-        {
-            // Create a new UserInterest that links the user and the interest
-            UserInterest userInterest = new UserInterest
-            {
-                Interest = interestName,
-                User = existingUser
-            };
-
-            // Add the UserInterest to the list
-            userInterests.Add(userInterest);
-        }
-
-        // Assign the list of UserInterests to the user's Interests
-        existingUser.Interests = userInterests;
-    }
-
-    // Handle password update
-    if (user.Password != null)
-    {
-        var token = await _userManager.GeneratePasswordResetTokenAsync(existingUser);
-        var change = await _userManager.ResetPasswordAsync(existingUser, token, user.Password);
-        if (!change.Succeeded)
-        {
-            return BadRequest("Password konnte nicht geändert werden");
-        }
-    }
-
-    // Update the existing user.
-    var result = await _userManager.UpdateAsync(existingUser);
-
-    // If the update is successful, return an OK response with the updated user object.
-    if (result.Succeeded)
-    {
-        await _context.SaveChangesAsync();
-        return Ok("User wurde erfolgreich aktualisiert");
-    }
-
-    // If the update fails, return a bad request with the errors from the result object.
-    return BadRequest(result.Errors);
+if (id != user.Id)
+{
+    // Return bad request if they don't match.
+    return BadRequest();
 }
-*/
+
+// Check if the user object is valid.
+if (!ModelState.IsValid)
+{
+    // Return bad request with model state errors if it's not valid.
+    return BadRequest(ModelState);
+}
+
+// Find the existing user based on the id.
+var existingUser = await _userManager.FindByIdAsync(id);
+
+// Return not found if the user doesn't exist.
+if (existingUser == null)
+{
+    return NotFound();
+}
+
+// Process the new avatar file.
+byte[] avatarData = await ProcessFormFile(user.Avatar);
+if (avatarData == null)
+{
+    return BadRequest("Ungültige Datei. Stellen Sie sicher, dass die Datei ein Bild ist und nicht größer als 5MB ist.");
+}
+
+// Check if avatar data is the same as the existing one
+if (!existingUser.Avatar.SequenceEqual(avatarData))
+{
+    existingUser.Avatar = avatarData;
+}
+
+// Update the user properties with the properties from the given user object.
+existingUser.UserName = user.Username;
+existingUser.Email = user.Email;
+existingUser.Bio = user.Bio;
+existingUser.Gender = user.Gender;
+existingUser.Locked = user.Locked;
+existingUser.Name = user.Name;
+existingUser.BirthDate = user.BirthDate;
+existingUser.Role = user.Role;
+
+// If user has interests
+if (user.Interests != null)
+{
+    // Delete existing interests of the user
+    var existingInterests = _context.UserInterests.Where(ui => ui.UserId == existingUser.Id);
+    _context.UserInterests.RemoveRange(existingInterests);
+
+    // Initialize a list to store the UserInterests
+    List<UserInterest> userInterests = new List<UserInterest>();
+
+    foreach (string interestName in user.Interests)
+    {
+        // Create a new UserInterest that links the user and the interest
+        UserInterest userInterest = new UserInterest
+        {
+            Interest = interestName,
+            User = existingUser
+        };
+
+        // Add the UserInterest to the list
+        userInterests.Add(userInterest);
+    }
+
+    // Assign the list of UserInterests to the user's Interests
+    existingUser.Interests = userInterests;
+}
+
+// Handle password update
+if (user.Password != null)
+{
+    var token = await _userManager.GeneratePasswordResetTokenAsync(existingUser);
+    var change = await _userManager.ResetPasswordAsync(existingUser, token, user.Password);
+    if (!change.Succeeded)
+    {
+        return BadRequest("Password konnte nicht geändert werden");
+    }
+}
+
+// Update the existing user.
+var result = await _userManager.UpdateAsync(existingUser);
+
+// If the update is successful, return an OK response with the updated user object.
+if (result.Succeeded)
+{
+    await _context.SaveChangesAsync();
+    return Ok("User wurde erfolgreich aktualisiert");
+}
+
+// If the update fails, return a bad request with the errors from the result object.
+return BadRequest(result.Errors);
+    */
 
 
 
-        /// <summary>
-        /// Deletes a user with the specified ID.
-        /// </summary>
-        /// <param name="id">The ID of the user to delete.</param>
-        /// <returns>A 200 OK response if the user was deleted successfully, or a 404 Not Found error if no such user exists.</returns>
-        /// <response code="204">If the user is successfully deleted.</response>
-        /// <response code="404">If the user with the specified ID is not found.</response>
-        /// <response code="500">If an exception occurs while deleting the user.</response>
-        [HttpDelete("{id}")]
+
+    /// <summary>
+    /// Deletes a user with the specified ID.
+    /// </summary>
+    /// <param name="id">The ID of the user to delete.</param>
+    /// <returns>A 200 OK response if the user was deleted successfully, or a 404 Not Found error if no such user exists.</returns>
+    /// <response code="204">If the user is successfully deleted.</response>
+    /// <response code="404">If the user with the specified ID is not found.</response>
+    /// <response code="500">If an exception occurs while deleting the user.</response>
+    [HttpDelete("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
