@@ -418,133 +418,72 @@ namespace iva_grp7_backend.Controllers;
         /// Updates a users email.
         /// </summary>
         /// <param name="new_email">The new email of the user.</param>
-        /// <param name="old_users_email">The old email of a users that a admin is changing.</param>
         /// <returns>An Ok if everything went correctly, 404 if the user is not found.</returns>
         /// <response code="200">Returns the message that the Email got updated correctly.</response>
         /// <response code="404">If the user is not found.</response>
         /// <response code="500">If an exception occurs while creating the user.</response>
         [HttpPut("EmailChange")]
-        public async Task<IActionResult> UpdateEmail(string new_email, string? old_users_email)
+        public async Task<IActionResult> UpdateEmail(string new_email)
         {
-        var userEmail = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userEmail = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var currentUser = await _userManager.FindByEmailAsync(userEmail);
 
             if (currentUser == null)
             {
                 return NotFound("User not found");
             }
-
-            if (currentUser.Role == Role.User) //User himself
+            try
             {
-                try
-                {
-                    await _userManager.SetEmailAsync(currentUser, new_email);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!_userManager.Users.Any(u => u.Id == currentUser.Id))
-                    {
-                        return NotFound();
-                    }
-                    else { throw; }
-                }
-
-                return Ok("Email wurde aktualisiert");
+                await _userManager.SetEmailAsync(currentUser, new_email);
             }
-            else //Admin
+            catch (DbUpdateConcurrencyException)
             {
-                var change_user = await _userManager.FindByEmailAsync(old_users_email);
-
-                if (change_user == null)
+                if (!_userManager.Users.Any(u => u.Id == currentUser.Id))
                 {
-                    return NotFound("User not found");
+                    return NotFound();
                 }
-
-                try
-                {
-                    await _userManager.SetEmailAsync(change_user, new_email);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!_userManager.Users.Any(u => u.Id == change_user.Id))
-                    {
-                        return NotFound();
-                    }
-                    else { throw; }
-                }
-                return Ok("Email vomn Account wurde aktualisiert");
+                else { throw; }
             }
+             return Ok("Email wurde aktualisiert");
         }
 
         /// <summary>
         /// Updates a users password.
         /// </summary>
         /// <param name="new_password">The new password of the user.</param>
-        /// <param name="users_email">The email of the user who the password should get changed.</param>
         /// <returns>An Ok if everything went correctly, 404 if the user is not found.</returns>
         /// <response code="200">Returns the message that the passowrd got updated correctly.</response>
         /// <response code="400">There was an error updating the password.</response>
         /// <response code="404">If the user is not found.</response>
         /// <response code="500">If an exception occurs while creating the user.</response>
         [HttpPut("PasswordChange")]
-        public async Task<IActionResult> UpdatePassword(string new_password, string? users_email)
+        public async Task<IActionResult> UpdatePassword(string new_password)
         {
-            var userEmail = "admin@zwitscher.de";// User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userEmail = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var currentUser = await _userManager.FindByEmailAsync(userEmail);
 
             if (currentUser == null)
             {
                 return NotFound("User not found");
             }
-            if (currentUser.Role == Role.User) //User himself
+            try
             {
-                try
+                var token = await _userManager.GeneratePasswordResetTokenAsync(currentUser);
+                var change = await _userManager.ResetPasswordAsync(currentUser, token, new_password);
+                if (!change.Succeeded)
                 {
-                    var token = await _userManager.GeneratePasswordResetTokenAsync(currentUser);
-                    var change = await _userManager.ResetPasswordAsync(currentUser, token, new_password);
-                    if (!change.Succeeded)
-                    {
-                        return BadRequest("Password konnte nicht geändert werden");
-                    }
+                    return BadRequest("Password konnte nicht geändert werden");
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!_userManager.Users.Any(u => u.Id == currentUser.Id))
-                    {
-                        return NotFound();
-                    }
-                    else { throw; }
-                }
-                return Ok("Password wurde aktualisiert");
             }
-            else //Admin
+            catch (DbUpdateConcurrencyException)
             {
-                var change_user = await _userManager.FindByEmailAsync(users_email);
-
-                if (change_user == null) 
+                if (!_userManager.Users.Any(u => u.Id == currentUser.Id))
                 {
-                    return NotFound("User not found");
+                    return NotFound();
                 }
-
-                try
-                {
-                    var token = await _userManager.GeneratePasswordResetTokenAsync(change_user);
-                    var change = await _userManager.ResetPasswordAsync(change_user, token, new_password);
-                    if (!change.Succeeded)
-                    {
-                        return BadRequest("Password konnte nicht geändert werden");
-                    }
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!_userManager.Users.Any(u => u.Id == change_user.Id))
-                    {
-                        return NotFound();
-                    }
-                    else { throw; }
-                }
-                return Ok("Password vom Account wurde aktualisiert");
+                else { throw; }
             }
+            return Ok("Password wurde aktualisiert");
         }
     /*
      * 
