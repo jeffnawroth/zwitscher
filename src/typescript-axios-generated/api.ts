@@ -2436,6 +2436,45 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
     return {
         /**
          * 
+         * @summary Updates a users email.
+         * @param {string} [newEmail] The new email of the user.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiUserEmailChangePut: async (newEmail?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/User/EmailChange`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (newEmail !== undefined) {
+                localVarQueryParameter['new_email'] = newEmail;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Gets a list of all followed users with specified attributes.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2694,6 +2733,45 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @summary Updates a users password.
+         * @param {string} [newPassword] The new password of the user.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiUserPasswordChangePut: async (newPassword?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/User/PasswordChange`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (newPassword !== undefined) {
+                localVarQueryParameter['new_password'] = newPassword;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Creates a new user.
          * @param {UserAdd} [userAdd] The user to create.
          * @param {*} [options] Override http request option.
@@ -2740,6 +2818,17 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
 export const UserApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = UserApiAxiosParamCreator(configuration)
     return {
+        /**
+         * 
+         * @summary Updates a users email.
+         * @param {string} [newEmail] The new email of the user.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiUserEmailChangePut(newEmail?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserEmailChangePut(newEmail, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
         /**
          * 
          * @summary Gets a list of all followed users with specified attributes.
@@ -2817,6 +2906,17 @@ export const UserApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Updates a users password.
+         * @param {string} [newPassword] The new password of the user.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiUserPasswordChangePut(newPassword?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserPasswordChangePut(newPassword, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Creates a new user.
          * @param {UserAdd} [userAdd] The user to create.
          * @param {*} [options] Override http request option.
@@ -2836,6 +2936,16 @@ export const UserApiFp = function(configuration?: Configuration) {
 export const UserApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
     const localVarFp = UserApiFp(configuration)
     return {
+        /**
+         * 
+         * @summary Updates a users email.
+         * @param {string} [newEmail] The new email of the user.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiUserEmailChangePut(newEmail?: string, options?: any): AxiosPromise<void> {
+            return localVarFp.apiUserEmailChangePut(newEmail, options).then((request) => request(axios, basePath));
+        },
         /**
          * 
          * @summary Gets a list of all followed users with specified attributes.
@@ -2906,6 +3016,16 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
+         * @summary Updates a users password.
+         * @param {string} [newPassword] The new password of the user.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiUserPasswordChangePut(newPassword?: string, options?: any): AxiosPromise<void> {
+            return localVarFp.apiUserPasswordChangePut(newPassword, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Creates a new user.
          * @param {UserAdd} [userAdd] The user to create.
          * @param {*} [options] Override http request option.
@@ -2924,6 +3044,18 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
  * @extends {BaseAPI}
  */
 export class UserApi extends BaseAPI {
+    /**
+     * 
+     * @summary Updates a users email.
+     * @param {string} [newEmail] The new email of the user.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public apiUserEmailChangePut(newEmail?: string, options?: AxiosRequestConfig) {
+        return UserApiFp(this.configuration).apiUserEmailChangePut(newEmail, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary Gets a list of all followed users with specified attributes.
@@ -3004,6 +3136,18 @@ export class UserApi extends BaseAPI {
      */
     public apiUserIdUnfollowPost(id: string, options?: AxiosRequestConfig) {
         return UserApiFp(this.configuration).apiUserIdUnfollowPost(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Updates a users password.
+     * @param {string} [newPassword] The new password of the user.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public apiUserPasswordChangePut(newPassword?: string, options?: AxiosRequestConfig) {
+        return UserApiFp(this.configuration).apiUserPasswordChangePut(newPassword, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
