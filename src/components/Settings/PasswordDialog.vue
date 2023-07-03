@@ -56,9 +56,11 @@ import BasePasswordInput from "../BaseComponents/BasePasswordInput.vue";
 import { object, ref, setLocale, string } from "yup";
 import { Form } from "vee-validate";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
+import { useUsersStore } from "@/store/users";
 setLocale(yupLocaleDe);
 
 const emit = defineEmits(["update:modelValue"]);
+const store = useUsersStore();
 
 defineProps({
   modelValue: {
@@ -85,7 +87,9 @@ const validationSchema = object({
     .oneOf([ref("newPassword")], "Passwörter stimmen nicht überein"),
 });
 
-function changePassword(values: any) {
+async function changePassword(values: any) {
+  const { newPassword } = values;
+  await store.changePassword(newPassword);
   emit("update:modelValue", false);
 }
 </script>

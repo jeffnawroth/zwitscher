@@ -59,9 +59,13 @@ import { object, ref, setLocale, string } from "yup";
 import { Form } from "vee-validate";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
 import BaseInputWithValidation from "../BaseComponents/BaseInputWithValidation.vue";
+import { useUsersStore } from "@/store/users";
+import { useAuthenticationStore } from "@/store/authentication";
 setLocale(yupLocaleDe);
 
 const emit = defineEmits(["update:modelValue"]);
+const store = useUsersStore();
+const authStore = useAuthenticationStore();
 
 defineProps({
   modelValue: {
@@ -74,7 +78,11 @@ const initialValues = {
   newMailConfirm: "",
 };
 const validationSchema = object({
-  currentMail: string().required().label("Aktuelle E-Mail").email(),
+  currentMail: string()
+    .required()
+    .label("Aktuelle E-Mail")
+    .email()
+    .oneOf([authStore.user?.email!]),
   newMail: string()
     .required()
     .label("Neue E-Mail")
@@ -87,7 +95,9 @@ const validationSchema = object({
     .oneOf([ref("newMail")], "E-Mails stimmen nicht überein"),
 });
 
-function changeMail(values: any) {
+async function changeMail(values: any) {
+  const { newMail } = values;
+  await store.changeEmail(newMail);
   emit("update:modelValue", false);
 }
 </script>

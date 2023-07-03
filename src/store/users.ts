@@ -1,17 +1,23 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { showNotification } from "./helpers";
-import { User, UserAdd, UserApi, UserEdit } from "@/typescript-axios-generated";
-import { UserLight } from "@/interfaces";
-
+import {
+  User,
+  UserAdd,
+  UserApi,
+  UserEdit,
+  UserLight,
+} from "@/typescript-axios-generated";
+import { toBase64 } from "@/helpers";
 
 export const useUsersStore = defineStore("users", () => {
   const users = ref<User[]>([]);
   const user = ref<User>();
-  const followedUsers = ref<UserLight[]>();
+  const followedUsers = ref<UserLight[]>([]);
 
   async function createUser(user: UserAdd) {
     try {
+      if (user.avatar) user.avatar = await toBase64(user.avatar);
       const data = await UserApi.prototype.apiUserPost(user);
       users.value.push(data.data as User);
       showNotification("success", "Der Nutzer wurde erfolgreich erstellt!");
@@ -37,8 +43,8 @@ export const useUsersStore = defineStore("users", () => {
 
   async function fetchFollowedUsers() {
     try {
-      // const data = await getFollowedUsers();
-      // followedUsers.value = data;
+      const data = await UserApi.prototype.apiUserFollowedUsersLightGet();
+      followedUsers.value = data.data;
     } catch (error) {
       showNotification(
         "error",
@@ -107,6 +113,10 @@ export const useUsersStore = defineStore("users", () => {
   async function followUser(id: string) {
     try {
       await UserApi.prototype.apiUserIdFollowPost(id);
+      if (user.value) {
+        const { id, name, username, avatar } = user.value;
+        followedUsers.value.push({ id, avatar, username, name });
+      }
     } catch (error) {
       showNotification(
         "error",
@@ -117,11 +127,39 @@ export const useUsersStore = defineStore("users", () => {
   async function unfollowUser(id: string) {
     try {
       await UserApi.prototype.apiUserIdUnfollowPost(id);
+      const index = followedUsers.value.findIndex((user) => user.id == id);
+      if (index > -1) followedUsers.value?.splice(index, 1);
     } catch (error) {
       showNotification(
         "error",
         "Beim Entfolgen des Nutzers ist ein Fehler aufgetreten"
       );
+    }
+  }
+
+  async function changePassword(password: string) {
+    try {
+      await UserApi.prototype.apiUserPasswordChangePut(password);
+      showNotification("success", "Das Passwort wurde erfolgreich geändert!");
+    } catch (error) {
+      showNotification(
+        "error",
+        "Beim ändern des Passworts ist ein Fehler aufgetreten!"
+      );
+      return Promise.reject(error);
+    }
+  }
+
+  async function changeEmail(email: string) {
+    try {
+      await UserApi.prototype.apiUserEmailChangePut(email);
+      showNotification("success", "Die E-Mail wurde erfolgreich geändert!");
+    } catch (error) {
+      showNotification(
+        "error",
+        "Beim Ändern der E-Mail ist ein Fehler aufgetreten!"
+      );
+      return Promise.reject(error);
     }
   }
 
@@ -138,5 +176,7 @@ export const useUsersStore = defineStore("users", () => {
     followedUsers,
     followUser,
     unfollowUser,
+    changePassword,
+    changeEmail,
   };
 });
