@@ -6,7 +6,7 @@ namespace App3.Services
     public class User
     {
         public int Id { get; set; }
-        public AvatarFile Avatar { get; set; }
+        public String Avatar { get; set; }
         public Role Role { get; set; }
         public string Username { get; set; }
         public string Name { get; set; }
@@ -19,7 +19,7 @@ namespace App3.Services
         public List<string> LikedPosts { get; set; }
         public List<string> DislikedPosts { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DateTime? BirthDate { get; set; }
+        public DateTime BirthDate { get; set; }
         public List<string> Interests { get; set; }
         public bool Locked { get; set; }
     }
@@ -37,14 +37,10 @@ namespace App3.Services
         Other
     }
 
-    public class AvatarFile
-    {
-        public string Path { get; set; }
-        public string Name { get; set; }
-        public long Size { get; set; }
+   
         // Weitere Eigenschaften für Dateiinformationen
 
         // Eigenschaft "file" für den Avatar
-    }
+    
 
 }

@@ -11,7 +11,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Editor x:Name="postingText" Grid.Row="0" Placeholder="Teile Neuigkeiten mit der Welt" PlaceholderColor="LightGray" TextColor="LightGray" TextChanged="OnTextChanged" />
-                    <Label x:Name="characterCoun" Grid.Row="1" HorizontalTextAlignment="End" VerticalTextAlignment="End" FontSize="12" TextColor="Gray" />
+                    <Label x:Name="characterCou" Grid.Row="1" HorizontalTextAlignment="End" VerticalTextAlignment="End" FontSize="12" TextColor="Gray" />
                 </Grid>
             </Frame>
             <Button x:Name="postButton" Grid.Row="2" Text="Posten" Clicked="OnPostButtonClicked" />

@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-
 
 namespace App3
 {
     public class Posting
     {
-        public string UserID { get; set; }
-        public string Text { get; set; }
+        public int PostId { get; set; }
+        public string Avatar { get; set; }
+        public string Name { get; set; }
+        public int UserId { get; set; }
+        public string Username { get; set; }
+        public string PostText { get; set; }
+        public List<int> Likes { get; set; }
+        public List<int> Dislikes { get; set; }
+        public List<int> CommentCount { get; set; }
         public DateTime Timestamp { get; set; }
-
-        public Posting(string userID, string text)
-        {
-            UserID = userID;
-            Text = text;
-            Timestamp = DateTime.Now;
-        }
     }
 }

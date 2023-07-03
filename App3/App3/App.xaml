@@ -10,8 +10,11 @@
             <Color x:Key="PlaceholderColor">White</Color>
             <Color x:Key="PlaceholderTextColor">White</Color>
             <Color x:Key="ButtonBackgroundColor">LightGray</Color>
-
+            <Style TargetType="NavigationPage">
+                <Setter Property="BarBackgroundColor" Value="Gray" />
+            </Style>
             <!-- Definieren Sie den Stil für Labels -->
+            
             <Style TargetType="Label">
                 <Setter Property="TextColor" Value="{StaticResource LabelTextColor}" />
             </Style>

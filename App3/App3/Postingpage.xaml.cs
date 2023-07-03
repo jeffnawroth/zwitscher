@@ -19,7 +19,7 @@ namespace App3
         private void OnTextChanged(object sender, TextChangedEventArgs e)
         {
             int characterCount = e.NewTextValue.Length;
-            characterCoun.Text = characterCount.ToString() + " Zeichen";
+            characterCou.Text = characterCount.ToString() + " Zeichen";
         }
         private async void OnPostButtonClicked(object sender, EventArgs e)
         {

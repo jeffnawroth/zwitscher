@@ -7,15 +7,13 @@ using System.Linq;
         public class DummyBackend
         {
             private static List<User> registeredUsers;
-            private static List<Post> postings;
-            private static List<Post> dummyPostings;
+  
             private static int userIdCounter;
 
             static DummyBackend()
             {
                 registeredUsers = new List<User>();
-                postings = new List<Post>();
-                dummyPostings = new List<Post>();
+              
                 userIdCounter = 0;
             }
 
@@ -53,33 +51,14 @@ using System.Linq;
                 return false;
             }
 
-            public static void SavePosting(int userId, string avatar, string content)
-            {
-                // Create a new posting object
-                var posting = new Post
-                {
-                    PostId = GeneratePostId(),
-                    UserId = userId,
-                    UserAvatar = avatar,
-                    ThumbsUpUserIds = new List<int>(),
-                    ThumbsDownUserIds = new List<int>(),
-                    Content = content,
-                    Timestamp = DateTime.Now
-                };
-
-                // Save the posting
-                dummyPostings.Add(posting);
-            }
+            
 
             public static List<User> GetRegisteredUsers()
             {
                 return registeredUsers;
             }
 
-            public static List<Post> GetPostings()
-            {
-                return postings;
-            }
+            
 
             private static int postIdCounter = 0;
 
