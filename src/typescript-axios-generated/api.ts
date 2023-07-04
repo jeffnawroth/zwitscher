@@ -442,6 +442,12 @@ export interface PostFile {
      * @type {string}
      * @memberof PostFile
      */
+    'data'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostFile
+     */
     'postId'?: string | null;
     /**
      * 
@@ -449,12 +455,6 @@ export interface PostFile {
      * @memberof PostFile
      */
     'post'?: Post;
-    /**
-     * 
-     * @type {string}
-     * @memberof PostFile
-     */
-    'files'?: string | null;
 }
 /**
  * 
