@@ -5,7 +5,7 @@ namespace iva_grp7_backend.Models
 	{
 		public string UserId { get; set; }
 		public string Text { get; set; }
-		public List<byte[]>? Files { get; set; }
+		public List<string>? Files { get; set; }
 	}
 }
 

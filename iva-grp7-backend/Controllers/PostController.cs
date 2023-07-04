@@ -39,42 +39,74 @@ namespace iva_grp7_backend.Controllers;
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         public async Task<ActionResult<PostResult>> CreatePost(PostAdd postAdd)
+    {
+        var user = await _userManager.FindByIdAsync(postAdd.UserId);
+
+        if (user == null)
         {
-            var user = await _userManager.FindByIdAsync(postAdd.UserId);
-            
-            if (user.Name == null)
-            {
-                return NotFound("User wurde nicht gefunden");
-            }
-            
-            
-            var post = new Post
-            {
-                UserId = postAdd.UserId,
-                Text = postAdd.Text,
-                Name = user.Name,
-                Username = user.UserName
-
-            };
-
-            var postResult = new PostResult()
-            {
-                Id = post.Id,
-                UserId = post.UserId,
-                UserRole = user.Role,
-                //Avatar = user.Avatar,
-                Name = user.Name,
-                Username = user.UserName,
-                Text = post.Text,
-                Date = post.Date,
-                //Files = post.Files?.Select(f => f.FilePath).ToList(), // Sie müssen die Logik zum Abrufen des Dateipfades implementieren
-            };
-
-            _context.Posts.Add(post);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetPost", new { id = post.Id }, postResult);
+            return NotFound("User wurde nicht gefunden");
         }
+
+        var post = new Post
+        {
+            UserId = postAdd.UserId,
+            Text = postAdd.Text,
+            Name = user.Name,
+            Username = user.UserName
+        };
+
+        if (postAdd.Files != null)
+        {
+            post.Files = new List<PostFile>();
+            foreach (var fileData in postAdd.Files)
+            {
+                var fileSplit = fileData.Split(',');
+                if (fileSplit.Length == 2 && fileSplit[0].StartsWith("data:") && fileSplit[0].EndsWith("base64"))
+                {
+                    byte[] fileBytes;
+                    try
+                    {
+                        fileBytes = Convert.FromBase64String(fileSplit[1]);
+                    }
+                    catch (FormatException)
+                    {
+                        return BadRequest("Invalid File format. Please provide a Base64 string.");
+                    }
+                    var postFile = new PostFile
+                    {
+                        Data = fileBytes,
+                        PostId = post.Id,
+                    };
+                    post.Files.Add(postFile);
+                }
+                else
+                {
+                    return BadRequest("Invalid File format. Please provide a data URI with base64 data.");
+                }
+            }
+        }
+
+        _context.Posts.Add(post);
+        await _context.SaveChangesAsync();
+
+        var postResult = new PostResult()
+        {
+            Id = post.Id,
+            UserId = post.UserId,
+            UserRole = user.Role,
+            Avatar = user.Avatar,
+            Name = user.Name,
+            Username = user.UserName,
+            Text = post.Text,
+            Date = post.Date,
+            Files = post.Files?.Select(f => f.Data).ToList(),
+        };
+
+        return CreatedAtAction("GetPost", new { id = post.Id }, postResult);
+    }
+
+
+
         
         /// <summary>
         /// Gets all posts.
@@ -87,41 +119,45 @@ namespace iva_grp7_backend.Controllers;
         [ProducesResponseType(500)]
         public async Task<ActionResult<IEnumerable<PostResult>>> GetAllPublicPosts()
         {
-            // Alle Posts laden
+            // Alle Posts und zugehörige PostFiles laden
             var posts = await _context.Posts
                 .Include(p => p.Votes)
                 .Include(p => p.Files)
                 .ToListAsync();
-        
+
             // Liste für die PostResults
             List<PostResult> postResults = new List<PostResult>();
-        
+
             // Für jeden Post die User-Informationen und die Votes laden und setzen
             foreach (var post in posts)
             {
                 var user = await _userManager.FindByIdAsync(post.UserId);
                 if (user != null)
                 {
-                    PostResult postResult = new PostResult()
+                    var postResult = new PostResult()
                     {
                         Id = post.Id,
                         UserId = post.UserId,
                         UserRole = user.Role,
-                        //Avatar = user.Avatar,
+                        Avatar = user.Avatar,
                         Name = user.Name,
                         Username = user.UserName,
                         Text = post.Text,
                         Date = post.Date,
-                        //Files = post.Files?.Select(f => f.FilePath).ToList(), // Sie müssen die Logik zum Abrufen des Dateipfades implementieren
                         UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
                         DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList()
                     };
+
+                    // Files als Byte-Arrays hinzufügen
+                    postResult.Files = post.Files?.Select(pf => pf.Data).ToList();
+
                     postResults.Add(postResult);
                 }
             }
-        
+
             return postResults;
         }
+
         
         /// <summary>
         /// Gets a post by its ID.
@@ -135,7 +171,7 @@ namespace iva_grp7_backend.Controllers;
         [HttpGet("{id}")]
         public async Task<ActionResult<PostResult>> GetPost(string id)
         {
-            // Find the post, include the Votes and Files in the query
+            // Find the post, include the Votes and PostFiles in the query
             var post = await _context.Posts.Include(p => p.Votes).Include(p => p.Files).SingleOrDefaultAsync(p => p.Id == id);
 
             if (post == null)
@@ -153,21 +189,25 @@ namespace iva_grp7_backend.Controllers;
                     Id = post.Id,
                     UserId = post.UserId,
                     UserRole = user.Role,
-                    //Avatar = _avatarHandler.GetAvatarFilePath(user.Avatar),
                     Name = user.Name,
+                    Avatar = user.Avatar,
                     Username = user.UserName,
                     Text = post.Text,
                     Date = post.Date,
-                    //Files = post.Files.Select(f => f.FilePath).ToList(),
                     UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
-                    DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList()
+                    DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
+                    Files = post.Files?.Select(f => f.Data).ToList()
                 };
+
+                // Files als Byte-Arrays hinzufügen
+                postResult.Files = post.Files?.Select(pf => pf.Data).ToList();
 
                 return postResult;
             }
 
             return NotFound();
         }
+
         
         /// <summary>
         /// Gets all posts from following users.
@@ -216,11 +256,13 @@ namespace iva_grp7_backend.Controllers;
                         UserId = post.UserId,
                         UserRole = postUser.Role,
                         Name = postUser.Name,
+                        Avatar = postUser.Avatar,
                         Username = postUser.UserName,
                         Text = post.Text,
                         Date = post.Date,
                         UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
-                        DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList()
+                        DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
+                        Files = post.Files?.Select(pf => pf.Data).ToList()
                     };
                     postResults.Add(postResult);
                 }
@@ -265,14 +307,14 @@ namespace iva_grp7_backend.Controllers;
                     Id = post.Id,
                     UserId = post.UserId,
                     UserRole = user.Role,
-                    //Avatar = _avatarHandler.GetAvatarFilePath(user.Avatar),
                     Name = user.Name,
+                    Avatar = user.Avatar,
                     Username = user.UserName,
                     Text = post.Text,
                     Date = post.Date,
-                    //Files = post.Files.Select(f => f.FilePath).ToList(),
                     UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
-                    DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList()
+                    DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
+                    Files = post.Files?.Select(f => f.Data).ToList()
                 };
                 postResults.Add(postResult);
             }
@@ -325,26 +367,7 @@ namespace iva_grp7_backend.Controllers;
             }
 
             post.Text = updatedPost.Text;
-
-            /*
-            // Aktualisieren der Dateien...
-            if (updatedPost.Files != null)
-            {
-                var updatedFiles = updatedPost.Files;
-
-                // Entfernen Sie alle Dateien, die nicht in der aktualisierten Liste enthalten sind...
-                post.Files.RemoveAll(file => !updatedFiles.Contains(file));
-
-                // Fügen Sie alle neuen Dateien hinzu...
-                foreach (var updatedFile in updatedFiles)
-                {
-                    if (!post.Files.Any(file => file == updatedFile))
-                    {
-                        post.Files.Add(updatedFile);
-                    }
-                }
-            }*/
-
+            
             try
             {
                 await _context.SaveChangesAsync();

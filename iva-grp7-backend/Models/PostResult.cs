@@ -5,7 +5,7 @@ public class PostResult
     public string Id { get; set; } = Guid.NewGuid().ToString();
     public string UserId { get; set; }
     public Role UserRole { get; set; }
-    public string? Avatar { get; set; }
+    public byte[]? Avatar { get; set; }
     public string Name { get; set; }
     public string Username { get; set; }
     public string? Text { get; set; }

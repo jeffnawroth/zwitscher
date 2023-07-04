@@ -71,12 +71,7 @@ namespace iva_grp7_backend
                 .WithMany()
                 .HasForeignKey(pv => pv.UserId)
                 .OnDelete(DeleteBehavior.NoAction); // To prevent cyclical delete cascade
-        
-            modelBuilder.Entity<PostFile>()
-                .HasOne(pf => pf.Post)
-                .WithMany(p => p.Files)
-                .HasForeignKey(pf => pf.PostId);
-        
+
             modelBuilder.Entity<UserInterest>()
                 .HasKey(ui => new { ui.UserId, ui.Interest }); // Defining composite key
         
@@ -84,7 +79,13 @@ namespace iva_grp7_backend
                 .HasOne(ui => ui.User)
                 .WithMany(u => u.Interests)
                 .HasForeignKey(ui => ui.UserId)
-                .OnDelete(DeleteBehavior.NoAction); 
+                .OnDelete(DeleteBehavior.NoAction);
+            
+            modelBuilder.Entity<Post>()
+                .HasMany(p => p.Files)
+                .WithOne(f => f.Post)
+                .HasForeignKey(f => f.PostId);
+
         }
 
 
