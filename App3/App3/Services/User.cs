@@ -16,8 +16,8 @@ namespace App3.Services
         public List<int> Followers { get; set; }
         public List<int> Following { get; set; }
         public string Bio { get; set; }
-        public List<string> LikedPosts { get; set; }
-        public List<string> DislikedPosts { get; set; }
+        public List<int> LikedPosts { get; set; }
+        public List<int> DislikedPosts { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime BirthDate { get; set; }
         public List<string> Interests { get; set; }

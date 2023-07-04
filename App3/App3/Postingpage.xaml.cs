@@ -25,11 +25,10 @@ namespace App3
         {
             string postContent = postingText.Text;
 
-            // Hier können Sie die Logik zum Verarbeiten des Posts implementieren, z. B. das Speichern in der Datenbank oder das Senden an einen Server
+          
 
             await DisplayAlert("Erfolgreich gepostet", "Der Beitrag wurde erfolgreich gepostet.", "OK");
 
-            // Zurück zur vorherigen Seite navigieren oder eine andere Aktion ausführen
             await Navigation.PopAsync();
         }
 

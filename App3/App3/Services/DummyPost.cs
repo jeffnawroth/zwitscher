@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace App3
 {
@@ -170,18 +171,6 @@ namespace App3
             };
             return dummyPosts;
         }
-        public static List<DummyPost> Where(List<DummyPost> posts, Func<DummyPost, bool> predicate)
-        {
-            var filteredPosts = new List<DummyPost>();
-
-            foreach (var post in posts)
-            {
-                if (predicate(post))
-                    filteredPosts.Add(post);
-            }
-
-            return filteredPosts;
-        }
-
+        
     }
 }

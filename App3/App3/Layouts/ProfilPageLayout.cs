@@ -69,7 +69,7 @@ namespace App3.Layouts
             };
             var followingsLabel = new Label
             {
-                Text = user.Following.Count + "Folge ich",
+                Text = user.Following.Count + " Folge ich",
                 TextColor = Color.Black,
                 FontSize = 14
             };
@@ -99,20 +99,20 @@ namespace App3.Layouts
             var birthDateLayout = new StackLayout
             {
                 Orientation = StackOrientation.Horizontal,
-                Spacing = 15
+                Spacing = 5
             };
             var birthDateImage = new Image { Source = "birthday.png", WidthRequest = 20, HeightRequest = 20 };
-            var birthDateLabel = new Label { Text = "geboren: " + user.BirthDate.ToString("d"), TextColor = Color.Black, FontSize = 10 };
+            var birthDateLabel = new Label { Text = "geboren: " + user.BirthDate.ToString("d"), TextColor = Color.Black, FontSize = 9};
             birthDateLayout.Children.Add(birthDateImage);
             birthDateLayout.Children.Add(birthDateLabel);
 
             var joinDateLayout = new StackLayout
             {
                 Orientation = StackOrientation.Horizontal,
-                Spacing = 15
+                Spacing = 5
             };
             var joinDateImage = new Image { Source = "startday.png", WidthRequest = 20, HeightRequest = 20 };
-            var joinDateLabel = new Label { Text = "beigetreten: " + user.CreatedAt.ToString("d"), TextColor = Color.Black, FontSize = 10 };
+            var joinDateLabel = new Label { Text = "beigetreten: " + user.CreatedAt.ToString("d"), TextColor = Color.Black, FontSize = 9 };
             joinDateLayout.Children.Add(joinDateImage);
             joinDateLayout.Children.Add(joinDateLabel);
 
@@ -125,7 +125,7 @@ namespace App3.Layouts
             var genderLabel = new Label
             {
                 TextColor = Color.Black,
-                FontSize = 10
+                FontSize = 9
             }; 
 
             if (user.Gender == Gender.Male)
@@ -147,7 +147,7 @@ namespace App3.Layouts
             var genderLayout = new StackLayout
             {
                 Orientation = StackOrientation.Horizontal,
-                Spacing = 15,
+                Spacing = 5,
                 Children = { genderImage, genderLabel }
             };
             var birthDateFrame = new Frame
@@ -172,7 +172,7 @@ namespace App3.Layouts
                 Content = genderLayout
             };
             var additionalInfoGrid = new Grid();
-            additionalInfoGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Zeile 0
+            additionalInfoGrid.RowDefinitions.Add(new RowDefinition { Height = 30 }); // Zeile 0
             additionalInfoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // Spalte 0
             additionalInfoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // Spalte 1
             additionalInfoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // Spalte 2
@@ -205,20 +205,20 @@ namespace App3.Layouts
                 var interestLabel = new Label
                 {
                     Text = interest,
-                    BackgroundColor = Color.LightGray,
+                   
                     TextColor = Color.Black,
                     FontSize = 10,
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
-                    Margin = new Thickness(5),
-                    Padding = new Thickness(10)
+                   
                 };
                 var interestFrame = new Frame
                 {
                     Content = interestLabel,
                     BackgroundColor = Color.White,
                     BorderColor = Color.Black,
-                    CornerRadius = 5
+                    CornerRadius = 5,
+                    
                 };
 
 

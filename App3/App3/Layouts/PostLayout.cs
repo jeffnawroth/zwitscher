@@ -6,7 +6,7 @@ namespace App3.Layouts
 {
     public class PostLayout
     {
-        public static StackLayout CreatePostLayout(Posting post, int currentUserId)
+        public static StackLayout CreatePostLayout(Posting post, User user, int currentUserId)
         {
             
             var postLayout = new StackLayout
@@ -118,17 +118,20 @@ namespace App3.Layouts
                 if (post.Likes.Contains(currentUserId))
                 {
                     post.Likes.Remove(currentUserId);
-                    likeButton.BackgroundColor = Color.Transparent;
+                    user.LikedPosts.Remove(post.PostId);
+                    likeButton.Source = "thumb_up.png";
                 }
                 else
                 {
                     post.Likes.Add(currentUserId);
-                    likeButton.BackgroundColor = Color.Gray;
+                    user.DislikedPosts.Add(post.PostId);
+                    likeButton.Source = "like_pushed.png";
 
                     if (post.Dislikes.Contains(currentUserId))
                     {
                         post.Dislikes.Remove(currentUserId);
-                        dislikeButton.BackgroundColor = Color.Transparent;
+                        user.DislikedPosts.Remove(post.PostId);
+                        dislikeButton.Source = "thumb_down.png";
                     }
                 }
 
@@ -141,17 +144,20 @@ namespace App3.Layouts
                 if (post.Dislikes.Contains(currentUserId))
                 {
                     post.Dislikes.Remove(currentUserId);
-                    dislikeButton.BackgroundColor = Color.Transparent;
+                    user.DislikedPosts.Remove(post.PostId);
+                    dislikeButton.Source = "thumb_down.png";
                 }
                 else
                 {
                     post.Dislikes.Add(currentUserId);
-                    dislikeButton.BackgroundColor = Color.Gray;
+                    user.DislikedPosts.Add(post.PostId);
+                    dislikeButton.Source = "dislike_pushed.png";
 
                     if (post.Likes.Contains(currentUserId))
                     {
                         post.Likes.Remove(currentUserId);
-                        likeButton.BackgroundColor = Color.Transparent;
+                        user.LikedPosts.Remove(post.PostId);
+                        likeButton.Source = "thumb_up.png";
                     }
                 }
 
