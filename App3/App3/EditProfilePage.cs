@@ -183,7 +183,7 @@ namespace App3
                     Text = interest,
                     TextColor = Color.Black,
                     BackgroundColor = Color.LightGray,
-                    FontSize = 10,
+                    FontSize = 24,
                     Padding = new Thickness(5),
                     Margin = new Thickness(5),
                     BorderColor = Color.Transparent

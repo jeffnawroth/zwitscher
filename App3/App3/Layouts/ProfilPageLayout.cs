@@ -6,6 +6,8 @@ using System;
 using Rg.Plugins.Popup.Services;
 using Rg.Plugins.Popup.Pages;
 
+using System.Threading.Tasks;
+
 namespace App3.Layouts
 {
     public class ProfilePageLayout
@@ -22,68 +24,6 @@ namespace App3.Layouts
                 Padding = new Thickness(10),
                 BackgroundColor = Color.White,
             };
-            var userGrid = new Grid();
-            userGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            userGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            userGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            userGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            userGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-
-            var avatar = new Image
-            {
-                Source = user.Avatar,
-                WidthRequest = 90,
-                HeightRequest = 90,
-                Aspect = Aspect.AspectFill
-            };
-            Grid.SetRowSpan(avatar, 3);
-            userGrid.Children.Add(avatar);
-            var nameLabel = new Label
-            {
-                Text = user.Name,
-                FontSize = 16,
-                FontAttributes = FontAttributes.Bold,
-                TextColor = Color.Black
-            };
-            Grid.SetRow(nameLabel, 0);
-            Grid.SetColumn(nameLabel, 1);
-            userGrid.Children.Add(nameLabel);
-            var usernameLabel = new Label
-            {
-                Text = "@" + user.Username,
-                FontSize = 14,
-                TextColor = Color.Black
-            };
-            Grid.SetRow(usernameLabel, 1);
-            Grid.SetColumn(usernameLabel, 1);
-            userGrid.Children.Add(usernameLabel);
-
-            var followersLayout = new StackLayout
-            {
-                Orientation = StackOrientation.Horizontal,
-                Spacing = 10
-            };
-            var followersLabel = new Label
-            {
-
-                Text = user.Followers.Count + " Followers",
-                TextColor = Color.Black,
-                FontSize = 14
-            };
-            var followingsLabel = new Label
-            {
-                Text = user.Following.Count + " Folge ich",
-                TextColor = Color.Black,
-                FontSize = 14
-            };
-
-            followersLayout.Children.Add(followersLabel);
-            followersLayout.Children.Add(followingsLabel);
-
-            Grid.SetRow(followersLayout, 2);
-            Grid.SetColumn(followersLayout, 1);
-            userGrid.Children.Add(followersLayout);
-
             var editButton = new ImageButton
             {
                 Source = "edit_profile.png",
@@ -92,169 +32,167 @@ namespace App3.Layouts
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.StartAndExpand
             };
-            Grid.SetColumnSpan(editButton, 1);
-            Grid.SetRow(editButton, 0);
-            Grid.SetRowSpan(editButton, 2);
-            Grid.SetColumn(editButton, 1);
-            userGrid.Children.Add(editButton);
-
+            mainLayout.Children.Add(editButton);
 
             editButton.Clicked += (sender, e) =>
             {
                 EditProfile(user);
             };
+            var avatarImage = new Image
+            {
+                Source = user.Avatar,
+                WidthRequest = 180,
+                HeightRequest = 180,
+                // Aspect = Aspect.AspectFill,
+                BackgroundColor = Color.Transparent
+            };
+            mainLayout.Children.Add(avatarImage);
+            var nameLabel = new Label
+            {
+                Text = user.Name,
+                TextColor = Color.Black,
+                FontSize = 30,
+                FontAttributes = FontAttributes.Bold,
+                HorizontalOptions = LayoutOptions.Center
+            };
+            mainLayout.Children.Add(nameLabel);
 
-            var birthDateLayout = new StackLayout
+            var usernameLabel = new Label
+            {
+                Text = "@" + user.Username,
+                FontSize = 24,
+                TextColor = Color.Black
+
+            };
+            var followersLabel = new Label
+            {
+                Text = $"{user.Followers.Count} Followers",
+                TextColor = Color.Black,
+                FontSize = 24
+            };
+            var followingLabel = new Label
+            {
+                Text = $"{user.Following.Count} Following",
+                TextColor = Color.Black,
+                FontSize = 24
+            };
+            var followersLayout = new StackLayout
             {
                 Orientation = StackOrientation.Horizontal,
-                Spacing = 5
+                Spacing = 10,
+                Children = { usernameLabel, followersLabel, followingLabel },
+                HorizontalOptions = LayoutOptions.Center
             };
-            var birthDateImage = new Image { Source = "birthday.png", WidthRequest = 20, HeightRequest = 20 };
-            var birthDateLabel = new Label { Text = "geboren: " + user.BirthDate.ToString("d"), TextColor = Color.Black, FontSize = 9 };
-            birthDateLayout.Children.Add(birthDateImage);
-            birthDateLayout.Children.Add(birthDateLabel);
+            mainLayout.Children.Add(followersLayout);
 
-            var joinDateLayout = new StackLayout
-            {
-                Orientation = StackOrientation.Horizontal,
-                Spacing = 5
-            };
-            var joinDateImage = new Image { Source = "startday.png", WidthRequest = 20, HeightRequest = 20 };
-            var joinDateLabel = new Label { Text = "beigetreten: " + user.CreatedAt.ToString("d"), TextColor = Color.Black, FontSize = 9 };
-            joinDateLayout.Children.Add(joinDateImage);
-            joinDateLayout.Children.Add(joinDateLabel);
 
-            var genderImage = new Image
+
+           
+
+            var infoLayout = new FlexLayout
             {
-                WidthRequest = 20,
-                HeightRequest = 20,
+                Direction = FlexDirection.Row,
+                Wrap = FlexWrap.Wrap,
+                JustifyContent = FlexJustify.SpaceBetween,
+                AlignItems = FlexAlignItems.Center,
+                AlignContent = FlexAlignContent.Center,
+                Margin = new Thickness(0, 10)
             };
+
+
+
+            var birthDayLabel = new Label
+            {
+                Text = $"{user.BirthDate.ToString("dd/MM.yyyy")}",
+                TextColor = Color.Black, FontSize = 20
+            };
+            var birthDateLayout = CreateViewWithIcon("geboren: ", birthDayLabel, "birthday.png");
+            infoLayout.Children.Add(birthDateLayout);
+
+            var joinDateLabel = new Label
+            {
+                Text = $"{user.CreatedAt.ToString("dd/MM/yyyy")}",
+                TextColor = Color.Black, FontSize = 20
+            };
+            var joinDateLayout = CreateViewWithIcon("beigetreten: ", joinDateLabel, "startday.png");
+            infoLayout.Children.Add(joinDateLayout);
+
 
             var genderLabel = new Label
             {
                 TextColor = Color.Black,
-                FontSize = 9
+                FontSize = 20
             };
+            var genderImage = new Image { };
+
+
+            var genderLayout = CreateViewWithIcon("Gender", genderLabel, GetGenderIconImage(user.Gender));
+            infoLayout.Children.Add(genderLayout);
+            mainLayout.Children.Add(infoLayout);
 
             if (user.Gender == Gender.Male)
             {
-                genderImage.Source = "male.png";
+
                 genderLabel.Text = "Männlich";
             }
             else if (user.Gender == Gender.Female)
             {
-                genderImage.Source = "female.png";
+
                 genderLabel.Text = "Weiblich";
             }
             else
             {
-                genderImage.Source = "human.png";
+
                 genderLabel.Text = "Divers";
             }
-
-            var genderLayout = new StackLayout
+            var interestsLabel = new Label
             {
-                Orientation = StackOrientation.Horizontal,
-                Spacing = 5,
-                Children = { genderImage, genderLabel }
+                Text = "Interessen",
+                FontSize = 24,
+                FontAttributes = FontAttributes.Bold,
+                TextColor = Color.Black,
+                HorizontalOptions = LayoutOptions.Center
             };
-            var birthDateFrame = new Frame
+            mainLayout.Children.Add(interestsLabel);
+            var interestsLayout = new FlexLayout
             {
-                BackgroundColor = Color.LightGray,
-                CornerRadius = 5,
-                Padding = new Thickness(15),
-                Content = birthDateLayout
+                Wrap = FlexWrap.Wrap,
+                JustifyContent = FlexJustify.SpaceBetween,
+                AlignItems = FlexAlignItems.Start,
+                AlignContent = FlexAlignContent.Start,
+                Margin = new Thickness(0, 5)
             };
-            var joinDateFrame = new Frame
+
+            foreach (var interest in user.Interests)
             {
-                BackgroundColor = Color.LightGray,
-                CornerRadius = 5,
-                Padding = new Thickness(15),
-                Content = joinDateLayout
-            };
-            var genderFrame = new Frame
-            {
-                BackgroundColor = Color.LightGray,
-                CornerRadius = 5,
-                Padding = new Thickness(15),
-                Content = genderLayout
-            };
-            var additionalInfoGrid = new Grid();
-            additionalInfoGrid.RowDefinitions.Add(new RowDefinition { Height = 40 }); // Zeile 0
-            additionalInfoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // Spalte 0
-            additionalInfoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // Spalte 1
-            additionalInfoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // Spalte 2
-
-            Grid.SetRow(birthDateFrame, 0); // Zeile 0
-            Grid.SetColumn(birthDateFrame, 0); // Spalte 0
-
-            Grid.SetRow(joinDateFrame, 0); // Zeile 0
-            Grid.SetColumn(joinDateFrame, 1); // Spalte 1
-
-            Grid.SetRow(genderFrame, 0); // Zeile 0
-            Grid.SetColumn(genderFrame, 2); // Spalte 2
-
-            additionalInfoGrid.Children.Add(birthDateFrame);
-            additionalInfoGrid.Children.Add(joinDateFrame);
-            additionalInfoGrid.Children.Add(genderFrame);
-
-            var interestsGrid = new Grid();
-            interestsGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Zeile 0
-
-            int row = 0;
-            int column = 0;
-            for (int i = 0; i < user.Interests.Count; i++)
-            {
-                var interest = user.Interests[i];
-
                 var interestLabel = new Label
                 {
                     Text = interest,
-
                     TextColor = Color.Black,
-                    FontSize = 10,
-                    HorizontalOptions = LayoutOptions.Center,
-                    VerticalOptions = LayoutOptions.Center,
+                    BackgroundColor = Color.LightGray,
+                    FontSize = 24,
 
                 };
-                var interestFrame = new Frame
-                {
-                    Content = interestLabel,
-                    BackgroundColor = Color.White,
-                    BorderColor = Color.Black,
-                    CornerRadius = 5,
+                interestsLayout.Children.Add(interestLabel);
+            };
 
-                };
-
-                interestsGrid.Children.Add(interestFrame, column, row);
-
-                column++;
-                if (column == 3)
-                {
-                    interestsGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-                    row++;
-                    column = 0;
-                }
-            }
-            var bioLabel = new Label
+            mainLayout.Children.Add(interestsLayout);
+            var bioLabel = new Editor
             {
                 Text = user.Bio,
                 TextColor = Color.Black,
-                FontSize = 12,
-                HorizontalOptions = LayoutOptions.StartAndExpand,
-                VerticalOptions = LayoutOptions.Center,
-                Margin = new Thickness(5)
+                FontSize = 14,
+                BackgroundColor = Color.White,
+                HorizontalOptions = LayoutOptions.FillAndExpand
             };
+            mainLayout.Children.Add(bioLabel);
+
             var separatorLine = new BoxView
             {
                 BackgroundColor = Color.Black,
                 HeightRequest = 1
             };
 
-            mainLayout.Children.Add(userGrid);
-            mainLayout.Children.Add(additionalInfoGrid);
-            mainLayout.Children.Add(interestsGrid);
-            mainLayout.Children.Add(bioLabel);
             mainLayout.Children.Add(separatorLine);
 
             Content = mainLayout;
@@ -270,6 +208,49 @@ namespace App3.Layouts
             // Navigieren Sie zur Profilbearbeitungsseite
             await Application.Current.MainPage.Navigation.PushAsync(editPage);
         }
+        private static StackLayout CreateViewWithIcon(string label, View view, string iconImage)
+        {
+            {
+                var icon = new Image
+                {
+                    Source = iconImage,
+                    WidthRequest = 16,
+                    HeightRequest = 16
+                };
+
+                var labelView = new Label
+                {
+                    Text = label,
+                    TextColor = Color.Black,
+                    FontSize = 20,
+                    VerticalOptions = LayoutOptions.Center
+                };
+
+                var layout = new StackLayout
+                {
+                    Orientation = StackOrientation.Horizontal,
+                    Spacing = 10,
+                    Children = { icon, labelView, view },
+                    BackgroundColor = Color.LightGray
+                };
+
+                return layout;
+            }
+           
+        }
+        private static string GetGenderIconImage(Gender gender)
+        {
+            switch (gender)
+            {
+                case Gender.Male:
+                    return "male.png";
+                case Gender.Female:
+                    return "female.png";
+                default:
+                    return "human.png";
+            }
+        }
+
     }
 }
 
