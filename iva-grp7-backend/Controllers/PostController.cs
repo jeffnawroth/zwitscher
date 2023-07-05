@@ -39,30 +39,28 @@ namespace iva_grp7_backend.Controllers;
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         public async Task<ActionResult<PostResult>> CreatePost(PostAdd postAdd)
-    {
-        var user = await _userManager.FindByIdAsync(postAdd.UserId);
-
-        if (user == null)
         {
-            return NotFound("User wurde nicht gefunden");
-        }
+            var user = await _userManager.FindByIdAsync(postAdd.UserId);
 
-        var post = new Post
-        {
-            UserId = postAdd.UserId,
-            Text = postAdd.Text,
-            Name = user.Name,
-            Username = user.UserName
-        };
-
-        if (postAdd.Files != null)
-        {
-            post.Files = new List<PostFile>();
-            foreach (var fileData in postAdd.Files)
+            if (user == null)
             {
-                var fileSplit = fileData.Split(',');
-                if (fileSplit.Length == 2 && fileSplit[0].StartsWith("data:") && fileSplit[0].EndsWith("base64"))
+                return NotFound("User wurde nicht gefunden");
+            }
+
+            var post = new Post
+            {
+                UserId = postAdd.UserId,
+                Text = postAdd.Text,
+                Name = user.Name,
+                Username = user.UserName
+            };
+
+            if (postAdd.Files != null)
+            {
+                post.Files = new List<PostFile>();
+                foreach (var fileData in postAdd.Files)
                 {
+                    var fileSplit = fileData.Split(',');
                     byte[] fileBytes;
                     try
                     {
@@ -76,34 +74,32 @@ namespace iva_grp7_backend.Controllers;
                     {
                         Data = fileBytes,
                         PostId = post.Id,
+                        MediaType = fileSplit[0] // Medientyp speichern
                     };
                     post.Files.Add(postFile);
                 }
-                else
-                {
-                    return BadRequest("Invalid File format. Please provide a data URI with base64 data.");
-                }
             }
+
+            _context.Posts.Add(post);
+            await _context.SaveChangesAsync();
+
+            var postResult = new PostResult()
+            {
+                Id = post.Id,
+                UserId = post.UserId,
+                UserRole = user.Role,
+                Avatar = user.Avatar,
+                Name = user.Name,
+                Username = user.UserName,
+                Text = post.Text,
+                Date = post.Date,
+                Files = post.Files?.Select(f => new PostFileResult { File = f.Data, MediaType = f.MediaType }).ToList(),
+            };
+
+            return CreatedAtAction("GetPost", new { id = post.Id }, postResult);
         }
 
-        _context.Posts.Add(post);
-        await _context.SaveChangesAsync();
 
-        var postResult = new PostResult()
-        {
-            Id = post.Id,
-            UserId = post.UserId,
-            UserRole = user.Role,
-            Avatar = user.Avatar,
-            Name = user.Name,
-            Username = user.UserName,
-            Text = post.Text,
-            Date = post.Date,
-            Files = post.Files?.Select(f => f.Data).ToList(),
-        };
-
-        return CreatedAtAction("GetPost", new { id = post.Id }, postResult);
-    }
 
 
 
@@ -119,16 +115,13 @@ namespace iva_grp7_backend.Controllers;
         [ProducesResponseType(500)]
         public async Task<ActionResult<IEnumerable<PostResult>>> GetAllPublicPosts()
         {
-            // Alle Posts und zugehörige PostFiles laden
             var posts = await _context.Posts
                 .Include(p => p.Votes)
                 .Include(p => p.Files)
                 .ToListAsync();
 
-            // Liste für die PostResults
             List<PostResult> postResults = new List<PostResult>();
 
-            // Für jeden Post die User-Informationen und die Votes laden und setzen
             foreach (var post in posts)
             {
                 var user = await _userManager.FindByIdAsync(post.UserId);
@@ -145,11 +138,9 @@ namespace iva_grp7_backend.Controllers;
                         Text = post.Text,
                         Date = post.Date,
                         UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
-                        DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList()
+                        DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
+                        Files = post.Files?.Select(f => new PostFileResult { File = f.Data, MediaType = f.MediaType }).ToList(),
                     };
-
-                    // Files als Byte-Arrays hinzufügen
-                    postResult.Files = post.Files?.Select(pf => pf.Data).ToList();
 
                     postResults.Add(postResult);
                 }
@@ -157,6 +148,7 @@ namespace iva_grp7_backend.Controllers;
 
             return postResults;
         }
+
 
         
         /// <summary>
@@ -196,11 +188,8 @@ namespace iva_grp7_backend.Controllers;
                     Date = post.Date,
                     UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
                     DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
-                    Files = post.Files?.Select(f => f.Data).ToList()
+                    Files = post.Files?.Select(f => new PostFileResult { File = f.Data, MediaType = f.MediaType }).ToList(),
                 };
-
-                // Files als Byte-Arrays hinzufügen
-                postResult.Files = post.Files?.Select(pf => pf.Data).ToList();
 
                 return postResult;
             }
@@ -262,7 +251,7 @@ namespace iva_grp7_backend.Controllers;
                         Date = post.Date,
                         UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
                         DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
-                        Files = post.Files?.Select(pf => pf.Data).ToList()
+                        Files = post.Files?.Select(f => new PostFileResult { File = f.Data, MediaType = f.MediaType }).ToList(),
                     };
                     postResults.Add(postResult);
                 }
@@ -314,7 +303,7 @@ namespace iva_grp7_backend.Controllers;
                     Date = post.Date,
                     UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
                     DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
-                    Files = post.Files?.Select(f => f.Data).ToList()
+                    Files = post.Files?.Select(f => new PostFileResult { File = f.Data, MediaType = f.MediaType }).ToList(),
                 };
                 postResults.Add(postResult);
             }
