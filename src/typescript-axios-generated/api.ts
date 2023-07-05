@@ -465,25 +465,6 @@ export interface PostFile {
 /**
  * 
  * @export
- * @interface PostFileResult
- */
-export interface PostFileResult {
-    /**
-     * 
-     * @type {string}
-     * @memberof PostFileResult
-     */
-    'file'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof PostFileResult
-     */
-    'mediaType'?: string | null;
-}
-/**
- * 
- * @export
  * @interface PostResult
  */
 export interface PostResult {
@@ -549,10 +530,10 @@ export interface PostResult {
     'date'?: string;
     /**
      * 
-     * @type {Array<PostFileResult>}
+     * @type {Array<string>}
      * @memberof PostResult
      */
-    'files'?: Array<PostFileResult> | null;
+    'files'?: Array<string> | null;
 }
 
 
@@ -825,6 +806,99 @@ export interface UserAdd {
      * @memberof UserAdd
      */
     'interests'?: Array<string> | null;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface UserEdit
+ */
+export interface UserEdit {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEdit
+     */
+    'id'?: string | null;
+    /**
+     * 
+     * @type {File}
+     * @memberof UserEdit
+     */
+    'avatar'?: File | null;
+    /**
+     * 
+     * @type {Role}
+     * @memberof UserEdit
+     */
+    'role'?: Role;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEdit
+     */
+    'username'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEdit
+     */
+    'name'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEdit
+     */
+    'email'?: string | null;
+    /**
+     * 
+     * @type {Gender}
+     * @memberof UserEdit
+     */
+    'gender'?: Gender;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEdit
+     */
+    'birthDate'?: string | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof UserEdit
+     */
+    'followers'?: Array<string> | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof UserEdit
+     */
+    'following'?: Array<string> | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEdit
+     */
+    'createdAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEdit
+     */
+    'bio'?: string | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof UserEdit
+     */
+    'interests'?: Array<string> | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserEdit
+     */
+    'locked'?: boolean;
 }
 
 
@@ -2720,6 +2794,48 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @summary Updates an existing user.
+         * @param {string} id The ID of the user to update.
+         * @param {UserEdit} [userEdit] The updated user information.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiUserIdPut: async (id: string, userEdit?: UserEdit, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('apiUserIdPut', 'id', id)
+            const localVarPath = `/api/User/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(userEdit, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Allows a user to unfollow another user.
          * @param {string} id The ID of the user to be unfollowed.
          * @param {*} [options] Override http request option.
@@ -2920,6 +3036,18 @@ export const UserApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Updates an existing user.
+         * @param {string} id The ID of the user to update.
+         * @param {UserEdit} [userEdit] The updated user information.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiUserIdPut(id: string, userEdit?: UserEdit, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserIdPut(id, userEdit, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Allows a user to unfollow another user.
          * @param {string} id The ID of the user to be unfollowed.
          * @param {*} [options] Override http request option.
@@ -3028,6 +3156,17 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          */
         apiUserIdGet(id: string, options?: any): AxiosPromise<User> {
             return localVarFp.apiUserIdGet(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Updates an existing user.
+         * @param {string} id The ID of the user to update.
+         * @param {UserEdit} [userEdit] The updated user information.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiUserIdPut(id: string, userEdit?: UserEdit, options?: any): AxiosPromise<User> {
+            return localVarFp.apiUserIdPut(id, userEdit, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -3149,6 +3288,19 @@ export class UserApi extends BaseAPI {
      */
     public apiUserIdGet(id: string, options?: AxiosRequestConfig) {
         return UserApiFp(this.configuration).apiUserIdGet(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Updates an existing user.
+     * @param {string} id The ID of the user to update.
+     * @param {UserEdit} [userEdit] The updated user information.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public apiUserIdPut(id: string, userEdit?: UserEdit, options?: AxiosRequestConfig) {
+        return UserApiFp(this.configuration).apiUserIdPut(id, userEdit, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
