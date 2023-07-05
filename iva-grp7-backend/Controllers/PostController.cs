@@ -93,7 +93,7 @@ namespace iva_grp7_backend.Controllers;
                 Username = user.UserName,
                 Text = post.Text,
                 Date = post.Date,
-                Files = post.Files?.Select(f => new PostFileResult { File = f.Data, MediaType = f.MediaType }).ToList(),
+                Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ?? new List<string>()                    
             };
 
             return CreatedAtAction("GetPost", new { id = post.Id }, postResult);
@@ -139,7 +139,7 @@ namespace iva_grp7_backend.Controllers;
                         Date = post.Date,
                         UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
                         DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
-                        Files = post.Files?.Select(f => new PostFileResult { File = f.Data, MediaType = f.MediaType }).ToList(),
+                        Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ?? new List<string>()                    
                     };
 
                     postResults.Add(postResult);
@@ -188,7 +188,7 @@ namespace iva_grp7_backend.Controllers;
                     Date = post.Date,
                     UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
                     DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
-                    Files = post.Files?.Select(f => new PostFileResult { File = f.Data, MediaType = f.MediaType }).ToList(),
+                    Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ?? new List<string>()                    
                 };
 
                 return postResult;
@@ -251,7 +251,7 @@ namespace iva_grp7_backend.Controllers;
                         Date = post.Date,
                         UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
                         DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
-                        Files = post.Files?.Select(f => new PostFileResult { File = f.Data, MediaType = f.MediaType }).ToList(),
+                        Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ?? new List<string>()                    
                     };
                     postResults.Add(postResult);
                 }
@@ -303,7 +303,7 @@ namespace iva_grp7_backend.Controllers;
                     Date = post.Date,
                     UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
                     DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
-                    Files = post.Files?.Select(f => new PostFileResult { File = f.Data, MediaType = f.MediaType }).ToList(),
+                    Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ?? new List<string>()                    
                 };
                 postResults.Add(postResult);
             }
