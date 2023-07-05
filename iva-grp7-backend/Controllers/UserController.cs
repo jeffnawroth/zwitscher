@@ -485,9 +485,9 @@ namespace iva_grp7_backend.Controllers;
             }
             return Ok("Password wurde aktualisiert");
         }
-    /*
-     * 
-     /// <summary>
+
+
+        /// <summary>
         /// Updates an existing user.
         /// </summary>
         /// <param name="id">The ID of the user to update.</param>
@@ -502,108 +502,96 @@ namespace iva_grp7_backend.Controllers;
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-    
-    // Updates the ApplicationUser.
-    public async Task<IActionResult> Update(string id, [FromForm] UserEdit user)
-    
-    {
-    // Check if the given id matches the user's id.
-if (id != user.Id)
-{
-    // Return bad request if they don't match.
-    return BadRequest();
-}
 
-// Check if the user object is valid.
-if (!ModelState.IsValid)
-{
-    // Return bad request with model state errors if it's not valid.
-    return BadRequest(ModelState);
-}
+        // Updates the ApplicationUser.
+        public async Task<IActionResult> Update(string id, [FromBody] UserEdit user)
 
-// Find the existing user based on the id.
-var existingUser = await _userManager.FindByIdAsync(id);
-
-// Return not found if the user doesn't exist.
-if (existingUser == null)
-{
-    return NotFound();
-}
-
-// Process the new avatar file.
-byte[] avatarData = await ProcessFormFile(user.Avatar);
-if (avatarData == null)
-{
-    return BadRequest("Ungültige Datei. Stellen Sie sicher, dass die Datei ein Bild ist und nicht größer als 5MB ist.");
-}
-
-// Check if avatar data is the same as the existing one
-if (!existingUser.Avatar.SequenceEqual(avatarData))
-{
-    existingUser.Avatar = avatarData;
-}
-
-// Update the user properties with the properties from the given user object.
-existingUser.UserName = user.Username;
-existingUser.Email = user.Email;
-existingUser.Bio = user.Bio;
-existingUser.Gender = user.Gender;
-existingUser.Locked = user.Locked;
-existingUser.Name = user.Name;
-existingUser.BirthDate = user.BirthDate;
-existingUser.Role = user.Role;
-
-// If user has interests
-if (user.Interests != null)
-{
-    // Delete existing interests of the user
-    var existingInterests = _context.UserInterests.Where(ui => ui.UserId == existingUser.Id);
-    _context.UserInterests.RemoveRange(existingInterests);
-
-    // Initialize a list to store the UserInterests
-    List<UserInterest> userInterests = new List<UserInterest>();
-
-    foreach (string interestName in user.Interests)
-    {
-        // Create a new UserInterest that links the user and the interest
-        UserInterest userInterest = new UserInterest
         {
-            Interest = interestName,
-            User = existingUser
-        };
+            // Check if the given id matches the user's id.
+            if (id != user.Id)
+            {
+                // Return bad request if they don't match.
+                return BadRequest();
+            }
 
-        // Add the UserInterest to the list
-        userInterests.Add(userInterest);
-    }
+            // Check if the user object is valid.
+            if (!ModelState.IsValid)
+            {
+                // Return bad request with model state errors if it's not valid.
+                return BadRequest(ModelState);
+            }
 
-    // Assign the list of UserInterests to the user's Interests
-    existingUser.Interests = userInterests;
-}
+            // Find the existing user based on the id.
+            var existingUser = await _userManager.FindByIdAsync(id);
 
-// Handle password update
-if (user.Password != null)
-{
-    var token = await _userManager.GeneratePasswordResetTokenAsync(existingUser);
-    var change = await _userManager.ResetPasswordAsync(existingUser, token, user.Password);
-    if (!change.Succeeded)
-    {
-        return BadRequest("Password konnte nicht geändert werden");
-    }
-}
+            // Return not found if the user doesn't exist.
+            if (existingUser == null)
+            {
+                return NotFound();
+            }
 
-// Update the existing user.
-var result = await _userManager.UpdateAsync(existingUser);
+            if (user.Avatar != null)
+            {
+                // Process the new avatar file.
+                byte[] avatarData = await ProcessFormFile(user.Avatar);
+                
+                // Check if avatar data is the same as the existing one
+                if (!existingUser.Avatar.SequenceEqual(avatarData))
+                {
+                    existingUser.Avatar = avatarData;
+                }
+            }
 
-// If the update is successful, return an OK response with the updated user object.
-if (result.Succeeded)
-{
-    await _context.SaveChangesAsync();
-    return Ok("User wurde erfolgreich aktualisiert");
-}
+            // Update the user properties with the properties from the given user object.
+            existingUser.UserName = user.Username;
+            existingUser.Email = user.Email;
+            existingUser.Bio = user.Bio;
+            existingUser.Gender = user.Gender;
+            existingUser.Locked = user.Locked;
+            existingUser.Name = user.Name;
+            existingUser.BirthDate = user.BirthDate;
+            existingUser.Role = user.Role;
 
-// If the update fails, return a bad request with the errors from the result object.
-return BadRequest(result.Errors);
-    */
+            // If user has interests
+            if (user.Interests != null)
+            {
+                // Delete existing interests of the user
+                var existingInterests = _context.UserInterests.Where(ui => ui.UserId == existingUser.Id);
+                _context.UserInterests.RemoveRange(existingInterests);
+
+                // Initialize a list to store the UserInterests
+                List<UserInterest> userInterests = new List<UserInterest>();
+
+                foreach (string interestName in user.Interests)
+                {
+                    // Create a new UserInterest that links the user and the interest
+                    UserInterest userInterest = new UserInterest
+                    {
+                        Interest = interestName,
+                        User = existingUser
+                    };
+
+                    // Add the UserInterest to the list
+                    userInterests.Add(userInterest);
+                }
+
+                // Assign the list of UserInterests to the user's Interests
+                existingUser.Interests = userInterests;
+            }
+            
+            // Update the existing user.
+            var result = await _userManager.UpdateAsync(existingUser);
+
+            // If the update is successful, return an OK response with the updated user object.
+            if (result.Succeeded)
+            {
+                await _context.SaveChangesAsync();
+                return Ok("User wurde erfolgreich aktualisiert");
+            }
+
+            // If the update fails, return a bad request with the errors from the result object.
+            return BadRequest(result.Errors);
+        }
 
 
 
@@ -758,15 +746,11 @@ return BadRequest(result.Errors);
         
         private async Task<byte[]> ProcessFormFile(IFormFile file)
         {
-            if (file.Length > 0)
-            {
                 using (var memoryStream = new MemoryStream())
                 {
                     await file.CopyToAsync(memoryStream);
                     return memoryStream.ToArray();
                 }
-            }
-            return null;
         }
 
         /// <summary>
