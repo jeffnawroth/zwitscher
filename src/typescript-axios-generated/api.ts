@@ -448,6 +448,12 @@ export interface PostFile {
      * @type {string}
      * @memberof PostFile
      */
+    'mediaType'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostFile
+     */
     'postId'?: string | null;
     /**
      * 
@@ -455,6 +461,25 @@ export interface PostFile {
      * @memberof PostFile
      */
     'post'?: Post;
+}
+/**
+ * 
+ * @export
+ * @interface PostFileResult
+ */
+export interface PostFileResult {
+    /**
+     * 
+     * @type {string}
+     * @memberof PostFileResult
+     */
+    'file'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostFileResult
+     */
+    'mediaType'?: string | null;
 }
 /**
  * 
@@ -524,10 +549,10 @@ export interface PostResult {
     'date'?: string;
     /**
      * 
-     * @type {Array<string>}
+     * @type {Array<PostFileResult>}
      * @memberof PostResult
      */
-    'files'?: Array<string> | null;
+    'files'?: Array<PostFileResult> | null;
 }
 
 
