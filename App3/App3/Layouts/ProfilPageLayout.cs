@@ -2,6 +2,9 @@
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using System.Collections.Generic;
+using System;
+using Rg.Plugins.Popup.Services;
+using Rg.Plugins.Popup.Pages;
 
 namespace App3.Layouts
 {
@@ -31,7 +34,7 @@ namespace App3.Layouts
                 Source = user.Avatar,
                 WidthRequest = 90,
                 HeightRequest = 90,
-                //Aspect = Aspect.AspectFill
+                Aspect = Aspect.AspectFill
             };
             Grid.SetRowSpan(avatar, 3);
             userGrid.Children.Add(avatar);
@@ -62,7 +65,7 @@ namespace App3.Layouts
             };
             var followersLabel = new Label
             {
-                
+
                 Text = user.Followers.Count + " Followers",
                 TextColor = Color.Black,
                 FontSize = 14
@@ -94,7 +97,12 @@ namespace App3.Layouts
             Grid.SetRowSpan(editButton, 2);
             Grid.SetColumn(editButton, 1);
             userGrid.Children.Add(editButton);
-          
+
+
+            editButton.Clicked += (sender, e) =>
+            {
+                EditProfile(user);
+            };
 
             var birthDateLayout = new StackLayout
             {
@@ -102,7 +110,7 @@ namespace App3.Layouts
                 Spacing = 5
             };
             var birthDateImage = new Image { Source = "birthday.png", WidthRequest = 20, HeightRequest = 20 };
-            var birthDateLabel = new Label { Text = "geboren: " + user.BirthDate.ToString("d"), TextColor = Color.Black, FontSize = 9};
+            var birthDateLabel = new Label { Text = "geboren: " + user.BirthDate.ToString("d"), TextColor = Color.Black, FontSize = 9 };
             birthDateLayout.Children.Add(birthDateImage);
             birthDateLayout.Children.Add(birthDateLabel);
 
@@ -121,12 +129,12 @@ namespace App3.Layouts
                 WidthRequest = 20,
                 HeightRequest = 20,
             };
-            
+
             var genderLabel = new Label
             {
                 TextColor = Color.Black,
                 FontSize = 9
-            }; 
+            };
 
             if (user.Gender == Gender.Male)
             {
@@ -172,7 +180,7 @@ namespace App3.Layouts
                 Content = genderLayout
             };
             var additionalInfoGrid = new Grid();
-            additionalInfoGrid.RowDefinitions.Add(new RowDefinition { Height = 30 }); // Zeile 0
+            additionalInfoGrid.RowDefinitions.Add(new RowDefinition { Height = 40 }); // Zeile 0
             additionalInfoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // Spalte 0
             additionalInfoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // Spalte 1
             additionalInfoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // Spalte 2
@@ -189,9 +197,6 @@ namespace App3.Layouts
             additionalInfoGrid.Children.Add(birthDateFrame);
             additionalInfoGrid.Children.Add(joinDateFrame);
             additionalInfoGrid.Children.Add(genderFrame);
-            // Annahme: Die Interessen sind in einer Liste von Strings namens "interests" enthalten
-
-            // Annahme: Die Interessen sind in einer Liste von Strings namens "interests" enthalten
 
             var interestsGrid = new Grid();
             interestsGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Zeile 0
@@ -205,12 +210,12 @@ namespace App3.Layouts
                 var interestLabel = new Label
                 {
                     Text = interest,
-                   
+
                     TextColor = Color.Black,
                     FontSize = 10,
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
-                   
+
                 };
                 var interestFrame = new Frame
                 {
@@ -218,9 +223,8 @@ namespace App3.Layouts
                     BackgroundColor = Color.White,
                     BorderColor = Color.Black,
                     CornerRadius = 5,
-                    
-                };
 
+                };
 
                 interestsGrid.Children.Add(interestFrame, column, row);
 
@@ -247,25 +251,26 @@ namespace App3.Layouts
                 HeightRequest = 1
             };
 
-          
-
-            // Fügen Sie das additionalInfoLayout zu Ihrem Hauptlayout hinzu
             mainLayout.Children.Add(userGrid);
             mainLayout.Children.Add(additionalInfoGrid);
             mainLayout.Children.Add(interestsGrid);
             mainLayout.Children.Add(bioLabel);
             mainLayout.Children.Add(separatorLine);
 
-
             Content = mainLayout;
-
-
-            // Fügen Sie hier den Code für weitere Informationen zum Profil hinzu, z. B. Biografie, Beiträge usw.
-
-           
 
             return mainLayout;
 
         }
+        private static async void EditProfile(User user)
+        {
+            // Erstellen Sie eine neue Instanz der Profilbearbeitungsseite und übergeben Sie den Benutzer
+            var editPage = new EditProfilePage(user);
+
+            // Navigieren Sie zur Profilbearbeitungsseite
+            await Application.Current.MainPage.Navigation.PushAsync(editPage);
+        }
     }
 }
+
+    
