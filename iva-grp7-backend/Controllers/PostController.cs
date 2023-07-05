@@ -335,6 +335,36 @@ public class PostController : ControllerBase
 
         post.Text = updatedPost.Text;
 
+        // Remove all existing files
+        _context.PostFiles.RemoveRange(post.Files);
+
+        // Add new files
+        if (updatedPost.Files != null)
+        {
+            post.Files = new List<PostFile>();
+            foreach (var fileData in updatedPost.Files)
+            {
+                var fileSplit = fileData.Split(',');
+                byte[] fileBytes;
+                try
+                {
+                    fileBytes = Convert.FromBase64String(fileSplit[1]);
+                }
+                catch (FormatException)
+                {
+                    return BadRequest("Invalid File format. Please provide a Base64 string.");
+                }
+
+                var postFile = new PostFile
+                {
+                    Data = fileBytes,
+                    PostId = post.Id,
+                    MediaType = fileSplit[0] // Medientyp speichern
+                };
+                post.Files.Add(postFile);
+            }
+        }
+
         try
         {
             await _context.SaveChangesAsync();
@@ -348,6 +378,7 @@ public class PostController : ControllerBase
 
         return Ok("Post wurde aktualisiert");
     }
+
 
     /// <summary>
     ///     Upvotes a post.
