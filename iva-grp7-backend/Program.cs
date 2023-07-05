@@ -6,7 +6,6 @@ using iva_grp7_backend.Configurations;
 using iva_grp7_backend.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -16,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
+    options.AddPolicy(MyAllowSpecificOrigins,
         policy =>
         {
             policy
@@ -32,13 +31,13 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     //options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddDbContext<ApiDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("SqlDbConnection")));
+builder.Services.AddDbContext<ApiDbContext>(opt =>
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("SqlDbConnection")));
 
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
 
@@ -70,18 +69,18 @@ builder.Services.AddSwaggerGen(option =>
             {
                 Reference = new OpenApiReference
                 {
-                    Type=ReferenceType.SecurityScheme,
-                    Id="Bearer"
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
                 }
             },
-            new string[]{}
+            new string[] { }
         }
     });
 });
 // Convert Secret String to Array of bytes
 var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value);
 
-var tokenValidationParameter = new TokenValidationParameters()
+var tokenValidationParameter = new TokenValidationParameters
 {
     ValidateIssuerSigningKey = true,
     IssuerSigningKey = new SymmetricSecurityKey(key),
@@ -109,14 +108,13 @@ builder.Services.AddAuthentication(options =>
         // Compare token if it is valid
         jwt.TokenValidationParameters = tokenValidationParameter;
     });
-    
+
 
 builder.Services.AddSingleton(tokenValidationParameter);
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApiDbContext>();
-
 
 
 var app = builder.Build();
@@ -137,4 +135,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
