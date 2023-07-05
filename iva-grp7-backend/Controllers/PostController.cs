@@ -376,7 +376,14 @@ namespace iva_grp7_backend.Controllers;
             return Ok("Post wurde aktualisiert");
         }
 
-
+        /// <summary>
+        /// Upvotes a post.
+        /// </summary>
+        /// <param name="postId">The id of the post to upvote.</param>
+        /// <returns>A response indicating the result of the upvote action.</returns>
+        /// <response code="200">If the post is successfully upvoted, or if the user's existing downvote is changed to an upvote, or if the user's existing upvote is removed.</response>
+        /// <response code="404">If the post is not found.</response>
+        /// <response code="500">If an exception occurs while processing the upvote.</response>
         [HttpPost("{postId}/upvote")]
 public async Task<IActionResult> UpvotePost(string postId)
 {
@@ -423,8 +430,15 @@ public async Task<IActionResult> UpvotePost(string postId)
     return Ok("Post wurde ein UpVote gegeben!");
 }
 
-
-[HttpPost("{postId}/downvote")]
+        /// <summary>
+        /// Downvotes a post.
+        /// </summary>
+        /// <param name="postId">The id of the post to downvote.</param>
+        /// <returns>A response indicating the result of the downvote action.</returns>
+        /// <response code="200">If the post is successfully downvoted, or if the user's existing upvote is changed to a downvote, or if the user's existing downvote is removed.</response>
+        /// <response code="404">If the post is not found.</response>
+        /// <response code="500">If an exception occurs while processing the downvote.</response>
+        [HttpPost("{postId}/downvote")]
 public async Task<IActionResult> DownvotePost(string postId)
 {
     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
