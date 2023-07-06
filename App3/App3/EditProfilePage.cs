@@ -24,6 +24,17 @@ namespace App3
                 Padding = new Thickness(10),
                 BackgroundColor = Color.White,
             };
+            var saveButton = new ImageButton
+            {
+                Source = "save_profile.png",
+                BackgroundColor = Color.LightGray,
+                WidthRequest = 20,
+                HeightRequest = 20,
+                HorizontalOptions = LayoutOptions.EndAndExpand,
+                VerticalOptions = LayoutOptions.StartAndExpand
+            };
+            saveButton.Clicked += SaveButton_Clicked;
+            mainLayout.Children.Add(saveButton);
 
             var avatarButton = new ImageButton
             {
@@ -219,18 +230,7 @@ namespace App3
             };
 
             mainLayout.Children.Add(bioEditor);
-            var saveButton = new Button
-            {
-                Text = "Save",
-                BackgroundColor = Color.LightGray,
-                TextColor = Color.Black,
-                FontSize = 14,
-                FontAttributes = FontAttributes.Bold,
-                HorizontalOptions = LayoutOptions.Center,
-                Margin = new Thickness(0, 10)
-            };
-            saveButton.Clicked += SaveButton_Clicked;
-            mainLayout.Children.Add(saveButton);
+            
 
             Content = mainLayout;
         }
@@ -286,6 +286,7 @@ namespace App3
             // Fügen Sie hier die Logik hinzu, um die Benutzerdaten zu speichern oder zu aktualisieren
 
             await DisplayAlert("Erfolg", "Profil erfolgreich aktualisiert!", "OK");
+            await Navigation.PopAsync();
         }
     }
 }

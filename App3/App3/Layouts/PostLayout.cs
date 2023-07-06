@@ -1,6 +1,7 @@
 ﻿using Xamarin.Forms;
 using System.Collections.Generic;
 using App3.Services;
+using System.Threading.Tasks;
 
 namespace App3.Layouts
 {
@@ -23,14 +24,17 @@ namespace App3.Layouts
                 Spacing = 10
             };
 
-            var avatarImage = new Image
+            var avatarImage = new ImageButton
             {
                 Source = post.Avatar,
                 WidthRequest = 40,
                 HeightRequest = 40,
                 Aspect = Aspect.AspectFill
             };
-
+            avatarImage.Clicked += async (sender, e) =>
+            {
+                await OpenUserProfile(user);
+            };
             var userInfoLayout = new StackLayout
             {
                 Orientation = StackOrientation.Vertical,
@@ -219,5 +223,15 @@ namespace App3.Layouts
 
             return postLayout;
         }
+        private async Task OpenUserProfile(User user)
+        {
+            // Erstellen Sie eine neue Instanz der UserProfile-Seite und übergeben Sie den Benutzer
+            var userProfilePage = new UserProfile(user);
+
+            // Navigieren Sie zur Benutzerprofilseite
+            await Application.Current.MainPage.Navigation.PushAsync(userProfilePage);
+        }
     }
+
+   
 }

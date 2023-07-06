@@ -1,23 +1,20 @@
 ﻿using App3.Services;
-using Xamarin.Essentials;
-using Xamarin.Forms;
-using System.Collections.Generic;
 using System;
-using Rg.Plugins.Popup.Services;
-using Rg.Plugins.Popup.Pages;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-using System.Threading.Tasks;
+using Xamarin.Forms;
 
-namespace App3.Layouts
+namespace App3
 {
-    public class ProfilePageLayout
+    public class UserProfile : ContentPage
     {
-
-        public static StackLayout Content { get; private set; }
-
-        public static StackLayout CreateProfilePageLayout(User user)
+        private User _user;
+        private Button _followButton;
+        private App _app; // Database anbinden 
+        public UserProfile(User user)
         {
-
             var mainLayout = new StackLayout
             {
                 Orientation = StackOrientation.Vertical,
@@ -25,20 +22,15 @@ namespace App3.Layouts
                 Padding = new Thickness(10),
                 BackgroundColor = Color.White,
             };
-            var editButton = new ImageButton
+            _followButton = new Button
             {
-                Source = "edit_profile.png",
-                WidthRequest = 20,
-                HeightRequest = 20,
+                Text = GetFollowButtonText(),
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.StartAndExpand
             };
-            mainLayout.Children.Add(editButton);
+            _followButton.Clicked += FollowButton_Clicked;
 
-            editButton.Clicked += (sender, e) =>
-            {
-                EditProfile(user);
-            };
+            mainLayout.Children.Add(_followButton);
             var avatarImage = new Image
             {
                 Source = user.Avatar,
@@ -88,7 +80,7 @@ namespace App3.Layouts
 
 
 
-           
+
 
             var infoLayout = new FlexLayout
             {
@@ -105,7 +97,8 @@ namespace App3.Layouts
             var birthDayLabel = new Label
             {
                 Text = $"{user.BirthDate.ToString("dd/MM.yyyy")}",
-                TextColor = Color.Black, FontSize = 20
+                TextColor = Color.Black,
+                FontSize = 20
             };
             var birthDateLayout = CreateViewWithIcon("geboren: ", birthDayLabel, "birthday.png");
             infoLayout.Children.Add(birthDateLayout);
@@ -113,7 +106,8 @@ namespace App3.Layouts
             var joinDateLabel = new Label
             {
                 Text = $"{user.CreatedAt.ToString("dd/MM/yyyy")}",
-                TextColor = Color.Black, FontSize = 20
+                TextColor = Color.Black,
+                FontSize = 20
             };
             var joinDateLayout = CreateViewWithIcon("beigetreten: ", joinDateLabel, "startday.png");
             infoLayout.Children.Add(joinDateLayout);
@@ -198,46 +192,60 @@ namespace App3.Layouts
 
             Content = mainLayout;
 
-            return mainLayout;
-
         }
-        private static async void EditProfile(User user)
+        private string GetFollowButtonText()
         {
-            // Erstellen Sie eine neue Instanz der Profilbearbeitungsseite und übergeben Sie den Benutzer
-            var editPage = new EditProfilePage(user);
-
-            // Navigieren Sie zur Profilbearbeitungsseite
-            await Application.Current.MainPage.Navigation.PushAsync(editPage);
+            if (App.CurrentUser.Following.Contains(_user.Id))
+                return "Entfolgen";
+            else
+                return "Folgen";
         }
-        private static StackLayout CreateViewWithIcon(string label, View view, string iconImage)
+        private void FollowButton_Clicked(object sender, EventArgs e)
         {
+            if (App.CurrentUser.Following.Contains(_user.Id))
+                UnfollowUser();
+            else
+                FollowUser();
+
+            _followButton.Text = GetFollowButtonText();
+        }
+        private void FollowUser()
+        {
+            App.CurrentUser.Following.Add(_user.Id); // Hinzufügen der User-ID zu Following-Liste des aktuellen Benutzers
+            _user.Followers.Add(App.CurrentUser.Id); // Hinzufügen der eigenen User-ID zur Followers-Liste des angezeigten Benutzers
+        }
+
+        private void UnfollowUser()
+        {
+            App.CurrentUser.Following.Remove(_user.Id); // Entfernen der User-ID aus Following-Liste des aktuellen Benutzers
+            _user.Followers.Remove(App.CurrentUser.Id); // Entfernen der eigenen User-ID aus Followers-Liste des angezeigten Benutzers
+        }
+        private StackLayout CreateViewWithIcon(string label, View view, string iconImage)
+        {
+            var icon = new Image
             {
-                var icon = new Image
-                {
-                    Source = iconImage,
-                    WidthRequest = 16,
-                    HeightRequest = 16
-                };
+                Source = iconImage,
+                WidthRequest = 16,
+                HeightRequest = 16
+            };
 
-                var labelView = new Label
-                {
-                    Text = label,
-                    TextColor = Color.Black,
-                    FontSize = 20,
-                    VerticalOptions = LayoutOptions.Center
-                };
+            var labelView = new Label
+            {
+                Text = label,
+                TextColor = Color.Black,
+                FontSize = 20,
+                VerticalOptions = LayoutOptions.Center
+            };
 
-                var layout = new StackLayout
-                {
-                    Orientation = StackOrientation.Horizontal,
-                    Spacing = 10,
-                    Children = { icon, labelView, view },
-                    BackgroundColor = Color.LightGray
-                };
+            var layout = new StackLayout
+            {
+                Orientation = StackOrientation.Horizontal,
+                Spacing = 10,
+                Children = { icon, labelView, view },
+                BackgroundColor = Color.LightGray
+            };
 
-                return layout;
-            }
-           
+            return layout;
         }
         private static string GetGenderIconImage(Gender gender)
         {
@@ -251,8 +259,6 @@ namespace App3.Layouts
                     return "human.png";
             }
         }
-
     }
-}
 
-    
+}
