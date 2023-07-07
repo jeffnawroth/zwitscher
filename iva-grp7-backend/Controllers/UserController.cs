@@ -481,10 +481,11 @@ public class UserController : ControllerBase
 
         if (user.Avatar != null)
         {
+            var fileSplit = user.Avatar.Split(',');
             byte[] avatarBytes;
             try
             {
-                avatarBytes = Convert.FromBase64String(user.Avatar);
+                avatarBytes = Convert.FromBase64String(fileSplit[1]);
             }
             catch (FormatException)
             {
