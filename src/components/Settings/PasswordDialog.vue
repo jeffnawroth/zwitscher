@@ -57,10 +57,12 @@ import { object, ref, setLocale, string } from "yup";
 import { Form } from "vee-validate";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
 import { useUsersStore } from "@/store/users";
+import { useAuthenticationStore } from "@/store/authentication";
 setLocale(yupLocaleDe);
 
 const emit = defineEmits(["update:modelValue"]);
 const store = useUsersStore();
+const authStore = useAuthenticationStore();
 
 defineProps({
   modelValue: {
@@ -73,13 +75,17 @@ const initialValues = {
   newPasswordConfirm: "",
 };
 const validationSchema = object({
-  currentPassword: string().required().label("Aktuelles Passwort"),
+  currentPassword: string()
+    .required()
+    .label("Aktuelles Passwort")
+    .oneOf([authStore.user?.password!]),
+
   newPassword: string()
     .required()
     .label("Neues Passwort")
     .notOneOf(
       [ref("currentPassword")],
-      "Aktuelles und neues Passwort dürfen nicht übereinstimmen"
+      "Aktuelles und neues Passwort dürfen nicht übereinstimmen",
     ),
   newPasswordConfirm: string()
     .required()
