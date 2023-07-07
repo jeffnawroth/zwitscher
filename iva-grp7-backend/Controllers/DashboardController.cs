@@ -235,19 +235,19 @@ public class DashboardController : ControllerBase
                 switch (age)
                 {
                     case int n when n >= 18 && n <= 24:
-                        age_value[0] = users[i].Count;
+                        age_value[0] += users[i].Count;
                         break;
                     case int n when n >= 25 && n <= 34:
-                        age_value[1] = users[i].Count;
+                        age_value[1] += users[i].Count;
                         break;
                     case int n when n >= 35 && n <= 44:
-                        age_value[2] = users[i].Count;
+                        age_value[2] += users[i].Count;
                         break;
                     case int n when n >= 45 && n <= 54:
-                        age_value[3] = users[i].Count;
+                        age_value[3] += users[i].Count;
                         break;
                     case int n when n >= 55:
-                        age_value[4] = users[i].Count;
+                        age_value[4] += users[i].Count;
                         break;
                 }
 
@@ -256,7 +256,10 @@ public class DashboardController : ControllerBase
 
         for (var i = 0; i < age_value.Length; i++)
             if (age_value[i] != 0)
+            { 
+                Console.WriteLine(age_value[i]);
                 ages[i] = (int) (age_value[i] / age_count * 100);
+            }
 
         return ages;
     }
