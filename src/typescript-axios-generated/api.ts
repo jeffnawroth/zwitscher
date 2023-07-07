@@ -125,6 +125,12 @@ export interface AuthResult {
      * @memberof AuthResult
      */
     'token'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof AuthResult
+     */
+    'password'?: string | null;
 }
 
 
@@ -517,10 +523,10 @@ export interface UserEdit {
     'id'?: string | null;
     /**
      * 
-     * @type {File}
+     * @type {string}
      * @memberof UserEdit
      */
-    'avatar'?: File | null;
+    'avatar'?: string | null;
     /**
      * 
      * @type {Role}
