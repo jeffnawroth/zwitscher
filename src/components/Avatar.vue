@@ -9,11 +9,10 @@
 
 <script lang="ts" setup>
 import { generateFileURL } from "@/helpers";
-import { PropType } from "vue";
 
 defineProps({
   file: {
-    type: Object as PropType<File>,
+    type: [File, String],
     default: () => {
       null;
     },

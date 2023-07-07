@@ -95,6 +95,7 @@ export const useUsersStore = defineStore("users", () => {
 
   async function updateUser(userEdit: UserEdit, notification = true) {
     try {
+      if (userEdit.avatar) userEdit.avatar = await toBase64(userEdit.avatar);
       await UserApi.prototype.apiUserIdPut(userEdit.id!, userEdit);
       user.value = userEdit;
       const index = users.value.findIndex((user) => user.id === userEdit.id);

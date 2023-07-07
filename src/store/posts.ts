@@ -5,6 +5,7 @@ import { useAuthenticationStore } from "./authentication";
 import { computed } from "vue";
 import { showNotification, sortByDateDescending } from "./helpers";
 import { PostApi, PostResult } from "@/typescript-axios-generated";
+import { filesToBase64 } from "@/helpers";
 
 export const usePostStore = defineStore("post", () => {
   const allPosts = ref<PostResult[]>([]);
@@ -14,7 +15,7 @@ export const usePostStore = defineStore("post", () => {
 
   async function getAllPosts() {
     try {
-      allPosts.value = []
+      allPosts.value = [];
       const data = await PostApi.prototype.apiPostGet();
       allPosts.value = data.data;
     } catch (error) {
@@ -22,12 +23,12 @@ export const usePostStore = defineStore("post", () => {
         "error",
         "Beim Laden der öffentlichen Beiträge ist ein Fehler aufgetreten!"
       );
-    } 
+    }
   }
 
   async function getPostsForUser(id: string) {
     try {
-      allPosts.value = []
+      allPosts.value = [];
       const data = await PostApi.prototype.apiPostUserUserIdGet(id);
       allPosts.value = data.data;
     } catch (error) {
@@ -35,7 +36,7 @@ export const usePostStore = defineStore("post", () => {
         "error",
         "Beim Laden der Beiträge ist ein Fehler aufgetreten!"
       );
-    } 
+    }
   }
 
   async function getFollowedUsersPosts() {
@@ -65,7 +66,7 @@ export const usePostStore = defineStore("post", () => {
 
   async function createPost(post: PostAdd) {
     try {
-      //@ts-ignore
+      if (post.files) post.files = await filesToBase64(post.files);
       const data = await PostApi.prototype.apiPostPost(post);
       allPosts.value?.push(data.data);
     } catch (error) {
@@ -73,7 +74,7 @@ export const usePostStore = defineStore("post", () => {
         "error",
         "Beim Erstellen des Beitrags ist ein Fehler aufgetreten!"
       );
-      return Promise.reject(error)
+      return Promise.reject(error);
     }
   }
 
@@ -102,21 +103,24 @@ export const usePostStore = defineStore("post", () => {
     }
   }
 
-  async function updatePost(post: PostResult) {
+  async function updatePost(postUpdate: PostResult) {
     try {
       //@ts-ignore
-      await PostApi.prototype.apiPostPut(post);
-      const index = allPosts.value.findIndex((x) => x.id === post.id);
+
+      if (postUpdate.files)
+        postUpdate.files = await filesToBase64(postUpdate.files);
+      await PostApi.prototype.apiPostPut(postUpdate);
+      const index = allPosts.value.findIndex((x) => x.id === postUpdate.id);
+      if (post.value?.id == postUpdate.id) post.value = postUpdate;
       //@ts-ignore
-      if (index > -1) allPosts.value.splice(index, 1, post);
+      if (index > -1) allPosts.value.splice(index, 1, postUpdate);
       showNotification("success", "Der Beitrag wurde erfolgreich bearbeitet!");
     } catch (error) {
       showNotification(
         "error",
         "Beim Bearbeiten des Beitrags ist ein Fehler aufgetreten!"
       );
-      return Promise.reject(error)
-
+      return Promise.reject(error);
     }
   }
 
@@ -130,7 +134,7 @@ export const usePostStore = defineStore("post", () => {
       if (likedIndex !== undefined && likedIndex !== -1) {
         post.upVotes?.splice(likedIndex, 1);
       } else {
-        post.upVotes = post.upVotes? post.upVotes : []
+        post.upVotes = post.upVotes ? post.upVotes : [];
         post.upVotes?.push(authStore.user!.id);
         if (dislikedIndex !== undefined && dislikedIndex !== -1) {
           post.downVotes?.splice(dislikedIndex, 1);
@@ -153,7 +157,7 @@ export const usePostStore = defineStore("post", () => {
       if (dislikedIndex !== undefined && dislikedIndex !== -1) {
         post.downVotes?.splice(dislikedIndex, 1);
       } else {
-        post.downVotes = post.downVotes? post.downVotes : []
+        post.downVotes = post.downVotes ? post.downVotes : [];
         post.downVotes?.push(authStore.user!.id);
         if (likedIndex !== undefined && likedIndex !== -1) {
           post.upVotes?.splice(likedIndex, 1);

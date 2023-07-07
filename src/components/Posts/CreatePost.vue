@@ -1,37 +1,36 @@
 <template>
-  <Form
-    ref="form"
-    v-slot="{ meta, validate }"
-    :initial-values="initialValues"
-    :validation-schema="validationSchema"
-    @submit="submit"
-  >
-    <v-card :title="cardTitle">
-      <template #subtitle>
-        <div v-if="route.name == 'post'">
-          Antworten auf
-          <router-link
-            class="text-decoration-none"
-            :to="{
-              name: 'profile',
-              params: { username: postsStore.post?.username },
-            }"
-            >{{ ` @${postsStore.post?.username}` }}</router-link
-          >
-        </div>
-        <div v-else>
-          {{ `@${authStore.user?.username}` }}
-        </div>
-      </template>
-      <template #prepend>
-        <v-avatar v-if="!authStore.user?.avatar" color="grey">
-          <v-icon icon="mdi-account-circle" size="x-large"></v-icon>
-        </v-avatar>
-        <v-img v-else>
-          <v-avatar :image="generateFileURL(authStore.user?.avatar)">
-          </v-avatar>
-        </v-img>
-      </template>
+  <v-card :title="cardTitle">
+    <template #subtitle>
+      <div v-if="route.name == 'post'">
+        Antworten auf
+        <router-link
+          class="text-decoration-none"
+          :to="{
+            name: 'profile',
+            params: { username: postsStore.post?.username },
+          }"
+          >{{ ` @${postsStore.post?.username}` }}</router-link
+        >
+      </div>
+      <div v-else>
+        {{ `@${authStore.user?.username}` }}
+      </div>
+    </template>
+    <template #prepend>
+      <v-avatar v-if="!authStore.user?.avatar" color="grey">
+        <v-icon icon="mdi-account-circle" size="x-large"></v-icon>
+      </v-avatar>
+      <v-img v-else>
+        <v-avatar :image="generateFileURL(authStore.user?.avatar)"> </v-avatar>
+      </v-img>
+    </template>
+    <Form
+      ref="form"
+      v-slot="{ meta, validate }"
+      :initial-values="initialValues"
+      :validation-schema="validationSchema"
+      @submit="submit"
+    >
       <v-card-text>
         <BaseTextarea
           type="text"
@@ -46,6 +45,7 @@
           error-messages=""
         ></BaseTextarea>
         <FileLayout
+          v-if="files"
           class="mt-2"
           :files="files"
           remove-file-btn
@@ -92,11 +92,15 @@
         <template v-if="editMode">
           <v-btn icon="mdi-close" @click="$emit('set-edit-mode', false)">
           </v-btn>
-          <v-btn icon="mdi-check" type="submit"></v-btn>
+          <v-btn
+            :disabled="!meta.valid || !meta.dirty"
+            icon="mdi-check"
+            type="submit"
+          ></v-btn>
         </template>
       </v-card-actions>
-    </v-card>
-  </Form>
+    </Form>
+  </v-card>
 </template>
 
 <script setup lang="ts">
@@ -174,7 +178,8 @@ onMounted(() => {
   if (props.post) {
     if (props.post.text) {
       initialValues.text = props.post.text;
-    } else if (props.post.files) {
+    }
+    if (props.post.files) {
       initialValues.file = props.post.files;
     }
 

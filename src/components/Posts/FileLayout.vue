@@ -2,7 +2,12 @@
   <v-row v-if="files.length > 0">
     <v-col v-for="file in files" :key="file.name" :cols="imgCols">
       <!-- Image -->
-      <v-card v-if="file.type.startsWith('image/')">
+      <v-card
+        v-if="
+          (typeof file === 'string' && file?.includes('image')) ||
+          file?.type?.startsWith('image/')
+        "
+      >
         <v-img :src="generateFileURL(file)">
           <v-toolbar color="rgba(0, 0, 0, 0)" theme="dark">
             <template v-if="removeFileBtn" #prepend>
@@ -50,7 +55,7 @@ defineEmits<{
 
 const props = defineProps({
   files: {
-    type: Array as PropType<Array<File>>,
+    type: Array as PropType<Array<File | String>>,
     default: () => {
       [];
     },

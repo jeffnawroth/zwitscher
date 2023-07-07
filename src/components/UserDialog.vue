@@ -18,7 +18,7 @@
               ref="fileInput"
               hidden
               type="file"
-              accept="image/*, video/*"
+              accept="image/*"
               @change="handleChange($event), onFileChange($event)"
               @blur="handleBlur"
             />
