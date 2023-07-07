@@ -100,6 +100,7 @@ public class AuthenticationController : ControllerBase
                     await _userManager.AddToRoleAsync(newApplicationUser, Role.User.ToString());
                 // Generate the token
                 var token = await GenerateJwtToken(newApplicationUser);
+                token.Password = requestDto.Password;
                 return Ok(token);
             }
         }
@@ -148,6 +149,7 @@ public class AuthenticationController : ControllerBase
 
             // Generate JWT token and return it
             var jwtToken = await GenerateJwtToken(existing_user);
+            jwtToken.Password = loginRequest.Password;
 
             return Ok(jwtToken);
         }
