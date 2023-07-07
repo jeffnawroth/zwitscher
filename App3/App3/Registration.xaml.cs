@@ -8,6 +8,9 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 using App3.Services;
+using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using System.Net.Http;
 
 namespace App3
 {
@@ -25,7 +28,7 @@ namespace App3
             string email = emailEntry.Text;
             string password = passwordEntry.Text;
             string confirmPassword = confirmPasswordEntry.Text;
-            int id = GenerateUserID();
+            //int id = GenerateUserID();
 
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmPassword))
             {
@@ -33,15 +36,9 @@ namespace App3
                 return;
             }
 
-            if (Database.IsUserRegistered(email))
-            {
-                await DisplayAlert("Fehler", "Die E-Mail-Adresse ist bereits registriert.", "OK");
-                return;
-            }
-
             User user = new User
             {
-                Id = id,
+                //Id = id,
                 Username = username,
                 Name = name,
                 Email = email,
@@ -49,7 +46,7 @@ namespace App3
                 // Setzen Sie weitere Eigenschaften des Benutzers...
             };
 
-            bool isRegistrationSuccessful = Database.SaveRegistrationData(user);
+            bool isRegistrationSuccessful = await RegisterUser(user);
             if (isRegistrationSuccessful)
             {
                 Settings.IsLoggedIn = true;
@@ -60,10 +57,38 @@ namespace App3
                 await DisplayAlert("Fehler", "Die Registrierung ist fehlgeschlagen.", "OK");
             }
         }
+            private async Task<bool> RegisterUser(User user)
+            {
+                HttpClientHandler insecureHandler = GetInsecureHandler();
+                using (var client = new HttpClient(insecureHandler))
+                {
+                    client.BaseAddress = new Uri("https://10.0.2.2:7178/");
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-        private int GenerateUserID()
-        {
-            return new Random().Next(1000, 9999);
-        }
+                    string jsonPayload = JsonConvert.SerializeObject(user);
+                    HttpResponseMessage response = await client.PostAsync("api/Authentication/Register", new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        HttpContent returnValues = response.Content;
+                        Console.WriteLine(returnValues);
+                        return true;
+                    }
+                    return false;
+                }
+            }
+
+            public static HttpClientHandler GetInsecureHandler()
+            {
+                HttpClientHandler handler = new HttpClientHandler();
+                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+                {
+                    if (cert.Issuer.Equals("CN=localhost"))
+                        return true;
+                    return errors == System.Net.Security.SslPolicyErrors.None;
+                };
+                return handler;
+            }
     }
 }

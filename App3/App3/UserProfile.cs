@@ -12,7 +12,7 @@ namespace App3
     {
         private User _user;
         private Button _followButton;
-        private App _app; // Database anbinden 
+        //private App _app; // Database anbinden 
         public UserProfile(User user)
         {
             var mainLayout = new StackLayout
@@ -24,16 +24,16 @@ namespace App3
             };
             _followButton = new Button
             {
-                Text = GetFollowButtonText(),
+                //Text = GetFollowButtonText(),
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.StartAndExpand
             };
-            _followButton.Clicked += FollowButton_Clicked;
+            //_followButton.Clicked += FollowButton_Clicked;
 
             mainLayout.Children.Add(_followButton);
             var avatarImage = new Image
             {
-                Source = user.Avatar,
+                //Source = user.Avatar,
                 WidthRequest = 180,
                 HeightRequest = 180,
                 // Aspect = Aspect.AspectFill,
@@ -96,7 +96,7 @@ namespace App3
 
             var birthDayLabel = new Label
             {
-                Text = $"{user.BirthDate.ToString("dd/MM.yyyy")}",
+                Text = $"{user.BirthDate}",
                 TextColor = Color.Black,
                 FontSize = 20
             };
@@ -121,7 +121,7 @@ namespace App3
             var genderImage = new Image { };
 
 
-            var genderLayout = CreateViewWithIcon("Gender", genderLabel, GetGenderIconImage(user.Gender));
+            var genderLayout = CreateViewWithIcon("Gender", genderLabel, GetGenderIconImage(user.Gender.Value));
             infoLayout.Children.Add(genderLayout);
             mainLayout.Children.Add(infoLayout);
 
@@ -193,6 +193,7 @@ namespace App3
             Content = mainLayout;
 
         }
+        /*
         private string GetFollowButtonText()
         {
             if (App.CurrentUser.Following.Contains(_user.Id))
@@ -220,6 +221,7 @@ namespace App3
             App.CurrentUser.Following.Remove(_user.Id); // Entfernen der User-ID aus Following-Liste des aktuellen Benutzers
             _user.Followers.Remove(App.CurrentUser.Id); // Entfernen der eigenen User-ID aus Followers-Liste des angezeigten Benutzers
         }
+        */
         private StackLayout CreateViewWithIcon(string label, View view, string iconImage)
         {
             var icon = new Image

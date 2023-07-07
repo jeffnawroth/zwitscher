@@ -2,14 +2,19 @@
 using System.Collections.Generic;
 using App3.Services;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using System.Net.Http;
+using System.Text;
+using System;
 
 namespace App3.Layouts
 {
     public class PostLayout
     {
-        public static StackLayout CreatePostLayout(Posting post, User user, int currentUserId)
+        public static StackLayout CreatePostLayout(Posting post, User user, string currentUserId)
         {
-            
+
             var postLayout = new StackLayout
             {
                 Orientation = StackOrientation.Vertical,
@@ -63,7 +68,7 @@ namespace App3.Layouts
 
             var timestampLabel = new Label
             {
-                Text = post.Timestamp.ToString("d MMM"),
+                Text = post.Date.ToString("d MMM"),
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 TextColor = Color.Black
             };
@@ -78,7 +83,7 @@ namespace App3.Layouts
 
             var postTextLabel = new Label
             {
-                Text = post.PostText,
+                Text = post.Text,
                 Margin = new Thickness(0, 10, 0, 0),
                 TextColor = Color.Black
             };
@@ -98,8 +103,8 @@ namespace App3.Layouts
             };
 
             var likesLabel = new Label
-            {
-                Text = post.Likes.Count.ToString(),
+            {   
+                Text = post.UpVotes.Count.ToString(),
                 TextColor = Color.Black
             };
 
@@ -113,60 +118,62 @@ namespace App3.Layouts
 
             var dislikesLabel = new Label
             {
-                Text = post.Dislikes.Count.ToString(),
+                Text = post.DownVotes.Count.ToString(),
                 TextColor = Color.Black
             };
-
-            likeButton.Clicked += (s, e) =>
+            
+            likeButton.Clicked += async (s, e) =>
             {
-                if (post.Likes.Contains(currentUserId))
+                if (post.UpVotes.Contains(currentUserId))
                 {
-                    post.Likes.Remove(currentUserId);
-                    user.LikedPosts.Remove(post.PostId);
+                    post.UpVotes.Remove(currentUserId);
+                    //DownvotePost(post.Id);
+                    //user.LikedPosts.Remove(post.PostId);
                     likeButton.Source = "thumb_up.png";
                 }
                 else
                 {
-                    post.Likes.Add(currentUserId);
-                    user.DislikedPosts.Add(post.PostId);
+                    post.UpVotes.Add(currentUserId);
+                    //UpvotePost(post.Id, user.Email);
+                    //user.DislikedPosts.Add(post.PostId);
                     likeButton.Source = "like_pushed.png";
 
-                    if (post.Dislikes.Contains(currentUserId))
+                    if (post.DownVotes.Contains(currentUserId))
                     {
-                        post.Dislikes.Remove(currentUserId);
-                        user.DislikedPosts.Remove(post.PostId);
+                        post.DownVotes.Remove(currentUserId);
+                        //user.DislikedPosts.Remove(post.PostId);
                         dislikeButton.Source = "thumb_down.png";
                     }
                 }
 
-                likesLabel.Text = post.Likes.Count.ToString();
-                dislikesLabel.Text = post.Dislikes.Count.ToString();
+                likesLabel.Text = post.UpVotes.Count.ToString();
+                dislikesLabel.Text = post.DownVotes.Count.ToString();
             };
 
             dislikeButton.Clicked += (s, e) =>
             {
-                if (post.Dislikes.Contains(currentUserId))
+                if (post.DownVotes.Contains(currentUserId))
                 {
-                    post.Dislikes.Remove(currentUserId);
-                    user.DislikedPosts.Remove(post.PostId);
+                    post.DownVotes.Remove(currentUserId);
+                    //user.DislikedPosts.Remove(post.PostId);
                     dislikeButton.Source = "thumb_down.png";
                 }
                 else
                 {
-                    post.Dislikes.Add(currentUserId);
-                    user.DislikedPosts.Add(post.PostId);
+                    post.DownVotes.Add(currentUserId);
+                   // user.DislikedPosts.Add(post.PostId);
                     dislikeButton.Source = "dislike_pushed.png";
 
-                    if (post.Likes.Contains(currentUserId))
+                    if (post.UpVotes.Contains(currentUserId))
                     {
-                        post.Likes.Remove(currentUserId);
-                        user.LikedPosts.Remove(post.PostId);
+                        post.UpVotes.Remove(currentUserId);
+                       // user.LikedPosts.Remove(post.PostId);
                         likeButton.Source = "thumb_up.png";
                     }
                 }
 
-                likesLabel.Text = post.Likes.Count.ToString();
-                dislikesLabel.Text = post.Dislikes.Count.ToString();
+                likesLabel.Text = post.UpVotes.Count.ToString();
+                dislikesLabel.Text = post.DownVotes.Count.ToString();
             };
 
             var commentsButton = new ImageButton
@@ -223,7 +230,7 @@ namespace App3.Layouts
 
             return postLayout;
         }
-        private async Task OpenUserProfile(User user)
+        private static async Task OpenUserProfile(User user)
         {
             // Erstellen Sie eine neue Instanz der UserProfile-Seite und übergeben Sie den Benutzer
             var userProfilePage = new UserProfile(user);
@@ -231,7 +238,35 @@ namespace App3.Layouts
             // Navigieren Sie zur Benutzerprofilseite
             await Application.Current.MainPage.Navigation.PushAsync(userProfilePage);
         }
-    }
 
+        public static async void UpvotePost(string postID, string userEmail)
+        {
+            HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
+            using (var client = new HttpClient(insecureHandler))
+            {
+                client.BaseAddress = new Uri("https://10.0.2.2:7178/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                string jsonPayload = JsonConvert.SerializeObject(userEmail);
+                HttpResponseMessage response = await client.PostAsync("api/Post/" + postID + "/upvote", new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
+            }
+        }
+
+        public static async void DownvotePost(string postID)
+        {
+            HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
+            using (var client = new HttpClient(insecureHandler))
+            {
+                client.BaseAddress = new Uri("https://10.0.2.2:7178/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                string jsonPayload = JsonConvert.SerializeObject(postID);
+                HttpResponseMessage response = await client.PostAsync("api/Post/" + postID + "/downvote", null);
+            }
+        }
+
+    }
    
 }

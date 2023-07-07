@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,10 +21,43 @@ namespace App3
 
         private async void DeleteButton_Clicked(object sender, EventArgs e)
         {
-            // Code to deleat the account 
-            await DisplayAlert("Erfolgreich gelöscht", "Dein Konto wurde erfolgreich gelöscht.", "OK");
-            Application.Current.MainPage = new LoginPage();
-            Settings.IsLoggedIn = false;
+            bool deleteOkay = await Delete();
+            if(deleteOkay)
+            {
+                await DisplayAlert("Erfolgreich gelöscht", "Dein Konto wurde erfolgreich gelöscht.", "OK");
+                Application.Current.MainPage = new LoginPage();
+                Settings.IsLoggedIn = false;
+            }
+            else
+            {
+                await DisplayAlert("Löschung fehlgeschlagen", "Dein Konto wurde nicht gelöscht.", "OK");
+            }
+
+        }
+
+        public async Task<bool> Delete()
+        {
+            string token = LoginPage.token;
+            HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
+            using (var client = new HttpClient(insecureHandler))
+            {
+                client.BaseAddress = new Uri("https://10.0.2.2:7178/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+
+                HttpResponseMessage response = await client.DeleteAsync("api/User/" + LoginPage.userID);
+
+                Console.WriteLine(response.StatusCode);
+                Console.WriteLine("api/User/" + LoginPage.userID);
+                Console.WriteLine(response.Content);
+
+                if(response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                return false;
+            }
         }
     }
 }

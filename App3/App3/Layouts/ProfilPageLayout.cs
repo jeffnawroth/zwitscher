@@ -104,7 +104,7 @@ namespace App3.Layouts
 
             var birthDayLabel = new Label
             {
-                Text = $"{user.BirthDate.ToString("dd/MM.yyyy")}",
+                Text = $"{user.BirthDate}",
                 TextColor = Color.Black, FontSize = 20
             };
             var birthDateLayout = CreateViewWithIcon("geboren: ", birthDayLabel, "birthday.png");
@@ -127,12 +127,12 @@ namespace App3.Layouts
             var genderImage = new Image { };
 
 
-            var genderLayout = CreateViewWithIcon("Gender", genderLabel, GetGenderIconImage(user.Gender));
+            var genderLayout = CreateViewWithIcon("Gender", genderLabel, GetGenderIconImage(user.Gender.Value));
             infoLayout.Children.Add(genderLayout);
             mainLayout.Children.Add(infoLayout);
 
             if (user.Gender == Gender.Male)
-            {
+            { 
 
                 genderLabel.Text = "Männlich";
             }

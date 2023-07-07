@@ -30,7 +30,7 @@ using System.Linq;
                 var user = new User
                 {
                     Name = name,
-                    Id = GenerateUserId(),
+                    //Id = GenerateUserId(),
                     Email = email,
                     Username = username,
                     Password = password

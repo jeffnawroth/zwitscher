@@ -3,6 +3,12 @@ using System;
 using Xamarin.Forms;
 using Xamarin.Essentials;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Net.Http.Headers;
+using System.Net.Http;
+using System.Text;
 
 namespace App3
 {
@@ -74,7 +80,7 @@ namespace App3
                 TextColor = Color.Black
 
             };
-            
+
 
             var followersLabel = new Label
             {
@@ -108,9 +114,9 @@ namespace App3
             birthDateDatePicker = new DatePicker
             {
                 TextColor = Color.Black,
-                Format = "dd.MM.yyyy",
+                Format = "dd/MM/yyyy",
                 MaximumDate = DateTime.Today,
-                Date = user.BirthDate,
+                Date = DateTime.Parse(user.BirthDate),
                 FontSize = 20
             };
             var birthDateLayout = CreateViewWithIcon("geboren: ", birthDateDatePicker, "birthday.png");
@@ -118,7 +124,7 @@ namespace App3
 
             var joinDateLabel = new Label
             {
-                Text = $"{user.CreatedAt.ToString("dd/MM/yyyy")}",
+                Text = $"{user.CreatedAt.ToString("yyyy-MM-dd")}",
                 TextColor = Color.Black,
                 FontSize = 20
             };
@@ -132,9 +138,9 @@ namespace App3
             };
             genderPicker.Items.Add("Male");
             genderPicker.Items.Add("Female");
-            genderPicker.Items.Add("Other");
+            genderPicker.Items.Add("Diverse");
             genderPicker.SelectedItem = user.Gender.ToString();
-            var genderLayout = CreateViewWithIcon("Gender", genderPicker, GetGenderIconImage(user.Gender));
+            var genderLayout = CreateViewWithIcon("Gender", genderPicker, GetGenderIconImage(user.Gender.Value));
             infoLayout.Children.Add(genderLayout);
             mainLayout.Children.Add(infoLayout);
             var interestsLabel = new Label
@@ -226,11 +232,12 @@ namespace App3
             bioEditor.TextChanged += (sender, e) =>
             {
                 var newBio = bioEditor.Text;
+                user.Bio = newBio;
                 // Fügen Sie hier die Logik hinzu, um die neue Biografie zu speichern oder zu aktualisieren
             };
 
             mainLayout.Children.Add(bioEditor);
-            
+
 
             Content = mainLayout;
         }
@@ -279,14 +286,60 @@ namespace App3
         private async void SaveButton_Clicked(object sender, EventArgs e)
         {
             user.Name = nameEntry.Text;
-            user.BirthDate = birthDateDatePicker.Date;
+            user.BirthDate = birthDateDatePicker.Date.Date.ToString("yyyy-MM-dd");
             user.Gender = (Gender)Enum.Parse(typeof(Gender), genderPicker.SelectedItem.ToString());
             user.Bio = bioEditor.Text;
 
-            // Fügen Sie hier die Logik hinzu, um die Benutzerdaten zu speichern oder zu aktualisieren
-
-            await DisplayAlert("Erfolg", "Profil erfolgreich aktualisiert!", "OK");
+            bool isOk = await Save(user);
+            if(isOk) 
+            {
+                await DisplayAlert("Erfolg", "Profil erfolgreich aktualisiert!", "OK");
+            }
+            else
+            {
+                await DisplayAlert("Fehlschlag", "Profil wurde nicht aktualisiert!", "OK");
+            }
             await Navigation.PopAsync();
+        }
+
+        private async Task<bool> Save(User user)
+        {
+            string token = LoginPage.token;
+            HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
+            using (var client = new HttpClient(insecureHandler))
+            {
+                client.BaseAddress = new Uri("https://10.0.2.2:7178/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+
+                User updatedUser = new User
+                {
+                    Id = user.Id,
+                    //Avatar = user.Avatar,
+                    Role = user.Role,
+                    Username = user.Username,
+                    Name = user.Name,
+                    Email = user.Email,
+                    Gender = user.Gender,
+                    BirthDate = user.BirthDate,
+                    Followers = user.Followers,
+                    Following = user.Following,
+                    CreatedAt = user.CreatedAt,
+                    Bio = user.Bio,
+                    Interests = user.Interests,
+                    Locked = user.Locked
+                };
+
+                string jsonPayload = JsonConvert.SerializeObject(updatedUser);
+                HttpResponseMessage response = await client.PutAsync("api/User/" + user.Id, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                return false;
+            }
         }
     }
 }

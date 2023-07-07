@@ -31,6 +31,7 @@ namespace App3.Services
         {
             return registeredUsers;
         }
+        /*
         private User GetUserFromDatabase()
         {
             // Code zum Abrufen des Benutzers aus Ihrer Datenbank
@@ -38,10 +39,11 @@ namespace App3.Services
             List<User> registeredUsers = Database.GetRegisteredUsers(); // Annahme: GetRegisteredUsers gibt die Liste der registrierten Benutzer zurück
 
             // Hier können Sie den gewünschten Benutzer auswählen, z. B. anhand der ID oder einer anderen Eigenschaft
-            User user = registeredUsers.FirstOrDefault(u => u.Id == 1); // Annahme: Den Benutzer mit der ID 1 auswählen
+            User user = registeredUsers.FirstOrDefault(); // Annahme: Den Benutzer mit der ID 1 auswählen
 
             return user;
         }
-
+        
+        */
     }
 }
