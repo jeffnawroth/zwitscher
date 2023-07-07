@@ -575,6 +575,10 @@ public class UserController : ControllerBase
 
         var userInterests = await _context.UserInterests.Where(ui => ui.UserId == id).ToListAsync();
         _context.UserInterests.RemoveRange(userInterests);
+        
+        // Remove PostVotes related to the user
+        var userPostVotes = await _context.PostVotes.Where(pv => pv.UserId == id).ToListAsync();
+        _context.PostVotes.RemoveRange(userPostVotes);
 
         await _context.SaveChangesAsync();
 
