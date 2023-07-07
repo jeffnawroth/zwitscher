@@ -26,171 +26,6 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError } from './base';
 /**
  * 
  * @export
- * @interface ApplicationUser
- */
-export interface ApplicationUser {
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'id'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'userName'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'normalizedUserName'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'normalizedEmail'?: string | null;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof ApplicationUser
-     */
-    'emailConfirmed'?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'passwordHash'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'securityStamp'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'concurrencyStamp'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'phoneNumber'?: string | null;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof ApplicationUser
-     */
-    'phoneNumberConfirmed'?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof ApplicationUser
-     */
-    'twoFactorEnabled'?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'lockoutEnd'?: string | null;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof ApplicationUser
-     */
-    'lockoutEnabled'?: boolean;
-    /**
-     * 
-     * @type {number}
-     * @memberof ApplicationUser
-     */
-    'accessFailedCount'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'avatar'?: string | null;
-    /**
-     * 
-     * @type {Role}
-     * @memberof ApplicationUser
-     */
-    'role'?: Role;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'name'?: string | null;
-    /**
-     * 
-     * @type {Gender}
-     * @memberof ApplicationUser
-     */
-    'gender'?: Gender;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'birthDate'?: string | null;
-    /**
-     * 
-     * @type {Array<UserFollower>}
-     * @memberof ApplicationUser
-     */
-    'followers'?: Array<UserFollower> | null;
-    /**
-     * 
-     * @type {Array<UserFollowing>}
-     * @memberof ApplicationUser
-     */
-    'following'?: Array<UserFollowing> | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'createdAt'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'bio'?: string | null;
-    /**
-     * 
-     * @type {Array<UserInterest>}
-     * @memberof ApplicationUser
-     */
-    'interests'?: Array<UserInterest> | null;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof ApplicationUser
-     */
-    'locked'?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApplicationUser
-     */
-    'email'?: string | null;
-}
-
-
-/**
- * 
- * @export
  * @interface AuthResult
  */
 export interface AuthResult {
@@ -311,73 +146,6 @@ export type Gender = typeof Gender[keyof typeof Gender];
 /**
  * 
  * @export
- * @interface Post
- */
-export interface Post {
-    /**
-     * 
-     * @type {string}
-     * @memberof Post
-     */
-    'id'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof Post
-     */
-    'userId'?: string | null;
-    /**
-     * 
-     * @type {ApplicationUser}
-     * @memberof Post
-     */
-    'user'?: ApplicationUser;
-    /**
-     * 
-     * @type {string}
-     * @memberof Post
-     */
-    'avatar'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof Post
-     */
-    'name'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof Post
-     */
-    'username'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof Post
-     */
-    'text'?: string | null;
-    /**
-     * 
-     * @type {Array<PostVote>}
-     * @memberof Post
-     */
-    'votes'?: Array<PostVote> | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof Post
-     */
-    'date'?: string;
-    /**
-     * 
-     * @type {Array<PostFile>}
-     * @memberof Post
-     */
-    'files'?: Array<PostFile> | null;
-}
-/**
- * 
- * @export
  * @interface PostAdd
  */
 export interface PostAdd {
@@ -420,47 +188,10 @@ export interface PostEdit {
     'text'?: string | null;
     /**
      * 
-     * @type {Array<PostFile>}
+     * @type {Array<string>}
      * @memberof PostEdit
      */
-    'files'?: Array<PostFile> | null;
-}
-/**
- * 
- * @export
- * @interface PostFile
- */
-export interface PostFile {
-    /**
-     * 
-     * @type {string}
-     * @memberof PostFile
-     */
-    'id'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof PostFile
-     */
-    'data'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof PostFile
-     */
-    'mediaType'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof PostFile
-     */
-    'postId'?: string | null;
-    /**
-     * 
-     * @type {Post}
-     * @memberof PostFile
-     */
-    'post'?: Post;
+    'files'?: Array<string> | null;
 }
 /**
  * 
@@ -537,43 +268,6 @@ export interface PostResult {
 }
 
 
-/**
- * 
- * @export
- * @interface PostVote
- */
-export interface PostVote {
-    /**
-     * 
-     * @type {string}
-     * @memberof PostVote
-     */
-    'postId'?: string | null;
-    /**
-     * 
-     * @type {Post}
-     * @memberof PostVote
-     */
-    'post'?: Post;
-    /**
-     * 
-     * @type {string}
-     * @memberof PostVote
-     */
-    'userId'?: string | null;
-    /**
-     * 
-     * @type {ApplicationUser}
-     * @memberof PostVote
-     */
-    'user'?: ApplicationUser;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof PostVote
-     */
-    'isUpvote'?: boolean;
-}
 /**
  * 
  * @export
@@ -902,93 +596,6 @@ export interface UserEdit {
 }
 
 
-/**
- * 
- * @export
- * @interface UserFollower
- */
-export interface UserFollower {
-    /**
-     * 
-     * @type {string}
-     * @memberof UserFollower
-     */
-    'userId'?: string | null;
-    /**
-     * 
-     * @type {ApplicationUser}
-     * @memberof UserFollower
-     */
-    'user'?: ApplicationUser;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserFollower
-     */
-    'followerId'?: string | null;
-    /**
-     * 
-     * @type {ApplicationUser}
-     * @memberof UserFollower
-     */
-    'follower'?: ApplicationUser;
-}
-/**
- * 
- * @export
- * @interface UserFollowing
- */
-export interface UserFollowing {
-    /**
-     * 
-     * @type {string}
-     * @memberof UserFollowing
-     */
-    'userId'?: string | null;
-    /**
-     * 
-     * @type {ApplicationUser}
-     * @memberof UserFollowing
-     */
-    'user'?: ApplicationUser;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserFollowing
-     */
-    'followingId'?: string | null;
-    /**
-     * 
-     * @type {ApplicationUser}
-     * @memberof UserFollowing
-     */
-    'following'?: ApplicationUser;
-}
-/**
- * 
- * @export
- * @interface UserInterest
- */
-export interface UserInterest {
-    /**
-     * 
-     * @type {string}
-     * @memberof UserInterest
-     */
-    'userId'?: string | null;
-    /**
-     * 
-     * @type {ApplicationUser}
-     * @memberof UserInterest
-     */
-    'user'?: ApplicationUser;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserInterest
-     */
-    'interest'?: string | null;
-}
 /**
  * 
  * @export
@@ -2062,7 +1669,8 @@ export const PostApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
-         * @param {string} postId 
+         * @summary Downvotes a post.
+         * @param {string} postId The id of the post to downvote.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2099,7 +1707,8 @@ export const PostApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
-         * @param {string} postId 
+         * @summary Upvotes a post.
+         * @param {string} postId The id of the post to upvote.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2275,7 +1884,8 @@ export const PostApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} postId 
+         * @summary Downvotes a post.
+         * @param {string} postId The id of the post to downvote.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2285,7 +1895,8 @@ export const PostApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} postId 
+         * @summary Upvotes a post.
+         * @param {string} postId The id of the post to upvote.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2375,7 +1986,8 @@ export const PostApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
-         * @param {string} postId 
+         * @summary Downvotes a post.
+         * @param {string} postId The id of the post to downvote.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2384,7 +1996,8 @@ export const PostApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
-         * @param {string} postId 
+         * @summary Upvotes a post.
+         * @param {string} postId The id of the post to upvote.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2481,7 +2094,8 @@ export class PostApi extends BaseAPI {
 
     /**
      * 
-     * @param {string} postId 
+     * @summary Downvotes a post.
+     * @param {string} postId The id of the post to downvote.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PostApi
@@ -2492,7 +2106,8 @@ export class PostApi extends BaseAPI {
 
     /**
      * 
-     * @param {string} postId 
+     * @summary Upvotes a post.
+     * @param {string} postId The id of the post to upvote.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PostApi
