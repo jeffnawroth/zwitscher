@@ -470,34 +470,34 @@ public class UserController : ControllerBase
 
     // Updates the ApplicationUser.
     public async Task<IActionResult> Update(string id, [FromBody] UserEdit user)
-
     {
-        // Check if the given id matches the user's id.
-        if (id != user.Id)
-            // Return bad request if they don't match.
-            return BadRequest();
+        if (id != user.Id) return BadRequest();
 
-        // Check if the user object is valid.
-        if (!ModelState.IsValid)
-            // Return bad request with model state errors if it's not valid.
-            return BadRequest(ModelState);
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        // Find the existing user based on the id.
         var existingUser = await _userManager.FindByIdAsync(id);
 
-        // Return not found if the user doesn't exist.
         if (existingUser == null) return NotFound();
 
         if (user.Avatar != null)
         {
-            // Process the new avatar file.
-            var avatarData = await ProcessFormFile(user.Avatar);
+            byte[] avatarBytes;
+            try
+            {
+                avatarBytes = Convert.FromBase64String(user.Avatar);
+            }
+            catch (FormatException)
+            {
+                return BadRequest("Invalid Avatar format. Please provide a Base64 string.");
+            }
 
-            // Check if avatar data is the same as the existing one
-            if (!existingUser.Avatar.SequenceEqual(avatarData)) existingUser.Avatar = avatarData;
+            if (existingUser.Avatar == null || !existingUser.Avatar.SequenceEqual(avatarBytes))
+            {
+                existingUser.Avatar = avatarBytes;
+            }
         }
 
-        // Update the user properties with the properties from the given user object.
+
         existingUser.UserName = user.Username;
         existingUser.Email = user.Email;
         existingUser.Bio = user.Bio;
@@ -507,46 +507,38 @@ public class UserController : ControllerBase
         existingUser.BirthDate = user.BirthDate;
         existingUser.Role = user.Role;
 
-        // If user has interests
         if (user.Interests != null)
         {
-            // Delete existing interests of the user
             var existingInterests = _context.UserInterests.Where(ui => ui.UserId == existingUser.Id);
             _context.UserInterests.RemoveRange(existingInterests);
 
-            // Initialize a list to store the UserInterests
             var userInterests = new List<UserInterest>();
 
             foreach (var interestName in user.Interests)
             {
-                // Create a new UserInterest that links the user and the interest
                 var userInterest = new UserInterest
                 {
                     Interest = interestName,
                     User = existingUser
                 };
 
-                // Add the UserInterest to the list
                 userInterests.Add(userInterest);
             }
 
-            // Assign the list of UserInterests to the user's Interests
             existingUser.Interests = userInterests;
         }
 
-        // Update the existing user.
         var result = await _userManager.UpdateAsync(existingUser);
 
-        // If the update is successful, return an OK response with the updated user object.
         if (result.Succeeded)
         {
             await _context.SaveChangesAsync();
             return Ok("User wurde erfolgreich aktualisiert");
         }
 
-        // If the update fails, return a bad request with the errors from the result object.
         return BadRequest(result.Errors);
     }
+
 
 
     /// <summary>
