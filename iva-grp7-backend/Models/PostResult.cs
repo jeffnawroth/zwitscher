@@ -13,4 +13,5 @@ public class PostResult
     public List<string>? DownVotes { get; set; }
     public DateTime Date { get; set; }
     public List<string> Files { get; set; }
+    public bool Edited { get; set; }
 }

@@ -7,6 +7,7 @@ public class Post
     public Post()
     {
         Date = DateTime.UtcNow;
+        Edited = false;
     }
 
     public string Id { get; set; } = Guid.NewGuid().ToString();
@@ -23,4 +24,5 @@ public class Post
     public List<PostVote>? Votes { get; set; }
     public DateTime Date { get; set; }
     public List<PostFile>? Files { get; set; }
+    public bool Edited { get; set; }
 }

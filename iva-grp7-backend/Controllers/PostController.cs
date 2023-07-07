@@ -88,7 +88,8 @@ public class PostController : ControllerBase
             Text = post.Text,
             Date = post.Date,
             Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
-                    new List<string>()
+                    new List<string>(),
+            Edited = false
         };
 
         return CreatedAtAction("GetPost", new {id = post.Id}, postResult);
@@ -131,7 +132,8 @@ public class PostController : ControllerBase
                     UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
                     DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
                     Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
-                            new List<string>()
+                            new List<string>(),
+                    Edited = post.Edited
                 };
 
                 postResults.Add(postResult);
@@ -178,7 +180,8 @@ public class PostController : ControllerBase
                 UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
                 DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
                 Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
-                        new List<string>()
+                        new List<string>(),
+                Edited = post.Edited
             };
 
             return postResult;
@@ -238,7 +241,8 @@ public class PostController : ControllerBase
                     UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
                     DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
                     Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
-                            new List<string>()
+                            new List<string>(),
+                    Edited = post.Edited
                 };
                 postResults.Add(postResult);
             }
@@ -287,7 +291,8 @@ public class PostController : ControllerBase
                 UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
                 DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
                 Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
-                        new List<string>()
+                        new List<string>(),
+                Edited = post.Edited
             };
             postResults.Add(postResult);
         }
@@ -334,6 +339,7 @@ public class PostController : ControllerBase
         if (post == null) return NotFound("Post wurde nicht gefunden");
 
         post.Text = updatedPost.Text;
+        post.Edited = true;
 
         // Remove all existing files
         _context.PostFiles.RemoveRange(post.Files);
@@ -362,6 +368,7 @@ public class PostController : ControllerBase
                     MediaType = fileSplit[0] // Medientyp speichern
                 };
                 post.Files.Add(postFile);
+                
             }
         }
 
