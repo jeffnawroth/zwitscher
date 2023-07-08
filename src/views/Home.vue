@@ -53,7 +53,7 @@ watch(
   () => authStore.loggedIn,
   (newVal) => {
     if (!newVal) tab.value = "one";
-  }
+  },
 );
 
 watch(tab, (newVal) => {

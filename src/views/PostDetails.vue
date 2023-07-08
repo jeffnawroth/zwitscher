@@ -1,23 +1,14 @@
 <template>
   <PageToolbar icon="mdi-post-outline" title="Beitrag" back-button>
   </PageToolbar>
-  <v-list rounded="lg">
-    <v-list-item>
-      <Post :post="store.post!"></Post>
-    </v-list-item>
-    <v-divider></v-divider>
-    <v-list-item v-if="authStore.loggedIn">
-      <CreatePost></CreatePost>
-    </v-list-item>
-    <v-divider></v-divider>
-    <PostList
-      v-if="store.post?.comments?.length && store.post?.comments?.length > 0"
-      :posts="store.post?.comments"
-    ></PostList>
-    <v-list-item v-else class="d-flex justify-center"
-      >Der Beitrag hat noch keine Kommentare.</v-list-item
-    >
-  </v-list>
+  <Post :post="store.post!"></Post>
+  <v-divider></v-divider>
+  <CreatePost v-if="authStore.loggedIn"></CreatePost>
+  <v-divider></v-divider>
+  <PostList
+    :posts="store.post?.comments"
+    no-posts-message="Der Beitrag hat noch keine Kommentare."
+  ></PostList>
 </template>
 
 <script setup lang="ts">

@@ -12,10 +12,12 @@ export const usePostStore = defineStore("post", () => {
   const postsOfUser = ref<PostResult[]>([]);
   const postsFollowedUsers = ref<PostResult[]>([]);
   const post = ref<PostResult | undefined>();
+  const loading = ref(false);
 
   async function getAllPosts() {
     try {
       allPosts.value = [];
+      loading.value = true;
       const data = await PostApi.prototype.apiPostGet();
       allPosts.value = data.data;
     } catch (error) {
@@ -23,12 +25,15 @@ export const usePostStore = defineStore("post", () => {
         "error",
         "Beim Laden der öffentlichen Beiträge ist ein Fehler aufgetreten!",
       );
+    } finally {
+      loading.value = false;
     }
   }
 
   async function getPostsForUser(id: string) {
     try {
       allPosts.value = [];
+      loading.value = true;
       const data = await PostApi.prototype.apiPostUserUserIdGet(id);
       allPosts.value = data.data;
     } catch (error) {
@@ -36,11 +41,15 @@ export const usePostStore = defineStore("post", () => {
         "error",
         "Beim Laden der Beiträge ist ein Fehler aufgetreten!",
       );
+    } finally {
+      loading.value = false;
     }
   }
 
   async function getFollowedUsersPosts() {
     try {
+      allPosts.value = [];
+      loading.value = true;
       const data = await PostApi.prototype.apiPostFollowingPostsGet();
       allPosts.value = data.data;
     } catch (error) {
@@ -48,13 +57,14 @@ export const usePostStore = defineStore("post", () => {
         "error",
         "Beim Laden der Beiträge ist ein Fehler aufgetreten!",
       );
+    } finally {
+      loading.value = false;
     }
   }
 
   async function getPost(id: string) {
     try {
       const data = await PostApi.prototype.apiPostIdGet(id);
-      //@ts-expect-error
       post.value = data.data;
     } catch (error) {
       showNotification(
@@ -200,5 +210,6 @@ export const usePostStore = defineStore("post", () => {
     updatePost,
     upvotePost,
     downvotePost,
+    loading,
   };
 });

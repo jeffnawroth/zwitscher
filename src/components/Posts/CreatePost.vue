@@ -1,5 +1,5 @@
 <template>
-  <v-card :title="cardTitle">
+  <v-card :title="cardTitle" flat>
     <template #subtitle>
       <div v-if="route.name == 'post'">
         Antworten auf

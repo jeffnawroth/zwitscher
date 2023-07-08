@@ -1,132 +1,123 @@
 <template>
   <PageToolbar icon="mdi-account" title="Profil"></PageToolbar>
-  <v-list rounded="lg">
-    <v-list-item>
-      <v-card>
-        <template #prepend>
-          <v-avatar v-if="!usersStore.user?.avatar" size="75" color="grey">
-            <v-icon icon="mdi-account-circle" size="60"></v-icon>
-          </v-avatar>
-          <v-img v-else>
-            <v-avatar
-              size="75"
-              class="avatar"
-              :image="generateFileURL(usersStore.user?.avatar)"
-            ></v-avatar>
-          </v-img>
+  <v-card flat>
+    <template #prepend>
+      <v-avatar v-if="!usersStore.user?.avatar" size="75" color="grey">
+        <v-icon icon="mdi-account-circle" size="60"></v-icon>
+      </v-avatar>
+      <v-img v-else>
+        <v-avatar
+          size="75"
+          class="avatar"
+          :image="generateFileURL(usersStore.user?.avatar)"
+        ></v-avatar>
+      </v-img>
+    </template>
+    <template #append>
+      <div v-if="authStore.loggedIn">
+        <IconWithTooltip
+          v-if="$route.params.username !== authStore.user?.username"
+          :text="following ? 'Entfolgen' : 'Folgen'"
+          :icon="following ? 'mdi-account-check' : 'mdi-account-plus'"
+          @click="setFollow"
+        ></IconWithTooltip>
+        <IconWithTooltip
+          v-if="
+            $route.params.username == authStore.user?.username ||
+            authStore.user?.role == Role.NUMBER_0
+          "
+          :text="
+            $route.params.username == authStore.user?.username
+              ? 'Profil bearbeiten'
+              : 'Nutzer bearbeiten'
+          "
+          icon="mdi-account-edit"
+          @click="router.push({ name: 'profile-settings' })"
+        ></IconWithTooltip>
+        <template
+          v-if="
+            (authStore.user?.role == Role.NUMBER_0 ||
+              authStore.user?.role == Role.NUMBER_1) &&
+            $route.params.username != authStore.user?.username
+          "
+        >
+          <IconWithTooltip
+            :text="
+              usersStore.user?.locked ? 'Nutzer entsperren' : 'Nutzer sperren'
+            "
+            :icon="
+              usersStore.user?.locked
+                ? 'mdi-account-lock'
+                : 'mdi-account-lock-open'
+            "
+            @click="lockDialog = true"
+          ></IconWithTooltip>
+          <IconWithTooltip
+            text="Nutzer löschen"
+            icon="mdi-account-remove"
+            @click="deleteDialog = true"
+          ></IconWithTooltip>
         </template>
-        <template #append>
-          <div v-if="authStore.loggedIn">
-            <IconWithTooltip
-              v-if="$route.params.username !== authStore.user?.username"
-              :text="following ? 'Entfolgen' : 'Folgen'"
-              :icon="following ? 'mdi-account-check' : 'mdi-account-plus'"
-              @click="setFollow"
-            ></IconWithTooltip>
-            <IconWithTooltip
-              v-if="
-                $route.params.username == authStore.user?.username ||
-                authStore.user?.role == Role.NUMBER_0
-              "
-              :text="
-                $route.params.username == authStore.user?.username
-                  ? 'Profil bearbeiten'
-                  : 'Nutzer bearbeiten'
-              "
-              icon="mdi-account-edit"
-              @click="router.push({ name: 'profile-settings' })"
-            ></IconWithTooltip>
-            <template
-              v-if="
-                (authStore.user?.role == Role.NUMBER_0 ||
-                  authStore.user?.role == Role.NUMBER_1) &&
-                $route.params.username != authStore.user?.username
-              "
-            >
-              <IconWithTooltip
-                :text="
-                  usersStore.user?.locked
-                    ? 'Nutzer entsperren'
-                    : 'Nutzer sperren'
-                "
-                :icon="
-                  usersStore.user?.locked
-                    ? 'mdi-account-lock'
-                    : 'mdi-account-lock-open'
-                "
-                @click="lockDialog = true"
-              ></IconWithTooltip>
-              <IconWithTooltip
-                text="Nutzer löschen"
-                icon="mdi-account-remove"
-                @click="deleteDialog = true"
-              ></IconWithTooltip>
-            </template>
-          </div>
-        </template>
+      </div>
+    </template>
 
-        <template #title>
-          {{ `${usersStore.user?.name}` }}
-          <p class="v-card-subtitle">
-            {{ `@${usersStore.user?.username}` }}
-          </p>
-          <p class="v-card-subtitle">
-            <span class="font-weight-black">
-              {{ `${usersStore.user?.followers?.length}` }}
-            </span>
-            Abonnenten
+    <template #title>
+      {{ `${usersStore.user?.name}` }}
+      <p class="v-card-subtitle">
+        {{ `@${usersStore.user?.username}` }}
+      </p>
+      <p class="v-card-subtitle">
+        <span class="font-weight-black">
+          {{ `${usersStore.user?.followers?.length}` }}
+        </span>
+        Abonnenten
 
-            <span class="font-weight-black">{{
-              `${usersStore.user?.following?.length}`
-            }}</span>
-            Folge ich
-          </p>
-        </template>
-        <template #text>
-          <v-chip-group selected-class="">
-            <v-chip size="small" prepend-icon="mdi-calendar-range">
-              {{ `Beigetreten ${created}` }}
-            </v-chip>
-            <v-chip
-              v-if="usersStore.user?.birthDate"
-              size="small"
-              prepend-icon="mdi-cake"
-            >
-              {{ `Geboren ${birthDate}` }}
-            </v-chip>
-            <v-chip
-              v-if="usersStore.user?.gender != null"
-              size="small"
-              :prepend-icon="genderIcon"
-            >
-              {{ genderText }}
-            </v-chip>
-          </v-chip-group>
+        <span class="font-weight-black">{{
+          `${usersStore.user?.following?.length}`
+        }}</span>
+        Folge ich
+      </p>
+    </template>
+    <template #text>
+      <v-chip-group selected-class="">
+        <v-chip size="small" prepend-icon="mdi-calendar-range">
+          {{ `Beigetreten ${created}` }}
+        </v-chip>
+        <v-chip
+          v-if="usersStore.user?.birthDate"
+          size="small"
+          prepend-icon="mdi-cake"
+        >
+          {{ `Geboren ${birthDate}` }}
+        </v-chip>
+        <v-chip
+          v-if="usersStore.user?.gender != null"
+          size="small"
+          :prepend-icon="genderIcon"
+        >
+          {{ genderText }}
+        </v-chip>
+      </v-chip-group>
 
-          <v-chip-group selected-class="" variant="outlined">
-            <v-chip
-              v-for="interest in usersStore.user?.interests"
-              :key="interest"
-              size="small"
-            >
-              {{ interest }}
-            </v-chip>
-          </v-chip-group>
+      <v-chip-group selected-class="" variant="outlined">
+        <v-chip
+          v-for="interest in usersStore.user?.interests"
+          :key="interest"
+          size="small"
+        >
+          {{ interest }}
+        </v-chip>
+      </v-chip-group>
 
-          <span>{{ usersStore.user?.bio }}</span>
-        </template>
-      </v-card>
-    </v-list-item>
-    <v-divider></v-divider>
+      <span>{{ usersStore.user?.bio }}</span>
+    </template>
+  </v-card>
+  <v-divider></v-divider>
 
-    <PostList
-      v-if="store.sortedUserPosts.length > 0"
-      :posts="store.sortedUserPosts"
-    ></PostList>
-    <v-list-item v-else class="d-flex justify-center">
-      Der Nutzer hat noch keine Beiträge veröffentlicht.
-    </v-list-item>
-  </v-list>
+  <PostList
+    :posts="store.sortedUserPosts"
+    no-posts-message="Der Nutzer hat noch keine Beiträge veröffentlicht."
+  ></PostList>
   <router-view></router-view>
 
   <DeleteUserDialog v-model="deleteDialog"></DeleteUserDialog>
@@ -221,7 +212,7 @@ const genderIcon = computed(() => {
 
 async function setFollow() {
   const followingIndex = authStore.user?.following?.indexOf(
-    usersStore.user!.id!
+    usersStore.user!.id!,
   );
   const followerIndex = usersStore.user?.followers?.indexOf(authStore.user!.id);
 

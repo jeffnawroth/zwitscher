@@ -14,6 +14,7 @@ export const useUsersStore = defineStore("users", () => {
   const users = ref<User[]>([]);
   const user = ref<User>();
   const followedUsers = ref<UserLight[]>([]);
+  const loading = ref(false);
 
   async function createUser(user: UserAdd) {
     try {
@@ -24,20 +25,24 @@ export const useUsersStore = defineStore("users", () => {
     } catch {
       showNotification(
         "error",
-        "Beim Erstellen des Nutzers ist ein Fehler aufgetreten"
+        "Beim Erstellen des Nutzers ist ein Fehler aufgetreten",
       );
     }
   }
 
   async function getUsers() {
     try {
+      users.value = [];
+      loading.value = true;
       const data = await UserApi.prototype.apiUserGet();
       users.value = data.data as User[];
     } catch (error) {
       showNotification(
         "error",
-        "Beim Laden der Nutzer ist ein Fehler aufgetreten"
+        "Beim Laden der Nutzer ist ein Fehler aufgetreten",
       );
+    } finally {
+      loading.value = false;
     }
   }
 
@@ -48,7 +53,7 @@ export const useUsersStore = defineStore("users", () => {
     } catch (error) {
       showNotification(
         "error",
-        "Beim Laden der gefolgten Nutzer ist ein Fehler aufgetreten"
+        "Beim Laden der gefolgten Nutzer ist ein Fehler aufgetreten",
       );
     }
   }
@@ -69,13 +74,13 @@ export const useUsersStore = defineStore("users", () => {
   async function getUserByUsername(username: string) {
     try {
       const data = await UserApi.prototype.apiUserGetByUsernameUsernameGet(
-        username
+        username,
       );
       user.value = data.data as User;
     } catch (error) {
       showNotification(
         "error",
-        "Beim Laden des Nutzers ist ein Fehler aufgetreten"
+        "Beim Laden des Nutzers ist ein Fehler aufgetreten",
       );
     }
   }
@@ -88,7 +93,7 @@ export const useUsersStore = defineStore("users", () => {
     } catch {
       showNotification(
         "error",
-        "Beim Löschen des Nutzers ist ein Fehler aufgetreten"
+        "Beim Löschen des Nutzers ist ein Fehler aufgetreten",
       );
     }
   }
@@ -106,7 +111,7 @@ export const useUsersStore = defineStore("users", () => {
     } catch {
       showNotification(
         "error",
-        "Beim Bearbeiten des Nutzers ist ein Fehler aufgetreten"
+        "Beim Bearbeiten des Nutzers ist ein Fehler aufgetreten",
       );
     }
   }
@@ -121,7 +126,7 @@ export const useUsersStore = defineStore("users", () => {
     } catch (error) {
       showNotification(
         "error",
-        "Beim Folgen des Nutzers ist ein Fehler aufgetreten"
+        "Beim Folgen des Nutzers ist ein Fehler aufgetreten",
       );
     }
   }
@@ -133,7 +138,7 @@ export const useUsersStore = defineStore("users", () => {
     } catch (error) {
       showNotification(
         "error",
-        "Beim Entfolgen des Nutzers ist ein Fehler aufgetreten"
+        "Beim Entfolgen des Nutzers ist ein Fehler aufgetreten",
       );
     }
   }
@@ -145,7 +150,7 @@ export const useUsersStore = defineStore("users", () => {
     } catch (error) {
       showNotification(
         "error",
-        "Beim ändern des Passworts ist ein Fehler aufgetreten!"
+        "Beim ändern des Passworts ist ein Fehler aufgetreten!",
       );
       return Promise.reject(error);
     }
@@ -158,7 +163,7 @@ export const useUsersStore = defineStore("users", () => {
     } catch (error) {
       showNotification(
         "error",
-        "Beim Ändern der E-Mail ist ein Fehler aufgetreten!"
+        "Beim Ändern der E-Mail ist ein Fehler aufgetreten!",
       );
       return Promise.reject(error);
     }
@@ -179,5 +184,6 @@ export const useUsersStore = defineStore("users", () => {
     unfollowUser,
     changePassword,
     changeEmail,
+    loading,
   };
 });

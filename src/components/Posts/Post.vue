@@ -6,6 +6,7 @@
     }`"
     density="compact"
     rounded="lg"
+    flat
     @click="openPost"
   >
     <template #prepend>

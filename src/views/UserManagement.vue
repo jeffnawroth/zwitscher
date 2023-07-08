@@ -3,6 +3,7 @@
     :headers="headers"
     :items="filteredUsers"
     :sort-by="[{ key: 'username', order: 'asc' }]"
+    :loading="store.loading"
   >
     <!-- :search="search" -->
     <template #top>
@@ -83,7 +84,7 @@ const filteredUsers = computed(() => {
   if (authStore.user?.role == Role.NUMBER_0) return store.users;
   else if (authStore.user?.role == Role.NUMBER_1)
     return store.users.filter(
-      (user) => user.role != Role.NUMBER_0 && user.role != Role.NUMBER_1
+      (user) => user.role != Role.NUMBER_0 && user.role != Role.NUMBER_1,
     );
   return store.users;
 });
