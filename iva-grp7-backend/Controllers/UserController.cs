@@ -481,22 +481,48 @@ public class UserController : ControllerBase
 
         if (user.Avatar != null)
         {
-            var fileSplit = user.Avatar.Split(',');
-            byte[] avatarBytes;
             try
             {
-                avatarBytes = Convert.FromBase64String(fileSplit[1]);
-            }
-            catch (FormatException)
-            {
-                return BadRequest("Invalid Avatar format. Please provide a Base64 string.");
-            }
+                byte[] avatarBytes;
 
-            if (existingUser.Avatar == null || !existingUser.Avatar.SequenceEqual(avatarBytes))
+                // Check if the Base64 string contains a comma (and therefore a media type prefix)
+                if (user.Avatar.Contains(','))
+                {
+                    // If the Base64 string contains a comma, split it and only use the second part
+                    var fileSplit = user.Avatar.Split(',');
+                    try
+                    {
+                        avatarBytes = Convert.FromBase64String(fileSplit[1]);
+                    }
+                    catch (FormatException)
+                    {
+                        return BadRequest("Invalid Avatar format. Please provide a valid Base64 string.");
+                    }
+                }
+                else
+                {
+                    // If the Base64 string does not contain a comma, use the whole string
+                    try
+                    {
+                        avatarBytes = Convert.FromBase64String(user.Avatar);
+                    }
+                    catch (FormatException)
+                    {
+                        return BadRequest("Invalid Avatar format. Please provide a valid Base64 string.");
+                    }
+                }
+
+                if (existingUser.Avatar == null || !existingUser.Avatar.SequenceEqual(avatarBytes))
+                {
+                    existingUser.Avatar = avatarBytes;
+                }
+            }
+            catch (Exception e)
             {
-                existingUser.Avatar = avatarBytes;
+                return BadRequest("Fehler beim Aktualisieren des Avatars: " + e.Message);
             }
         }
+
 
 
         existingUser.UserName = user.Username;
