@@ -271,6 +271,12 @@ export interface PostResult {
      * @memberof PostResult
      */
     'files'?: Array<string> | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PostResult
+     */
+    'edited'?: boolean;
 }
 
 

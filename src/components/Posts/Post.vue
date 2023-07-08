@@ -1,7 +1,9 @@
 <template>
   <v-card
     v-if="!editMode"
-    :subtitle="`@${post.username} • ${formattedDate}`"
+    :subtitle="`@${post.username} • ${formattedDate}  ${
+      post.edited ? '• bearbeitet' : ''
+    }`"
     density="compact"
     rounded="lg"
     @click="openPost"

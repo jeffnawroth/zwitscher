@@ -21,7 +21,7 @@ export const usePostStore = defineStore("post", () => {
     } catch (error) {
       showNotification(
         "error",
-        "Beim Laden der öffentlichen Beiträge ist ein Fehler aufgetreten!"
+        "Beim Laden der öffentlichen Beiträge ist ein Fehler aufgetreten!",
       );
     }
   }
@@ -34,7 +34,7 @@ export const usePostStore = defineStore("post", () => {
     } catch (error) {
       showNotification(
         "error",
-        "Beim Laden der Beiträge ist ein Fehler aufgetreten!"
+        "Beim Laden der Beiträge ist ein Fehler aufgetreten!",
       );
     }
   }
@@ -46,7 +46,7 @@ export const usePostStore = defineStore("post", () => {
     } catch (error) {
       showNotification(
         "error",
-        "Beim Laden der Beiträge ist ein Fehler aufgetreten!"
+        "Beim Laden der Beiträge ist ein Fehler aufgetreten!",
       );
     }
   }
@@ -59,7 +59,7 @@ export const usePostStore = defineStore("post", () => {
     } catch (error) {
       showNotification(
         "error",
-        "Beim Laden des Beitrags ist ein Fehler aufgetreten!"
+        "Beim Laden des Beitrags ist ein Fehler aufgetreten!",
       );
     }
   }
@@ -72,7 +72,7 @@ export const usePostStore = defineStore("post", () => {
     } catch (error) {
       showNotification(
         "error",
-        "Beim Erstellen des Beitrags ist ein Fehler aufgetreten!"
+        "Beim Erstellen des Beitrags ist ein Fehler aufgetreten!",
       );
       return Promise.reject(error);
     }
@@ -85,7 +85,7 @@ export const usePostStore = defineStore("post", () => {
     } catch (error) {
       showNotification(
         "error",
-        "Beim Erstellen des Kommentars ist ein Fehler aufgetreten!"
+        "Beim Erstellen des Kommentars ist ein Fehler aufgetreten!",
       );
     }
   }
@@ -98,7 +98,7 @@ export const usePostStore = defineStore("post", () => {
     } catch (error) {
       showNotification(
         "error",
-        "Beim Löschen des Beitrags ist ein Fehler aufgetreten!"
+        "Beim Löschen des Beitrags ist ein Fehler aufgetreten!",
       );
     }
   }
@@ -110,15 +110,15 @@ export const usePostStore = defineStore("post", () => {
       if (postUpdate.files)
         postUpdate.files = await filesToBase64(postUpdate.files);
       await PostApi.prototype.apiPostPut(postUpdate);
+      postUpdate.edited = true;
       const index = allPosts.value.findIndex((x) => x.id === postUpdate.id);
-      if (post.value?.id == postUpdate.id) post.value = postUpdate;
-      //@ts-ignore
       if (index > -1) allPosts.value.splice(index, 1, postUpdate);
+      if (post.value?.id == postUpdate.id) post.value = postUpdate;
       showNotification("success", "Der Beitrag wurde erfolgreich bearbeitet!");
     } catch (error) {
       showNotification(
         "error",
-        "Beim Bearbeiten des Beitrags ist ein Fehler aufgetreten!"
+        "Beim Bearbeiten des Beitrags ist ein Fehler aufgetreten!",
       );
       return Promise.reject(error);
     }
@@ -143,7 +143,7 @@ export const usePostStore = defineStore("post", () => {
     } catch (error) {
       showNotification(
         "error",
-        "Beim liken des Beitrags ist ein Fehler aufgetreten!"
+        "Beim liken des Beitrags ist ein Fehler aufgetreten!",
       );
     }
   }
@@ -166,7 +166,7 @@ export const usePostStore = defineStore("post", () => {
     } catch (error) {
       showNotification(
         "error",
-        "Beim disliken des Beitrags ist ein Fehler aufgetreten!"
+        "Beim disliken des Beitrags ist ein Fehler aufgetreten!",
       );
     }
   }
