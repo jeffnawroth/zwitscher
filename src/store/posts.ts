@@ -14,6 +14,9 @@ export const usePostStore = defineStore("post", () => {
   const post = ref<PostResult | undefined>();
   const loading = ref(false);
 
+  /**
+   * Gets all posts.
+   */
   async function getAllPosts() {
     try {
       allPosts.value = [];
@@ -30,6 +33,10 @@ export const usePostStore = defineStore("post", () => {
     }
   }
 
+  /**
+   * Gets all posts from a specific user.
+   * @param id
+   */
   async function getPostsForUser(id: string) {
     try {
       allPosts.value = [];
@@ -46,6 +53,9 @@ export const usePostStore = defineStore("post", () => {
     }
   }
 
+  /**
+   * Gets all posts from following users.
+   */
   async function getFollowedUsersPosts() {
     try {
       allPosts.value = [];
@@ -62,6 +72,10 @@ export const usePostStore = defineStore("post", () => {
     }
   }
 
+  /**
+   * Gets a post by its id
+   * @param id
+   */
   async function getPost(id: string) {
     try {
       const data = await PostApi.prototype.apiPostIdGet(id);
@@ -74,6 +88,10 @@ export const usePostStore = defineStore("post", () => {
     }
   }
 
+  /**
+   * Creates a new post
+   * @param post
+   */
   async function createPost(post: PostAdd) {
     try {
       if (post.files) post.files = await filesToBase64(post.files);
@@ -100,6 +118,10 @@ export const usePostStore = defineStore("post", () => {
     }
   }
 
+  /**
+   * Deletes a post
+   * @param id
+   */
   async function deletePost(id: string) {
     try {
       await PostApi.prototype.apiPostIdDelete(id);
@@ -113,6 +135,10 @@ export const usePostStore = defineStore("post", () => {
     }
   }
 
+  /**
+   * Updates a post
+   * @param postUpdate
+   */
   async function updatePost(postUpdate: PostResult) {
     try {
       //@ts-ignore
@@ -134,6 +160,10 @@ export const usePostStore = defineStore("post", () => {
     }
   }
 
+  /**
+   * Like a post
+   * @param id
+   */
   async function upvotePost(id: string) {
     try {
       await PostApi.prototype.apiPostPostIdUpvotePost(id);
@@ -161,6 +191,11 @@ export const usePostStore = defineStore("post", () => {
       );
     }
   }
+
+  /**
+   * Dislike a post
+   * @param id
+   */
   async function downvotePost(id: string) {
     try {
       await PostApi.prototype.apiPostPostIdDownvotePost(id);

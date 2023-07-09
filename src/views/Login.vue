@@ -85,6 +85,10 @@ const validationSchema = object({
   password: string().required().label("Passwort"),
 });
 
+/**
+ * Try to login a user with passed values if not logged. If user is locken then open locked-dialog
+ * @param values
+ */
 async function submit(values: any) {
   try {
     await store.login(values);

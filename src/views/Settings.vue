@@ -50,6 +50,9 @@ const deleteAccountDialog = ref(false);
 const usersStore = useUsersStore();
 const authStore = useAuthenticationStore();
 
+/**
+ * Delete account and push to login
+ */
 async function deleteAccount() {
   await usersStore.deleteUser(authStore.user!.id);
   authStore.logout();

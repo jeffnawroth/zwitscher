@@ -3,6 +3,10 @@ import { v4 as uuidv4 } from "uuid";
 import { useNotificationStore } from "./notification";
 import { PostResult } from "@/typescript-axios-generated";
 
+/**
+ * Sort posts based on their date
+ * @param posts
+ */
 export function sortByDateDescending(posts: PostResult[]) {
   return posts.sort((a: PostResult, b: PostResult) => {
     const dateA = new Date(a.date!);
@@ -11,9 +15,14 @@ export function sortByDateDescending(posts: PostResult[]) {
   });
 }
 
+/**
+ * Create a new notification
+ * @param type
+ * @param text
+ */
 export function showNotification(
   type: "error" | "success" | "warning" | "info" | undefined,
-  text: string
+  text: string,
 ) {
   const store = useNotificationStore();
   const notification: NotificationAlert = {

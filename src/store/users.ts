@@ -16,6 +16,10 @@ export const useUsersStore = defineStore("users", () => {
   const followedUsers = ref<UserLight[]>([]);
   const loading = ref(false);
 
+  /**
+   * Creates a new user
+   * @param user
+   */
   async function createUser(user: UserAdd) {
     try {
       if (user.avatar) user.avatar = await toBase64(user.avatar);
@@ -30,10 +34,14 @@ export const useUsersStore = defineStore("users", () => {
     }
   }
 
+  /**
+   * Get a list of all users
+   */
   async function getUsers() {
     try {
-      users.value = [];
-      loading.value = true;
+      if (users.value.length === 0) loading.value = true;
+      // users.value = [];
+      // loading.value = true;
       const data = await UserApi.prototype.apiUserGet();
       users.value = data.data as User[];
     } catch (error) {
@@ -46,6 +54,9 @@ export const useUsersStore = defineStore("users", () => {
     }
   }
 
+  /**
+   * Gets a list of all followed users with specified attributes
+   */
   async function fetchFollowedUsers() {
     try {
       const data = await UserApi.prototype.apiUserFollowedUsersLightGet();
@@ -71,6 +82,10 @@ export const useUsersStore = defineStore("users", () => {
   //   }
   // }
 
+  /**
+   * Gets a user with the username
+   * @param username
+   */
   async function getUserByUsername(username: string) {
     try {
       const data = await UserApi.prototype.apiUserGetByUsernameUsernameGet(
@@ -85,6 +100,10 @@ export const useUsersStore = defineStore("users", () => {
     }
   }
 
+  /**
+   * Deletes a user with the specified ID
+   * @param id
+   */
   async function deleteUser(id: string) {
     try {
       await UserApi.prototype.apiUserIdDelete(id);
@@ -98,6 +117,11 @@ export const useUsersStore = defineStore("users", () => {
     }
   }
 
+  /**
+   * Updates an existing user
+   * @param userEdit
+   * @param notification
+   */
   async function updateUser(userEdit: UserEdit, notification = true) {
     try {
       if (userEdit.avatar) userEdit.avatar = await toBase64(userEdit.avatar);
@@ -116,6 +140,10 @@ export const useUsersStore = defineStore("users", () => {
     }
   }
 
+  /**
+   * Allows a user to follow another user
+   * @param id
+   */
   async function followUser(id: string) {
     try {
       await UserApi.prototype.apiUserIdFollowPost(id);
@@ -130,6 +158,11 @@ export const useUsersStore = defineStore("users", () => {
       );
     }
   }
+
+  /**
+   * Allows a user to unfollow another user
+   * @param id
+   */
   async function unfollowUser(id: string) {
     try {
       await UserApi.prototype.apiUserIdUnfollowPost(id);
@@ -143,6 +176,10 @@ export const useUsersStore = defineStore("users", () => {
     }
   }
 
+  /**
+   * Updates a users password
+   * @param password
+   */
   async function changePassword(password: string) {
     try {
       await UserApi.prototype.apiUserPasswordChangePut(password);
@@ -156,6 +193,10 @@ export const useUsersStore = defineStore("users", () => {
     }
   }
 
+  /**
+   * Updates a users email
+   * @param email
+   */
   async function changeEmail(email: string) {
     try {
       await UserApi.prototype.apiUserEmailChangePut(email);

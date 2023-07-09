@@ -210,6 +210,9 @@ const genderIcon = computed(() => {
   return genderMap[gender];
 });
 
+/**
+ * Follow or unfollow user
+ */
 async function setFollow() {
   const followingIndex = authStore.user?.following?.indexOf(
     usersStore.user!.id!,
@@ -230,6 +233,9 @@ async function setFollow() {
   authStore.setUserData(authStore.user);
 }
 
+/**
+ * Load all posts for a specific user
+ */
 function loadPosts() {
   store.getPostsForUser(usersStore.user!.id!);
 }

@@ -99,21 +99,36 @@ function getUserRole(role: Role) {
   return roleMap[role];
 }
 
+/**
+ * Open user in dialog for editing
+ * @param user
+ */
 function editUser(user: User) {
   store.user = user;
   router.push({ name: "edit-user", params: { username: user.username } });
 }
-
+/**
+ * Open dialog to delete the user
+ * @param user
+ */
 function openDeleteDialog(user?: User) {
   store.user = user;
   deleteDialog.value = true;
 }
 
+/**
+ * Open dialog to lock the user
+ * @param user
+ */
 function openLockDialog(user: User) {
   store.user = user;
   lockDialog.value = true;
 }
 
+/**
+ * Open profile
+ * @param user
+ */
 function openProfile(user: User) {
   router.push({
     name: "profile",

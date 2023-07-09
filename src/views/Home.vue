@@ -56,6 +56,9 @@ watch(
   },
 );
 
+/**
+ * Load posts based on tab (public/for you) selection
+ */
 watch(tab, (newVal) => {
   if (newVal === "two") {
     store.getFollowedUsersPosts();

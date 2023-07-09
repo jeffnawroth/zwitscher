@@ -110,6 +110,10 @@ const validationSchema = object({
     .label("Passwörter"),
 });
 
+/**
+ * Register user with passed values
+ * @param values
+ */
 async function submit(values: any) {
   const { passwordConfirm, ...credentials } = values;
   await store.register(credentials);

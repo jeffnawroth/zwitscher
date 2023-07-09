@@ -179,6 +179,9 @@ const usersGrowthData = {
   ],
 };
 
+/**
+ * Get the last 7 days
+ */
 function generateWeekdays() {
   const days = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
 
@@ -234,10 +237,12 @@ async function fetchGenderDistribution() {
     "gender-distribution-chart",
     "doughnut",
     genderDistributionData,
-    true
+    true,
   );
 }
-
+/**
+ * Get the last 12 Months
+ */
 function generateMonthLabels() {
   const months = [
     "Jan",
@@ -265,11 +270,14 @@ function generateMonthLabels() {
   return last12Months;
 }
 
+/**
+ * Create a new chart
+ */
 function createNewChart(
   chartId: string,
   chartType: any,
   chartData: any,
-  showLegend: boolean = false
+  showLegend: boolean = false,
 ) {
   const chartElement = document.getElementById(chartId);
   if (chartElement) {
@@ -294,6 +302,11 @@ function createNewChart(
   }
 }
 
+/**
+ * Create a excel file
+ * @param data
+ * @param sheetName
+ */
 function createExcelFile(data: any, sheetName: string) {
   const workbook = utils.book_new();
   const worksheet = utils.json_to_sheet(data);
@@ -301,7 +314,11 @@ function createExcelFile(data: any, sheetName: string) {
   return workbook;
 }
 
-// Funktion zum Herunterladen der Excel-Datei
+/**
+ * Download file as excel file
+ * @param workbook
+ * @param filename
+ */
 function downloadExcelFile(workbook: WorkBook, filename: string) {
   const excelBuffer = write(workbook, { bookType: "xlsx", type: "array" });
   const blob = new Blob([excelBuffer], {
@@ -310,7 +327,9 @@ function downloadExcelFile(workbook: WorkBook, filename: string) {
   saveAs(blob, filename);
 }
 
-// Funktion zum Herunterladen der Posts pro Tag als Excel-Datei
+/**
+ * Download number of posts for the last 7 days
+ */
 function downloadPostsPerDay() {
   const data = postsPerDayData.labels.map((day, index) => ({
     Tag: day,
@@ -320,7 +339,9 @@ function downloadPostsPerDay() {
   downloadExcelFile(workbook, "posts_pro_tag.xlsx");
 }
 
-// Funktion zum Herunterladen des Nutzerzuwachses als Excel-Datei
+/**
+ * Download user growth for the last 12 months
+ */
 function downloadUserGrowth() {
   const data = usersGrowthData.labels.map((month, index) => ({
     Monat: month,
@@ -330,7 +351,9 @@ function downloadUserGrowth() {
   downloadExcelFile(workbook, "nutzerzuwachs.xlsx");
 }
 
-// Funktion zum Herunterladen der Altersverteilung als Excel-Datei
+/**
+ * Download age distribution
+ */
 function downloadAgeDistribution() {
   const data = ageDistributionData.labels.map((group, index) => ({
     Altersgruppe: group,
@@ -340,8 +363,9 @@ function downloadAgeDistribution() {
   downloadExcelFile(workbook, "altersverteilung.xlsx");
 }
 
-// Funktion zum Herunterladen der Geschlechterverteilung als Excel-Datei
-function downloadGenderDistribution() {
+/**
+ * Download gender distribution
+ */ function downloadGenderDistribution() {
   const data = genderDistributionData.labels.map((gender, index) => ({
     Geschlecht: gender,
     Anzahl: genderDistributionData.datasets[0].data[index] + "%",
@@ -350,7 +374,9 @@ function downloadGenderDistribution() {
   downloadExcelFile(workbook, "geschlechterverteilung.xlsx");
 }
 
-// Funktion zum Herunterladen der aktiven Nutzer als Excel-Datei
+/**
+ * Download the number of active users for the last 12 months
+ */
 function downloadActiveUsers() {
   const data = activeUsersData.labels.map((month, index) => ({
     Monat: month,
@@ -360,6 +386,9 @@ function downloadActiveUsers() {
   downloadExcelFile(workbook, "aktive_nutzer.xlsx");
 }
 
+/**
+ * Download the number of posts from today
+ */
 function downloadPostsToday() {
   const data = [
     {
@@ -371,6 +400,9 @@ function downloadPostsToday() {
   downloadExcelFile(workbook, "posts_heute.xlsx");
 }
 
+/**
+ * Download the number of user growth from today
+ */
 function downloadUserGrowthToday() {
   const data = [
     {
@@ -382,6 +414,9 @@ function downloadUserGrowthToday() {
   downloadExcelFile(workbook, "nutzerzuwachs_heute.xlsx");
 }
 
+/**
+ * Download the number of all active users from today
+ */
 function downloadActiveUsersToday() {
   const data = [
     {

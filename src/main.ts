@@ -16,6 +16,9 @@ import { registerPlugins } from "@/plugins";
 import axios from "axios";
 import { useAuthenticationStore } from "./store/authentication";
 
+/**
+ * Try to refresh user token when user is unauthorized and try axios call again
+ */
 axios.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -35,7 +38,7 @@ axios.interceptors.response.use(
       }
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 const app = createApp(App);
