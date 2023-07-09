@@ -137,17 +137,21 @@ export const usePostStore = defineStore("post", () => {
   async function upvotePost(id: string) {
     try {
       await PostApi.prototype.apiPostPostIdUpvotePost(id);
-      const post = allPosts.value.find((post) => post.id === id)!;
+      const postFound = allPosts.value.find((post) => post.id === id)!;
       const authStore = useAuthenticationStore();
-      const likedIndex = post?.upVotes?.indexOf(authStore.user!.id);
-      const dislikedIndex = post?.downVotes?.indexOf(authStore.user!.id);
+      const likedIndex = postFound?.upVotes?.indexOf(authStore.user!.id);
+      const dislikedIndex = postFound?.downVotes?.indexOf(authStore.user!.id);
       if (likedIndex !== undefined && likedIndex !== -1) {
-        post.upVotes?.splice(likedIndex, 1);
+        postFound.upVotes?.splice(likedIndex, 1);
+        if (post.value?.id === id) post.value.upVotes?.splice(likedIndex, 1);
       } else {
-        post.upVotes = post.upVotes ? post.upVotes : [];
-        post.upVotes?.push(authStore.user!.id);
+        postFound.upVotes = postFound.upVotes ? postFound.upVotes : [];
+        postFound.upVotes?.push(authStore.user!.id);
+        post.value?.upVotes?.push(authStore.user?.id!);
         if (dislikedIndex !== undefined && dislikedIndex !== -1) {
-          post.downVotes?.splice(dislikedIndex, 1);
+          postFound.downVotes?.splice(dislikedIndex, 1);
+          if (post.value?.id === id)
+            post.value.downVotes?.splice(dislikedIndex, 1);
         }
       }
     } catch (error) {
@@ -160,17 +164,21 @@ export const usePostStore = defineStore("post", () => {
   async function downvotePost(id: string) {
     try {
       await PostApi.prototype.apiPostPostIdDownvotePost(id);
-      const post = allPosts.value.find((post) => post.id === id)!;
+      const postFound = allPosts.value.find((post) => post.id === id)!;
       const authStore = useAuthenticationStore();
-      const likedIndex = post?.upVotes?.indexOf(authStore.user!.id);
-      const dislikedIndex = post?.downVotes?.indexOf(authStore.user!.id);
+      const likedIndex = postFound?.upVotes?.indexOf(authStore.user!.id);
+      const dislikedIndex = postFound?.downVotes?.indexOf(authStore.user!.id);
       if (dislikedIndex !== undefined && dislikedIndex !== -1) {
-        post.downVotes?.splice(dislikedIndex, 1);
+        postFound.downVotes?.splice(dislikedIndex, 1);
+        if (post.value?.id === id)
+          post.value.downVotes?.splice(dislikedIndex, 1);
       } else {
-        post.downVotes = post.downVotes ? post.downVotes : [];
-        post.downVotes?.push(authStore.user!.id);
+        postFound.downVotes = postFound.downVotes ? postFound.downVotes : [];
+        postFound.downVotes?.push(authStore.user!.id);
+        post.value?.downVotes?.push(authStore.user?.id!);
         if (likedIndex !== undefined && likedIndex !== -1) {
-          post.upVotes?.splice(likedIndex, 1);
+          postFound.upVotes?.splice(likedIndex, 1);
+          if (post.value?.id === id) post.value.upVotes?.splice(likedIndex, 1);
         }
       }
     } catch (error) {
