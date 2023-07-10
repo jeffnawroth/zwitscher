@@ -115,6 +115,7 @@ const validationSchema = object({
  * @param values
  */
 async function submit(values: any) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { passwordConfirm, ...credentials } = values;
   await store.register(credentials);
 }

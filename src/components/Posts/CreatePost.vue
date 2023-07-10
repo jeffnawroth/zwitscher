@@ -195,6 +195,7 @@ function removeFile(file: File) {
 
 async function submit(values: any, { resetForm }: any) {
   if (props.editMode) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { text, files, ...rest } = props.post;
     const postEdit = {
       ...rest,

@@ -36,8 +36,7 @@ const routes = [
       const authStore = useAuthenticationStore();
 
       to.params.username === authStore.user?.username
-        ? //@ts-expect-error
-          (store.user = authStore.user)
+        ? (store.user = authStore.user)
         : await store.getUserByUsername(to.params.username as string);
     },
 

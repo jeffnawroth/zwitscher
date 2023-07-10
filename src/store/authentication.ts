@@ -1,9 +1,9 @@
-import { AuthUser } from "@/interfaces";
 import router from "@/router";
 import axios, { AxiosError } from "axios";
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import {
+  AuthResult,
   AuthenticationApi,
   TokenRequest,
   UserLoginRequestDto,
@@ -12,7 +12,7 @@ import {
 import { showNotification } from "./helpers";
 
 export const useAuthenticationStore = defineStore("authentication", () => {
-  const user = ref<AuthUser | null>();
+  const user = ref<AuthResult | null>();
   const loading = ref(false);
 
   /**

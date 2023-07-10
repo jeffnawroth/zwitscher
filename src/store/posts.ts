@@ -166,14 +166,14 @@ export const usePostStore = defineStore("post", () => {
       await PostApi.prototype.apiPostPostIdUpvotePost(id);
       const postFound = allPosts.value.find((post) => post.id === id)!;
       const authStore = useAuthenticationStore();
-      const likedIndex = postFound?.upVotes?.indexOf(authStore.user!.id);
-      const dislikedIndex = postFound?.downVotes?.indexOf(authStore.user!.id);
+      const likedIndex = postFound?.upVotes?.indexOf(authStore.user?.id!);
+      const dislikedIndex = postFound?.downVotes?.indexOf(authStore.user?.id!);
       if (likedIndex !== undefined && likedIndex !== -1) {
         postFound.upVotes?.splice(likedIndex, 1);
         if (post.value?.id === id) post.value.upVotes?.splice(likedIndex, 1);
       } else {
         postFound.upVotes = postFound.upVotes ? postFound.upVotes : [];
-        postFound.upVotes?.push(authStore.user!.id);
+        postFound.upVotes?.push(authStore.user?.id!);
         post.value?.upVotes?.push(authStore.user?.id!);
         if (dislikedIndex !== undefined && dislikedIndex !== -1) {
           postFound.downVotes?.splice(dislikedIndex, 1);
@@ -198,15 +198,15 @@ export const usePostStore = defineStore("post", () => {
       await PostApi.prototype.apiPostPostIdDownvotePost(id);
       const postFound = allPosts.value.find((post) => post.id === id)!;
       const authStore = useAuthenticationStore();
-      const likedIndex = postFound?.upVotes?.indexOf(authStore.user!.id);
-      const dislikedIndex = postFound?.downVotes?.indexOf(authStore.user!.id);
+      const likedIndex = postFound?.upVotes?.indexOf(authStore.user?.id!);
+      const dislikedIndex = postFound?.downVotes?.indexOf(authStore.user?.id!);
       if (dislikedIndex !== undefined && dislikedIndex !== -1) {
         postFound.downVotes?.splice(dislikedIndex, 1);
         if (post.value?.id === id)
           post.value.downVotes?.splice(dislikedIndex, 1);
       } else {
         postFound.downVotes = postFound.downVotes ? postFound.downVotes : [];
-        postFound.downVotes?.push(authStore.user!.id);
+        postFound.downVotes?.push(authStore.user?.id!);
         post.value?.downVotes?.push(authStore.user?.id!);
         if (likedIndex !== undefined && likedIndex !== -1) {
           postFound.upVotes?.splice(likedIndex, 1);
