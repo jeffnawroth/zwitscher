@@ -28,8 +28,8 @@ axios.interceptors.response.use(
       const store = useAuthenticationStore();
       try {
         await store.refreshUserToken({
-          token: store.user!.token,
-          refreshToken: store.user!.refreshToken,
+          token: store.user?.token!,
+          refreshToken: store.user?.refreshToken!,
         });
         originalConfig.headers["Authorization"] = `Bearer ${store.user?.token}`;
         return await axios(originalConfig);

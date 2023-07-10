@@ -54,7 +54,7 @@ const authStore = useAuthenticationStore();
  * Delete account and push to login
  */
 async function deleteAccount() {
-  await usersStore.deleteUser(authStore.user!.id);
+  await usersStore.deleteUser(authStore.user?.id!);
   authStore.logout();
 }
 </script>
