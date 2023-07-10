@@ -33,11 +33,7 @@ const routes = [
     component: () => import("@/views/Profile.vue"),
     beforeEnter: async (to: RouteLocationNormalized) => {
       const store = useUsersStore();
-      const authStore = useAuthenticationStore();
-
-      to.params.username === authStore.user?.username
-        ? (store.user = authStore.user)
-        : await store.getUserByUsername(to.params.username as string);
+      await store.getUserByUsername(to.params.username as string);
     },
 
     children: [

@@ -170,7 +170,9 @@ const buttonText = computed(() => {
 });
 
 const cardTitle = computed(() => {
-  return route.name == "home" ? `${authStore.user?.name}` : "";
+  return route.name == "home" || route.name == "profile"
+    ? `${authStore.user?.name}`
+    : "";
 });
 
 onMounted(() => {
