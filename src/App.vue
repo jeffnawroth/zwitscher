@@ -4,6 +4,7 @@
       <v-app-bar-title>Zwitscher</v-app-bar-title>
 
       <v-autocomplete
+        id="search"
         :items="usersStore.users"
         item-value="id"
         item-title="name"
@@ -11,7 +12,12 @@
         placeholder="Suche..."
         density="compact"
         flat
-        hide-details="auto"
+        hide-details
+        hide-no-data
+        style="max-width: 300px"
+        clearable
+        menu-icon=""
+        :loading="usersStore.loading"
       >
         <template #item="{ props, item }">
           <v-list-item
@@ -146,14 +152,12 @@ import FollowedUsersList from "./components/FollowedUsersList.vue";
 import { storeToRefs } from "pinia";
 import { useUsersStore } from "./store/users";
 import { generateFileURL } from "./helpers";
-import { useRouter } from "vue-router";
 
 const store = useAuthenticationStore();
 const settingsStore = useSettingsStore();
 const { mdAndDown } = useDisplay();
 const { loggedIn, user } = storeToRefs(store);
 const usersStore = useUsersStore();
-const router = useRouter();
 
 const showDialog = ref(false);
 
