@@ -50,12 +50,11 @@
 import { ref, computed } from "vue";
 import { useUsersStore } from "@/store/users";
 import { onMounted } from "vue";
-import { User } from "@/interfaces";
 import DeleteUserDialog from "@/components/DeleteUserDialog.vue";
 import LockUserDialog from "@/components/LockUserDialog.vue";
 import IconWithTooltip from "@/components/IconWithTooltip.vue";
 import { useRouter } from "vue-router";
-import { Role } from "@/typescript-axios-generated/api";
+import { Role, User } from "@/typescript-axios-generated/api";
 import { useAuthenticationStore } from "@/store/authentication";
 import PageToolbar from "@/components/PageToolbar.vue";
 

@@ -1,10 +1,9 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { PostAdd } from "@/interfaces";
 import { useAuthenticationStore } from "./authentication";
 import { computed } from "vue";
 import { showNotification, sortByDateDescending } from "./helpers";
-import { PostApi, PostResult } from "@/typescript-axios-generated";
+import { PostAdd, PostApi, PostResult } from "@/typescript-axios-generated";
 import { filesToBase64 } from "@/helpers";
 
 export const usePostStore = defineStore("post", () => {
@@ -141,8 +140,6 @@ export const usePostStore = defineStore("post", () => {
    */
   async function updatePost(postUpdate: PostResult) {
     try {
-      //@ts-ignore
-
       if (postUpdate.files)
         postUpdate.files = await filesToBase64(postUpdate.files);
       await PostApi.prototype.apiPostPut(postUpdate);

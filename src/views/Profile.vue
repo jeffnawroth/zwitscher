@@ -149,6 +149,7 @@ const deleteDialog = ref(false);
 onBeforeRouteUpdate(async (to, from) => {
   if (to.params.username !== from.params.username) {
     if (to.params.username === authStore.user?.username)
+      //@ts-expect-error
       usersStore.user = authStore.user;
     else usersStore.getUserByUsername(to.params.username as string);
 

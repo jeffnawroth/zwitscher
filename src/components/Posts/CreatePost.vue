@@ -104,7 +104,6 @@
 </template>
 
 <script setup lang="ts">
-import { PostAdd } from "@/interfaces";
 import { useAuthenticationStore } from "@/store/authentication";
 import { usePostStore } from "@/store/posts";
 import { computed, ref } from "vue";
@@ -117,7 +116,7 @@ import BaseTextarea from "../BaseComponents/BaseTextarea.vue";
 import { generateFileURL } from "@/helpers";
 import { onMounted } from "vue";
 import { PropType } from "vue";
-import { PostResult } from "@/typescript-axios-generated";
+import { PostAdd, PostResult } from "@/typescript-axios-generated";
 
 const emit = defineEmits<{
   (e: "set-edit-mode", value: boolean): void;
@@ -148,7 +147,7 @@ const form = ref<InstanceType<typeof Form> | null>(null);
 
 const initialValues = {
   text: "",
-  file: [] as File[],
+  file: [] as File[] | string[],
 };
 
 const validationSchema = object({

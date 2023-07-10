@@ -1,10 +1,11 @@
 <template>
   <v-row v-if="files.length > 0">
-    <v-col v-for="file in files" :key="file.name" :cols="imgCols">
+    <v-col v-for="file in files" :key="JSON.stringify(file)" :cols="imgCols">
       <!-- Image -->
       <v-card
         v-if="
           (typeof file === 'string' && file?.includes('image')) ||
+          //@ts-expect-error
           file?.type?.startsWith('image/')
         "
       >
@@ -55,7 +56,7 @@ defineEmits<{
 
 const props = defineProps({
   files: {
-    type: Array as PropType<Array<File | String>>,
+    type: Array as PropType<Array<File | string>>,
     default: () => {
       [];
     },

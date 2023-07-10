@@ -1,5 +1,4 @@
 // Composables
-import { User } from "@/interfaces";
 import { useAuthenticationStore } from "@/store/authentication";
 import { usePostStore } from "@/store/posts";
 import { useUsersStore } from "@/store/users";
@@ -37,7 +36,8 @@ const routes = [
       const authStore = useAuthenticationStore();
 
       to.params.username === authStore.user?.username
-        ? (store.user = authStore.user)
+        ? //@ts-expect-error
+          (store.user = authStore.user)
         : await store.getUserByUsername(to.params.username as string);
     },
 
@@ -108,7 +108,7 @@ const routes = [
         component: () => import("@/components/UserDialog.vue"),
         beforeEnter() {
           const store = useUsersStore();
-          store.user = {} as User;
+          store.user = {};
         },
       },
       {
