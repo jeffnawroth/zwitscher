@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using iva_grp7_backend;
 
@@ -11,9 +12,11 @@ using iva_grp7_backend;
 namespace iva_grp7_backend.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230711183121_AddedComments")]
+    partial class AddedComments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -258,6 +261,10 @@ namespace iva_grp7_backend.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("Edited")
                         .HasColumnType("bit");
 
@@ -274,7 +281,9 @@ namespace iva_grp7_backend.Migrations
 
                     b.ToTable("Posts");
 
-                    b.UseTptMappingStrategy();
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Post");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("iva_grp7_backend.Models.PostFile", b =>
@@ -409,7 +418,7 @@ namespace iva_grp7_backend.Migrations
 
                     b.HasIndex("ParentPostId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.HasDiscriminator().HasValue("Comment");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -555,12 +564,6 @@ namespace iva_grp7_backend.Migrations
 
             modelBuilder.Entity("iva_grp7_backend.Models.Comment", b =>
                 {
-                    b.HasOne("iva_grp7_backend.Models.Post", null)
-                        .WithOne()
-                        .HasForeignKey("iva_grp7_backend.Models.Comment", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("iva_grp7_backend.Models.Post", "ParentPost")
                         .WithMany("Comments")
                         .HasForeignKey("ParentPostId")

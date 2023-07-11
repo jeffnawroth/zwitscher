@@ -45,7 +45,8 @@ public class PostController : ControllerBase
             UserId = postAdd.UserId,
             Text = postAdd.Text,
             Name = user.Name,
-            Username = user.UserName
+            Username = user.UserName,
+            Comments = new List<Comment>()
         };
 
         if (postAdd.Files != null)
@@ -89,7 +90,8 @@ public class PostController : ControllerBase
             Date = post.Date,
             Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
                     new List<string>(),
-            Edited = false
+            Edited = false,
+            Comments = new List<CommentResult>()
         };
 
         return CreatedAtAction("GetPost", new {id = post.Id}, postResult);
@@ -110,6 +112,7 @@ public class PostController : ControllerBase
         var posts = await _context.Posts
             .Include(p => p.Votes)
             .Include(p => p.Files)
+            .Include(p => p.Comments)
             .ToListAsync();
 
         var postResults = new List<PostResult>();
@@ -133,7 +136,15 @@ public class PostController : ControllerBase
                     DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
                     Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
                             new List<string>(),
-                    Edited = post.Edited
+                    Edited = post.Edited,
+                    Comments = post.Comments.Select(c => new CommentResult
+                    {
+                        Id = c.Id,
+                        UserId = c.UserId,
+                        Text = c.Text,
+                        Date = c.Date,
+                        Edited = c.Edited
+                    }).ToList()
                 };
 
                 postResults.Add(postResult);
@@ -156,9 +167,41 @@ public class PostController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<PostResult>> GetPost(string id)
     {
-        // Find the post, include the Votes and PostFiles in the query
-        var post = await _context.Posts.Include(p => p.Votes).Include(p => p.Files)
+        // Find the post, include the Votes, PostFiles and Comments in the query
+        var post = await _context.Posts
+            .Include(p => p.Votes) // Laden der Votes des Posts
+            .Include(p => p.Files) // Laden der Files des Posts
+            .Include(p => p.Comments) // Laden der Kommentare des Posts (Ebene 1)
+            .ThenInclude(c => c.Votes) // Laden der Votes für die Kommentare (Ebene 1)
+            .Include(p => p.Comments)
+            .ThenInclude(c => c.Files) // Laden der Files für die Kommentare (Ebene 1)
+            .Include(p => p.Comments)
+            .ThenInclude(c => c.Comments) // Laden der Kommentare der Kommentare (Ebene 2)
+            .ThenInclude(cc => cc.Votes) // Laden der Votes für die Kommentare (Ebene 2)
+            .Include(p => p.Comments)
+            .ThenInclude(c => c.Comments)
+            .ThenInclude(cc => cc.Files) // Laden der Files für die Kommentare (Ebene 2)
+            .Include(p => p.Comments)
+            .ThenInclude(c => c.Comments)
+            .ThenInclude(cc => cc.Comments) // Laden der Kommentare der Kommentare der Kommentare (Ebene 3)
+            .ThenInclude(ccc => ccc.Votes) // Laden der Votes für die Kommentare (Ebene 3)
+            .Include(p => p.Comments)
+            .ThenInclude(c => c.Comments)
+            .ThenInclude(cc => cc.Comments)
+            .ThenInclude(ccc => ccc.Files) // Laden der Files für die Kommentare (Ebene 3)
+            .Include(p => p.Comments)
+            .ThenInclude(c => c.Comments)
+            .ThenInclude(cc => cc.Comments)
+            .ThenInclude(ccc => ccc.Comments) // Laden der Kommentare der Kommentare der Kommentare der Kommentare (Ebene 4)
+            .ThenInclude(cccc => cccc.Votes) // Laden der Votes für die Kommentare (Ebene 4)
+            .Include(p => p.Comments)
+            .ThenInclude(c => c.Comments)
+            .ThenInclude(cc => cc.Comments)
+            .ThenInclude(ccc => ccc.Comments)
+            .ThenInclude(cccc => cccc.Files) // Laden der Files für die Kommentare (Ebene 4)
             .SingleOrDefaultAsync(p => p.Id == id);
+
+
 
         if (post == null) return NotFound();
 
@@ -181,13 +224,51 @@ public class PostController : ControllerBase
                 DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
                 Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
                         new List<string>(),
-                Edited = post.Edited
+                Edited = post.Edited,
+                Comments = new List<CommentResult>()
             };
+            // Iterate through each comment and create a CommentResult
+            foreach(var comment in post.Comments)
+            {
+                var commentResult = await CreateCommentResult(comment);
+                postResult.Comments.Add(commentResult);
+            }
 
             return postResult;
         }
 
         return NotFound();
+    }
+    private async Task<CommentResult> CreateCommentResult(Comment comment)
+    {
+        // User Informationen laden
+        var user = await _userManager.FindByIdAsync(comment.UserId);
+
+        var commentResult = new CommentResult
+        {
+            Id = comment.Id,
+            UserId = comment.UserId,
+            UserRole = user.Role,
+            Name = user.Name,
+            Avatar = user.Avatar,
+            Username = user.UserName,
+            Text = comment.Text,
+            Date = comment.Date,
+            UpVotes = comment.Votes?.Where(v => v.IsUpvote).Select(v => v.UserId).ToList() ?? new List<string>(),
+            DownVotes = comment.Votes?.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList() ?? new List<string>(),
+            Files = comment.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
+                    new List<string>(),
+            Edited = comment.Edited,
+            Comments = new List<CommentResult>()
+        };
+
+        foreach(var nestedComment in comment.Comments)
+        {
+            var nestedCommentResult = await CreateCommentResult(nestedComment);
+            commentResult.Comments.Add(nestedCommentResult);
+        }
+
+        return commentResult;
     }
 
 

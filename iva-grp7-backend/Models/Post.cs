@@ -8,6 +8,7 @@ public class Post
     {
         Date = DateTime.UtcNow;
         Edited = false;
+        Comments = new List<Comment>();
     }
 
     public string Id { get; set; } = Guid.NewGuid().ToString();
@@ -25,4 +26,5 @@ public class Post
     public DateTime Date { get; set; }
     public List<PostFile>? Files { get; set; }
     public bool Edited { get; set; }
+    public List<Comment> Comments { get; set; }
 }

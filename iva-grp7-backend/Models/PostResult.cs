@@ -14,4 +14,5 @@ public class PostResult
     public DateTime Date { get; set; }
     public List<string> Files { get; set; }
     public bool Edited { get; set; }
+    public List<CommentResult> Comments { get; set; }
 }

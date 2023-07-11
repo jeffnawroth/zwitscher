@@ -18,6 +18,7 @@ public class ApiDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<UserInterest> UserInterests { get; set; }
     public DbSet<PostVote> PostVotes { get; set; }
     public DbSet<PostFile> PostFiles { get; set; }
+    public DbSet<Comment> Comments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -83,5 +84,11 @@ public class ApiDbContext : IdentityDbContext<ApplicationUser>
             .HasMany(p => p.Files)
             .WithOne(f => f.Post)
             .HasForeignKey(f => f.PostId);
+        
+        modelBuilder.Entity<Comment>().ToTable("Comments")
+            .HasOne(c => c.ParentPost)
+            .WithMany(p => p.Comments)
+            .HasForeignKey(c => c.ParentPostId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
