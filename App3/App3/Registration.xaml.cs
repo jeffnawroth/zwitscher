@@ -11,6 +11,7 @@ using App3.Services;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Net.Http;
+using Newtonsoft.Json.Linq;
 
 namespace App3
 {
@@ -71,8 +72,30 @@ namespace App3
 
                     if (response.IsSuccessStatusCode)
                     {
-                        HttpContent returnValues = response.Content;
-                        Console.WriteLine(returnValues);
+                        string jsonResponse = await response.Content.ReadAsStringAsync();
+                        JObject responseData = JsonConvert.DeserializeObject<JObject>(jsonResponse);
+                        string userId = responseData["id"]?.ToString();
+                        LoginPage.token = responseData["token"]?.ToString();
+
+                        Console.WriteLine(responseData);
+
+                        LoginPage.currentUser = new User
+                        {
+                            Id = (string)responseData["id"]?.ToString(),
+                            Avatar = "placeholder_avatar.png",
+                            Role = (Role)Enum.Parse(typeof(Role), responseData["role"]?.ToString()),
+                            Username = (string)responseData["username"]?.ToString(),
+                            Name = (string)responseData["name"]?.ToString(),
+                            Email = (string)responseData["email"]?.ToString(),
+                            Gender = responseData["gender"] != null && Enum.TryParse(responseData["gender"].ToString(), out Gender gender) ? (Gender?)gender : Gender.NULL,
+                            BirthDate = (string)responseData["birthDate"]?.ToString(),
+                            Followers = JsonConvert.DeserializeObject<List<string>>(responseData["followers"]?.ToString()),
+                            Following = JsonConvert.DeserializeObject<List<string>>(responseData["following"]?.ToString()),
+                            CreatedAt = DateTime.Parse(responseData["createdAt"]?.ToString()),
+                            Bio = (string)responseData["bio"]?.ToString(),
+                            Interests = JsonConvert.DeserializeObject<List<string>>(responseData["interests"]?.ToString()),
+                            Locked = (bool)responseData["locked"]
+                        };
                         return true;
                     }
                     return false;

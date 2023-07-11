@@ -35,7 +35,8 @@ namespace App3.Services
     {
         Male = 0,
         Female = 1,
-        Diverse = 2
+        Diverse = 2,
+        NULL = 3
     }
 
    
