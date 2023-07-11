@@ -1,7 +1,10 @@
 ﻿using App3.Services;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Net.Http;
 using System.Text;
 
 using Xamarin.Forms;
@@ -15,6 +18,7 @@ namespace App3
         //private App _app; // Database anbinden 
         public UserProfile(User user)
         {
+            _user = user;
             var mainLayout = new StackLayout
             {
                 Orientation = StackOrientation.Vertical,
@@ -24,16 +28,16 @@ namespace App3
             };
             _followButton = new Button
             {
-                //Text = GetFollowButtonText(),
+                Text = GetFollowButtonText(),
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.StartAndExpand
             };
-            //_followButton.Clicked += FollowButton_Clicked;
+            _followButton.Clicked += FollowButton_Clicked;
 
             mainLayout.Children.Add(_followButton);
             var avatarImage = new Image
             {
-                //Source = user.Avatar,
+                Source = user.Avatar,
                 WidthRequest = 180,
                 HeightRequest = 180,
                 // Aspect = Aspect.AspectFill,
@@ -193,35 +197,55 @@ namespace App3
             Content = mainLayout;
 
         }
-        /*
+        
         private string GetFollowButtonText()
         {
-            if (App.CurrentUser.Following.Contains(_user.Id))
+            if (LoginPage.currentUser.Following.Contains(_user.Id))
                 return "Entfolgen";
             else
                 return "Folgen";
         }
-        private void FollowButton_Clicked(object sender, EventArgs e)
+        private async void FollowButton_Clicked(object sender, EventArgs e)
         {
-            if (App.CurrentUser.Following.Contains(_user.Id))
-                UnfollowUser();
+            if (LoginPage.currentUser.Following.Contains(_user.Id))
+                UnfollowUser(_user);
             else
-                FollowUser();
+                FollowUser(_user);
 
             _followButton.Text = GetFollowButtonText();
         }
-        private void FollowUser()
+        private async void FollowUser(User user)
         {
-            App.CurrentUser.Following.Add(_user.Id); // Hinzufügen der User-ID zu Following-Liste des aktuellen Benutzers
-            _user.Followers.Add(App.CurrentUser.Id); // Hinzufügen der eigenen User-ID zur Followers-Liste des angezeigten Benutzers
+            var token = LoginPage.token;
+            HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
+            using (var client = new HttpClient(insecureHandler))
+            {
+                client.BaseAddress = new Uri("https://10.0.2.2:7178/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                string jsonPayload = JsonConvert.SerializeObject(user);
+                HttpResponseMessage response = await client.PostAsync("api/User/" + user.Id + "/follow", new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
+            }
         }
 
-        private void UnfollowUser()
+        private async void UnfollowUser(User user)
         {
-            App.CurrentUser.Following.Remove(_user.Id); // Entfernen der User-ID aus Following-Liste des aktuellen Benutzers
-            _user.Followers.Remove(App.CurrentUser.Id); // Entfernen der eigenen User-ID aus Followers-Liste des angezeigten Benutzers
+            var token = LoginPage.token;
+            HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
+            using (var client = new HttpClient(insecureHandler))
+            {
+                client.BaseAddress = new Uri("https://10.0.2.2:7178/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                string jsonPayload = JsonConvert.SerializeObject(user);
+                HttpResponseMessage response = await client.PostAsync("api/User/" + user.Id + "/unfollow", new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
+            }
         }
-        */
+        
         private StackLayout CreateViewWithIcon(string label, View view, string iconImage)
         {
             var icon = new Image

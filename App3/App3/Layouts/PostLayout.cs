@@ -7,12 +7,13 @@ using System.Net.Http.Headers;
 using System.Net.Http;
 using System.Text;
 using System;
+using Newtonsoft.Json.Linq;
 
 namespace App3.Layouts
 {
     public class PostLayout
     {
-        public static StackLayout CreatePostLayout(Posting post, User user, string currentUserId)
+        public static StackLayout CreatePostLayout(Posting post, string currentUserId)
         {
 
             var postLayout = new StackLayout
@@ -38,7 +39,7 @@ namespace App3.Layouts
             };
             avatarImage.Clicked += async (sender, e) =>
             {
-                await OpenUserProfile(user);
+                await OpenUserProfile(post.UserId);
             };
             var userInfoLayout = new StackLayout
             {
@@ -127,14 +128,14 @@ namespace App3.Layouts
                 if (post.UpVotes.Contains(currentUserId))
                 {
                     post.UpVotes.Remove(currentUserId);
-                    //DownvotePost(post.Id);
+                    UpvotePost(post.Id, LoginPage.currentUser);
                     //user.LikedPosts.Remove(post.PostId);
                     likeButton.Source = "thumb_up.png";
                 }
                 else
                 {
                     post.UpVotes.Add(currentUserId);
-                    //UpvotePost(post.Id, user.Email);
+                    UpvotePost(post.Id, LoginPage.currentUser);
                     //user.DislikedPosts.Add(post.PostId);
                     likeButton.Source = "like_pushed.png";
 
@@ -155,6 +156,7 @@ namespace App3.Layouts
                 if (post.DownVotes.Contains(currentUserId))
                 {
                     post.DownVotes.Remove(currentUserId);
+                    DownvotePost(post.Id, LoginPage.currentUser);
                     //user.DislikedPosts.Remove(post.PostId);
                     dislikeButton.Source = "thumb_down.png";
                 }
@@ -167,7 +169,8 @@ namespace App3.Layouts
                     if (post.UpVotes.Contains(currentUserId))
                     {
                         post.UpVotes.Remove(currentUserId);
-                       // user.LikedPosts.Remove(post.PostId);
+                        DownvotePost(post.Id, LoginPage.currentUser);
+                        // user.LikedPosts.Remove(post.PostId);
                         likeButton.Source = "thumb_up.png";
                     }
                 }
@@ -230,40 +233,91 @@ namespace App3.Layouts
 
             return postLayout;
         }
-        private static async Task OpenUserProfile(User user)
+        private static async Task OpenUserProfile(string userID)
         {
+            User clickedUser = await getUserData(userID);
             // Erstellen Sie eine neue Instanz der UserProfile-Seite und übergeben Sie den Benutzer
-            var userProfilePage = new UserProfile(user);
+            var userProfilePage = new UserProfile(clickedUser);
 
             // Navigieren Sie zur Benutzerprofilseite
             await Application.Current.MainPage.Navigation.PushAsync(userProfilePage);
         }
 
-        public static async void UpvotePost(string postID, string userEmail)
+        private static async Task<User> getUserData(string userID)
         {
+            var token = LoginPage.token;
             HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
             using (var client = new HttpClient(insecureHandler))
             {
                 client.BaseAddress = new Uri("https://10.0.2.2:7178/");
                 client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                string jsonPayload = JsonConvert.SerializeObject(userEmail);
+                //string jsonPayload = JsonConvert.SerializeObject(userID);
+                HttpResponseMessage response = await client.GetAsync("api/User/" + userID);
+                if (response.IsSuccessStatusCode)
+                {
+                    string jsonResponse = await response.Content.ReadAsStringAsync();
+                    JObject responseData = JsonConvert.DeserializeObject<JObject>(jsonResponse);
+                    string userId = responseData["id"]?.ToString();
+                    token = responseData["token"]?.ToString();
+
+                    Console.WriteLine(responseData);
+
+                    var clickedUser = new User
+                    {
+                        Id = (string)responseData["id"]?.ToString(),
+                        Avatar = "placeholder_avatar.png",
+                        Role = (Role)Enum.Parse(typeof(Role), responseData["role"]?.ToString()),
+                        Username = (string)responseData["username"]?.ToString(),
+                        Name = (string)responseData["name"]?.ToString(),
+                        Email = (string)responseData["email"]?.ToString(),
+                        Gender = responseData["gender"] != null ? (Gender?)Enum.Parse(typeof(Gender), responseData["gender"].ToString()) : null,
+                        BirthDate = (string)responseData["birthDate"]?.ToString(),
+                        Followers = JsonConvert.DeserializeObject<List<string>>(responseData["followers"]?.ToString()),
+                        Following = JsonConvert.DeserializeObject<List<string>>(responseData["following"]?.ToString()),
+                        CreatedAt = DateTime.Parse(responseData["createdAt"]?.ToString()),
+                        Bio = (string)responseData["bio"]?.ToString(),
+                        Interests = JsonConvert.DeserializeObject<List<string>>(responseData["interests"]?.ToString()),
+                        Locked = (bool)responseData["locked"]
+                    };
+                    //Console.WriteLine(responseData);
+                    return clickedUser;
+                }
+                return null;
+            }
+        }
+
+        public static async void UpvotePost(string postID, User user)
+        {
+            var token = LoginPage.token;
+            HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
+            using (var client = new HttpClient(insecureHandler))
+            {
+                client.BaseAddress = new Uri("https://10.0.2.2:7178/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                string jsonPayload = JsonConvert.SerializeObject(user);
                 HttpResponseMessage response = await client.PostAsync("api/Post/" + postID + "/upvote", new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
             }
         }
 
-        public static async void DownvotePost(string postID)
+        public static async void DownvotePost(string postID, User user)
         {
+            var token = LoginPage.token;
             HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
             using (var client = new HttpClient(insecureHandler))
             {
                 client.BaseAddress = new Uri("https://10.0.2.2:7178/");
                 client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                string jsonPayload = JsonConvert.SerializeObject(postID);
-                HttpResponseMessage response = await client.PostAsync("api/Post/" + postID + "/downvote", null);
+                string jsonPayload = JsonConvert.SerializeObject(user);
+                HttpResponseMessage response = await client.PostAsync("api/Post/" + postID + "/downvote", new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
             }
         }
 

@@ -22,7 +22,7 @@ namespace App3
 
             foreach (var post in dummyPosts)
             {
-                var postLayout = PostLayout.CreatePostLayout(post, LoginPage.currentUser, LoginPage.userID);
+                var postLayout = PostLayout.CreatePostLayout(post, LoginPage.userID);
                 postsStackLayout.Children.Add(postLayout);
             }
 
