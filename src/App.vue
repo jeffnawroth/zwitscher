@@ -166,7 +166,9 @@ const authIcon = computed(() => {
 });
 
 onMounted(() => {
-  usersStore.getUsers();
+  // if (loggedIn.value) {
+  //   usersStore.getUsers();
+  // }
   //Load and set user-data from local storage if exists
   const userString = localStorage.getItem("user");
   if (userString) {
@@ -179,3 +181,10 @@ onMounted(() => {
   if (theme) settingsStore.setTheme(theme);
 });
 </script>
+
+<style>
+.hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+</style>

@@ -52,9 +52,21 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col>
+            <v-col> </v-col>
+            <v-col cols="12">
               <span> Du hast bereits ein Konto? </span>
-              <router-link :to="{ name: 'login' }"> Anmelden </router-link>
+              <v-hover>
+                <template #default="{ isHovering, props }">
+                  <span
+                    v-bind="props"
+                    class="text-indigo-darken-2"
+                    :class="isHovering ? 'hover' : undefined"
+                    @click="router.push({ name: 'login' })"
+                  >
+                    Anmelden
+                  </span>
+                </template>
+              </v-hover>
             </v-col>
           </v-row>
         </v-card-text>

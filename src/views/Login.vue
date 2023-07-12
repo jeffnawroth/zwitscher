@@ -1,11 +1,6 @@
 <template>
   <v-dialog v-model="dialog" width="500" persistent>
-    <UserLockedCard
-      v-if="locked"
-      @close="router.push({ name: 'home' })"
-    ></UserLockedCard>
     <Form
-      v-else
       v-slot="{ meta }"
       :validation-schema="validationSchema"
       :initial-values="initialValues"
@@ -31,11 +26,37 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col>
-              <span> Du hast noch kein Konto? </span>
-              <router-link :to="{ name: 'register' }">
-                Registrieren
-              </router-link>
+            <v-col cols="12">
+              <v-hover>
+                <template #default="{ isHovering, props }">
+                  <p
+                    v-bind="props"
+                    class="text-indigo-darken-2"
+                    :class="isHovering ? 'hover' : undefined"
+                    @click="
+                      showResetPasswordDialog = true;
+                      dialog = false;
+                    "
+                  >
+                    Passwort vergessen?
+                  </p>
+                </template>
+              </v-hover>
+            </v-col>
+            <v-col cols="12">
+              <span>Du hast noch kein Konto?</span>
+              <v-hover>
+                <template #default="{ isHovering, props }">
+                  <span
+                    v-bind="props"
+                    class="text-indigo-darken-2"
+                    :class="isHovering ? 'hover' : undefined"
+                    @click="router.push({ name: 'register' })"
+                  >
+                    Registrieren
+                  </span>
+                </template>
+              </v-hover>
             </v-col>
           </v-row>
         </v-card-text>
@@ -54,6 +75,22 @@
       </v-card>
     </Form>
   </v-dialog>
+
+  <ResetPasswordDialog
+    v-model="showResetPasswordDialog"
+    @close="
+      dialog = true;
+      showResetPasswordDialog = false;
+    "
+  ></ResetPasswordDialog>
+
+  <UserLockedDialog
+    v-model="showLockedDialog"
+    @close="
+      showLockedDialog = false;
+      dialog = true;
+    "
+  ></UserLockedDialog>
 </template>
 
 <script setup lang="ts">
@@ -65,8 +102,9 @@ import BasePasswordInput from "@/components/BaseComponents/BasePasswordInput.vue
 import { useRouter } from "vue-router";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
 import { ref } from "vue";
-import UserLockedCard from "@/components/UserLockedCard.vue";
 import { AxiosError } from "axios";
+import ResetPasswordDialog from "@/components/ResetPasswordDialog.vue";
+import UserLockedDialog from "@/components/UserLockedDialog.vue";
 setLocale(yupLocaleDe);
 
 const initialValues = {
@@ -78,7 +116,8 @@ const store = useAuthenticationStore();
 const dialog = ref(true);
 const router = useRouter();
 
-const locked = ref(false);
+const showLockedDialog = ref(false);
+const showResetPasswordDialog = ref(false);
 
 const validationSchema = object({
   email: string().required().email().label("E-Mail"),
@@ -93,7 +132,10 @@ async function submit(values: any) {
   try {
     await store.login(values);
   } catch (error: unknown) {
-    if ((error as AxiosError).response?.status === 403) locked.value = true;
+    if ((error as AxiosError).response?.status === 403) {
+      showLockedDialog.value = true;
+      dialog.value = false;
+    }
   }
 }
 </script>
