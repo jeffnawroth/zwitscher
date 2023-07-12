@@ -90,9 +90,9 @@ const routes = [
   }, */
 
   {
-    path: "/users",
-    name: "users",
-    component: () => import("@/views/UserManagement.vue"),
+    path: "/data-management",
+    name: "data-management",
+    component: () => import("@/views/DataManagement.vue"),
     meta: { requiresAuth: true },
     beforeEnter: checkAccess,
 
@@ -111,7 +111,6 @@ const routes = [
         path: "user/:username",
         component: () => import("@/components/UserDialog.vue"),
         beforeEnter: (to: RouteLocationNormalized) => {
-          //TO-DO: Add api
           const store = useUsersStore();
           store.getUserByUsername(to.params.username as string);
         },

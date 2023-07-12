@@ -261,7 +261,7 @@ const validationSchema = object({
     .label("Benutzername")
     .matches(
       /^[a-zA-Z0-9_-]+$/,
-      "Der Benutzername darf nur Buchstaben, Zahlen, Bindestriche und Unterstriche enthalten"
+      "Der Benutzername darf nur Buchstaben, Zahlen, Bindestriche und Unterstriche enthalten",
     ),
   name: string().required().label("Name"),
   gender: number().label("Geschlecht").nullable(),
@@ -312,7 +312,7 @@ onMounted(() => {
     (route.name === "edit-user" || route.name === "profile-settings")
   ) {
     const { gender, interests, birthDate, ...rest } = JSON.parse(
-      JSON.stringify(store.user)
+      JSON.stringify(store.user),
     );
 
     let initialValues = {
@@ -348,7 +348,7 @@ function onFileChange(e: any) {
 function close() {
   profileSettings.value
     ? router.push({ name: "profile" })
-    : router.push({ name: "users" });
+    : router.push({ name: "data-management" });
 }
 
 async function submit(values: any) {

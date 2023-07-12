@@ -4,14 +4,29 @@
     :items="filteredUsers"
     :sort-by="[{ key: 'username', order: 'asc' }]"
     :loading="store.loading"
+    :search="search"
   >
-    <!-- :search="search" -->
     <template #top>
-      <PageToolbar icon="mdi-account-group" title="Benutzerverwaltung">
-        <v-btn variant="tonal" @click="router.push({ name: 'create-user' })"
-          >Nutzer erstellen</v-btn
-        ></PageToolbar
+      <v-toolbar
+        flat
+        :color="theme.current.value.dark ? 'grey-darken-4' : 'white'"
       >
+        <v-text-field
+          v-model="search"
+          density="compact"
+          hide-details
+          variant="solo-filled"
+          flat
+          style="max-width: 300px"
+          placeholder="Suche..."
+        ></v-text-field>
+        <v-spacer></v-spacer>
+        <v-btn
+          icon="mdi-account-plus"
+          variant="tonal"
+          @click="router.push({ name: 'create-user' })"
+        ></v-btn>
+      </v-toolbar>
     </template>
 
     <template #[`item.role`]="{ item }">
@@ -56,16 +71,17 @@ import IconWithTooltip from "@/components/IconWithTooltip.vue";
 import { useRouter } from "vue-router";
 import { Role, User } from "@/typescript-axios-generated/api";
 import { useAuthenticationStore } from "@/store/authentication";
-import PageToolbar from "@/components/PageToolbar.vue";
+import { useTheme } from "vuetify/lib/framework.mjs";
 
 const store = useUsersStore();
 const router = useRouter();
 const authStore = useAuthenticationStore();
+const theme = useTheme();
 
 const deleteDialog = ref(false);
 const lockDialog = ref(false);
 
-// const search = ref("");
+const search = ref("");
 
 const headers = [
   { title: "Benutzername", key: "username" },

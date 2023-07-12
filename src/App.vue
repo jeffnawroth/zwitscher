@@ -82,16 +82,16 @@
           </v-list-item>
           <div v-if="user?.role != Role.NUMBER_2">
             <v-list-item
-              to="/users"
-              title="Benutzerverwaltung"
-              prepend-icon="mdi-account-group"
+              to="/dashboard"
+              title="Dashboard"
+              prepend-icon="mdi-view-dashboard"
               rounded="lg"
             >
             </v-list-item>
             <v-list-item
-              to="/dashboard"
-              title="Dashboard"
-              prepend-icon="mdi-view-dashboard"
+              to="/data-management"
+              title="Datenverwaltung"
+              prepend-icon="mdi-database"
               rounded="lg"
             >
             </v-list-item>
