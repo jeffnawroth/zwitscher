@@ -89,7 +89,7 @@
 <script setup lang="ts">
 import PageToolbar from "@/components/PageToolbar.vue";
 import Chart, { ChartItem } from "chart.js/auto";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import DashboardCard from "@/components/Dashboard/DashboardCard.vue";
 import { utils, write, WorkBook } from "xlsx";
 import { saveAs } from "file-saver";
@@ -179,6 +179,23 @@ const usersGrowthData = {
   ],
 };
 
+const images = ref({});
+
+onMounted(async () => {
+  await Promise.all([
+    fetchPostsPerDay(),
+    fetchUserGrowth(),
+    fetchActiveUsers(),
+    fetchAgeDistribution(),
+    fetchGenderDistribution(),
+    store.getNumberOfPostsToday(),
+    store.getNumberOfActiveUsersToday(),
+    store.getNumberOfTodaysUserGrowth(),
+  ]);
+});
+
+//Helper functions
+
 /**
  * Get the last 7 days
  */
@@ -197,49 +214,6 @@ function generateWeekdays() {
   return last7Days;
 }
 
-onMounted(async () => {
-  await Promise.all([
-    fetchPostsPerDay(),
-    fetchUserGrowth(),
-    fetchActiveUsers(),
-    fetchAgeDistribution(),
-    fetchGenderDistribution(),
-    store.getNumberOfPostsToday(),
-    store.getNumberOfActiveUsersToday(),
-    store.getNumberOfTodaysUserGrowth(),
-  ]);
-});
-
-async function fetchPostsPerDay() {
-  await store.getPostsPerDayData();
-  postsPerDayData.datasets[0].data = store.postsPerDayData;
-  createNewChart("posts-per-day-chart", "bar", postsPerDayData);
-}
-async function fetchUserGrowth() {
-  await store.getUsersGrowthData();
-  usersGrowthData.datasets[0].data = store.usersGrowthData;
-  createNewChart("users-growth", "line", usersGrowthData);
-}
-async function fetchActiveUsers() {
-  await store.getActiveUsersData();
-  activeUsersData.datasets[0].data = store.activeUsersData;
-  createNewChart("active-users-chart", "line", activeUsersData);
-}
-async function fetchAgeDistribution() {
-  await store.getAgeDistributionData();
-  ageDistributionData.datasets[0].data = store.ageDistributionData;
-  createNewChart("age-distribution-chart", "bar", ageDistributionData);
-}
-async function fetchGenderDistribution() {
-  await store.getGenderDistributionData();
-  genderDistributionData.datasets[0].data = store.genderDistributionData;
-  createNewChart(
-    "gender-distribution-chart",
-    "doughnut",
-    genderDistributionData,
-    true,
-  );
-}
 /**
  * Get the last 12 Months
  */
@@ -271,6 +245,20 @@ function generateMonthLabels() {
 }
 
 /**
+ * Create a excel file
+ * @param data
+ * @param sheetName
+ */
+function createExcelFile(data: any, sheetName: string) {
+  const workbook = utils.book_new();
+  const worksheet = utils.json_to_sheet(data);
+  utils.book_append_sheet(workbook, worksheet, sheetName);
+  return workbook;
+}
+
+//Charts
+
+/**
  * Create a new chart
  */
 function createNewChart(
@@ -281,7 +269,8 @@ function createNewChart(
 ) {
   const chartElement = document.getElementById(chartId);
   if (chartElement) {
-    new Chart(chartElement as ChartItem, {
+    //@ts-expect-error
+    images.value[chartId] = new Chart(chartElement as ChartItem, {
       type: chartType,
       data: chartData,
       options: {
@@ -302,17 +291,38 @@ function createNewChart(
   }
 }
 
-/**
- * Create a excel file
- * @param data
- * @param sheetName
- */
-function createExcelFile(data: any, sheetName: string) {
-  const workbook = utils.book_new();
-  const worksheet = utils.json_to_sheet(data);
-  utils.book_append_sheet(workbook, worksheet, sheetName);
-  return workbook;
+async function fetchPostsPerDay() {
+  await store.getPostsPerDayData();
+  postsPerDayData.datasets[0].data = store.postsPerDayData;
+  createNewChart("posts-per-day-chart", "bar", postsPerDayData);
 }
+async function fetchUserGrowth() {
+  await store.getUsersGrowthData();
+  usersGrowthData.datasets[0].data = store.usersGrowthData;
+  createNewChart("users-growth", "line", usersGrowthData);
+}
+async function fetchActiveUsers() {
+  await store.getActiveUsersData();
+  activeUsersData.datasets[0].data = store.activeUsersData;
+  createNewChart("active-users-chart", "line", activeUsersData);
+}
+async function fetchAgeDistribution() {
+  await store.getAgeDistributionData();
+  ageDistributionData.datasets[0].data = store.ageDistributionData;
+  createNewChart("age-distribution-chart", "bar", ageDistributionData);
+}
+async function fetchGenderDistribution() {
+  await store.getGenderDistributionData();
+  genderDistributionData.datasets[0].data = store.genderDistributionData;
+  createNewChart(
+    "gender-distribution-chart",
+    "doughnut",
+    genderDistributionData,
+    true,
+  );
+}
+
+//Download functions
 
 /**
  * Download file as excel file
@@ -327,6 +337,18 @@ function downloadExcelFile(workbook: WorkBook, filename: string) {
   saveAs(blob, filename);
 }
 
+function downloadBase64Image(fileName: string, id: string) {
+  //@ts-expect-error
+  const image = images.value[id].toBase64Image();
+
+  const link = document.createElement("a");
+  link.href = image;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
 /**
  * Download number of posts for the last 7 days
  */
@@ -337,6 +359,7 @@ function downloadPostsPerDay() {
   }));
   const workbook = createExcelFile(data, "Posts pro Tag");
   downloadExcelFile(workbook, "posts_pro_tag.xlsx");
+  downloadBase64Image("posts-pro-tag.png", "posts-per-day-chart");
 }
 
 /**
@@ -349,6 +372,7 @@ function downloadUserGrowth() {
   }));
   const workbook = createExcelFile(data, "Nutzerzuwachs");
   downloadExcelFile(workbook, "nutzerzuwachs.xlsx");
+  downloadBase64Image("nutzerzuwachs.png", "users-growth");
 }
 
 /**
@@ -361,6 +385,7 @@ function downloadAgeDistribution() {
   }));
   const workbook = createExcelFile(data, "Altersverteilung");
   downloadExcelFile(workbook, "altersverteilung.xlsx");
+  downloadBase64Image("altersverteilung.png", "age-distribution-chart");
 }
 
 /**
@@ -372,6 +397,10 @@ function downloadAgeDistribution() {
   }));
   const workbook = createExcelFile(data, "Geschlechterverteilung");
   downloadExcelFile(workbook, "geschlechterverteilung.xlsx");
+  downloadBase64Image(
+    "geschlechterverteilung.png",
+    "gender-distribution-chart",
+  );
 }
 
 /**
@@ -384,6 +413,7 @@ function downloadActiveUsers() {
   }));
   const workbook = createExcelFile(data, "Aktive Nutzer");
   downloadExcelFile(workbook, "aktive_nutzer.xlsx");
+  downloadBase64Image("aktive_nutzer.png", "active-users-chart");
 }
 
 /**
