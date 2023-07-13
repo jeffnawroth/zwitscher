@@ -2183,15 +2183,15 @@ export const PostApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @summary Gets all posts from a specific user.
-         * @param {string} userId The ID of the user.
+         * @param {string} username 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiPostUserUserIdGet: async (userId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userId' is not null or undefined
-            assertParamExists('apiPostUserUserIdGet', 'userId', userId)
-            const localVarPath = `/api/Post/user/{userId}`
-                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+        apiPostUserUsernameGet: async (username: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'username' is not null or undefined
+            assertParamExists('apiPostUserUsernameGet', 'username', username)
+            const localVarPath = `/api/Post/user/{username}`
+                .replace(`{${"username"}}`, encodeURIComponent(String(username)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -2317,12 +2317,12 @@ export const PostApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Gets all posts from a specific user.
-         * @param {string} userId The ID of the user.
+         * @param {string} username 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiPostUserUserIdGet(userId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PostResult>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiPostUserUserIdGet(userId, options);
+        async apiPostUserUsernameGet(username: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PostResult>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiPostUserUsernameGet(username, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -2416,12 +2416,12 @@ export const PostApiFactory = function (configuration?: Configuration, basePath?
         /**
          * 
          * @summary Gets all posts from a specific user.
-         * @param {string} userId The ID of the user.
+         * @param {string} username 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiPostUserUserIdGet(userId: string, options?: any): AxiosPromise<Array<PostResult>> {
-            return localVarFp.apiPostUserUserIdGet(userId, options).then((request) => request(axios, basePath));
+        apiPostUserUsernameGet(username: string, options?: any): AxiosPromise<Array<PostResult>> {
+            return localVarFp.apiPostUserUsernameGet(username, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -2530,13 +2530,13 @@ export class PostApi extends BaseAPI {
     /**
      * 
      * @summary Gets all posts from a specific user.
-     * @param {string} userId The ID of the user.
+     * @param {string} username 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PostApi
      */
-    public apiPostUserUserIdGet(userId: string, options?: AxiosRequestConfig) {
-        return PostApiFp(this.configuration).apiPostUserUserIdGet(userId, options).then((request) => request(this.axios, this.basePath));
+    public apiPostUserUsernameGet(username: string, options?: AxiosRequestConfig) {
+        return PostApiFp(this.configuration).apiPostUserUsernameGet(username, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
