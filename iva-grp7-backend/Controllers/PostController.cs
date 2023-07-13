@@ -345,16 +345,16 @@ public class PostController : ControllerBase
     /// <response code="404">If the user is not found.</response>
     /// <response code="500">If an exception occurs while retrieving the posts.</response>
     [ProducesResponseType(200, Type = typeof(List<PostResult>))]
-    [HttpGet("user/{userId}")]
-    public async Task<ActionResult<IEnumerable<PostResult>>> GetPostsByUser(string userId)
+    [HttpGet("user/{username}")]
+    public async Task<ActionResult<IEnumerable<PostResult>>> GetPostsByUser(string username)
     {
         // Überprüfen, ob der Benutzer existiert
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await _userManager.FindByNameAsync(username);
         if (user == null) return NotFound();
 
         // Alle Posts des Benutzers laden, including the Votes and Files
         var posts = await _context.Posts.Include(p => p.Votes).Include(p => p.Files)
-            .Where(p => p.UserId == userId)
+            .Where(p => p.UserId == user.Id)
             .ToListAsync();
 
         var postResults = new List<PostResult>();
