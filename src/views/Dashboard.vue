@@ -118,7 +118,13 @@ const genderDistributionData = {
 };
 
 const ageDistributionData = {
-  labels: ["18-24 Jahre", "25-34 Jahre", "35-44 Jahre", "45-54 Jahre", "55+"],
+  labels: [
+    "18-24 Jahre",
+    "25-34 Jahre",
+    "35-44 Jahre",
+    "45-54 Jahre",
+    "55+ Jahre",
+  ],
   datasets: [
     {
       data: [] as number[],

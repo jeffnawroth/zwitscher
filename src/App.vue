@@ -5,7 +5,6 @@
 
       <v-autocomplete
         id="search"
-        v-model="select"
         v-model:search="search"
         :items="usersStore.searchResult"
         item-value="id"
@@ -163,7 +162,6 @@ const usersStore = useUsersStore();
 
 const showDialog = ref(false);
 const search = ref("");
-const select = ref(null);
 
 const authIcon = computed(() => {
   return loggedIn ? "mdi-logout" : "mdi-login";
