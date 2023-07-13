@@ -701,4 +701,33 @@ public class UserController : ControllerBase
 
         return followingUsers;
     }
+    
+    /// <summary>
+    /// Searches for users based on a given query string.
+    /// </summary>
+    /// <remarks>
+    /// The search is performed on the UserName and Name properties. The search is case-insensitive.
+    /// </remarks>
+    /// <param name="query">The string to search for.</param>
+    /// <returns>A list of users matching the search criteria.</returns>
+    /// <response code="200">Returns the found list of users.</response>
+    /// <response code="404">If no user is found.</response> 
+    [HttpGet("search/{query}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<IEnumerable<UserSearch>>> SearchUsers(string query)
+    {
+        var users = await _userManager.Users
+            .Where(u => u.UserName.ToLower().Contains(query.ToLower()) || u.Name.ToLower().Contains(query.ToLower()))
+            .Select(u => new UserSearch() 
+            { 
+                Id = u.Id,
+                UserName = u.UserName,
+                Name = u.Name,
+                Avatar = u.Avatar
+            })
+            .ToListAsync();
+
+        return users;
+    }
 }
