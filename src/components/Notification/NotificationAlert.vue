@@ -42,12 +42,12 @@ const progress = ref(0);
 onMounted(() => {
   timeout.value = setTimeout(() => {
     store.deleteNotification(props.notification);
-  }, 6000);
+  }, 4000);
   interval.value = setInterval(() => {
     if (progress.value === 100) {
       return (progress.value = 0);
     }
-    progress.value += 20;
+    progress.value += 100 / 3;
   }, 1000);
 });
 

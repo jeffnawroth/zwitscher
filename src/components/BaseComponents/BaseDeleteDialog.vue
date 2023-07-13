@@ -5,7 +5,7 @@
     persistent
     @update:model-value="$emit('update:modelValue', $event)"
   >
-    <v-card title="Löschen" prepend-icon="mdi-delete">
+    <v-card title="Löschen" prepend-icon="mdi-delete" :loading="loading">
       <v-card-text>
         Sind Sie sicher, dass Sie <slot></slot> löschen möchten?
       </v-card-text>
@@ -28,6 +28,9 @@
 defineEmits(["cancel", "delete", "update:modelValue"]);
 defineProps({
   modelValue: {
+    type: Boolean,
+  },
+  loading: {
     type: Boolean,
   },
 });

@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="dialog" persistent width="500">
-    <v-card :title="cardTitle">
+    <v-card :title="cardTitle" :loading="store.crudCardLoading">
       <Form
         ref="form"
         v-slot="{ meta }"

@@ -3,7 +3,13 @@ import { ref } from "vue";
 import { useAuthenticationStore } from "./authentication";
 import { computed } from "vue";
 import { showNotification, sortByDateDescending } from "./helpers";
-import { PostAdd, PostApi, PostResult } from "@/typescript-axios-generated";
+import {
+  CommentAdd,
+  CommentApi,
+  PostAdd,
+  PostApi,
+  PostResult,
+} from "@/typescript-axios-generated";
 import { filesToBase64 } from "@/helpers";
 
 export const usePostStore = defineStore("post", () => {
@@ -12,6 +18,7 @@ export const usePostStore = defineStore("post", () => {
   const postsFollowedUsers = ref<PostResult[]>([]);
   const post = ref<PostResult | undefined>();
   const loading = ref(false);
+  const crudCardLoading = ref(false);
 
   /**
    * Gets all posts.
@@ -36,11 +43,11 @@ export const usePostStore = defineStore("post", () => {
    * Gets all posts from a specific user.
    * @param id
    */
-  async function getPostsForUser(id: string) {
+  async function getPostsForUser(username: string) {
     try {
       allPosts.value = [];
       loading.value = true;
-      const data = await PostApi.prototype.apiPostUserUserIdGet(id);
+      const data = await PostApi.prototype.apiPostUserUsernameGet(username);
       allPosts.value = data.data;
     } catch (error) {
       showNotification(
@@ -93,6 +100,7 @@ export const usePostStore = defineStore("post", () => {
    */
   async function createPost(post: PostAdd) {
     try {
+      crudCardLoading.value = true;
       if (post.files) post.files = await filesToBase64(post.files);
       const data = await PostApi.prototype.apiPostPost(post);
       allPosts.value?.push(data.data);
@@ -102,13 +110,15 @@ export const usePostStore = defineStore("post", () => {
         "Beim Erstellen des Beitrags ist ein Fehler aufgetreten!",
       );
       return Promise.reject(error);
+    } finally {
+      crudCardLoading.value = false;
     }
   }
 
-  async function addComment(comment: PostAdd) {
+  async function addComment(comment: CommentAdd) {
     try {
-      // const data = await createNewPost(comment);
-      // post.value?.comments?.push(data);
+      const data = await CommentApi.prototype.apiCommentPost(comment);
+      post.value?.comments?.push(data.data);
     } catch (error) {
       showNotification(
         "error",
@@ -123,6 +133,7 @@ export const usePostStore = defineStore("post", () => {
    */
   async function deletePost(id: string) {
     try {
+      crudCardLoading.value = true;
       await PostApi.prototype.apiPostIdDelete(id);
       allPosts.value = allPosts.value.filter((post) => post.id !== id);
       showNotification("success", "Der Beitrag wurde erfolgreich gelöscht!");
@@ -131,6 +142,8 @@ export const usePostStore = defineStore("post", () => {
         "error",
         "Beim Löschen des Beitrags ist ein Fehler aufgetreten!",
       );
+    } finally {
+      crudCardLoading.value = false;
     }
   }
 
@@ -251,5 +264,6 @@ export const usePostStore = defineStore("post", () => {
     upvotePost,
     downvotePost,
     loading,
+    crudCardLoading,
   };
 });

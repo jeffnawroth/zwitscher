@@ -9,12 +9,15 @@ import {
   UserLight,
 } from "@/typescript-axios-generated";
 import { toBase64 } from "@/helpers";
+import { computed } from "vue";
 
 export const useUsersStore = defineStore("users", () => {
   const users = ref<User[]>([]);
   const user = ref<User>();
   const followedUsers = ref<UserLight[]>([]);
   const loading = ref(false);
+  const crudCardLoading = ref(false);
+  const loadingFollowedUsers = ref(false);
 
   /**
    * Creates a new user
@@ -22,6 +25,7 @@ export const useUsersStore = defineStore("users", () => {
    */
   async function createUser(user: UserAdd) {
     try {
+      crudCardLoading.value = true;
       if (user.avatar) user.avatar = await toBase64(user.avatar);
       const data = await UserApi.prototype.apiUserPost(user);
       users.value.push(data.data as User);
@@ -31,6 +35,8 @@ export const useUsersStore = defineStore("users", () => {
         "error",
         "Beim Erstellen des Nutzers ist ein Fehler aufgetreten",
       );
+    } finally {
+      crudCardLoading.value = false;
     }
   }
 
@@ -59,6 +65,7 @@ export const useUsersStore = defineStore("users", () => {
    */
   async function fetchFollowedUsers() {
     try {
+      loadingFollowedUsers.value = true;
       const data = await UserApi.prototype.apiUserFollowedUsersLightGet();
       followedUsers.value = data.data;
     } catch (error) {
@@ -66,6 +73,8 @@ export const useUsersStore = defineStore("users", () => {
         "error",
         "Beim Laden der gefolgten Nutzer ist ein Fehler aufgetreten",
       );
+    } finally {
+      loadingFollowedUsers.value = false;
     }
   }
 
@@ -106,6 +115,7 @@ export const useUsersStore = defineStore("users", () => {
    */
   async function deleteUser(id: string) {
     try {
+      crudCardLoading.value = true;
       await UserApi.prototype.apiUserIdDelete(id);
       users.value = users.value.filter((user) => user.id !== id);
       showNotification("success", "Der Nutzer wurde erfolgreich gelöscht!");
@@ -114,6 +124,8 @@ export const useUsersStore = defineStore("users", () => {
         "error",
         "Beim Löschen des Nutzers ist ein Fehler aufgetreten",
       );
+    } finally {
+      crudCardLoading.value = false;
     }
   }
 
@@ -124,6 +136,7 @@ export const useUsersStore = defineStore("users", () => {
    */
   async function updateUser(userEdit: UserEdit, notification = true) {
     try {
+      crudCardLoading.value = true;
       if (userEdit.avatar) userEdit.avatar = await toBase64(userEdit.avatar);
       await UserApi.prototype.apiUserIdPut(userEdit.id!, userEdit);
       user.value = userEdit;
@@ -137,6 +150,8 @@ export const useUsersStore = defineStore("users", () => {
         "error",
         "Beim Bearbeiten des Nutzers ist ein Fehler aufgetreten",
       );
+    } finally {
+      crudCardLoading.value = false;
     }
   }
 
@@ -210,6 +225,15 @@ export const useUsersStore = defineStore("users", () => {
     }
   }
 
+  const sortedFollowedUsers = computed(() => {
+    return followedUsers.value.sort((a, b) => {
+      const usernameA = a.username!.toLocaleUpperCase();
+      const usernameB = b.username!.toLocaleUpperCase();
+
+      return usernameA > usernameB;
+    });
+  });
+
   return {
     user,
     users,
@@ -226,5 +250,8 @@ export const useUsersStore = defineStore("users", () => {
     changePassword,
     changeEmail,
     loading,
+    crudCardLoading,
+    sortedFollowedUsers,
+    loadingFollowedUsers,
   };
 });

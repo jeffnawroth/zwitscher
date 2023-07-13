@@ -31,5 +31,5 @@ import UserManagement from "./UserManagement.vue";
 import PageToolbar from "@/components/PageToolbar.vue";
 import { ref } from "vue";
 
-const panel = ref([0]);
+const panel = ref([]);
 </script>

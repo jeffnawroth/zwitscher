@@ -1,7 +1,15 @@
 <template>
   <v-list nav>
     <v-list-item
-      v-for="user in store.followedUsers"
+      v-if="store.loadingFollowedUsers"
+      class="d-flex justify-center"
+    >
+      <v-progress-circular
+        :indeterminate="store.loadingFollowedUsers"
+      ></v-progress-circular>
+    </v-list-item>
+    <v-list-item
+      v-for="user in store.sortedFollowedUsers"
       :key="user.id!"
       :title="user.name!"
       :subtitle="`@${user.username!}`"

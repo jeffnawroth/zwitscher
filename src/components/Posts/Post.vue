@@ -80,6 +80,7 @@
 
   <BaseDeleteDialog
     v-model="deleteDialog"
+    :loading="store.crudCardLoading"
     @delete="deleteUserPost"
     @cancel="deleteDialog = false"
     >den Beitrag</BaseDeleteDialog

@@ -1,6 +1,7 @@
 <template>
   <BaseDeleteDialog
     :model-value="modelValue"
+    :loading="store.crudCardLoading"
     @cancel="closeDialog"
     @delete="removeUser"
   >
