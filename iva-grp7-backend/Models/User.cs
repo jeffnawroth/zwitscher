@@ -6,7 +6,7 @@ public class User
 {
     public User()
     {
-        CreatedAt = DateTime.UtcNow;
+        CreatedAt = DateTime.Now;
     }
 
     [Key] public string Id { get; set; }

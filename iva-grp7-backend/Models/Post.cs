@@ -6,7 +6,7 @@ public class Post
 {
     public Post()
     {
-        Date = DateTime.UtcNow;
+        Date = DateTime.Now;
         Edited = false;
         Comments = new List<Comment>();
     }
