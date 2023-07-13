@@ -97,11 +97,20 @@ namespace App3.Layouts
 
             var likeButton = new ImageButton
             {
-                Source = "thumb_up.png",
                 WidthRequest = 20,
                 HeightRequest = 20,
                 BackgroundColor = Color.Transparent
             };
+
+            if (post.UpVotes.Contains(currentUserId))
+            {
+                likeButton.Source = "like_pushed.png";
+            }
+            else
+            {
+                likeButton.Source = "thumb_up.png";
+            }
+
 
             var likesLabel = new Label
             {   
@@ -111,11 +120,19 @@ namespace App3.Layouts
 
             var dislikeButton = new ImageButton
             {
-                Source = "thumb_down.png",
                 WidthRequest = 20,
                 HeightRequest = 20,
                 BackgroundColor = Color.Transparent
             };
+
+            if (post.DownVotes.Contains(currentUserId))
+            {
+                dislikeButton.Source = "dislike_pushed.png";
+            }
+            else
+            {
+                dislikeButton.Source = "thumb_down.png";
+            }
 
             var dislikesLabel = new Label
             {

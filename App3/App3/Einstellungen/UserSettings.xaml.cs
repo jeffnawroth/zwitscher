@@ -18,15 +18,12 @@ namespace App3
         }
         private void OnChangePasswordButtonClicked(object sender, EventArgs e)
         {
-            
             Navigation.PushAsync(new ChangePassword());
         }
 
         private void OnChangeEmailButtonClicked(object sender, EventArgs e)
         {
-            // Implementiere die Logik für das Ändern der E-Mail-Adresse hier
-            // Beispiel:
-            // Navigation.PushAsync(new ChangeEmailPage());
+            Navigation.PushAsync(new ChangeEMail());
         }
     }
 }
