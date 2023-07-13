@@ -83,7 +83,7 @@ namespace App3
                         Username = (string)responseData["username"]?.ToString(),
                         Name = (string)responseData["name"]?.ToString(),
                         Email = (string)responseData["email"]?.ToString(),
-                        Gender = responseData["gender"] != null ? (Gender?)Enum.Parse(typeof(Gender), responseData["gender"].ToString()) : null,
+                        Gender = responseData["gender"] != null && Enum.TryParse(responseData["gender"].ToString(), out Gender gender) ? (Gender?)gender : Gender.NULL,
                         BirthDate = (string)responseData["birthDate"]?.ToString(),
                         Followers = JsonConvert.DeserializeObject<List<string>>(responseData["followers"]?.ToString()),
                         Following = JsonConvert.DeserializeObject<List<string>>(responseData["following"]?.ToString()),
