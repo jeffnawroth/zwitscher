@@ -7,6 +7,7 @@ import {
   UserApi,
   UserEdit,
   UserLight,
+  UserSearch,
 } from "@/typescript-axios-generated";
 import { toBase64 } from "@/helpers";
 import { computed } from "vue";
@@ -19,6 +20,8 @@ export const useUsersStore = defineStore("users", () => {
   const loading = ref(false);
   const crudCardLoading = ref(false);
   const loadingFollowedUsers = ref(false);
+  const searchResult = ref<UserSearch[]>([]);
+  const searching = ref(false);
 
   /**
    * Creates a new user
@@ -239,12 +242,28 @@ export const useUsersStore = defineStore("users", () => {
     }
   }
 
+  async function searchUser(query: string) {
+    try {
+      searching.value = true;
+      if (!query || query == "") {
+        searchResult.value = [];
+        return;
+      }
+      const data = await UserApi.prototype.apiUserSearchQueryGet(query);
+      searchResult.value = data.data;
+    } catch (error) {
+      showNotification("error", "Bei der Suche ist ein Fehler aufgetreten!");
+    } finally {
+      searching.value = false;
+    }
+  }
+
   const sortedFollowedUsers = computed(() => {
     return followedUsers.value.sort((a, b) => {
       const usernameA = a.username!.toLocaleUpperCase();
       const usernameB = b.username!.toLocaleUpperCase();
 
-      return usernameA > usernameB;
+      return usernameA.localeCompare(usernameB);
     });
   });
 
@@ -267,5 +286,8 @@ export const useUsersStore = defineStore("users", () => {
     crudCardLoading,
     sortedFollowedUsers,
     loadingFollowedUsers,
+    searchUser,
+    searchResult,
+    searching,
   };
 });

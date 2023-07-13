@@ -5,7 +5,9 @@
 
       <v-autocomplete
         id="search"
-        :items="usersStore.users"
+        v-model="select"
+        v-model:search="search"
+        :items="usersStore.searchResult"
         item-value="id"
         item-title="name"
         variant="solo-filled"
@@ -17,14 +19,14 @@
         style="max-width: 300px"
         clearable
         menu-icon=""
-        :loading="usersStore.loading"
+        :loading="usersStore.searching"
       >
         <template #item="{ props, item }">
           <v-list-item
             v-bind="props"
             :title="item?.raw?.name!"
-            :subtitle="`@${item?.raw?.username!}`"
-            :to="`/${item.raw?.username}`"
+            :subtitle="`@${item?.raw?.userName!}`"
+            :to="`/${item.raw?.userName}`"
           >
             <template #prepend>
               <v-avatar v-if="!item.raw.avatar" color="grey">
@@ -140,7 +142,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useAuthenticationStore } from "@/store/authentication";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import { Role } from "./typescript-axios-generated";
@@ -160,9 +162,15 @@ const { loggedIn, user } = storeToRefs(store);
 const usersStore = useUsersStore();
 
 const showDialog = ref(false);
+const search = ref("");
+const select = ref(null);
 
 const authIcon = computed(() => {
   return loggedIn ? "mdi-logout" : "mdi-login";
+});
+
+watch(search, (val) => {
+  usersStore.searchUser(val);
 });
 
 onMounted(() => {
