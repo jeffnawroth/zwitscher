@@ -148,16 +148,13 @@ const deleteDialog = ref(false);
 
 onBeforeRouteUpdate(async (to, from) => {
   if (to.params.username !== from.params.username) {
-    if (to.params.username === authStore.user?.username)
-      usersStore.user = authStore.user;
-    else usersStore.getUserByUsername(to.params.username as string);
-
-    loadPosts();
+    usersStore.getUserByUsername(to.params.username as string);
+    loadPosts(to.params.username as string);
   }
 });
 
 onMounted(() => {
-  loadPosts();
+  loadPosts(usersStore.user?.username!);
 });
 
 const following = computed(() => {
@@ -238,7 +235,7 @@ async function setFollow() {
 /**
  * Load all posts for a specific user
  */
-function loadPosts() {
-  store.getPostsForUser(usersStore.user!.id!);
+function loadPosts(username: string) {
+  store.getPostsForUser(username);
 }
 </script>

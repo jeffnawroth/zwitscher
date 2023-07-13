@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="filteredUsers"
+    :items="store.users"
     :sort-by="[{ key: 'username', order: 'asc' }]"
     :loading="store.loading"
     :search="search"
@@ -45,11 +45,21 @@
         @click="editUser(item.raw)"
       ></IconWithTooltip>
       <IconWithTooltip
+        v-if="
+          authStore.user?.role === Role.NUMBER_0 ||
+          (item.raw.role == Role.NUMBER_2 &&
+            authStore.user?.role == Role.NUMBER_1)
+        "
         :text="item.raw.locked ? 'Nutzer entsperren' : 'Nutzer sperren'"
         :icon="item.raw.locked ? 'mdi-account-lock' : 'mdi-account-lock-open'"
         @click="openLockDialog(item.raw)"
       ></IconWithTooltip>
       <IconWithTooltip
+        v-if="
+          authStore.user?.role === Role.NUMBER_0 ||
+          (item.raw.role == Role.NUMBER_2 &&
+            authStore.user?.role == Role.NUMBER_1)
+        "
         text="Nutzer löschen"
         icon="mdi-account-remove"
         @click="openDeleteDialog(item.raw)"
@@ -93,15 +103,6 @@ const headers = [
 
 onMounted(() => {
   store.getUsers();
-});
-
-const filteredUsers = computed(() => {
-  if (authStore.user?.role == Role.NUMBER_0) return store.users;
-  else if (authStore.user?.role == Role.NUMBER_1)
-    return store.users.filter(
-      (user) => user.role != Role.NUMBER_0 && user.role != Role.NUMBER_1,
-    );
-  return store.users;
 });
 
 function getUserRole(role: Role) {
