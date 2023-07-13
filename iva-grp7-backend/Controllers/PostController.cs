@@ -352,10 +352,15 @@ public class PostController : ControllerBase
     var user = await _userManager.FindByNameAsync(username);
     if (user == null) return NotFound();
 
-    // Alle Posts des Benutzers laden
-    var userPosts = await _context.Posts.Include(p => p.Votes).Include(p => p.Files)
-        .Where(p => p.UserId == user.Id)
+    // Alle Posts laden, die von den gefolgten Benutzern erstellt wurden
+    var userPosts = await _context.Posts
+        .Include(p => p.Votes)
+        .Include(p => p.Files)
+        .Where(p => !_context.Comments.Any(c => c.Id == p.Id))
         .ToListAsync();
+
+
+
 
     // Alle Kommentare des Benutzers laden
     var userComments = await _context.Comments
@@ -383,7 +388,7 @@ public class PostController : ControllerBase
             var postResult = CreatePostResult(parentUser, comment.ParentPost);
             postResults.Add(postResult);
         }
-
+        
         // Wir fügen den Kommentar zur Kommentarliste des übergeordneten Posts hinzu
         var postResultWithComment = postResults.Single(pr => pr.Id == comment.ParentPost.Id);
         var commentResult = new CommentResult
@@ -397,8 +402,8 @@ public class PostController : ControllerBase
             UserRole = comment.User.Role,
             Name = comment.User.Name,
             Username = comment.User.UserName,
-            UpVotes = comment.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
-            DownVotes = comment.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
+            UpVotes = comment.Votes?.Where(v => v.IsUpvote).Select(v => v.UserId).ToList() ?? new List<string>(),
+            DownVotes = comment.Votes?.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList() ?? new List<string>(),
             Files = comment.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
                     new List<string>(),
             ParentPostId = comment.ParentPostId,
@@ -429,8 +434,6 @@ private PostResult CreatePostResult(ApplicationUser user, Post post)
         Comments = new List<CommentResult>() // Wir initialisieren die Kommentarliste hier, wir füllen sie später
     };
 }
-
-
 
 
     /// <summary>
