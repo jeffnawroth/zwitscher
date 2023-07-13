@@ -347,42 +347,90 @@ public class PostController : ControllerBase
     [ProducesResponseType(200, Type = typeof(List<PostResult>))]
     [HttpGet("user/{username}")]
     public async Task<ActionResult<IEnumerable<PostResult>>> GetPostsByUser(string username)
+{
+    // Überprüfen, ob der Benutzer existiert
+    var user = await _userManager.FindByNameAsync(username);
+    if (user == null) return NotFound();
+
+    // Alle Posts des Benutzers laden
+    var userPosts = await _context.Posts.Include(p => p.Votes).Include(p => p.Files)
+        .Where(p => p.UserId == user.Id)
+        .ToListAsync();
+
+    // Alle Kommentare des Benutzers laden
+    var userComments = await _context.Comments
+        .Where(c => c.UserId == user.Id)
+        .Include(c => c.ParentPost).ThenInclude(p => p.Votes)
+        .Include(c => c.ParentPost).ThenInclude(p => p.Files)
+        .ToListAsync();
+
+    var postResults = new List<PostResult>();
+
+    // Benutzerinformationen für jeden Post setzen
+    foreach (var post in userPosts)
     {
-        // Überprüfen, ob der Benutzer existiert
-        var user = await _userManager.FindByNameAsync(username);
-        if (user == null) return NotFound();
+        var postResult = CreatePostResult(user, post);
+        postResults.Add(postResult);
+    }
 
-        // Alle Posts des Benutzers laden, including the Votes and Files
-        var posts = await _context.Posts.Include(p => p.Votes).Include(p => p.Files)
-            .Where(p => p.UserId == user.Id)
-            .ToListAsync();
-
-        var postResults = new List<PostResult>();
-
-        // Benutzerinformationen für jeden Post setzen
-        foreach (var post in posts)
+    // Füge jeden übergeordneten Post der Kommentare und den Kommentar selbst hinzu
+    foreach (var comment in userComments)
+    {
+        // Wenn der übergeordnete Post noch nicht in der Liste ist, fügen wir ihn hinzu
+        if (!postResults.Any(pr => pr.Id == comment.ParentPost.Id))
         {
-            var postResult = new PostResult
-            {
-                Id = post.Id,
-                UserId = post.UserId,
-                UserRole = user.Role,
-                Name = user.Name,
-                Avatar = user.Avatar,
-                Username = user.UserName,
-                Text = post.Text,
-                Date = post.Date,
-                UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
-                DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
-                Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
-                        new List<string>(),
-                Edited = post.Edited
-            };
+            var parentUser = await _userManager.FindByIdAsync(comment.ParentPost.UserId);
+            var postResult = CreatePostResult(parentUser, comment.ParentPost);
             postResults.Add(postResult);
         }
 
-        return postResults;
+        // Wir fügen den Kommentar zur Kommentarliste des übergeordneten Posts hinzu
+        var postResultWithComment = postResults.Single(pr => pr.Id == comment.ParentPost.Id);
+        var commentResult = new CommentResult
+        {
+            Id = comment.Id,
+            UserId = comment.UserId,
+            Text = comment.Text,
+            Date = comment.Date,
+            Edited = comment.Edited,
+            Avatar = comment.User.Avatar,
+            UserRole = comment.User.Role,
+            Name = comment.User.Name,
+            Username = comment.User.UserName,
+            UpVotes = comment.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
+            DownVotes = comment.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
+            Files = comment.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
+                    new List<string>(),
+            ParentPostId = comment.ParentPostId,
+            Comments = new List<CommentResult>()
+        };
+        postResultWithComment.Comments.Add(commentResult);
     }
+
+    return postResults;
+}
+
+private PostResult CreatePostResult(ApplicationUser user, Post post)
+{
+    return new PostResult
+    {
+        Id = post.Id,
+        UserId = post.UserId,
+        UserRole = user.Role,
+        Name = user.Name,
+        Avatar = user.Avatar,
+        Username = user.UserName,
+        Text = post.Text,
+        Date = post.Date,
+        UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
+        DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
+        Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ?? new List<string>(),
+        Edited = post.Edited,
+        Comments = new List<CommentResult>() // Wir initialisieren die Kommentarliste hier, wir füllen sie später
+    };
+}
+
+
 
 
     /// <summary>
