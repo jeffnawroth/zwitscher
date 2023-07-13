@@ -251,12 +251,6 @@ export interface CommentResult {
     'parentPostId'?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof CommentResult
-     */
-    'parentCommentId'?: string | null;
-    /**
-     * 
      * @type {Array<CommentResult>}
      * @memberof CommentResult
      */
@@ -824,6 +818,37 @@ export interface UserRegistrationRequestDto {
      * @memberof UserRegistrationRequestDto
      */
     'password': string;
+}
+/**
+ * 
+ * @export
+ * @interface UserSearch
+ */
+export interface UserSearch {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSearch
+     */
+    'id'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSearch
+     */
+    'userName'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSearch
+     */
+    'name'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSearch
+     */
+    'avatar'?: string | null;
 }
 
 /**
@@ -2963,6 +2988,44 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * The search is performed on the UserName and Name properties. The search is case-insensitive.
+         * @summary Searches for users based on a given query string.
+         * @param {string} query The string to search for.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiUserSearchQueryGet: async (query: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'query' is not null or undefined
+            assertParamExists('apiUserSearchQueryGet', 'query', query)
+            const localVarPath = `/api/User/search/{query}`
+                .replace(`{${"query"}}`, encodeURIComponent(String(query)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -3093,6 +3156,17 @@ export const UserApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserPost(userAdd, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
+        /**
+         * The search is performed on the UserName and Name properties. The search is case-insensitive.
+         * @summary Searches for users based on a given query string.
+         * @param {string} query The string to search for.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiUserSearchQueryGet(query: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserSearch>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiUserSearchQueryGet(query, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
     }
 };
 
@@ -3211,6 +3285,16 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          */
         apiUserPost(userAdd?: UserAdd, options?: any): AxiosPromise<User> {
             return localVarFp.apiUserPost(userAdd, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * The search is performed on the UserName and Name properties. The search is case-insensitive.
+         * @summary Searches for users based on a given query string.
+         * @param {string} query The string to search for.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiUserSearchQueryGet(query: string, options?: any): AxiosPromise<Array<UserSearch>> {
+            return localVarFp.apiUserSearchQueryGet(query, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -3351,6 +3435,18 @@ export class UserApi extends BaseAPI {
      */
     public apiUserPost(userAdd?: UserAdd, options?: AxiosRequestConfig) {
         return UserApiFp(this.configuration).apiUserPost(userAdd, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * The search is performed on the UserName and Name properties. The search is case-insensitive.
+     * @summary Searches for users based on a given query string.
+     * @param {string} query The string to search for.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public apiUserSearchQueryGet(query: string, options?: AxiosRequestConfig) {
+        return UserApiFp(this.configuration).apiUserSearchQueryGet(query, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
