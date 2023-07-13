@@ -86,6 +86,7 @@
           variant="tonal"
           type="submit"
           :disabled="!meta.valid"
+          :loading="postsStore.crudCardLoading"
           >{{ buttonText }}</v-btn
         >
 
@@ -116,7 +117,7 @@ import BaseTextarea from "../BaseComponents/BaseTextarea.vue";
 import { generateFileURL } from "@/helpers";
 import { onMounted } from "vue";
 import { PropType } from "vue";
-import { PostAdd, PostResult } from "@/typescript-axios-generated";
+import { CommentAdd, PostAdd, PostResult } from "@/typescript-axios-generated";
 
 const emit = defineEmits<{
   (e: "set-edit-mode", value: boolean): void;
@@ -207,7 +208,7 @@ async function submit(values: any, { resetForm }: any) {
     await postsStore.updatePost(postEdit);
     emit("set-edit-mode", false);
   } else {
-    const post: PostAdd = {
+    const post: PostAdd | CommentAdd = {
       userId: authStore.user!.id,
       text: values.text,
       files: values.file,
@@ -215,7 +216,10 @@ async function submit(values: any, { resetForm }: any) {
 
     route.name == "home"
       ? await postsStore.createPost(post)
-      : await postsStore.addComment(post);
+      : await postsStore.addComment({
+          ...post,
+          parentPostId: postsStore.post?.id!,
+        });
     resetForm();
     emit("close-dialog");
   }

@@ -6,7 +6,7 @@
   <CreatePost v-if="authStore.loggedIn"></CreatePost>
   <v-divider></v-divider>
   <PostList
-    :posts="[]"
+    :posts="store.post?.comments ?? []"
     no-posts-message="Der Beitrag hat noch keine Kommentare."
   ></PostList>
 </template>
