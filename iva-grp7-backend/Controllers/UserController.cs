@@ -53,6 +53,22 @@ public class UserController : ControllerBase
             .Include(u => u.Followers).ThenInclude(f => f.Follower)
             .Include(u => u.Following).ThenInclude(f => f.Following)
             .Include(u => u.Interests)
+            .Select(user => new
+            {
+                user.Id,
+                user.Role,
+                user.UserName,
+                user.Name,
+                user.Email,
+                user.Gender,
+                user.BirthDate,
+                user.CreatedAt,
+                user.Bio,
+                user.Locked,
+                Followers = user.Followers.Select(f => f.FollowerId),
+                Following = user.Following.Select(f => f.FollowingId),
+                Interests = user.Interests.Select(i => i.Interest)
+            })
             .ToListAsync();
 
         var filteredUsers = new List<User>();
@@ -60,19 +76,6 @@ public class UserController : ControllerBase
         if (currentUser.Role == Role.Admin)
             foreach (var user in users)
             {
-                // Check if the lists are null before executing the Select-Method
-                var followerIds = user.Followers != null
-                    ? user.Followers.Select(f => f.FollowerId).ToList()
-                    : new List<string>();
-
-                var followingIds = user.Following != null
-                    ? user.Following.Select(f => f.FollowingId).ToList()
-                    : new List<string>();
-
-                var interests = user.Interests != null
-                    ? user.Interests.Select(f => f.Interest).ToList()
-                    : new List<string>();
-
                 var filteredUser = new User
                 {
                     Id = user.Id,
@@ -85,9 +88,9 @@ public class UserController : ControllerBase
                     CreatedAt = user.CreatedAt,
                     Bio = user.Bio,
                     Locked = user.Locked,
-                    Followers = followerIds,
-                    Following = followingIds,
-                    Interests = interests
+                    Followers = user.Followers.ToList(),
+                    Following = user.Following.ToList(),
+                    Interests = user.Interests.ToList()
                 };
 
                 filteredUsers.Add(filteredUser);
@@ -96,19 +99,6 @@ public class UserController : ControllerBase
         if (currentUser.Role == Role.Moderator)
             foreach (var user in users)
             {
-                // Check if the lists are null before executing the Select-Method
-                var followerIds = user.Followers != null
-                    ? user.Followers.Select(f => f.FollowerId).ToList()
-                    : new List<string>();
-
-                var followingIds = user.Following != null
-                    ? user.Following.Select(f => f.FollowingId).ToList()
-                    : new List<string>();
-
-                var interests = user.Interests != null
-                    ? user.Interests.Select(f => f.Interest).ToList()
-                    : new List<string>();
-
                 if (user.Role == Role.User)
                 {
                     var filteredUser = new User
@@ -123,9 +113,9 @@ public class UserController : ControllerBase
                         CreatedAt = user.CreatedAt,
                         Bio = user.Bio,
                         Locked = user.Locked,
-                        Followers = followerIds,
-                        Following = followingIds,
-                        Interests = interests
+                        Followers = user.Followers.ToList(),
+                        Following = user.Following.ToList(),
+                        Interests = user.Interests.ToList()
                     };
 
                     filteredUsers.Add(filteredUser);
