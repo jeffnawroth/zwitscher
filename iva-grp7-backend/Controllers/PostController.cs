@@ -299,6 +299,7 @@ public class PostController : ControllerBase
         var posts = await _context.Posts
             .Include(p => p.Votes)
             .Include(p => p.Files)
+            .Include(p => p.Comments)
             .Where(p => followedUserIds.Contains(p.UserId))
             .Where(p => !_context.Comments.Any(c => c.Id == p.Id))
             .ToListAsync();
@@ -326,7 +327,15 @@ public class PostController : ControllerBase
                     DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
                     Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
                             new List<string>(),
-                    Edited = post.Edited
+                    Edited = post.Edited,
+                    Comments = post.Comments.Select(c => new CommentResult
+                    {
+                        Id = c.Id,
+                        UserId = c.UserId,
+                        Text = c.Text,
+                        Date = c.Date,
+                        Edited = c.Edited
+                    }).ToList()
                 };
                 postResults.Add(postResult);
             }
