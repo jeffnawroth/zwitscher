@@ -13,16 +13,27 @@
         >
       </div>
       <div v-else>
-        {{ `@${authStore.user?.username}` }}
+        {{ editMode ? `@${post.username}` : `@${authStore.user?.username}` }}
       </div>
     </template>
     <template #prepend>
-      <v-avatar v-if="!authStore.user?.avatar" color="grey">
-        <v-icon icon="mdi-account-circle" size="x-large"></v-icon>
-      </v-avatar>
-      <v-img v-else>
-        <v-avatar :image="generateFileURL(authStore.user?.avatar)"> </v-avatar>
-      </v-img>
+      <template v-if="editMode">
+        <v-avatar v-if="!post.avatar" color="grey">
+          <v-icon icon="mdi-account-circle" size="x-large"></v-icon>
+        </v-avatar>
+        <v-img v-else>
+          <v-avatar :image="generateFileURL(post.avatar)"> </v-avatar>
+        </v-img>
+      </template>
+      <template v-else>
+        <v-avatar v-if="!authStore.user?.avatar" color="grey">
+          <v-icon icon="mdi-account-circle" size="x-large"></v-icon>
+        </v-avatar>
+        <v-img v-else>
+          <v-avatar :image="generateFileURL(authStore.user?.avatar)">
+          </v-avatar>
+        </v-img>
+      </template>
     </template>
     <Form
       ref="form"
@@ -171,9 +182,11 @@ const buttonText = computed(() => {
 });
 
 const cardTitle = computed(() => {
-  return route.name == "home" || route.name == "profile"
-    ? `${authStore.user?.name}`
-    : "";
+  return route.name === "post"
+    ? ""
+    : props.editMode
+    ? props.post.name!
+    : `${authStore.user?.name}`;
 });
 
 onMounted(() => {

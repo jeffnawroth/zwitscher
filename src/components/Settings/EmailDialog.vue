@@ -5,7 +5,7 @@
     persistent
     @update:model-value="$emit('update:modelValue', $event)"
   >
-    <v-card title="E-Mail ändern">
+    <v-card title="E-Mail ändern" :loading="store.crudCardLoading">
       <Form
         v-slot="{ meta }"
         :validation-schema="validationSchema"
@@ -88,7 +88,7 @@ const validationSchema = object({
     .label("Neue E-Mail")
     .notOneOf(
       [ref("currentMail")],
-      "Aktuelle und neue E-mail dürfen nicht übereinstimmen"
+      "Aktuelle und neue E-mail dürfen nicht übereinstimmen",
     ),
   newMailConfirm: string()
     .required()

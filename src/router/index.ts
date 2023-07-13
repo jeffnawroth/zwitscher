@@ -110,9 +110,9 @@ const routes = [
         name: "edit-user",
         path: "user/:username",
         component: () => import("@/components/UserDialog.vue"),
-        beforeEnter: (to: RouteLocationNormalized) => {
+        beforeEnter: async (to: RouteLocationNormalized) => {
           const store = useUsersStore();
-          store.getUserByUsername(to.params.username as string);
+          await store.getUserByUsername(to.params.username as string);
         },
       },
     ],

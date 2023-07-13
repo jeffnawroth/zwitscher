@@ -5,7 +5,7 @@
     persistent
     @update:model-value="$emit('update:modelValue', $event)"
   >
-    <v-card title="Passwort ändern">
+    <v-card title="Passwort ändern" :loading="store.crudCardLoading">
       <Form
         v-slot="{ meta }"
         :validation-schema="validationSchema"

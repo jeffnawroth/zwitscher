@@ -10,6 +10,7 @@ import {
 } from "@/typescript-axios-generated";
 import { toBase64 } from "@/helpers";
 import { computed } from "vue";
+import { useAuthenticationStore } from "./authentication";
 
 export const useUsersStore = defineStore("users", () => {
   const users = ref<User[]>([]);
@@ -97,6 +98,7 @@ export const useUsersStore = defineStore("users", () => {
    */
   async function getUserByUsername(username: string) {
     try {
+      crudCardLoading.value = true;
       const data = await UserApi.prototype.apiUserGetByUsernameUsernameGet(
         username,
       );
@@ -106,6 +108,8 @@ export const useUsersStore = defineStore("users", () => {
         "error",
         "Beim Laden des Nutzers ist ein Fehler aufgetreten",
       );
+    } finally {
+      crudCardLoading.value = false;
     }
   }
 
@@ -197,7 +201,10 @@ export const useUsersStore = defineStore("users", () => {
    */
   async function changePassword(password: string) {
     try {
+      crudCardLoading.value = true;
       await UserApi.prototype.apiUserPasswordChangePut(password);
+      const store = useAuthenticationStore();
+      store.user!.password = password;
       showNotification("success", "Das Passwort wurde erfolgreich geändert!");
     } catch (error) {
       showNotification(
@@ -205,6 +212,8 @@ export const useUsersStore = defineStore("users", () => {
         "Beim ändern des Passworts ist ein Fehler aufgetreten!",
       );
       return Promise.reject(error);
+    } finally {
+      crudCardLoading.value = false;
     }
   }
 
@@ -214,7 +223,10 @@ export const useUsersStore = defineStore("users", () => {
    */
   async function changeEmail(email: string) {
     try {
+      crudCardLoading.value = true;
       await UserApi.prototype.apiUserEmailChangePut(email);
+      const store = useAuthenticationStore();
+      store.user!.email = email;
       showNotification("success", "Die E-Mail wurde erfolgreich geändert!");
     } catch (error) {
       showNotification(
@@ -222,6 +234,8 @@ export const useUsersStore = defineStore("users", () => {
         "Beim Ändern der E-Mail ist ein Fehler aufgetreten!",
       );
       return Promise.reject(error);
+    } finally {
+      crudCardLoading.value = false;
     }
   }
 
