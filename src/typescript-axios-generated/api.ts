@@ -137,6 +137,136 @@ export interface AuthResult {
 /**
  * 
  * @export
+ * @interface CommentAdd
+ */
+export interface CommentAdd {
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentAdd
+     */
+    'userId'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentAdd
+     */
+    'text'?: string | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof CommentAdd
+     */
+    'files'?: Array<string> | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentAdd
+     */
+    'parentPostId'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface CommentResult
+ */
+export interface CommentResult {
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentResult
+     */
+    'id'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentResult
+     */
+    'userId'?: string | null;
+    /**
+     * 
+     * @type {Role}
+     * @memberof CommentResult
+     */
+    'userRole'?: Role;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentResult
+     */
+    'avatar'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentResult
+     */
+    'name'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentResult
+     */
+    'username'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentResult
+     */
+    'text'?: string | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof CommentResult
+     */
+    'upVotes'?: Array<string> | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof CommentResult
+     */
+    'downVotes'?: Array<string> | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentResult
+     */
+    'date'?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof CommentResult
+     */
+    'files'?: Array<string> | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CommentResult
+     */
+    'edited'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentResult
+     */
+    'parentPostId'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentResult
+     */
+    'parentCommentId'?: string | null;
+    /**
+     * 
+     * @type {Array<CommentResult>}
+     * @memberof CommentResult
+     */
+    'comments'?: Array<CommentResult> | null;
+}
+
+
+/**
+ * 
+ * @export
  * @enum {string}
  */
 
@@ -277,6 +407,12 @@ export interface PostResult {
      * @memberof PostResult
      */
     'edited'?: boolean;
+    /**
+     * 
+     * @type {Array<CommentResult>}
+     * @memberof PostResult
+     */
+    'comments'?: Array<CommentResult> | null;
 }
 
 
@@ -937,6 +1073,257 @@ export class AuthenticationApi extends BaseAPI {
      */
     public apiAuthenticationRegisterPost(userRegistrationRequestDto?: UserRegistrationRequestDto, options?: AxiosRequestConfig) {
         return AuthenticationApiFp(this.configuration).apiAuthenticationRegisterPost(userRegistrationRequestDto, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * CommentApi - axios parameter creator
+ * @export
+ */
+export const CommentApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Beispiel für eine Anforderung:  DELETE /api/comments/{id}
+         * @summary Deletes a comment and all nested comments.
+         * @param {string} id The ID of the comment.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiCommentIdDelete: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('apiCommentIdDelete', 'id', id)
+            const localVarPath = `/api/Comment/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Gets a comment by its ID.
+         * @param {string} id The ID of the comment.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiCommentIdGet: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('apiCommentIdGet', 'id', id)
+            const localVarPath = `/api/Comment/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Creates a new comment.
+         * @param {CommentAdd} [commentAdd] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiCommentPost: async (commentAdd?: CommentAdd, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Comment`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(commentAdd, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * CommentApi - functional programming interface
+ * @export
+ */
+export const CommentApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = CommentApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Beispiel für eine Anforderung:  DELETE /api/comments/{id}
+         * @summary Deletes a comment and all nested comments.
+         * @param {string} id The ID of the comment.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiCommentIdDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiCommentIdDelete(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Gets a comment by its ID.
+         * @param {string} id The ID of the comment.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiCommentIdGet(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CommentResult>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiCommentIdGet(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Creates a new comment.
+         * @param {CommentAdd} [commentAdd] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiCommentPost(commentAdd?: CommentAdd, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CommentResult>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiCommentPost(commentAdd, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * CommentApi - factory interface
+ * @export
+ */
+export const CommentApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = CommentApiFp(configuration)
+    return {
+        /**
+         * Beispiel für eine Anforderung:  DELETE /api/comments/{id}
+         * @summary Deletes a comment and all nested comments.
+         * @param {string} id The ID of the comment.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiCommentIdDelete(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.apiCommentIdDelete(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Gets a comment by its ID.
+         * @param {string} id The ID of the comment.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiCommentIdGet(id: string, options?: any): AxiosPromise<CommentResult> {
+            return localVarFp.apiCommentIdGet(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Creates a new comment.
+         * @param {CommentAdd} [commentAdd] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiCommentPost(commentAdd?: CommentAdd, options?: any): AxiosPromise<CommentResult> {
+            return localVarFp.apiCommentPost(commentAdd, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * CommentApi - object-oriented interface
+ * @export
+ * @class CommentApi
+ * @extends {BaseAPI}
+ */
+export class CommentApi extends BaseAPI {
+    /**
+     * Beispiel für eine Anforderung:  DELETE /api/comments/{id}
+     * @summary Deletes a comment and all nested comments.
+     * @param {string} id The ID of the comment.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CommentApi
+     */
+    public apiCommentIdDelete(id: string, options?: AxiosRequestConfig) {
+        return CommentApiFp(this.configuration).apiCommentIdDelete(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Gets a comment by its ID.
+     * @param {string} id The ID of the comment.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CommentApi
+     */
+    public apiCommentIdGet(id: string, options?: AxiosRequestConfig) {
+        return CommentApiFp(this.configuration).apiCommentIdGet(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Creates a new comment.
+     * @param {CommentAdd} [commentAdd] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CommentApi
+     */
+    public apiCommentPost(commentAdd?: CommentAdd, options?: AxiosRequestConfig) {
+        return CommentApiFp(this.configuration).apiCommentPost(commentAdd, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
