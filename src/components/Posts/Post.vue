@@ -43,7 +43,6 @@
         post.downVotes?.length ?? 0
       }}</v-btn>
       <v-btn prepend-icon="mdi-comment-outline">{{
-        //@ts-expect-error
         post.comments?.length ?? 0
       }}</v-btn>
 
