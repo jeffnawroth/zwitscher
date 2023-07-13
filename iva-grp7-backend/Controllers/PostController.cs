@@ -110,10 +110,12 @@ public class PostController : ControllerBase
     public async Task<ActionResult<IEnumerable<PostResult>>> GetAllPublicPosts()
     {
         var posts = await _context.Posts
+            .Where(p => !_context.Comments.Any(c => c.Id == p.Id))
             .Include(p => p.Votes)
             .Include(p => p.Files)
             .Include(p => p.Comments)
             .ToListAsync();
+
 
         var postResults = new List<PostResult>();
 
@@ -298,6 +300,7 @@ public class PostController : ControllerBase
             .Include(p => p.Votes)
             .Include(p => p.Files)
             .Where(p => followedUserIds.Contains(p.UserId))
+            .Where(p => !_context.Comments.Any(c => c.Id == p.Id))
             .ToListAsync();
 
         // Liste für die PostResults
