@@ -256,7 +256,7 @@ public class DashboardController : ControllerBase
 
         for (var i = 0; i < age_value.Length; i++)
             if (age_value[i] != 0)
-            { 
+            {
                 Console.WriteLine(age_value[i]);
                 ages[i] = (int) (age_value[i] / age_count * 100);
             }

@@ -1,6 +1,6 @@
 namespace iva_grp7_backend.Models;
 
-public class CommentResult: PostResult
+public class CommentResult : PostResult
 {
     public string ParentPostId { get; set; }
     public List<CommentResult> Comments { get; set; }

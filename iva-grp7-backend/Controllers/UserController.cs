@@ -95,7 +95,7 @@ public class UserController : ControllerBase
 
                 filteredUsers.Add(filteredUser);
             }
-        
+
         return Ok(filteredUsers);
     }
 
@@ -442,7 +442,6 @@ public class UserController : ControllerBase
         if (existingUser == null) return NotFound();
 
         if (user.Avatar != null)
-        {
             try
             {
                 byte[] avatarBytes;
@@ -475,16 +474,12 @@ public class UserController : ControllerBase
                 }
 
                 if (existingUser.Avatar == null || !existingUser.Avatar.SequenceEqual(avatarBytes))
-                {
                     existingUser.Avatar = avatarBytes;
-                }
             }
             catch (Exception e)
             {
                 return BadRequest("Fehler beim Aktualisieren des Avatars: " + e.Message);
             }
-        }
-
 
 
         existingUser.UserName = user.Username;
@@ -529,7 +524,6 @@ public class UserController : ControllerBase
     }
 
 
-
     /// <summary>
     ///     Deletes a user with the specified ID.
     /// </summary>
@@ -564,7 +558,7 @@ public class UserController : ControllerBase
 
         var userInterests = await _context.UserInterests.Where(ui => ui.UserId == id).ToListAsync();
         _context.UserInterests.RemoveRange(userInterests);
-        
+
         // Remove PostVotes related to the user
         var userPostVotes = await _context.PostVotes.Where(pv => pv.UserId == id).ToListAsync();
         _context.PostVotes.RemoveRange(userPostVotes);
@@ -701,31 +695,28 @@ public class UserController : ControllerBase
 
         return followingUsers;
     }
-    
+
     /// <summary>
-    /// Searches for users based on a given query string.
+    ///     Searches for users based on a given query string.
     /// </summary>
     /// <remarks>
-    /// The search is performed on the UserName and Name properties. The search is case-insensitive.
+    ///     The search is performed on the UserName and Name properties. The search is case-insensitive.
     /// </remarks>
     /// <param name="query">The string to search for.</param>
     /// <returns>A list of users matching the search criteria.</returns>
     /// <response code="200">Returns the found list of users.</response>
-    /// <response code="404">If no user is found.</response> 
+    /// <response code="404">If no user is found.</response>
     [HttpGet("search/{query}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IEnumerable<UserSearch>>> SearchUsers(string? query)
     {
-        if (string.IsNullOrWhiteSpace(query))
-        {
-            return new List<UserSearch>();
-        }
+        if (string.IsNullOrWhiteSpace(query)) return new List<UserSearch>();
 
         var users = await _userManager.Users
             .Where(u => u.UserName.ToLower().Contains(query.ToLower()) || u.Name.ToLower().Contains(query.ToLower()))
-            .Select(u => new UserSearch() 
-            { 
+            .Select(u => new UserSearch
+            {
                 Id = u.Id,
                 UserName = u.UserName,
                 Name = u.Name,

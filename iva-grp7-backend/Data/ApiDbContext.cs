@@ -84,7 +84,7 @@ public class ApiDbContext : IdentityDbContext<ApplicationUser>
             .HasMany(p => p.Files)
             .WithOne(f => f.Post)
             .HasForeignKey(f => f.PostId);
-        
+
         modelBuilder.Entity<Comment>().ToTable("Comments")
             .HasOne(c => c.ParentPost)
             .WithMany(p => p.Comments)
