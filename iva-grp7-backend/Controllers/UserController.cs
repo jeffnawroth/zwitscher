@@ -76,7 +76,6 @@ public class UserController : ControllerBase
                 var filteredUser = new User
                 {
                     Id = user.Id,
-                    Avatar = user.Avatar,
                     Role = user.Role,
                     Username = user.UserName,
                     Name = user.Name,
@@ -115,7 +114,6 @@ public class UserController : ControllerBase
                     var filteredUser = new User
                     {
                         Id = user.Id,
-                        Avatar = user.Avatar,
                         Role = user.Role,
                         Username = user.UserName,
                         Name = user.Name,
