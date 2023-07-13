@@ -27,7 +27,7 @@ namespace App3.Droid
 
         private void CreateNotificationChannel()
         {
-            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+           /* if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
             {
                 var channelName = Resources.GetString(Resource.String.channel_name);
                 var channelDescription = GetString(Resource.String.channel_description);
@@ -40,7 +40,7 @@ namespace App3.Droid
 
                 var notificationManager = (NotificationManager)GetSystemService(NotificationService);
                 notificationManager.CreateNotificationChannel(channel);
-            }
+            } */
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)

@@ -114,7 +114,7 @@ namespace App3
             birthDateDatePicker = new DatePicker
             {
                 TextColor = Color.Black,
-                Format = "dd/MM/yyyy",
+                Format = "dd.MM.yyyy",
                 MaximumDate = DateTime.Today,
                 Date = DateTime.Parse(user.BirthDate),
                 FontSize = 20

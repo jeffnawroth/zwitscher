@@ -36,6 +36,7 @@ namespace App3
             if(isPostOkay)
             {
                 await DisplayAlert("Erfolgreich gepostet", "Der Beitrag wurde erfolgreich gepostet.", "OK");
+                postingText.Text = string.Empty;
             }
             else
             {

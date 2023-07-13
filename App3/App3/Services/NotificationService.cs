@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace App3.Services
+/*namespace App3.Services
 {
     public static class NotificationService
     {
@@ -31,4 +31,4 @@ namespace App3.Services
             notificationManager.Notify(NotificationId, notificationBuilder.Build());
         }
     }
-}
+} */
