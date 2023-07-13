@@ -73,7 +73,7 @@ public class UserController : ControllerBase
 
         var filteredUsers = new List<User>();
 
-        if (currentUser.Role == Role.Admin)
+        if (currentUser.Role == Role.Admin || currentUser.Role == Role.Moderator)
             foreach (var user in users)
             {
                 var filteredUser = new User
@@ -95,33 +95,7 @@ public class UserController : ControllerBase
 
                 filteredUsers.Add(filteredUser);
             }
-
-        if (currentUser.Role == Role.Moderator)
-            foreach (var user in users)
-            {
-                if (user.Role == Role.User)
-                {
-                    var filteredUser = new User
-                    {
-                        Id = user.Id,
-                        Role = user.Role,
-                        Username = user.UserName,
-                        Name = user.Name,
-                        Email = user.Email,
-                        Gender = user.Gender,
-                        BirthDate = user.BirthDate,
-                        CreatedAt = user.CreatedAt,
-                        Bio = user.Bio,
-                        Locked = user.Locked,
-                        Followers = user.Followers.ToList(),
-                        Following = user.Following.ToList(),
-                        Interests = user.Interests.ToList()
-                    };
-
-                    filteredUsers.Add(filteredUser);
-                }
-            }
-
+        
         return Ok(filteredUsers);
     }
 
