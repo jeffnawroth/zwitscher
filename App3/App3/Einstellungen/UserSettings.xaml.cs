@@ -18,7 +18,7 @@ namespace App3
         }
         private void OnChangePasswordButtonClicked(object sender, EventArgs e)
         {
-            Navigation.PushAsync(new ChangePassword());
+            Navigation.PushAsync(new ChangePasswordPage());
         }
 
         private void OnChangeEmailButtonClicked(object sender, EventArgs e)

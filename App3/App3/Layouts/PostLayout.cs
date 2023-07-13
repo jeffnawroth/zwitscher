@@ -203,6 +203,16 @@ namespace App3.Layouts
                 HeightRequest = 20,
                 BackgroundColor = Color.Transparent
             };
+            /*commentsButton.Clicked += async (sender, e) =>
+            {
+                // Hier kannst du den Code einfügen, um die Kommentare zum Post anzuzeigen
+                await DisplayComments(post);
+            };
+
+            async Task DisplayComments(Posting post)
+            {
+               
+            }*/
 
             var commentsLabel = new Label
             {
@@ -239,7 +249,23 @@ namespace App3.Layouts
                 HeightRequest = 20,
                 BackgroundColor = Color.Transparent
             };
+            comsend.Clicked += OnSendCommentClicked;
 
+            void OnSendCommentClicked(object sender, EventArgs e)
+            {
+                string commentText = comment.Text;
+                // Führe die Aktionen aus, um den Kommentar zu speichern
+                SaveComment(commentText);
+                // Zurücksetzen des Kommentar-Editors
+                comment.Text = string.Empty;
+            }
+
+            void SaveComment(string commentText)
+            {
+                // Hier kannst du den Code einfügen, um den Kommentar zu speichern
+                // Verwende die commentText-Variable, um auf den eingegebenen Kommentartext zuzugreifen
+                // Du kannst beispielsweise den Kommentar in einer Datenbank speichern oder eine API-Anfrage senden
+            }
             sendCommentLayout.Children.Add(comment);
             sendCommentLayout.Children.Add(comsend);
 

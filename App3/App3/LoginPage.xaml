@@ -5,7 +5,7 @@
 
     <StackLayout Spacing="30" VerticalOptions="Center">
         <Label Text="Melde dich an..." FontSize="30" FontAttributes="Bold" HorizontalOptions="Center" TextColor="Gray"/>
-        <Entry x:Name="usernameEntry" Placeholder="E-Mail-Adresse/ Benutzername" PlaceholderColor="Gray" />
+        <Entry x:Name="usernameEntry" Placeholder="E-Mail-Adresse" PlaceholderColor="Gray" />
         <Entry x:Name="passwordEntry" Placeholder="Passwort" IsPassword="True" PlaceholderColor="Gray" />
         <Button Text="Login" Clicked="OnLoginButtonClicked" BackgroundColor="Gray" />
         <BoxView HeightRequest="20" />
