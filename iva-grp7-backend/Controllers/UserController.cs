@@ -715,12 +715,13 @@ public class UserController : ControllerBase
     [HttpGet("search/{query}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<IEnumerable<UserSearch>>> SearchUsers(string query)
+    public async Task<ActionResult<IEnumerable<UserSearch>>> SearchUsers(string? query)
     {
         if (string.IsNullOrWhiteSpace(query))
         {
             return new List<UserSearch>();
         }
+
         var users = await _userManager.Users
             .Where(u => u.UserName.ToLower().Contains(query.ToLower()) || u.Name.ToLower().Contains(query.ToLower()))
             .Select(u => new UserSearch() 
