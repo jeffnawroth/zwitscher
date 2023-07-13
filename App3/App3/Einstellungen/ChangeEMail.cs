@@ -1,5 +1,12 @@
-﻿using System;
+﻿using App3.Services;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Net.Http.Headers;
+using System.Net.Http;
 using Xamarin.Forms;
+using System.Text;
 
 namespace App3
 {
@@ -59,13 +66,11 @@ namespace App3
             string oldEmail = oldEmailEntry.Text;
             string newEmail = newEmailEntry.Text;
             string confirmEmail = confirmEmailEntry.Text;
-
             // Führe die Überprüfungen durch und ändere die E-Mail-Adresse, falls gültig
             if (CheckOldEmail(oldEmail) && CheckNewEmailsMatch(newEmail, confirmEmail))
             {
-                ChangeEmail(oldEmail, newEmail);
-
-                DisplayAlert("Erfolg", "E-Mail-Adresse erfolgreich geändert!", "OK");
+                
+                ChangeEmail(newEmail);
 
                 // Zurücksetzen der Eingabefelder
                 oldEmailEntry.Text = string.Empty;
@@ -83,7 +88,11 @@ namespace App3
         {
             // Hier kannst du die Überprüfung der alten E-Mail-Adresse implementieren
             // Rückgabe des Ergebnisses der Überprüfung
-            return true;
+            if(email == LoginPage.currentUser.Email)
+            {
+                return true;
+            }
+            return false;
         }
 
         private bool CheckNewEmailsMatch(string newEmail, string confirmEmail)
@@ -93,9 +102,30 @@ namespace App3
             return newEmail == confirmEmail;
         }
 
-        private void ChangeEmail(string oldEmail, string newEmail)
+        private async void ChangeEmail(string newEmail)
         {
             // Hier kannst du die Logik zum tatsächlichen Ändern der E-Mail-Adresse implementieren
+            var token = LoginPage.token;
+            HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
+            using (var client = new HttpClient(insecureHandler))
+            {
+                client.BaseAddress = new Uri("https://10.0.2.2:7178/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                string jsonPayload = JsonConvert.SerializeObject(newEmail);
+                HttpResponseMessage response = await client.PutAsync("api/User/EmailChange?new_email=" + newEmail, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
+                Console.WriteLine(response.StatusCode);
+                if (response.IsSuccessStatusCode)
+                {
+                    DisplayAlert("Erfolg", "Die Email wurde erfolgreich geändert", "OK");
+                }
+                else
+                {
+                    DisplayAlert("Fehler", "Die Email wurde nicht geändert", "OK");
+                }
+            }
         }
     }
 }

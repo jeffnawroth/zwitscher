@@ -17,6 +17,21 @@ namespace App3
     {
         public ProfilePage()
         {
+            InitializePageAsync();
+        }
+        
+        private async void InitializePageAsync()
+        {
+            var profileLayout = ProfilePageLayout.CreateProfilePageLayout(LoginPage.currentUser);
+
+            Content = new StackLayout
+            {
+                Children = { profileLayout }
+            };
+        }
+
+        protected override async void OnAppearing()
+        {
             var profileLayout = ProfilePageLayout.CreateProfilePageLayout(LoginPage.currentUser);
 
             Content = new StackLayout

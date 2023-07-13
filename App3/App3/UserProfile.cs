@@ -8,6 +8,8 @@ using System.Net.Http;
 using System.Text;
 
 using Xamarin.Forms;
+using App3.Layouts;
+using Xamarin.Essentials;
 
 namespace App3
 {
@@ -208,11 +210,18 @@ namespace App3
         private async void FollowButton_Clicked(object sender, EventArgs e)
         {
             if (LoginPage.currentUser.Following.Contains(_user.Id))
+            {
                 UnfollowUser(_user);
+                LoginPage.currentUser.Following.Remove(_user.Id);
+            }
             else
+            {
                 FollowUser(_user);
+                LoginPage.currentUser.Following.Add(_user.Id);
+            }
 
             _followButton.Text = GetFollowButtonText();
+            UpdateFollowButtonAppearance();
         }
         private async void FollowUser(User user)
         {
@@ -245,7 +254,20 @@ namespace App3
                 HttpResponseMessage response = await client.PostAsync("api/User/" + user.Id + "/unfollow", new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
             }
         }
-        
+        private void UpdateFollowButtonAppearance()
+        {
+            if (LoginPage.currentUser.Following.Contains(_user.Id))
+            {
+                _followButton.TextColor = Color.White;
+                _followButton.BackgroundColor = Color.Gray;
+            }
+            else
+            {
+                _followButton.TextColor = Color.White;
+                _followButton.BackgroundColor = Color.Gray;
+            }
+        }
+
         private StackLayout CreateViewWithIcon(string label, View view, string iconImage)
         {
             var icon = new Image

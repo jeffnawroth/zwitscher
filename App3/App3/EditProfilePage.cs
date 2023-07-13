@@ -316,7 +316,7 @@ namespace App3
                 User updatedUser = new User
                 {
                     Id = user.Id,
-                    //Avatar = user.Avatar,
+                    //Avatar = "placeholder_avatar.png",
                     Role = user.Role,
                     Username = user.Username,
                     Name = user.Name,
@@ -330,8 +330,10 @@ namespace App3
                     Interests = user.Interests,
                     Locked = user.Locked
                 };
+                LoginPage.currentUser = updatedUser;
 
                 string jsonPayload = JsonConvert.SerializeObject(updatedUser);
+                updatedUser.Avatar = "placeholder_avatar.png";
                 HttpResponseMessage response = await client.PutAsync("api/User/" + user.Id, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
 
                 if (response.IsSuccessStatusCode)

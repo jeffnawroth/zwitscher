@@ -180,13 +180,13 @@ namespace App3.Layouts
                 else
                 {
                     post.DownVotes.Add(currentUserId);
-                   // user.DislikedPosts.Add(post.PostId);
+                    DownvotePost(post.Id, LoginPage.currentUser);
+                    // user.DislikedPosts.Add(post.PostId);
                     dislikeButton.Source = "dislike_pushed.png";
 
                     if (post.UpVotes.Contains(currentUserId))
                     {
                         post.UpVotes.Remove(currentUserId);
-                        DownvotePost(post.Id, LoginPage.currentUser);
                         // user.LikedPosts.Remove(post.PostId);
                         likeButton.Source = "thumb_up.png";
                     }
