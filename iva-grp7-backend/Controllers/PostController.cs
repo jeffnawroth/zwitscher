@@ -356,6 +356,7 @@ public class PostController : ControllerBase
     var userPosts = await _context.Posts
         .Include(p => p.Votes)
         .Include(p => p.Files)
+        .Where(p => p.UserId == user.Id)
         .Where(p => !_context.Comments.Any(c => c.Id == p.Id))
         .ToListAsync();
 
