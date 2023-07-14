@@ -203,16 +203,10 @@ namespace App3.Layouts
                 HeightRequest = 20,
                 BackgroundColor = Color.Transparent
             };
-            /*commentsButton.Clicked += async (sender, e) =>
+            commentsButton.Clicked += async (sender, e) =>
             {
-                // Hier kannst du den Code einfügen, um die Kommentare zum Post anzuzeigen
                 await DisplayComments(post);
             };
-
-            async Task DisplayComments(Posting post)
-            {
-               
-            }*/
 
             var commentsLabel = new Label
             {
@@ -253,18 +247,16 @@ namespace App3.Layouts
 
             void OnSendCommentClicked(object sender, EventArgs e)
             {
-                string commentText = comment.Text;
+                CommentAdd new_comment = new CommentAdd
+                {
+                    UserId = LoginPage.currentUser.Id,
+                    ParentPostId = post.Id,
+                    Text = comment.Text,
+                };
                 // Führe die Aktionen aus, um den Kommentar zu speichern
-                SaveComment(commentText);
+                SaveComment(new_comment);
                 // Zurücksetzen des Kommentar-Editors
                 comment.Text = string.Empty;
-            }
-
-            void SaveComment(string commentText)
-            {
-                // Hier kannst du den Code einfügen, um den Kommentar zu speichern
-                // Verwende die commentText-Variable, um auf den eingegebenen Kommentartext zuzugreifen
-                // Du kannst beispielsweise den Kommentar in einer Datenbank speichern oder eine API-Anfrage senden
             }
             sendCommentLayout.Children.Add(comment);
             sendCommentLayout.Children.Add(comsend);
@@ -274,8 +266,10 @@ namespace App3.Layouts
             postLayout.Children.Add(likesDislikesLayout);
             postLayout.Children.Add(sendCommentLayout);
 
+
             return postLayout;
         }
+
         private static async Task OpenUserProfile(string userID)
         {
             User clickedUser = await getUserData(userID);
@@ -363,7 +357,31 @@ namespace App3.Layouts
                 HttpResponseMessage response = await client.PostAsync("api/Post/" + postID + "/downvote", new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
             }
         }
+        public static async void SaveComment(CommentAdd comment)
+        {
+            //var token = LoginPage.token;
+            HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
+            using (var client = new HttpClient(insecureHandler))
+            {
+                client.BaseAddress = new Uri("https://10.0.2.2:7178/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                //client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
+                string jsonPayload = JsonConvert.SerializeObject(comment);
+                HttpResponseMessage response = await client.PostAsync("api/Comment/", new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
+
+                if(response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("COMMENT ADDED");
+                }
+            }
+        }
+        private static async Task DisplayComments(Posting post)
+        {
+            // Navigate to the comments page, passing the post as a parameter
+            await Application.Current.MainPage.Navigation.PushAsync(new CommentsPage(post));
+        }
     }
    
 }

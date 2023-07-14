@@ -1,4 +1,5 @@
-﻿using System;
+﻿using App3.Services;
+using System;
 using System.Collections.Generic;
 
 namespace App3
@@ -15,6 +16,7 @@ namespace App3
         public List<string> DownVotes { get; set; }
         public List<int> CommentCount { get; set; }
         public DateTime Date { get; set; }
+        public List<Comment> Comments { get; set; }
     }
 
 }

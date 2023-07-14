@@ -33,8 +33,8 @@ namespace App3
                     Console.WriteLine(jsonResponse);
                     foreach (var post in responseData)
                     {
-                        int upVotesCount = post.UpVotes?.Count(vote => vote != null && vote is string) ?? 0;
-                        int downVotesCount = post.DownVotes?.Count(vote => vote != null && vote is string) ?? 0;
+                        //int upVotesCount = post.UpVotes?.Count(vote => vote != null && vote is string) ?? 0;
+                        //int downVotesCount = post.DownVotes?.Count(vote => vote != null && vote is string) ?? 0;
 
                         var newPost = new Posting
                         {
