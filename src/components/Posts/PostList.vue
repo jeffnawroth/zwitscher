@@ -6,7 +6,7 @@
         <template v-if="route.name == 'profile'">
           <template v-for="comment in post.comments" :key="comment.id!">
             <v-timeline truncate-line="end">
-              <v-timeline-item size="small" width="860">
+              <v-timeline-item size="small" width="750">
                 <Post :post="comment"></Post>
               </v-timeline-item>
             </v-timeline>

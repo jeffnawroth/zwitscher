@@ -5,7 +5,6 @@ import { computed } from "vue";
 import { showNotification, sortByDateDescending } from "./helpers";
 import {
   CommentAdd,
-  CommentApi,
   PostAdd,
   PostApi,
   PostResult,
@@ -117,7 +116,7 @@ export const usePostStore = defineStore("post", () => {
 
   async function addComment(comment: CommentAdd) {
     try {
-      const data = await CommentApi.prototype.apiCommentPost(comment);
+      const data = await PostApi.prototype.apiPostCommentPost(comment);
       post.value?.comments?.push(data.data);
     } catch (error) {
       showNotification(
