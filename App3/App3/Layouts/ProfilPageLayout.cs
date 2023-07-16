@@ -14,10 +14,10 @@ namespace App3.Layouts
     {
 
         public static StackLayout Content { get; private set; }
-
+        // takes User object as a paramenter and create/ return an Stacklayout
         public static StackLayout CreateProfilePageLayout(User user)
         {
-
+            // create the mainlayout
             var mainLayout = new StackLayout
             {
                 Orientation = StackOrientation.Vertical,
@@ -25,6 +25,7 @@ namespace App3.Layouts
                 Padding = new Thickness(10),
                 BackgroundColor = Color.White,
             };
+            // create a button to edit the profil
             var editButton = new ImageButton
             {
                 Source = "edit_profile.png",
@@ -39,6 +40,7 @@ namespace App3.Layouts
             {
                 EditProfile(user);
             };
+            // create UserAvatar Image
             var avatarImage = new Image
             {
                 Source = user.Avatar,
@@ -48,6 +50,7 @@ namespace App3.Layouts
                 BackgroundColor = Color.Transparent
             };
             mainLayout.Children.Add(avatarImage);
+            // create nameLabel
             var nameLabel = new Label
             {
                 Text = user.Name,
@@ -57,7 +60,7 @@ namespace App3.Layouts
                 HorizontalOptions = LayoutOptions.Center
             };
             mainLayout.Children.Add(nameLabel);
-
+            // create usernameLabel
             var usernameLabel = new Label
             {
                 Text = "@" + user.Username,
@@ -65,6 +68,7 @@ namespace App3.Layouts
                 TextColor = Color.Black
 
             };
+            // create followers and followings, write from array to counter
             var followersLabel = new Label
             {
                 Text = $"{user.Followers.Count} Followers",
@@ -77,6 +81,7 @@ namespace App3.Layouts
                 TextColor = Color.Black,
                 FontSize = 24
             };
+            // followingLayout containing username, followings and followers
             var followersLayout = new StackLayout
             {
                 Orientation = StackOrientation.Horizontal,
@@ -85,11 +90,7 @@ namespace App3.Layouts
                 HorizontalOptions = LayoutOptions.Center
             };
             mainLayout.Children.Add(followersLayout);
-
-
-
-           
-
+            // create info Layout 
             var infoLayout = new FlexLayout
             {
                 Direction = FlexDirection.Row,
@@ -99,9 +100,7 @@ namespace App3.Layouts
                 AlignContent = FlexAlignContent.Center,
                 Margin = new Thickness(0, 10)
             };
-
-
-
+            // create birthdaylabel out of users Birthdate 
             var birthDayLabel = new Label
             {
                 Text = $"{user.BirthDate}",
@@ -109,7 +108,7 @@ namespace App3.Layouts
             };
             var birthDateLayout = CreateViewWithIcon("geboren: ", birthDayLabel, "birthday.png");
             infoLayout.Children.Add(birthDateLayout);
-
+            // create joindatelabel
             var joinDateLabel = new Label
             {
                 Text = $"{user.CreatedAt.ToString("dd/MM/yyyy")}",
@@ -118,7 +117,7 @@ namespace App3.Layouts
             var joinDateLayout = CreateViewWithIcon("beigetreten: ", joinDateLabel, "startday.png");
             infoLayout.Children.Add(joinDateLayout);
 
-
+            // create generLabel based on users gender
             var genderLabel = new Label
             {
                 TextColor = Color.Black,
@@ -130,7 +129,7 @@ namespace App3.Layouts
             var genderLayout = CreateViewWithIcon("Gender", genderLabel, GetGenderIconImage(user.Gender.Value));
             infoLayout.Children.Add(genderLayout);
             mainLayout.Children.Add(infoLayout);
-
+            // checking users gender and return fitting texts
             if (user.Gender == Gender.Male)
             { 
 
@@ -146,6 +145,7 @@ namespace App3.Layouts
 
                 genderLabel.Text = "Divers";
             }
+            // create interestslabel
             var interestsLabel = new Label
             {
                 Text = "Interessen",
@@ -155,6 +155,7 @@ namespace App3.Layouts
                 HorizontalOptions = LayoutOptions.Center
             };
             mainLayout.Children.Add(interestsLabel);
+            // create interests Layout 
             var interestsLayout = new FlexLayout
             {
                 Wrap = FlexWrap.Wrap,
@@ -163,7 +164,7 @@ namespace App3.Layouts
                 AlignContent = FlexAlignContent.Start,
                 Margin = new Thickness(0, 5)
             };
-
+            // Adds each interest label as a child to the FlexLayout
             foreach (var interest in user.Interests)
             {
                 var interestLabel = new Label
@@ -178,6 +179,7 @@ namespace App3.Layouts
             };
 
             mainLayout.Children.Add(interestsLayout);
+            // create biolabel
             var bioLabel = new Editor
             {
                 Text = user.Bio,
@@ -197,50 +199,54 @@ namespace App3.Layouts
             mainLayout.Children.Add(separatorLine);
 
             Content = mainLayout;
-
+            // giving back the layout 
             return mainLayout;
 
         }
         private static async void EditProfile(User user)
         {
-            // Erstellen Sie eine neue Instanz der Profilbearbeitungsseite und übergeben Sie den Benutzer
+            // Create a new instance of the EditProfilePage and pass the user object
             var editPage = new EditProfilePage(user);
 
-            // Navigieren Sie zur Profilbearbeitungsseite
+            // Navigate to the EditProfilePage
             await Application.Current.MainPage.Navigation.PushAsync(editPage);
         }
-        private static StackLayout CreateViewWithIcon(string label, View view, string iconImage)
+
+    }
+    private static StackLayout CreateViewWithIcon(string label, View view, string iconImage)
+    {
+        // Create an Image view for the icon
+        var icon = new Image
         {
-            {
-                var icon = new Image
-                {
-                    Source = iconImage,
-                    WidthRequest = 16,
-                    HeightRequest = 16
-                };
+            Source = iconImage,
+            WidthRequest = 16,
+            HeightRequest = 16
+        };
 
-                var labelView = new Label
-                {
-                    Text = label,
-                    TextColor = Color.Black,
-                    FontSize = 20,
-                    VerticalOptions = LayoutOptions.Center
-                };
-
-                var layout = new StackLayout
-                {
-                    Orientation = StackOrientation.Horizontal,
-                    Spacing = 10,
-                    Children = { icon, labelView, view },
-                    BackgroundColor = Color.LightGray
-                };
-
-                return layout;
-            }
-           
-        }
-        private static string GetGenderIconImage(Gender gender)
+        // Create a Label view for the label text
+        var labelView = new Label
         {
+            Text = label,
+            TextColor = Color.Black,
+            FontSize = 20,
+            VerticalOptions = LayoutOptions.Center
+        };
+
+        // Create a StackLayout to contain the icon, label, and view
+        var layout = new StackLayout
+        {
+            Orientation = StackOrientation.Horizontal,
+            Spacing = 10,
+            Children = { icon, labelView, view },
+            BackgroundColor = Color.LightGray
+        };
+        // giving back the layout
+        return layout;
+    }
+
+    private static string GetGenderIconImage(Gender gender)
+        {
+        // Use a switch statement to determine the gender and return the corresponding image file name
             switch (gender)
             {
                 case Gender.Male:
