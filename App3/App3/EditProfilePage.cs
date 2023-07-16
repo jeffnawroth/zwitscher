@@ -23,13 +23,14 @@ namespace App3
         public EditProfilePage(User user)
         {
             this.user = user;
-
+            // Create the main layout for the page
             var mainLayout = new StackLayout
             {
                 Spacing = 10,
                 Padding = new Thickness(10),
                 BackgroundColor = Color.White,
             };
+            // Create the save button
             var saveButton = new ImageButton
             {
                 Source = "save_profile.png",
@@ -41,7 +42,7 @@ namespace App3
             };
             saveButton.Clicked += SaveButton_Clicked;
             mainLayout.Children.Add(saveButton);
-
+            // create a avtarButton to change Image
             var avatarButton = new ImageButton
             {
                 Source = user.Avatar,
@@ -52,16 +53,20 @@ namespace App3
             };
             avatarButton.Clicked += async (sender, e) =>
             {
+                // Open the media picker to select a new image
                 var pickResult = await MediaPicker.PickPhotoAsync();
 
                 if (pickResult != null)
                 {
+                    // Update the user's avatar path with the selected image's full path
                     user.Avatar = pickResult.FullPath;
+
+                    // Update the image source of the avatar button to display the selected image
                     avatarButton.Source = ImageSource.FromFile(pickResult.FullPath);
                 }
             };
             mainLayout.Children.Add(avatarButton);
-
+            // create name Entry 
             nameEntry = new Entry
             {
                 Placeholder = "Name",
@@ -72,7 +77,7 @@ namespace App3
                 HorizontalOptions = LayoutOptions.Center
             };
             mainLayout.Children.Add(nameEntry);
-
+            // create username Label so it cant be changed 
             var usernameLabel = new Label
             {
                 Text = "@" + user.Username,
@@ -81,7 +86,7 @@ namespace App3
 
             };
 
-
+            // create followers and following Labels and Layout 
             var followersLabel = new Label
             {
                 Text = $"{user.Followers.Count} Followers",
@@ -111,6 +116,7 @@ namespace App3
                 AlignContent = FlexAlignContent.Center,
                 Margin = new Thickness(0, 10)
             };
+            // Create a date picker for the birth date
             birthDateDatePicker = new DatePicker
             {
                 TextColor = Color.Black,
@@ -130,7 +136,7 @@ namespace App3
             };
             var joinDateLayout = CreateViewWithIcon("beigetreten: ", joinDateLabel, "startday.png");
             infoLayout.Children.Add(joinDateLayout);
-
+            // create a picker to change gender
             genderPicker = new Picker
             {
                 TextColor = Color.Black,
@@ -152,7 +158,7 @@ namespace App3
                 HorizontalOptions = LayoutOptions.Center
             };
             mainLayout.Children.Add(interestsLabel);
-
+            // create Layout for interests 
             var interestsLayout = new FlexLayout
             {
                 Wrap = FlexWrap.Wrap,
@@ -161,13 +167,13 @@ namespace App3
                 AlignContent = FlexAlignContent.Start,
                 Margin = new Thickness(0, 5)
             };
-
+            // Create interest buttons for each interest
             foreach (var interest in user.Interests)
             {
                 var interestButton = CreateInterestButton(interest);
                 interestsLayout.Children.Add(interestButton);
             }
-
+            // Create a button for adding a new interest
             var addInterestButton = new Button
             {
                 Text = "+",
@@ -181,20 +187,28 @@ namespace App3
 
             addInterestButton.Clicked += async (sender, e) =>
             {
+                // Display a prompt dialog to enter a new interest
                 string newInterest = await DisplayPromptAsync("Neues Interesse hinzufügen", "Geben Sie das neue Interesse ein", "Hinzufügen", "Abbrechen");
 
                 if (!string.IsNullOrWhiteSpace(newInterest))
                 {
+                    // Create a new interest button with the entered interest text
                     var newInterestButton = CreateInterestButton(newInterest);
+
+                    // Insert the new interest button before the last button (the add button)
                     interestsLayout.Children.Insert(interestsLayout.Children.Count - 1, newInterestButton);
+
+                    // Add the new interest to the user's interests collection
                     user.Interests.Add(newInterest);
                 }
             };
+
 
             interestsLayout.Children.Add(addInterestButton);
 
             Button CreateInterestButton(string interest)
             {
+                // Create a new Button for the interest
                 var interestButton = new Button
                 {
                     Text = interest,
@@ -208,11 +222,15 @@ namespace App3
 
                 interestButton.Clicked += async (sender, e) =>
                 {
+                    // Display a confirmation alert dialog before deleting the interest
                     bool deleteConfirmed = await DisplayAlert("Interesse löschen", "Möchten Sie das Interesse wirklich löschen?", "Ja", "Nein");
 
                     if (deleteConfirmed)
                     {
+                        // Remove the interest button from the interests layout
                         interestsLayout.Children.Remove(interestButton);
+
+                        // Remove the interest from the user's interests collection
                         user.Interests.Remove(interest);
                     }
                 };
@@ -221,6 +239,7 @@ namespace App3
             }
 
             mainLayout.Children.Add(interestsLayout);
+            // create Bioeditor
             bioEditor = new Editor
             {
                 Text = user.Bio,
@@ -233,7 +252,6 @@ namespace App3
             {
                 var newBio = bioEditor.Text;
                 user.Bio = newBio;
-                // Fügen Sie hier die Logik hinzu, um die neue Biografie zu speichern oder zu aktualisieren
             };
 
             mainLayout.Children.Add(bioEditor);
@@ -241,7 +259,7 @@ namespace App3
 
             Content = mainLayout;
         }
-
+        // Creates a layout with an icon, label, and view
         private StackLayout CreateViewWithIcon(string label, View view, string iconImage)
         {
             var icon = new Image
@@ -269,7 +287,7 @@ namespace App3
 
             return layout;
         }
-
+        // Returns the image file name based on the gender value
         private string GetGenderIconImage(Gender gender)
         {
             switch (gender)
@@ -282,16 +300,20 @@ namespace App3
                     return "human.png";
             }
         }
-
+        // Event handler for the save button click
         private async void SaveButton_Clicked(object sender, EventArgs e)
         {
+            // Update user information based on the input fields
             user.Name = nameEntry.Text;
             user.BirthDate = birthDateDatePicker.Date.Date.ToString("yyyy-MM-dd");
             user.Gender = (Gender)Enum.Parse(typeof(Gender), genderPicker.SelectedItem.ToString());
             user.Bio = bioEditor.Text;
 
+            // Call the Save method to save the updated user information
             bool isOk = await Save(user);
-            if(isOk) 
+
+            // Display a success or failure message based on the save operation
+            if (isOk)
             {
                 await DisplayAlert("Erfolg", "Profil erfolgreich aktualisiert!", "OK");
             }
@@ -299,6 +321,8 @@ namespace App3
             {
                 await DisplayAlert("Fehlschlag", "Profil wurde nicht aktualisiert!", "OK");
             }
+
+            // Navigate back to the previous page
             await Navigation.PopAsync();
         }
 
