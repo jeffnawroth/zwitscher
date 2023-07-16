@@ -182,7 +182,7 @@ namespace App3.Layouts
 
             mainLayout.Children.Add(interestsLayout);
             // create biolabel
-            var bioLabel = new Editor
+            var bioLabel = new Label
             {
                 Text = user.Bio,
                 TextColor = Color.Black,
