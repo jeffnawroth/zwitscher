@@ -104,7 +104,8 @@ namespace App3.Layouts
             var birthDayLabel = new Label
             {
                 Text = $"{user.BirthDate}",
-                TextColor = Color.Black, FontSize = 20
+                TextColor = Color.Black,
+                FontSize = 20
             };
             var birthDateLayout = CreateViewWithIcon("geboren: ", birthDayLabel, "birthday.png");
             infoLayout.Children.Add(birthDateLayout);
@@ -112,7 +113,8 @@ namespace App3.Layouts
             var joinDateLabel = new Label
             {
                 Text = $"{user.CreatedAt.ToString("dd/MM/yyyy")}",
-                TextColor = Color.Black, FontSize = 20
+                TextColor = Color.Black,
+                FontSize = 20
             };
             var joinDateLayout = CreateViewWithIcon("beigetreten: ", joinDateLabel, "startday.png");
             infoLayout.Children.Add(joinDateLayout);
@@ -131,7 +133,7 @@ namespace App3.Layouts
             mainLayout.Children.Add(infoLayout);
             // checking users gender and return fitting texts
             if (user.Gender == Gender.Male)
-            { 
+            {
 
                 genderLabel.Text = "Männlich";
             }
@@ -211,42 +213,40 @@ namespace App3.Layouts
             // Navigate to the EditProfilePage
             await Application.Current.MainPage.Navigation.PushAsync(editPage);
         }
-
-    }
-    private static StackLayout CreateViewWithIcon(string label, View view, string iconImage)
-    {
-        // Create an Image view for the icon
-        var icon = new Image
+        private static StackLayout CreateViewWithIcon(string label, View view, string iconImage)
         {
-            Source = iconImage,
-            WidthRequest = 16,
-            HeightRequest = 16
-        };
+            // Create an Image view for the icon
+            var icon = new Image
+            {
+                Source = iconImage,
+                WidthRequest = 16,
+                HeightRequest = 16
+            };
 
-        // Create a Label view for the label text
-        var labelView = new Label
-        {
-            Text = label,
-            TextColor = Color.Black,
-            FontSize = 20,
-            VerticalOptions = LayoutOptions.Center
-        };
+            // Create a Label view for the label text
+            var labelView = new Label
+            {
+                Text = label,
+                TextColor = Color.Black,
+                FontSize = 20,
+                VerticalOptions = LayoutOptions.Center
+            };
 
-        // Create a StackLayout to contain the icon, label, and view
-        var layout = new StackLayout
-        {
-            Orientation = StackOrientation.Horizontal,
-            Spacing = 10,
-            Children = { icon, labelView, view },
-            BackgroundColor = Color.LightGray
-        };
-        // giving back the layout
-        return layout;
-    }
+            // Create a StackLayout to contain the icon, label, and view
+            var layout = new StackLayout
+            {
+                Orientation = StackOrientation.Horizontal,
+                Spacing = 10,
+                Children = { icon, labelView, view },
+                BackgroundColor = Color.LightGray
+            };
+            // giving back the layout
+            return layout;
+        }
 
-    private static string GetGenderIconImage(Gender gender)
+        private static string GetGenderIconImage(Gender gender)
         {
-        // Use a switch statement to determine the gender and return the corresponding image file name
+            // Use a switch statement to determine the gender and return the corresponding image file name
             switch (gender)
             {
                 case Gender.Male:

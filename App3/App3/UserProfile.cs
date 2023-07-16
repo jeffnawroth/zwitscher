@@ -218,37 +218,38 @@ namespace App3
         }
         private async void FollowUser(User user)
         {
-            var token = LoginPage.token;
-            HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
+            var token = LoginPage.token; //JWT Token for Authentication
+            HttpClientHandler insecureHandler = Registration.GetInsecureHandler(); //Handler for certificates
             using (var client = new HttpClient(insecureHandler))
             {
-                client.BaseAddress = new Uri("https://10.0.2.2:7178/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+                client.BaseAddress = new Uri("https://10.0.2.2:7178/"); //Client address
+                client.DefaultRequestHeaders.Accept.Clear();  //Clear all Headers beforehand
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token); //Add Authentication
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                string jsonPayload = JsonConvert.SerializeObject(user);
-                HttpResponseMessage response = await client.PostAsync("api/User/" + user.Id + "/follow", new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
+                string jsonPayload = JsonConvert.SerializeObject(user); //Serialize the object to send
+                HttpResponseMessage response = await client.PostAsync("api/User/" + user.Id + "/follow", new StringContent(jsonPayload, Encoding.UTF8, "application/json")); //API CALL with content
             }
         }
 
         private async void UnfollowUser(User user)
         {
-            var token = LoginPage.token;
-            HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
+            var token = LoginPage.token; //JWT Token for Authentication
+            HttpClientHandler insecureHandler = Registration.GetInsecureHandler(); //Handler for certificates
             using (var client = new HttpClient(insecureHandler))
             {
-                client.BaseAddress = new Uri("https://10.0.2.2:7178/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+                client.BaseAddress = new Uri("https://10.0.2.2:7178/"); //Client address
+                client.DefaultRequestHeaders.Accept.Clear(); //Clear all Headers beforehand
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);  //Add Authentication
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                string jsonPayload = JsonConvert.SerializeObject(user);
-                HttpResponseMessage response = await client.PostAsync("api/User/" + user.Id + "/unfollow", new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
+                string jsonPayload = JsonConvert.SerializeObject(user);  //Serialize the object to send
+                HttpResponseMessage response = await client.PostAsync("api/User/" + user.Id + "/unfollow", new StringContent(jsonPayload, Encoding.UTF8, "application/json")); //API CALL with content
             }
         }
         private void UpdateFollowButtonAppearance()
         {
+            //Updates the Text and Color of the Follow Button depending on the state
             if (LoginPage.currentUser.Following.Contains(_user.Id))
             {
                 _followButton.TextColor = Color.White;

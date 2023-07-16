@@ -149,7 +149,6 @@ namespace App3.Layouts
                     // when the button was already pushed it needs to be removed and the picture of the button needs to be changed
                     post.UpVotes.Remove(currentUserId);
                     UpvotePost(post.Id, LoginPage.currentUser);
-                    //user.LikedPosts.Remove(post.PostId);
                     likeButton.Source = "thumb_up.png";
                 }
                 else
@@ -157,13 +156,11 @@ namespace App3.Layouts
                     // when the button wasen´t alredy pushed, the userId needs to set in the array and the buttonimage needs to be changed
                     post.UpVotes.Add(currentUserId);
                     UpvotePost(post.Id, LoginPage.currentUser);
-                    //user.DislikedPosts.Add(post.PostId);
                     likeButton.Source = "like_pushed.png";
                     // checking if the dislikebutton was already pushed, so it needs to be reseted 
                     if (post.DownVotes.Contains(currentUserId))
                     {
                         post.DownVotes.Remove(currentUserId);
-                        //user.DislikedPosts.Remove(post.PostId);
                         dislikeButton.Source = "thumb_down.png";
                     }
                 }
@@ -178,20 +175,17 @@ namespace App3.Layouts
                 {
                     post.DownVotes.Remove(currentUserId);
                     DownvotePost(post.Id, LoginPage.currentUser);
-                    //user.DislikedPosts.Remove(post.PostId);
                     dislikeButton.Source = "thumb_down.png";
                 }
                 else
                 {
                     post.DownVotes.Add(currentUserId);
                     DownvotePost(post.Id, LoginPage.currentUser);
-                    // user.DislikedPosts.Add(post.PostId);
                     dislikeButton.Source = "dislike_pushed.png";
 
                     if (post.UpVotes.Contains(currentUserId))
                     {
                         post.UpVotes.Remove(currentUserId);
-                        // user.LikedPosts.Remove(post.PostId);
                         likeButton.Source = "thumb_up.png";
                     }
                 }
@@ -288,27 +282,23 @@ namespace App3.Layouts
 
         private static async Task<User> getUserData(string userID)
         {
-            var token = LoginPage.token;
-            HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
+            var token = LoginPage.token; //JWT Token for Authentication
+            HttpClientHandler insecureHandler = Registration.GetInsecureHandler(); //Handler for certificates
             using (var client = new HttpClient(insecureHandler))
             {
-                client.BaseAddress = new Uri("https://10.0.2.2:7178/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+                client.BaseAddress = new Uri("https://10.0.2.2:7178/"); //Client address
+                client.DefaultRequestHeaders.Accept.Clear(); //Clear all Headers beforehand
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token); //Add Authentication
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                //string jsonPayload = JsonConvert.SerializeObject(userID);
-                HttpResponseMessage response = await client.GetAsync("api/User/" + userID);
+                HttpResponseMessage response = await client.GetAsync("api/User/" + userID); //API CALL
+                //Check if call responded with code 200 meaning OK
                 if (response.IsSuccessStatusCode)
                 {
-                    string jsonResponse = await response.Content.ReadAsStringAsync();
-                    JObject responseData = JsonConvert.DeserializeObject<JObject>(jsonResponse);
-                    string userId = responseData["id"]?.ToString();
-                    token = responseData["token"]?.ToString();
+                    string jsonResponse = await response.Content.ReadAsStringAsync(); //Response content as String formatting
+                    JObject responseData = JsonConvert.DeserializeObject<JObject>(jsonResponse); //Deseralize the content
 
-                    Console.WriteLine(responseData);
-
-                    var clickedUser = new User
+                    var clickedUser = new User //Creating the user information in User class
                     {
                         Id = (string)responseData["id"]?.ToString(),
                         Avatar = "placeholder_avatar.png",
@@ -325,7 +315,6 @@ namespace App3.Layouts
                         Interests = JsonConvert.DeserializeObject<List<string>>(responseData["interests"]?.ToString()),
                         Locked = (bool)responseData["locked"]
                     };
-                    //Console.WriteLine(responseData);
                     return clickedUser;
                 }
                 return null;
@@ -334,53 +323,46 @@ namespace App3.Layouts
 
         public static async void UpvotePost(string postID, User user)
         {
-            var token = LoginPage.token;
-            HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
+            var token = LoginPage.token; //JWT Token for Authentication
+            HttpClientHandler insecureHandler = Registration.GetInsecureHandler(); //Handler for certificates
             using (var client = new HttpClient(insecureHandler))
             {
-                client.BaseAddress = new Uri("https://10.0.2.2:7178/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+                client.BaseAddress = new Uri("https://10.0.2.2:7178/"); //Client address
+                client.DefaultRequestHeaders.Accept.Clear(); //Clear all Headers beforehand
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token); //Add Authentication
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                string jsonPayload = JsonConvert.SerializeObject(user);
-                HttpResponseMessage response = await client.PostAsync("api/Post/" + postID + "/upvote", new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
+                string jsonPayload = JsonConvert.SerializeObject(user); //Seralize the object to send
+                HttpResponseMessage response = await client.PostAsync("api/Post/" + postID + "/upvote", new StringContent(jsonPayload, Encoding.UTF8, "application/json")); //API CALL with content
             }
         }
 
         public static async void DownvotePost(string postID, User user)
         {
-            var token = LoginPage.token;
-            HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
+            var token = LoginPage.token; //JWT Token for Authentication
+            HttpClientHandler insecureHandler = Registration.GetInsecureHandler(); //Handler for certificates
             using (var client = new HttpClient(insecureHandler))
             {
-                client.BaseAddress = new Uri("https://10.0.2.2:7178/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+                client.BaseAddress = new Uri("https://10.0.2.2:7178/"); //Client address
+                client.DefaultRequestHeaders.Accept.Clear(); //Clear all Headers beforehand
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token); //Add Authentication
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                string jsonPayload = JsonConvert.SerializeObject(user);
-                HttpResponseMessage response = await client.PostAsync("api/Post/" + postID + "/downvote", new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
+                string jsonPayload = JsonConvert.SerializeObject(user); //Seralize the object to send
+                HttpResponseMessage response = await client.PostAsync("api/Post/" + postID + "/downvote", new StringContent(jsonPayload, Encoding.UTF8, "application/json")); //API CALL with content
             }
         }
         public static async void SaveComment(CommentAdd comment)
         {
-            //var token = LoginPage.token;
-            HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
+            HttpClientHandler insecureHandler = Registration.GetInsecureHandler(); //Handler for certificates
             using (var client = new HttpClient(insecureHandler))
             {
-                client.BaseAddress = new Uri("https://10.0.2.2:7178/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+                client.BaseAddress = new Uri("https://10.0.2.2:7178/");  //Client address
+                client.DefaultRequestHeaders.Accept.Clear();  //Clear all Headers beforehand
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                string jsonPayload = JsonConvert.SerializeObject(comment);
-                HttpResponseMessage response = await client.PostAsync("api/Comment/", new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
-
-                if(response.IsSuccessStatusCode)
-                {
-                    Console.WriteLine("COMMENT ADDED");
-                }
+                string jsonPayload = JsonConvert.SerializeObject(comment); //Seralize the object to send
+                HttpResponseMessage response = await client.PostAsync("api/Comment/", new StringContent(jsonPayload, Encoding.UTF8, "application/json")); //API CALL with content
             }
         }
         private static async Task DisplayComments(Posting post)

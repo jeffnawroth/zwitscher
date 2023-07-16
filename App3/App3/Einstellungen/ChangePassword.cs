@@ -87,28 +87,27 @@ namespace App3
 
         private async void ChangePassword(string newPassword)
         {
-               
-                var token = LoginPage.token;
-                HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
-                using (var client = new HttpClient(insecureHandler))
-                {
-                    client.BaseAddress = new Uri("https://10.0.2.2:7178/");
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var token = LoginPage.token; //JWT Token for Authentication
+            HttpClientHandler insecureHandler = Registration.GetInsecureHandler(); //Handler for certificates
+            using (var client = new HttpClient(insecureHandler))
+            {
+                client.BaseAddress = new Uri("https://10.0.2.2:7178/"); //Client address
+                client.DefaultRequestHeaders.Accept.Clear(); //Clear all Headers beforehand
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token); //Add Authentication
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                    string jsonPayload = JsonConvert.SerializeObject(newPassword);
-                    HttpResponseMessage response = await client.PutAsync("api/User/PasswordChange?new_password=" + newPassword, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
-                    Console.WriteLine(response.StatusCode);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        DisplayAlert("Erfolg", "Das Password wurde erfolgreich geändert", "OK");
-                    }
-                    else
-                    {
-                        DisplayAlert("Fehler", "Das Password wurde nicht geändert", "OK");
-                    }
+                string jsonPayload = JsonConvert.SerializeObject(newPassword); //Seralize the object to send
+                HttpResponseMessage response = await client.PutAsync("api/User/PasswordChange?new_password=" + newPassword, new StringContent(jsonPayload, Encoding.UTF8, "application/json")); //API CALL with 
+                //Check if the call responded with code 200 meaning OK
+                if (response.IsSuccessStatusCode)
+                {
+                    DisplayAlert("Erfolg", "Das Password wurde erfolgreich geändert", "OK");
                 }
+                else
+                {
+                    DisplayAlert("Fehler", "Das Password wurde nicht geändert", "OK");
+                }
+            }
         }
     }
 }

@@ -41,17 +41,6 @@ namespace App3
         protected override void OnResume()
         {
         }
-            private User GetUserFromDatabase(User loggedInUser)
-        {
-            
-            List<User> registeredUsers = Database.GetRegisteredUsers(); 
-            // return loggedin User
-            User user = registeredUsers.FirstOrDefault(u => u.Id == loggedInUser.Id);
-
-            return user;
-        }
-
-
     }
 
 }

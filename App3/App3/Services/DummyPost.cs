@@ -15,28 +15,23 @@ namespace App3
     {
         public static async Task<List<Posting>> CreateDummyPosts()
         {
-            
-            HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
+            HttpClientHandler insecureHandler = Registration.GetInsecureHandler(); //Handler for certificates
             using (var client = new HttpClient(insecureHandler))
             {
-                client.BaseAddress = new Uri("https://10.0.2.2:7178/");
-                client.DefaultRequestHeaders.Accept.Clear();
+                client.BaseAddress = new Uri("https://10.0.2.2:7178/"); //Client address
+                client.DefaultRequestHeaders.Accept.Clear(); //Clear all Headers beforehand
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                HttpResponseMessage response = await client.GetAsync("api/Post");
-
+                HttpResponseMessage response = await client.GetAsync("api/Post"); //API CALL
+                //Check if the call responded with code 200 meaning OK
                 if (response.IsSuccessStatusCode)
                 {
-                    string jsonResponse = await response.Content.ReadAsStringAsync();
-                    List<Posting> responseData = JsonConvert.DeserializeObject<List<Posting>>(jsonResponse);
-                    var posts = new List<Posting>();
-                    Console.WriteLine(jsonResponse);
+                    string jsonResponse = await response.Content.ReadAsStringAsync(); //Response content as String formatting
+                    List<Posting> responseData = JsonConvert.DeserializeObject<List<Posting>>(jsonResponse); //Deseralize the content
+                    var posts = new List<Posting>(); //Create new list for all posts
                     foreach (var post in responseData)
                     {
-                        //int upVotesCount = post.UpVotes?.Count(vote => vote != null && vote is string) ?? 0;
-                        //int downVotesCount = post.DownVotes?.Count(vote => vote != null && vote is string) ?? 0;
-
-                        var newPost = new Posting
+                        var newPost = new Posting //Create the post information in the Posting class
                         {
                             Id = post.Id,
                             Avatar = "placeholder_avatar.png",
@@ -49,7 +44,7 @@ namespace App3
                             CommentCount = new List<int> { 0 },
                             Date = post.Date
                         };
-                        posts.Add(newPost);
+                        posts.Add(newPost); //Add the created post to the list
                     }
                     return posts;
                 }

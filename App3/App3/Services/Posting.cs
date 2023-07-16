@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace App3
 {
-    public class Posting
+    public class Posting //Class for the posts
     {
         public string Id { get; set; }
         public string Avatar { get; set; }

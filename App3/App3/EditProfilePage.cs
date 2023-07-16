@@ -328,19 +328,18 @@ namespace App3
 
         private async Task<bool> Save(User user)
         {
-            string token = LoginPage.token;
-            HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
+            string token = LoginPage.token; //JWT Token for Authentication
+            HttpClientHandler insecureHandler = Registration.GetInsecureHandler(); //Handler for certificates
             using (var client = new HttpClient(insecureHandler))
             {
-                client.BaseAddress = new Uri("https://10.0.2.2:7178/");
-                client.DefaultRequestHeaders.Accept.Clear();
+                client.BaseAddress = new Uri("https://10.0.2.2:7178/"); //Client address
+                client.DefaultRequestHeaders.Accept.Clear(); //Clear all Headers beforehand
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token); //Add Authentication
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
 
-                User updatedUser = new User
+                User updatedUser = new User //Create the new information for the user in a new User class
                 {
                     Id = user.Id,
-                    //Avatar = "placeholder_avatar.png",
                     Role = user.Role,
                     Username = user.Username,
                     Name = user.Name,
@@ -354,14 +353,14 @@ namespace App3
                     Interests = user.Interests,
                     Locked = user.Locked
                 };
-                LoginPage.currentUser = updatedUser;
 
-                string jsonPayload = JsonConvert.SerializeObject(updatedUser);
-                updatedUser.Avatar = "placeholder_avatar.png";
-                HttpResponseMessage response = await client.PutAsync("api/User/" + user.Id, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
-
+                string jsonPayload = JsonConvert.SerializeObject(updatedUser); //Seralize the object to send
+                HttpResponseMessage response = await client.PutAsync("api/User/" + user.Id, new StringContent(jsonPayload, Encoding.UTF8, "application/json")); //API CALL with content
+                //Check if call responded with code 200 meaning OK
                 if (response.IsSuccessStatusCode)
                 {
+                    updatedUser.Avatar = "placeholder_avatar.png"; //Standard Avatar
+                    LoginPage.currentUser = updatedUser; //Update the information
                     return true;
                 }
                 return false;

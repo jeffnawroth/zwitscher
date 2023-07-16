@@ -30,7 +30,6 @@ namespace App3
             string email = emailEntry.Text;
             string password = passwordEntry.Text;
             string confirmPassword = confirmPasswordEntry.Text;
-            //int id = GenerateUserID();
 
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmPassword))
             {
@@ -39,73 +38,71 @@ namespace App3
                 return;
             }
 
-            User user = new User
+            User user = new User //create temporary User instance
             {
-                //Id = id,
                 Username = username,
                 Name = name,
                 Email = email,
                 Password = password,
-            
+            };
 
-            bool isRegistrationSuccessful = await RegisterUser(user);
+            bool isRegistrationSuccessful = await RegisterUser(user); //Check if information is already in Database and if they are correct to register
+            //if information correct
             if (isRegistrationSuccessful)
             {
                 Settings.IsLoggedIn = true;
                 Application.Current.MainPage = new AppShell(user);
             }
-            else
+            else //When not display message
             {
                 await DisplayAlert("Fehler", "Die Registrierung ist fehlgeschlagen.", "OK");
             }
-        }
-            private async Task<bool> RegisterUser(User user)
+        } 
+        private async Task<bool> RegisterUser(User user)
+        {
+            HttpClientHandler insecureHandler = GetInsecureHandler(); //Handler for certificates
+            using (var client = new HttpClient(insecureHandler))
             {
-                HttpClientHandler insecureHandler = GetInsecureHandler();
-                using (var client = new HttpClient(insecureHandler))
+                client.BaseAddress = new Uri("https://10.0.2.2:7178/"); //Client address
+                client.DefaultRequestHeaders.Accept.Clear(); //Clear all Headers beforehand
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                string jsonPayload = JsonConvert.SerializeObject(user); //Serialize the object to send
+                HttpResponseMessage response = await client.PostAsync("api/Authentication/Register", new StringContent(jsonPayload, Encoding.UTF8, "application/json")); //API CALL with content
+                //Check if call responded with code 200 meaning OK
+                if (response.IsSuccessStatusCode)
                 {
-                    client.BaseAddress = new Uri("https://10.0.2.2:7178/");
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    string jsonResponse = await response.Content.ReadAsStringAsync(); //Response content as String formatting
+                    JObject responseData = JsonConvert.DeserializeObject<JObject>(jsonResponse); //Deseralize the content
+                    LoginPage.token = responseData["token"]?.ToString(); //save the recieved JWT token
 
-                    string jsonPayload = JsonConvert.SerializeObject(user);
-                    HttpResponseMessage response = await client.PostAsync("api/Authentication/Register", new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
-
-                    if (response.IsSuccessStatusCode)
+                    LoginPage.currentUser = new User //save the recieved information for the User
                     {
-                        string jsonResponse = await response.Content.ReadAsStringAsync();
-                        JObject responseData = JsonConvert.DeserializeObject<JObject>(jsonResponse);
-                        string userId = responseData["id"]?.ToString();
-                        LoginPage.token = responseData["token"]?.ToString();
-
-                        Console.WriteLine(responseData);
-
-                        LoginPage.currentUser = new User
-                        {
-                            Id = (string)responseData["id"]?.ToString(),
-                            Avatar = "placeholder_avatar.png",
-                            Role = (Role)Enum.Parse(typeof(Role), responseData["role"]?.ToString()),
-                            Username = (string)responseData["username"]?.ToString(),
-                            Name = (string)responseData["name"]?.ToString(),
-                            Email = (string)responseData["email"]?.ToString(),
-                            Gender = responseData["gender"] != null && Enum.TryParse(responseData["gender"].ToString(), out Gender gender) ? (Gender?)gender : Gender.NULL,
-                            BirthDate = (string)responseData["birthDate"]?.ToString(),
-                            Followers = JsonConvert.DeserializeObject<List<string>>(responseData["followers"]?.ToString()),
-                            Following = JsonConvert.DeserializeObject<List<string>>(responseData["following"]?.ToString()),
-                            CreatedAt = DateTime.Parse(responseData["createdAt"]?.ToString()),
-                            Bio = (string)responseData["bio"]?.ToString(),
-                            Interests = JsonConvert.DeserializeObject<List<string>>(responseData["interests"]?.ToString()),
-                            Locked = (bool)responseData["locked"]
-                        };
-                        return true;
-                    }
-                    return false;
+                        Id = (string)responseData["id"]?.ToString(),
+                        Avatar = "placeholder_avatar.png",
+                        Role = (Role)Enum.Parse(typeof(Role), responseData["role"]?.ToString()),
+                        Username = (string)responseData["username"]?.ToString(),
+                        Name = (string)responseData["name"]?.ToString(),
+                        Email = (string)responseData["email"]?.ToString(),
+                        Gender = responseData["gender"] != null && Enum.TryParse(responseData["gender"].ToString(), out Gender gender) ? (Gender?)gender : Gender.NULL,
+                        BirthDate = (string)responseData["birthDate"]?.ToString(),
+                        Followers = JsonConvert.DeserializeObject<List<string>>(responseData["followers"]?.ToString()),
+                        Following = JsonConvert.DeserializeObject<List<string>>(responseData["following"]?.ToString()),
+                        CreatedAt = DateTime.Parse(responseData["createdAt"]?.ToString()),
+                        Bio = (string)responseData["bio"]?.ToString(),
+                        Interests = JsonConvert.DeserializeObject<List<string>>(responseData["interests"]?.ToString()),
+                        Locked = (bool)responseData["locked"]
+                    };
+                    return true;
                 }
+                return false;
             }
+        }
 
             public static HttpClientHandler GetInsecureHandler()
             {
                 HttpClientHandler handler = new HttpClientHandler();
+                //Custom CertificateHandler to accept the certificates from the localhost
                 handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
                 {
                     if (cert.Issuer.Equals("CN=localhost"))

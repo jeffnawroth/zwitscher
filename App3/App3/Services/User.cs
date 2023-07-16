@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace App3.Services
 {
-    public class User
+    public class User //Class for the Users
     {
         public string Id { get; set; }
         public string Avatar { get; set; }
@@ -16,22 +16,20 @@ namespace App3.Services
         public List<string> Followers { get; set; }
         public List<string> Following { get; set; }
         public string Bio { get; set; }
-        //public List<int> LikedPosts { get; set; }
-        //public List<int> DislikedPosts { get; set; }
         public DateTime CreatedAt { get; set; }
         public string BirthDate { get; set; }
         public List<string> Interests { get; set; }
         public bool Locked { get; set; }
     }
 
-    public enum Role
+    public enum Role //Role list
     {
         Admin = 0,
         Moderator = 1,
         User = 2
     }
 
-    public enum Gender
+    public enum Gender //Gender list
     {
         Male = 0,
         Female = 1,

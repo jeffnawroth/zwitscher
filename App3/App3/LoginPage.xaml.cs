@@ -59,26 +59,23 @@ namespace App3
         }
         private async Task<string> LoginUser(User user)
         {
-            HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
+            HttpClientHandler insecureHandler = Registration.GetInsecureHandler(); //Handler for certificates
             using (var client = new HttpClient(insecureHandler))
             {
-                client.BaseAddress = new Uri("https://10.0.2.2:7178/");
-                client.DefaultRequestHeaders.Accept.Clear();
+                client.BaseAddress = new Uri("https://10.0.2.2:7178/"); //Client address
+                client.DefaultRequestHeaders.Accept.Clear(); //Clear all Headers beforehand
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                string jsonPayload = JsonConvert.SerializeObject(user);
-                HttpResponseMessage response = await client.PostAsync("api/Authentication/Login", new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
-
+                string jsonPayload = JsonConvert.SerializeObject(user); //Seralize the object to send
+                HttpResponseMessage response = await client.PostAsync("api/Authentication/Login", new StringContent(jsonPayload, Encoding.UTF8, "application/json")); //API CALL with content
+                //Check if call responded with code 200 meaning OK
                 if (response.IsSuccessStatusCode)
                 {
-                    string jsonResponse = await response.Content.ReadAsStringAsync();
-                    JObject responseData = JsonConvert.DeserializeObject<JObject>(jsonResponse);
-                    string userId = responseData["id"]?.ToString();
-                    token = responseData["token"]?.ToString();
+                    string jsonResponse = await response.Content.ReadAsStringAsync(); //Response content as String formatting
+                    JObject responseData = JsonConvert.DeserializeObject<JObject>(jsonResponse); //Deseralize the content
+                    token = responseData["token"]?.ToString(); //save the JWT token
 
-                    Console.WriteLine(responseData);
-
-                    currentUser = new User
+                    currentUser = new User //Creating the user information in User class
                     {
                         Id = (string)responseData["id"]?.ToString(),
                         Avatar = "placeholder_avatar.png",
@@ -95,9 +92,8 @@ namespace App3
                         Interests = JsonConvert.DeserializeObject<List<string>>(responseData["interests"]?.ToString()),
                         Locked = (bool)responseData["locked"]
                     };
-                    //Console.WriteLine(responseData);
                     isLoginValid = true;
-                    return userId;
+                    return currentUser.Id;
                 }
                 isLoginValid = false;
                 return null;

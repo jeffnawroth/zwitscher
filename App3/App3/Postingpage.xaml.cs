@@ -48,21 +48,18 @@ namespace App3
 
         private async Task<bool> CreatePost(CreatePost post)
         {
-            HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
+            HttpClientHandler insecureHandler = Registration.GetInsecureHandler();   //Handler for certificates
             using (var client = new HttpClient(insecureHandler))
-            {
-                client.BaseAddress = new Uri("https://10.0.2.2:7178/");
-                client.DefaultRequestHeaders.Accept.Clear();
+            { 
+                client.BaseAddress = new Uri("https://10.0.2.2:7178/"); //Client address
+                client.DefaultRequestHeaders.Accept.Clear();  //Clear all Headers beforehand
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                string jsonPayload = JsonConvert.SerializeObject(post);
-                // Send a POST request to create the post
-                HttpResponseMessage response = await client.PostAsync("api/Post", new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
-
+                string jsonPayload = JsonConvert.SerializeObject(post); //Seralize the object to send
+                HttpResponseMessage response = await client.PostAsync("api/Post", new StringContent(jsonPayload, Encoding.UTF8, "application/json")); //API CALL with content
+                //Check if call responded with code 200 meaning OK
                 if (response.IsSuccessStatusCode)
                 {
-                    HttpContent returnValues = response.Content;
-                    Console.WriteLine(returnValues);
                     return true;  // Post creation successful
                 }
                 return false; // psot creation failed
