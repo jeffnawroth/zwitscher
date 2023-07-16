@@ -21,10 +21,10 @@ namespace App3
 
         private async void OnLogoutButtonClicked()
         {
-            // Setzen Sie den IsLoggedIn-Status auf false
+            // set loggedin status to false
             Settings.IsLoggedIn = false;
 
-            // Navigieren Sie zur LoginPage
+            // navigate to loginpage 
             await Application.Current.MainPage.Navigation.PushAsync(new LoginPage());
         }
     }

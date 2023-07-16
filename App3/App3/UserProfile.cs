@@ -20,7 +20,9 @@ namespace App3
         //private App _app; // Database anbinden 
         public UserProfile(User user)
         {
+            // create userpage for user
             _user = user;
+            //create mainlayout
             var mainLayout = new StackLayout
             {
                 Orientation = StackOrientation.Vertical,
@@ -28,6 +30,7 @@ namespace App3
                 Padding = new Thickness(10),
                 BackgroundColor = Color.White,
             };
+            // create followButton 
             _followButton = new Button
             {
                 Text = GetFollowButtonText(),
@@ -37,6 +40,7 @@ namespace App3
             _followButton.Clicked += FollowButton_Clicked;
 
             mainLayout.Children.Add(_followButton);
+            // create avatarImage
             var avatarImage = new Image
             {
                 Source = user.Avatar,
@@ -83,11 +87,6 @@ namespace App3
                 HorizontalOptions = LayoutOptions.Center
             };
             mainLayout.Children.Add(followersLayout);
-
-
-
-
-
             var infoLayout = new FlexLayout
             {
                 Direction = FlexDirection.Row,
@@ -97,9 +96,6 @@ namespace App3
                 AlignContent = FlexAlignContent.Center,
                 Margin = new Thickness(0, 10)
             };
-
-
-
             var birthDayLabel = new Label
             {
                 Text = $"{user.BirthDate}",
@@ -108,7 +104,6 @@ namespace App3
             };
             var birthDateLayout = CreateViewWithIcon("geboren: ", birthDayLabel, "birthday.png");
             infoLayout.Children.Add(birthDateLayout);
-
             var joinDateLabel = new Label
             {
                 Text = $"{user.CreatedAt.ToString("dd/MM/yyyy")}",
@@ -117,20 +112,16 @@ namespace App3
             };
             var joinDateLayout = CreateViewWithIcon("beigetreten: ", joinDateLabel, "startday.png");
             infoLayout.Children.Add(joinDateLayout);
-
-
             var genderLabel = new Label
             {
                 TextColor = Color.Black,
                 FontSize = 20
             };
             var genderImage = new Image { };
-
-
             var genderLayout = CreateViewWithIcon("Gender", genderLabel, GetGenderIconImage(user.Gender.Value));
             infoLayout.Children.Add(genderLayout);
             mainLayout.Children.Add(infoLayout);
-
+            // return gender text based on users gender 
             if (user.Gender == Gender.Male)
             {
 
@@ -163,7 +154,7 @@ namespace App3
                 AlignContent = FlexAlignContent.Start,
                 Margin = new Thickness(0, 5)
             };
-
+            // create Label for every interest 
             foreach (var interest in user.Interests)
             {
                 var interestLabel = new Label
@@ -178,7 +169,7 @@ namespace App3
             };
 
             mainLayout.Children.Add(interestsLayout);
-            var bioLabel = new Editor
+            var bioLabel = new Label
             {
                 Text = user.Bio,
                 TextColor = Color.Black,
@@ -201,7 +192,7 @@ namespace App3
         }
         
         private string GetFollowButtonText()
-        {
+        {// create following text, based on, if current user is already following the user
             if (LoginPage.currentUser.Following.Contains(_user.Id))
                 return "Entfolgen";
             else
@@ -209,6 +200,8 @@ namespace App3
         }
         private async void FollowButton_Clicked(object sender, EventArgs e)
         {
+            // if the following button is pushed it addes or removes the current user id of the followers from the clicked on user
+            // and the clicked on userid of the followings from the currentuser
             if (LoginPage.currentUser.Following.Contains(_user.Id))
             {
                 UnfollowUser(_user);
@@ -219,7 +212,7 @@ namespace App3
                 FollowUser(_user);
                 LoginPage.currentUser.Following.Add(_user.Id);
             }
-
+            // ubdate text of the following button 
             _followButton.Text = GetFollowButtonText();
             UpdateFollowButtonAppearance();
         }
@@ -297,6 +290,7 @@ namespace App3
         }
         private static string GetGenderIconImage(Gender gender)
         {
+            // get gender Image based on users gender 
             switch (gender)
             {
                 case Gender.Male:

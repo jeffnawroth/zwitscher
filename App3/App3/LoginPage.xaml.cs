@@ -28,30 +28,33 @@ namespace App3
 
         private async void OnLoginButtonClicked(object sender, EventArgs e)
         {
+            // Create a new User object with the entered email and password
             User user = new User
             {
                 Email = usernameEntry.Text,
                 Password = passwordEntry.Text
             };
-
+            // Call the LoginUser method to authenticate the user and get the user ID
             userID = await LoginUser(user);
 
 
-
+            // Check if the login is valid
             if (isLoginValid)
             {
-                Settings.IsLoggedIn = true;
-                User currentUser = new User();
-                Application.Current.MainPage = new AppShell(currentUser);
+                Settings.IsLoggedIn = true; // Set the IsLoggedIn setting to true
+                User currentUser = new User(); // Create a new instance of the User class
+                Application.Current.MainPage = new AppShell(currentUser); // Navigate to the AppShell page passing the current user
             }
             else
             {
+                // Display an alert for invalid login credentials
                 await DisplayAlert("Fehler", "Ungültige Anmeldeinformationen", "OK");
             }
         }
 
         private async void OnSignUpButtonClicked(object sender, EventArgs e)
         {
+            // Navigate to the Registration page
             await Navigation.PushAsync(new NavigationPage(new Registration()));
         }
         private async Task<string> LoginUser(User user)

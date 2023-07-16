@@ -13,7 +13,7 @@
             <Style TargetType="NavigationPage">
                 <Setter Property="BarBackgroundColor" Value="Gray" />
             </Style>
-            <!-- Definieren Sie den Stil für Labels -->
+            <!-- define label stile -->
             
             <Style TargetType="Label">
                 <Setter Property="TextColor" Value="{StaticResource LabelTextColor}" />
@@ -23,7 +23,7 @@
                 <Setter Property="BackgroundColor" Value="{StaticResource ButtonBackgroundColor}" />
             </Style>
 
-            <!-- Definieren Sie den Stil für Placeholders in Editoren -->
+            <!-- define placeholder stile -->
             <Style TargetType="Editor">
                 <Setter Property="PlaceholderColor" Value="{StaticResource PlaceholderColor}" />
                 <Setter Property="TextColor" Value="{StaticResource PlaceholderTextColor}" />

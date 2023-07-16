@@ -21,28 +21,29 @@ namespace App3
         }
         private void OnTextChanged(object sender, TextChangedEventArgs e)
         {
+            // Calculate the character count of the entered text
             int characterCount = e.NewTextValue.Length;
             characterCou.Text = characterCount.ToString() + " Zeichen";
         }
         private async void OnPostButtonClicked(object sender, EventArgs e)
         {
-            CreatePost post = new CreatePost
+            CreatePost post = new CreatePost // Create a new post object
             {
                 UserId = LoginPage.userID,
                 Text = postingText.Text
             };
-
+            // Attempt to create the post
             bool isPostOkay = await CreatePost(post);
-            if(isPostOkay)
+            if(isPostOkay) // Display a success alert if the post was created successfully
             {
                 await DisplayAlert("Erfolgreich gepostet", "Der Beitrag wurde erfolgreich gepostet.", "OK");
                 postingText.Text = string.Empty;
             }
-            else
+            else // Display an error alert if the post creation failed
             {
                 await DisplayAlert("Fehlgeschlagen", "Der Beitrag wurde nicht gepostet", "Ok");
             }
-            await Navigation.PopAsync();
+            await Navigation.PopAsync();  // Navigate back to the previous page
         }
 
         private async Task<bool> CreatePost(CreatePost post)
@@ -55,15 +56,16 @@ namespace App3
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 string jsonPayload = JsonConvert.SerializeObject(post);
+                // Send a POST request to create the post
                 HttpResponseMessage response = await client.PostAsync("api/Post", new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
 
                 if (response.IsSuccessStatusCode)
                 {
                     HttpContent returnValues = response.Content;
                     Console.WriteLine(returnValues);
-                    return true;
+                    return true;  // Post creation successful
                 }
-                return false;
+                return false; // psot creation failed
             }
         }
 

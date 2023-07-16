@@ -16,18 +16,19 @@ namespace App3
         {
             InitializeComponent();
 
-            this.loggedInUser = loggedInUser; // Den angemeldeten Benutzer speichern
+            this.loggedInUser = loggedInUser; // save logged in user
 
-            // Überprüfen, ob ein Benutzer eingeloggt ist
+            // check if user is logged in 
             var isLoggedIn = Settings.IsLoggedIn;
 
             if (isLoggedIn)
             {
-                // Erstellen Sie eine NavigationPage und setzen Sie die AppShell als RootPage
+               // Create a NavigationPage and set the AppShell as the RootPage
                 MainPage = new NavigationPage(new AppShell(loggedInUser));
             }
             else
             {
+                // create a nagigationPage and set as logínpage 
                 MainPage = new NavigationPage(new LoginPage());
             }
         }
@@ -42,11 +43,9 @@ namespace App3
         }
             private User GetUserFromDatabase(User loggedInUser)
         {
-            // Code zum Abrufen des Benutzers aus Ihrer Datenbank
-            // Beispiel:
-            List<User> registeredUsers = Database.GetRegisteredUsers(); // Annahme: GetRegisteredUsers gibt die Liste der registrierten Benutzer zurück
-
-            // Den angemeldeten Benutzer auswählen
+            
+            List<User> registeredUsers = Database.GetRegisteredUsers(); 
+            // return loggedin User
             User user = registeredUsers.FirstOrDefault(u => u.Id == loggedInUser.Id);
 
             return user;
@@ -54,8 +53,6 @@ namespace App3
 
 
     }
-
-    // Restlicher Code...
 
 }
 

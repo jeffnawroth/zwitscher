@@ -19,15 +19,16 @@ namespace App3
         { 
             postsStackLayout = new StackLayout();
 
-            var dummyPosts = await DummyPost.CreateDummyPosts(); //ist nicht dummy sondern richtige werte
+            var dummyPosts = await DummyPost.CreateDummyPosts(); // its not dummy, its actual data 
 
             foreach (var post in dummyPosts)
             {
+                // Create the layout for each post
                 var postLayout = PostLayout.CreatePostLayout(post, LoginPage.userID);
                 postsStackLayout.Children.Add(postLayout);
             }
 
-            var scrollView = new ScrollView
+            var scrollView = new ScrollView  // Create a ScrollView to contain the stack layout
             {
                 Content = postsStackLayout
             };
@@ -37,11 +38,11 @@ namespace App3
         protected override async void OnAppearing()
         {
 
-            postsStackLayout.Children.Clear();
+            postsStackLayout.Children.Clear(); // Clear existing post layouts
 
-            var dummyPosts = await DummyPost.CreateDummyPosts(); //ist nicht dummy sondern richtige werte
+            var dummyPosts = await DummyPost.CreateDummyPosts(); // its not dummy, its actual data 
 
-            foreach (var post in dummyPosts)
+            foreach (var post in dummyPosts) // Create the layout for each post
             {
                 var postLayout = PostLayout.CreatePostLayout(post, LoginPage.userID);
                 postsStackLayout.Children.Add(postLayout);

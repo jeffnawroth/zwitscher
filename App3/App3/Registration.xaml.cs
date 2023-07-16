@@ -24,6 +24,7 @@ namespace App3
 
         private async void RegisterButton_Clicked(object sender, EventArgs e)
         {
+            // Retrieve input values from the form
             string username = usernameEntry.Text;
             string name = nameEntry.Text;
             string email = emailEntry.Text;
@@ -33,6 +34,7 @@ namespace App3
 
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmPassword))
             {
+                // check if every entry is set 
                 await DisplayAlert("Fehler", "Bitte füllen Sie alle Felder aus.", "OK");
                 return;
             }
@@ -44,8 +46,7 @@ namespace App3
                 Name = name,
                 Email = email,
                 Password = password,
-                // Setzen Sie weitere Eigenschaften des Benutzers...
-            };
+            
 
             bool isRegistrationSuccessful = await RegisterUser(user);
             if (isRegistrationSuccessful)

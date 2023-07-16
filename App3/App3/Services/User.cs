@@ -40,9 +40,7 @@ namespace App3.Services
     }
 
    
-        // Weitere Eigenschaften für Dateiinformationen
-
-        // Eigenschaft "file" für den Avatar
+       
     
 
 }

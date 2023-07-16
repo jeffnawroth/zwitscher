@@ -20,17 +20,17 @@ namespace App3
             InitializePageAsync();
         }
         
-        private async void InitializePageAsync()
+        private async void InitializePageAsync()  // Create the profile layout using the current user's information
         {
             var profileLayout = ProfilePageLayout.CreateProfilePageLayout(LoginPage.currentUser);
 
-            Content = new StackLayout
+            Content = new StackLayout  // Set the content of the page to the profile layout
             {
                 Children = { profileLayout }
             };
         }
 
-        protected override async void OnAppearing()
+        protected override async void OnAppearing() // Recreate the profile layout when the page appears
         {
             var profileLayout = ProfilePageLayout.CreateProfilePageLayout(LoginPage.currentUser);
 
