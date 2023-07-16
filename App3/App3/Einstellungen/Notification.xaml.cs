@@ -14,6 +14,7 @@ namespace App3
     {
         public Notification()
         {
+            // does not work 
             InitializeComponent();
         }
     }

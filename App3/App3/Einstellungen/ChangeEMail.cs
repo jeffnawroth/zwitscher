@@ -16,38 +16,38 @@ namespace App3
         private Entry newEmailEntry;
         private Entry confirmEmailEntry;
 
-        public ChangeEMail()
+        public ChangeEMail() //Starting the Layout
         {
             Title = "E-Mail ändern";
 
-            oldEmailEntry = new Entry
+            oldEmailEntry = new Entry //Input for the old Email-Adress
             {
                 Placeholder = "Alte E-Mail",
                 PlaceholderColor = Color.Black,
                 TextColor = Color.Black,
             };
 
-            newEmailEntry = new Entry
+            newEmailEntry = new Entry //Input for the new Email-Adress
             {
                 Placeholder = "Neue E-Mail",
                 PlaceholderColor = Color.Black,
                 TextColor = Color.Black,
             };
 
-            confirmEmailEntry = new Entry
+            confirmEmailEntry = new Entry //Input to confirm the new Email-Adress
             {
                 Placeholder = "E-Mail bestätigen",
                 PlaceholderColor = Color.Black,
                 TextColor = Color.Black,
             };
 
-            var changeButton = new Button
+            var changeButton = new Button //Button to check and send at Backend 
             {
                 Text = "E-Mail ändern"
             };
             changeButton.Clicked += OnChangeEmailButtonClicked;
 
-            Content = new StackLayout
+            Content = new StackLayout  // Layout fitting 
             {
                 VerticalOptions = LayoutOptions.CenterAndExpand,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
@@ -66,13 +66,14 @@ namespace App3
             string oldEmail = oldEmailEntry.Text;
             string newEmail = newEmailEntry.Text;
             string confirmEmail = confirmEmailEntry.Text;
-            // Führe die Überprüfungen durch und ändere die E-Mail-Adresse, falls gültig
+            // read in the tiped Information
+            // check and change the Email, if valued
             if (CheckOldEmail(oldEmail) && CheckNewEmailsMatch(newEmail, confirmEmail))
             {
                 
                 ChangeEmail(newEmail);
 
-                // Zurücksetzen der Eingabefelder
+                // Reset Entrys
                 oldEmailEntry.Text = string.Empty;
                 newEmailEntry.Text = string.Empty;
                 confirmEmailEntry.Text = string.Empty;
@@ -86,8 +87,7 @@ namespace App3
 
         private bool CheckOldEmail(string email)
         {
-            // Hier kannst du die Überprüfung der alten E-Mail-Adresse implementieren
-            // Rückgabe des Ergebnisses der Überprüfung
+            // Check if the entered Email is the old Email; return true if right and false if not 
             if(email == LoginPage.currentUser.Email)
             {
                 return true;
@@ -97,14 +97,13 @@ namespace App3
 
         private bool CheckNewEmailsMatch(string newEmail, string confirmEmail)
         {
-            // Hier kannst du die Überprüfung übereinstimmender neuer E-Mail-Adressen implementieren
-            // Rückgabe des Ergebnisses der Überprüfung
+            // Check if new Email and confirmed Email are equal
             return newEmail == confirmEmail;
         }
 
         private async void ChangeEmail(string newEmail)
         {
-            // Hier kannst du die Logik zum tatsächlichen Ändern der E-Mail-Adresse implementieren
+            
             var token = LoginPage.token;
             HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
             using (var client = new HttpClient(insecureHandler))

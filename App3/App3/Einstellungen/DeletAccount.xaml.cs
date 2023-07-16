@@ -16,20 +16,22 @@ namespace App3
     {
         public DeletAccount()
         {
+            // set Layout 
             InitializeComponent();
         }
 
         private async void DeleteButton_Clicked(object sender, EventArgs e)
         {
-            bool deleteOkay = await Delete();
+            bool deleteOkay = await Delete(); // start account-delate
             if(deleteOkay)
             {
                 await DisplayAlert("Erfolgreich gelöscht", "Dein Konto wurde erfolgreich gelöscht.", "OK");
-                Application.Current.MainPage = new LoginPage();
-                Settings.IsLoggedIn = false;
+                Application.Current.MainPage = new LoginPage();  // go back to LoginPage
+                Settings.IsLoggedIn = false;  // reset the login-Status
             }
             else
             {
+                // error warning if it delate doesn´t work
                 await DisplayAlert("Löschung fehlgeschlagen", "Dein Konto wurde nicht gelöscht.", "OK");
             }
 

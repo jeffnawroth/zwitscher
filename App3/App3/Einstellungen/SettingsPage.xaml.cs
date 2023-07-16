@@ -13,10 +13,11 @@ namespace App3
     {
         public SettingsPage()
         {
+            // set layout 
             InitializeComponent();
         }
-
-        private void UsersettingsButton_Clicked(object sender, EventArgs e)
+        // buttons to navigate to the diffrent pages when clicked
+        private void UsersettingsButton_Clicked(object sender, EventArgs e) 
         {
             Navigation.PushAsync(new UserSettings());
         }

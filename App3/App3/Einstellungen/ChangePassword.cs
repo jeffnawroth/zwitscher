@@ -13,19 +13,12 @@ namespace App3
         private Entry newPasswordEntry;
         private Entry confirmPasswordEntry;
 
-        public ChangePasswordPage()
+        public ChangePasswordPage()  // Implement Layout 
         {
             Title = "Passwort ändern";
-            /*
-            oldPasswordEntry = new Entry
-            {
-                Placeholder = "Altes Passwort",
-                IsPassword = true,
-                PlaceholderColor = Color.Black,
-                TextColor = Color.Black
-            }; */
+            
 
-            newPasswordEntry = new Entry
+            newPasswordEntry = new Entry // Entry for the new Password
             {
                 Placeholder = "Neues Passwort",
                 IsPassword = true,
@@ -33,7 +26,7 @@ namespace App3
                 TextColor = Color.Black
             };
 
-            confirmPasswordEntry = new Entry
+            confirmPasswordEntry = new Entry // Entry to confirm the Password
             {
                 Placeholder = "Passwort bestätigen",
                 IsPassword = true,
@@ -41,7 +34,7 @@ namespace App3
                 TextColor = Color.Black
             };
 
-            var changeButton = new Button
+            var changeButton = new Button // Button to check and send at Backend 
             {
                 Text = "Passwort ändern",
                 TextColor = Color.Black,
@@ -49,13 +42,12 @@ namespace App3
             };
             changeButton.Clicked += OnChangePasswordButtonClicked;
 
-            Content = new StackLayout
+            Content = new StackLayout  // Layout fitting 
             {
                 VerticalOptions = LayoutOptions.CenterAndExpand,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 Children =
                 {
-                    //oldPasswordEntry,
                     newPasswordEntry,
                     confirmPasswordEntry,
                     changeButton
@@ -63,51 +55,39 @@ namespace App3
             };
         }
 
-        private void OnChangePasswordButtonClicked(object sender, EventArgs e)
+        private void OnChangePasswordButtonClicked(object sender, EventArgs e)  // Button Function 
         {
-            //string oldPassword = oldPasswordEntry.Text;
+            // read in entrys 
             string newPassword = newPasswordEntry.Text;
             string confirmPassword = confirmPasswordEntry.Text;
 
-            // Führe die Überprüfungen durch und ändere das Passwort, falls gültig
+            // check if entrys match, and change if they do 
             if (CheckNewPasswordsMatch(newPassword, confirmPassword))
             {
-                // Ändere das Passwort
+                // change Password 
                 ChangePassword(newPassword);
 
-                // Zeige eine Erfolgsmeldung an
-                //DisplayAlert("Erfolg", "Passwort erfolgreich geändert!", "OK");
-
-                // Zurücksetzen der Eingabefelder
-                //oldPasswordEntry.Text = string.Empty;
+                // reset entry 
                 newPasswordEntry.Text = string.Empty;
                 confirmPasswordEntry.Text = string.Empty;
             }
             else
             {
-                // Zeige eine Fehlermeldung an
+                // Error if the passwords don´t match 
                 DisplayAlert("Fehler", "Neue Passwörter stimmen nicht überein.", "OK");
             }
         }
-        /*
-        private bool CheckOldPassword(string password)
-        {
-            // Hier kannst du die Überprüfung des alten Passworts implementieren
-            // Rückgabe des Ergebnisses der Überprüfung
-            return true;
-        }
-        */
+      
 
         private bool CheckNewPasswordsMatch(string newPassword, string confirmPassword)
         {
-            // Hier kannst du die Überprüfung übereinstimmender neuer Passwörter implementieren
-            // Rückgabe des Ergebnisses der Überprüfung
+            // Password check 
             return newPassword == confirmPassword;
         }
 
         private async void ChangePassword(string newPassword)
         {
-                // Hier kannst du die Logik zum tatsächlichen Ändern der E-Mail-Adresse implementieren
+               
                 var token = LoginPage.token;
                 HttpClientHandler insecureHandler = Registration.GetInsecureHandler();
                 using (var client = new HttpClient(insecureHandler))

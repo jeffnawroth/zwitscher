@@ -14,9 +14,10 @@ namespace App3.Layouts
     public class PostLayout
     {
         public static StackLayout CreatePostLayout(Posting post, string currentUserId)
+        // Method to create a stack layout for a post
         {
 
-            var postLayout = new StackLayout
+            var postLayout = new StackLayout  
             {
                 Orientation = StackOrientation.Vertical,
                 Spacing = 10,
@@ -24,13 +25,13 @@ namespace App3.Layouts
                 BackgroundColor = Color.White,
             };
 
-            var userLayout = new StackLayout
+            var userLayout = new StackLayout  // contains Image, Username, Name and timestamp
             {
                 Orientation = StackOrientation.Horizontal,
                 Spacing = 10
             };
 
-            var avatarImage = new ImageButton
+            var avatarImage = new ImageButton // setting the avatar from the User Id
             {
                 Source = post.Avatar,
                 WidthRequest = 40,
@@ -39,9 +40,9 @@ namespace App3.Layouts
             };
             avatarImage.Clicked += async (sender, e) =>
             {
-                await OpenUserProfile(post.UserId);
+                await OpenUserProfile(post.UserId); // Button to get to the User-Profile, by following the UserID
             };
-            var userInfoLayout = new StackLayout
+            var userInfoLayout = new StackLayout  // setting Info Layout, containing Name, Username and Timestamp
             {
                 Orientation = StackOrientation.Vertical,
                 Spacing = 0
@@ -69,20 +70,20 @@ namespace App3.Layouts
 
             var timestampLabel = new Label
             {
-                Text = post.Date.ToString("d MMM"),
+                Text = post.Date.ToString("d MMM"), // change Date to String, so it can been showen
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 TextColor = Color.Black
             };
-
+            // Adding everithing to the UserInfoLayout
             userInfoLayout.Children.Add(nameLabel);
             usernameTimestampLayout.Children.Add(usernameLabel);
             usernameTimestampLayout.Children.Add(timestampLabel);
             userInfoLayout.Children.Add(usernameTimestampLayout);
-
+            // Adding Picture and UserInfo to the Userlayout 
             userLayout.Children.Add(avatarImage);
             userLayout.Children.Add(userInfoLayout);
 
-            var postTextLabel = new Label
+            var postTextLabel = new Label // set Post-Text 
             {
                 Text = post.Text,
                 Margin = new Thickness(0, 10, 0, 0),
@@ -101,7 +102,7 @@ namespace App3.Layouts
                 HeightRequest = 20,
                 BackgroundColor = Color.Transparent
             };
-
+            // checking if the User Íd is in the up-vote Array, to set the picture for the Like button 
             if (post.UpVotes.Contains(currentUserId))
             {
                 likeButton.Source = "like_pushed.png";
@@ -124,7 +125,7 @@ namespace App3.Layouts
                 HeightRequest = 20,
                 BackgroundColor = Color.Transparent
             };
-
+            // see likebutton
             if (post.DownVotes.Contains(currentUserId))
             {
                 dislikeButton.Source = "dislike_pushed.png";
@@ -139,11 +140,13 @@ namespace App3.Layouts
                 Text = post.DownVotes.Count.ToString(),
                 TextColor = Color.Black
             };
-            
+            // structure when the likebutton is pushed
             likeButton.Clicked += async (s, e) =>
             {
+                //checking if the UserId is in the upvote Array 
                 if (post.UpVotes.Contains(currentUserId))
                 {
+                    // when the button was already pushed it needs to be removed and the picture of the button needs to be changed
                     post.UpVotes.Remove(currentUserId);
                     UpvotePost(post.Id, LoginPage.currentUser);
                     //user.LikedPosts.Remove(post.PostId);
@@ -151,11 +154,12 @@ namespace App3.Layouts
                 }
                 else
                 {
+                    // when the button wasen´t alredy pushed, the userId needs to set in the array and the buttonimage needs to be changed
                     post.UpVotes.Add(currentUserId);
                     UpvotePost(post.Id, LoginPage.currentUser);
                     //user.DislikedPosts.Add(post.PostId);
                     likeButton.Source = "like_pushed.png";
-
+                    // checking if the dislikebutton was already pushed, so it needs to be reseted 
                     if (post.DownVotes.Contains(currentUserId))
                     {
                         post.DownVotes.Remove(currentUserId);
@@ -163,13 +167,13 @@ namespace App3.Layouts
                         dislikeButton.Source = "thumb_down.png";
                     }
                 }
-
+                // refresh Votecount
                 likesLabel.Text = post.UpVotes.Count.ToString();
                 dislikesLabel.Text = post.DownVotes.Count.ToString();
             };
 
             dislikeButton.Clicked += (s, e) =>
-            {
+            { // see likeButton
                 if (post.DownVotes.Contains(currentUserId))
                 {
                     post.DownVotes.Remove(currentUserId);
@@ -195,7 +199,7 @@ namespace App3.Layouts
                 likesLabel.Text = post.UpVotes.Count.ToString();
                 dislikesLabel.Text = post.DownVotes.Count.ToString();
             };
-
+            // Button to get the comments of a post 
             var commentsButton = new ImageButton
             {
                 Source = "comment.png",
@@ -207,7 +211,7 @@ namespace App3.Layouts
             {
                 await DisplayComments(post);
             };
-
+            // counter for the posts 
             var commentsLabel = new Label
             {
                 Text = post.CommentCount.Count.ToString(),
@@ -220,7 +224,7 @@ namespace App3.Layouts
             likesDislikesLayout.Children.Add(dislikesLabel);
             likesDislikesLayout.Children.Add(commentsButton);
             likesDislikesLayout.Children.Add(commentsLabel);
-
+            // Entry to for comments
             Editor comment = new Editor
             {
                 Placeholder = "Geben Sie Ihren Kommentar ein...",
@@ -235,7 +239,7 @@ namespace App3.Layouts
                 Orientation = StackOrientation.Horizontal,
                 Spacing = 10
             };
-
+            // Button to send a comment
             var comsend = new ImageButton
             {
                 Source = "send.png",
@@ -247,15 +251,17 @@ namespace App3.Layouts
 
             void OnSendCommentClicked(object sender, EventArgs e)
             {
+                // saving the comment by UserId postId and commenttext
                 CommentAdd new_comment = new CommentAdd
                 {
                     UserId = LoginPage.currentUser.Id,
                     ParentPostId = post.Id,
                     Text = comment.Text,
                 };
-                // Führe die Aktionen aus, um den Kommentar zu speichern
+                
+                // save the comment 
                 SaveComment(new_comment);
-                // Zurücksetzen des Kommentar-Editors
+                //resent the entry 
                 comment.Text = string.Empty;
             }
             sendCommentLayout.Children.Add(comment);
@@ -266,17 +272,17 @@ namespace App3.Layouts
             postLayout.Children.Add(likesDislikesLayout);
             postLayout.Children.Add(sendCommentLayout);
 
-
+            // giving back the hole postLayout 
             return postLayout;
         }
 
         private static async Task OpenUserProfile(string userID)
         {
             User clickedUser = await getUserData(userID);
-            // Erstellen Sie eine neue Instanz der UserProfile-Seite und übergeben Sie den Benutzer
+            // Create a new instance of the UserProfile page and pass the user
             var userProfilePage = new UserProfile(clickedUser);
 
-            // Navigieren Sie zur Benutzerprofilseite
+            // Navigate to the profilepage of the user
             await Application.Current.MainPage.Navigation.PushAsync(userProfilePage);
         }
 

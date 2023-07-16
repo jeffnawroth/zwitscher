@@ -13,9 +13,12 @@ namespace App3
     public partial class UserSettings : ContentPage
     {
         public UserSettings()
+
         {
+            //set layout 
             InitializeComponent();
         }
+        // buttons to navigate to the diffrent Pages when pushed
         private void OnChangePasswordButtonClicked(object sender, EventArgs e)
         {
             Navigation.PushAsync(new ChangePasswordPage());
