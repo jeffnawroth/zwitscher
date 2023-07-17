@@ -74,6 +74,8 @@ const initialValues = {
   newPassword: "",
   newPasswordConfirm: "",
 };
+
+//Validationrules
 const validationSchema = object({
   currentPassword: string()
     .required()
@@ -93,6 +95,10 @@ const validationSchema = object({
     .oneOf([ref("newPassword")], "Passwörter stimmen nicht überein"),
 });
 
+/**
+ * Change password
+ * @param values
+ */
 async function changePassword(values: any) {
   const { newPassword } = values;
   await store.changePassword(newPassword);

@@ -242,6 +242,10 @@ export const useUsersStore = defineStore("users", () => {
     }
   }
 
+  /**
+   * Updates a users email
+   * @param query
+   */
   async function searchUser(query: string) {
     try {
       searching.value = true;

@@ -31,6 +31,7 @@ function closeDialog() {
   emit("update:modelValue", false);
 }
 
+//Delete the user
 async function removeUser() {
   await store.deleteUser(store.user!.id!);
   closeDialog();

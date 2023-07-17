@@ -72,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { useUsersStore } from "@/store/users";
 import { onMounted } from "vue";
 import DeleteUserDialog from "@/components/DeleteUserDialog.vue";
@@ -105,6 +105,11 @@ onMounted(() => {
   store.getUsers();
 });
 
+/**
+ * Open user in dialog for editing
+ * @param role
+ * @returns role as string
+ */
 function getUserRole(role: Role) {
   const roleMap = {
     0: "Admin",

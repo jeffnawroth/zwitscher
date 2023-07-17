@@ -190,6 +190,7 @@ const cardTitle = computed(() => {
 });
 
 onMounted(() => {
+  //Editmode: Set values
   if (props.post) {
     if (props.post.text) {
       initialValues.text = props.post.text;
@@ -204,11 +205,20 @@ onMounted(() => {
   }
 });
 
+/**
+ * Remove a file from array
+ * @param file
+ */
 function removeFile(file: File) {
   const fileIndex = files.value.indexOf(file);
   files.value.splice(fileIndex, 1);
 }
 
+/**
+ * Create or update a post or add a comment
+ * @param values
+ * @param param1
+ */
 async function submit(values: any, { resetForm }: any) {
   if (props.editMode) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

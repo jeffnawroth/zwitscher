@@ -44,9 +44,6 @@ const tab = ref("one");
 
 onMounted(() => {
   store.getAllPosts();
-  // if (authStore.loggedIn) {
-  //   store.getFollowedUsersPosts();
-  // }
 });
 
 watch(

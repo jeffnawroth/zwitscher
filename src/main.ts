@@ -17,7 +17,7 @@ import axios from "axios";
 import { useAuthenticationStore } from "./store/authentication";
 
 /**
- * Try to refresh user token when user is unauthorized and try axios call again
+ * Try to refresh user token and try axios call again when user is unauthorized
  */
 axios.interceptors.response.use(
   (response) => response,

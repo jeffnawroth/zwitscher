@@ -55,6 +55,9 @@ const userDisplayName = computed(() => {
   return `${store.user?.name} (${store.user?.username})`;
 });
 
+/**
+ * Lock or unlock the user
+ */
 async function toggleUserLock() {
   store.user!.locked! = !store.user!.locked!;
   await store.updateUser(store.user!);

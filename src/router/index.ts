@@ -83,12 +83,6 @@ const routes = [
     component: () => import("@/views/Settings.vue"),
     meta: { requiresAuth: true },
   },
-  /* {
-    path: "/landing-page",
-    name: "landing-page",
-    component: () => import("@/views/LandingPage.vue"),
-  }, */
-
   {
     path: "/data-management",
     name: "data-management",

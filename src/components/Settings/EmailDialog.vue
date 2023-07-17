@@ -77,6 +77,8 @@ const initialValues = {
   newMail: "",
   newMailConfirm: "",
 };
+
+//Validationrules
 const validationSchema = object({
   currentMail: string()
     .required()
@@ -95,6 +97,10 @@ const validationSchema = object({
     .oneOf([ref("newMail")], "E-Mails stimmen nicht überein"),
 });
 
+/**
+ * Change user e-mail
+ * @param values
+ */
 async function changeMail(values: any) {
   const { newMail } = values;
   await store.changeEmail(newMail);

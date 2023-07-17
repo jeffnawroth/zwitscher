@@ -172,9 +172,6 @@ watch(search, (val) => {
 });
 
 onMounted(() => {
-  // if (loggedIn.value) {
-  //   usersStore.getUsers();
-  // }
   //Load and set user-data from local storage if exists
   const userString = localStorage.getItem("user");
   if (userString) {

@@ -66,7 +66,6 @@ const props = defineProps({
   },
 });
 
-//Test
 const imgCols = computed(() => {
   return props.files.length == 1 ? "12" : "6";
 });

@@ -254,6 +254,7 @@ const interests = [
   "Tanzen",
 ];
 
+//Validationrules
 const validationSchema = object({
   role: number().required().label("Rolle"),
   username: string()
@@ -307,6 +308,7 @@ const cardTitle = computed(() => {
 });
 
 onMounted(() => {
+  //Set initial values when editing a users
   if (
     store.user &&
     (route.name === "edit-user" || route.name === "profile-settings")
@@ -331,6 +333,7 @@ onMounted(() => {
   }
 });
 
+//Check if changes were made before the dialog is closed
 function cancel(dirty?: boolean) {
   if (dirty) {
     discardDialog.value = true;
@@ -345,12 +348,19 @@ function onFileChange(e: any) {
   file.value = e.target.files[0];
 }
 
+/**
+ * Return to profile or data-management
+ */
 function close() {
   profileSettings.value
     ? router.push({ name: "profile" })
     : router.push({ name: "data-management" });
 }
 
+/**
+ * Submit values and create or update user
+ * @param values
+ */
 async function submit(values: any) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { passwordConfirm, ...rest } = values;

@@ -124,10 +124,12 @@ const thumbDown = computed(() => {
     : "mdi-thumb-down-outline";
 });
 
+//Open the users profile
 function openProfile() {
   router.push({ name: "profile", params: { username: props.post.username } });
 }
 
+//Like a post
 function likePost() {
   if (!authStore.loggedIn) {
     router.push({ name: "login" });
@@ -136,6 +138,7 @@ function likePost() {
   store.upvotePost(props.post.id!);
 }
 
+//Dislike a post
 function dislikePost() {
   if (!authStore.loggedIn) {
     router.push({ name: "login" });
@@ -144,11 +147,13 @@ function dislikePost() {
   store.downvotePost(props.post.id!);
 }
 
+//Delete a user post
 async function deleteUserPost() {
   await store.deletePost(props.post.id!);
   deleteDialog.value = false;
 }
 
+//Open post details
 function openPost() {
   store.post = props.post;
   router.push({
@@ -157,6 +162,7 @@ function openPost() {
   });
 }
 
+//Format date to show when post was created
 const formattedDate = computed(() => {
   const date = new Date(props.post.date!);
   const now = new Date();

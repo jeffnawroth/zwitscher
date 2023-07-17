@@ -40,9 +40,12 @@ const alert = ref(true);
 const progress = ref(0);
 
 onMounted(() => {
+  //Delete notification after 4 seconds
   timeout.value = setTimeout(() => {
     store.deleteNotification(props.notification);
   }, 4000);
+
+  //Set circular progress
   interval.value = setInterval(() => {
     if (progress.value === 100) {
       return (progress.value = 0);
