@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="dialog" persistent width="500">
-    <v-card :title="cardTitle">
+    <v-card :title="cardTitle" :loading="store.crudCardLoading">
       <Form
         ref="form"
         v-slot="{ meta }"
@@ -18,7 +18,7 @@
               ref="fileInput"
               hidden
               type="file"
-              accept="image/*, video/*"
+              accept="image/*"
               @change="handleChange($event), onFileChange($event)"
               @blur="handleBlur"
             />
@@ -27,10 +27,10 @@
         </v-row>
         <v-tabs v-model="tab" fixed-tabs>
           <v-tab :value="1">Profil</v-tab>
-          <v-tab :value="2">Konto</v-tab>
+          <v-tab v-if="showAccountSettings" :value="2">Konto</v-tab>
         </v-tabs>
         <v-window v-model="tab">
-          <v-window-item :value="1">
+          <v-window-item eager :value="1">
             <v-card-text>
               <v-row>
                 <v-col cols="12">
@@ -43,7 +43,7 @@
                 </v-col>
                 <v-col cols="12">
                   <BaseInputWithValidation
-                    name="birthdate"
+                    name="birthDate"
                     label="Geburtsdatum"
                     type="date"
                     :clearable="false"
@@ -79,7 +79,7 @@
               </v-row>
             </v-card-text>
           </v-window-item>
-          <v-window-item :value="2">
+          <v-window-item v-if="showAccountSettings" eager :value="2">
             <v-card-text>
               <v-row>
                 <v-col cols="12">
@@ -87,7 +87,7 @@
                     name="role"
                     label="Rolle"
                     :items="roles"
-                    :disabled="userLocked"
+                    :disabled="userLocked || modCreatesUser"
                   ></BaseSelectWithValidation>
                 </v-col>
                 <v-col cols="12">
@@ -144,7 +144,7 @@
             >Speichern</v-btn
           >
           <v-btn
-            v-if="tab < 2"
+            v-if="tab < 2 && showAccountSettings"
             variant="plain"
             icon="mdi-chevron-right"
             @click="tab++"
@@ -171,16 +171,26 @@ import BaseCombobox from "./BaseComponents/BaseCombobox.vue";
 import BaseTextarea from "./BaseComponents/BaseTextarea.vue";
 import { useRoute, useRouter } from "vue-router";
 import { Form, Field } from "vee-validate";
-import { object, string, ref as yupRef, setLocale, array, mixed } from "yup";
+import {
+  object,
+  string,
+  ref as yupRef,
+  setLocale,
+  array,
+  mixed,
+  number,
+} from "yup";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
 import { useUsersStore } from "@/store/users";
 import { onMounted } from "vue";
-import { UserEdit } from "@/interfaces";
 import Avatar from "./Avatar.vue";
+import { Gender, Role } from "@/typescript-axios-generated";
+import { useAuthenticationStore } from "@/store/authentication";
 
 setLocale(yupLocaleDe);
 
 const store = useUsersStore();
+const authStore = useAuthenticationStore();
 const dialog = ref(true);
 const discardDialog = ref(false);
 const route = useRoute();
@@ -191,24 +201,36 @@ const file = ref<File>();
 
 const tab = ref(1);
 
+const modCreatesUser = computed(() => {
+  return route.name == "create-user" && authStore.user?.role == Role.NUMBER_1;
+});
+
 const initialValues = ref({
   avatar: null,
-  role: null,
+  role: modCreatesUser.value ? Role.NUMBER_2 : null,
   username: "",
   name: "",
   email: "",
   gender: null,
   password: null,
   passwordConfirm: null,
-  birthdate: null,
+  birthDate: null,
   interests: null,
   bio: null,
 });
 
 const form = ref<InstanceType<typeof Form> | null>(null);
 
-const roles = ["Admin", "Moderator", "Nutzer"];
-const gender = ["männlich", "weiblich", "divers"];
+const roles = [
+  { text: "Admin", value: Role.NUMBER_0 },
+  { text: "Moderator", value: Role.NUMBER_1 },
+  { text: "Nutzer", value: Role.NUMBER_2 },
+];
+const gender = [
+  { text: "männlich", value: Gender.NUMBER_0 },
+  { text: "weiblich", value: Gender.NUMBER_1 },
+  { text: "divers", value: Gender.NUMBER_2 },
+];
 const interests = [
   "Sport",
   "Musik",
@@ -232,20 +254,21 @@ const interests = [
   "Tanzen",
 ];
 
+//Validationrules
 const validationSchema = object({
-  role: string().required().label("Rolle"),
+  role: number().required().label("Rolle"),
   username: string()
     .required()
     .label("Benutzername")
     .matches(
       /^[a-zA-Z0-9_-]+$/,
-      "Der Benutzername darf nur Buchstaben, Zahlen, Bindestriche und Unterstriche enthalten"
+      "Der Benutzername darf nur Buchstaben, Zahlen, Bindestriche und Unterstriche enthalten",
     ),
   name: string().required().label("Name"),
-  gender: string().label("Geschlecht").nullable(),
+  gender: number().label("Geschlecht").nullable(),
   interests: array().label("Interessen").nullable(),
   email: string().required().email().label("E-Mail"),
-  birthdate: string().nullable(),
+  birthDate: string().nullable(),
   bio: string().nullable(),
   password:
     route.name === "create-user"
@@ -264,6 +287,14 @@ const profileSettings = computed(() => {
   return route.name === "profile-settings";
 });
 
+const showAccountSettings = computed(() => {
+  return (
+    (authStore.user?.role == Role.NUMBER_0 &&
+      authStore.user.id != store.user?.id) ||
+    route.name == "create-user"
+  );
+});
+
 const dateToday = computed(() => {
   return new Date().toISOString().slice(0, 10);
 });
@@ -277,21 +308,22 @@ const cardTitle = computed(() => {
 });
 
 onMounted(() => {
+  //Set initial values when editing a users
   if (
     store.user &&
     (route.name === "edit-user" || route.name === "profile-settings")
   ) {
-    const { gender, interests, birthdate, ...rest } = JSON.parse(
-      JSON.stringify(store.user)
+    const { gender, interests, birthDate, ...rest } = JSON.parse(
+      JSON.stringify(store.user),
     );
 
     let initialValues = {
       ...rest,
-      password: "",
-      passwordConfirm: "",
+      password: null,
+      passwordConfirm: null,
       gender,
       interests,
-      birthdate,
+      birthDate,
       avatar: store.user.avatar,
     };
 
@@ -301,6 +333,7 @@ onMounted(() => {
   }
 });
 
+//Check if changes were made before the dialog is closed
 function cancel(dirty?: boolean) {
   if (dirty) {
     discardDialog.value = true;
@@ -315,20 +348,28 @@ function onFileChange(e: any) {
   file.value = e.target.files[0];
 }
 
+/**
+ * Return to profile or data-management
+ */
 function close() {
   profileSettings.value
     ? router.push({ name: "profile" })
-    : router.push({ name: "users" });
+    : router.push({ name: "data-management" });
 }
 
-function submit(values: any) {
+/**
+ * Submit values and create or update user
+ * @param values
+ */
+async function submit(values: any) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { passwordConfirm, ...rest } = values;
-  let updatedValues: UserEdit = { ...rest };
+  let updatedValues = { ...rest };
 
   if (route.name == "create-user") {
-    store.createUser(updatedValues);
+    await store.createUser(updatedValues);
   } else {
-    store.updateUser(updatedValues);
+    await store.updateUser(updatedValues);
   }
   close();
 }

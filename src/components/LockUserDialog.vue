@@ -3,7 +3,7 @@
     :model-value="modelValue"
     max-width="500"
     persistent
-    @input="$emit('update:modelValue', $event)"
+    @update:model-value="$emit('update:modelValue', $event)"
   >
     <v-card
       class="mx-auto"
@@ -55,8 +55,12 @@ const userDisplayName = computed(() => {
   return `${store.user?.name} (${store.user?.username})`;
 });
 
-function toggleUserLock() {
+/**
+ * Lock or unlock the user
+ */
+async function toggleUserLock() {
   store.user!.locked! = !store.user!.locked!;
+  await store.updateUser(store.user!);
   closeDialog();
 }
 

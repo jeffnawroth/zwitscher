@@ -1,45 +1,138 @@
 <template>
   <v-app>
-    <v-app-bar color="white" flat density="compact" border>
+    <v-app-bar flat density="compact" border>
       <v-app-bar-title>Zwitscher</v-app-bar-title>
-      <v-spacer></v-spacer>
-      <v-spacer></v-spacer>
-      <v-spacer></v-spacer>
-      <v-text-field
-        bg-color="grey-lighten-2"
-        variant="solo"
+
+      <v-autocomplete
+        id="search"
+        v-model:search="search"
+        :items="usersStore.searchResult"
+        item-value="id"
+        item-title="name"
+        variant="solo-filled"
         placeholder="Suche..."
         density="compact"
         flat
-        hide-details="auto"
-      ></v-text-field>
-      <v-tooltip :text="store.loggedIn ? 'Abmelden' : 'Anmelden'">
-        <template #activator="{ props }">
-          <v-btn v-bind="props" :icon="authIcon" @click="store.logout"></v-btn>
+        hide-details
+        hide-no-data
+        style="max-width: 300px"
+        clearable
+        menu-icon=""
+        :loading="usersStore.searching"
+      >
+        <template #item="{ props, item }">
+          <v-list-item
+            v-bind="props"
+            :title="item?.raw?.name!"
+            :subtitle="`@${item?.raw?.userName!}`"
+            :to="`/${item.raw?.userName}`"
+          >
+            <template #prepend>
+              <v-avatar v-if="!item.raw.avatar" color="grey">
+                <v-icon icon="mdi-account-circle" size="x-large"></v-icon>
+              </v-avatar>
+              <v-avatar v-else :image="generateFileURL(item.raw?.avatar)">
+              </v-avatar>
+            </template>
+          </v-list-item>
         </template>
-      </v-tooltip>
+      </v-autocomplete>
+
+      <IconWithTooltip
+        class="mx-2"
+        icon="mdi-theme-light-dark"
+        :text="
+          settingsStore.theme.global.current.dark
+            ? 'Dark Mode deaktivieren'
+            : 'Dark Mode aktivieren'
+        "
+        @click="settingsStore.toggleTheme"
+      ></IconWithTooltip>
+
+      <IconWithTooltip
+        class="mx-2"
+        :icon="authIcon"
+        :text="loggedIn ? 'Abmelden' : 'Anmelden'"
+        @click="store.logout"
+      >
+      </IconWithTooltip>
     </v-app-bar>
 
-    <v-navigation-drawer location="left" :rail="mdAndDown" permanent>
+    <v-navigation-drawer
+      width="300"
+      floating
+      location="left"
+      :rail="mdAndDown"
+      permanent
+    >
       <v-list nav>
-        <template #append> </template>
-        <div v-for="item in items" :key="item.title">
+        <v-list-item
+          to="/"
+          title="Startseite"
+          prepend-icon="mdi-home"
+          rounded="lg"
+        >
+        </v-list-item>
+        <div v-if="loggedIn">
           <v-list-item
-            v-if="store.loggedIn || item.title === 'Startseite'"
-            :to="item.route"
-            :title="item.title"
-            :prepend-icon="item.icon"
+            :to="`/${user?.username}`"
+            title="Profil"
+            prepend-icon="mdi-account"
             rounded="lg"
           >
           </v-list-item>
-        </div> </v-list
-    ></v-navigation-drawer>
+          <div v-if="user?.role != Role.NUMBER_2">
+            <v-list-item
+              to="/dashboard"
+              title="Dashboard"
+              prepend-icon="mdi-view-dashboard"
+              rounded="lg"
+            >
+            </v-list-item>
+            <v-list-item
+              to="/data-management"
+              title="Datenverwaltung"
+              prepend-icon="mdi-database"
+              rounded="lg"
+            >
+            </v-list-item>
+          </div>
+          <v-list-item
+            to="/settings"
+            title="Einstellungen"
+            prepend-icon="mdi-cog"
+            rounded="lg"
+          >
+          </v-list-item>
 
-    <v-navigation-drawer location="right"> </v-navigation-drawer>
+          <v-list-item
+            v-if="mdAndDown"
+            variant="tonal"
+            rounded="lg"
+            prepend-icon="mdi-alpha-z"
+            @click="showDialog = true"
+          >
+          </v-list-item>
+          <v-list-item v-else>
+            <v-btn block variant="tonal" @click="showDialog = true"
+              >Zwitschern</v-btn
+            >
+          </v-list-item>
+        </div>
+      </v-list>
+      <div v-if="loggedIn"></div>
+    </v-navigation-drawer>
+
+    <v-navigation-drawer location="right">
+      <FollowedUsersList v-if="loggedIn"></FollowedUsersList>
+    </v-navigation-drawer>
+
+    <NotificationContainer></NotificationContainer>
 
     <v-main>
       <v-container fluid style="max-width: 980px">
         <v-card>
+          <CreatePostDialog v-model="showDialog"></CreatePostDialog>
           <router-view></router-view>
         </v-card>
       </v-container>
@@ -48,65 +141,53 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useAuthenticationStore } from "@/store/authentication";
-import axios from "axios";
 import { useDisplay } from "vuetify/lib/framework.mjs";
+import { Role } from "./typescript-axios-generated";
+import { useSettingsStore } from "./store/settings";
+import IconWithTooltip from "./components/IconWithTooltip.vue";
+import NotificationContainer from "./components/Notification/NotificationContainer.vue";
+import CreatePostDialog from "./components/Posts/CreatePostDialog.vue";
+import FollowedUsersList from "./components/FollowedUsersList.vue";
+import { storeToRefs } from "pinia";
+import { useUsersStore } from "./store/users";
+import { generateFileURL } from "./helpers";
 
 const store = useAuthenticationStore();
+const settingsStore = useSettingsStore();
 const { mdAndDown } = useDisplay();
+const { loggedIn, user } = storeToRefs(store);
+const usersStore = useUsersStore();
 
-const items = [
-  {
-    title: "Startseite",
-    icon: "mdi-home",
-    route: "/",
-  },
-  {
-    title: "Profil",
-    icon: "mdi-account",
-    route: `/${store.user?.username}/profile`,
-  },
-  {
-    title: "Benutzerverwaltung",
-    icon: "mdi-account-group",
-    route: "/users",
-  },
-  {
-    title: "Dashboard",
-    icon: "mdi-view-dashboard",
-    route: "/dashboard",
-  },
-
-  {
-    title: "Einstellungen",
-    icon: "mdi-cog",
-    route: "/settings",
-  },
-];
+const showDialog = ref(false);
+const search = ref("");
 
 const authIcon = computed(() => {
-  return store.loggedIn ? "mdi-logout" : "mdi-login";
+  return loggedIn ? "mdi-logout" : "mdi-login";
 });
 
-const showMenuIcon = computed(() => {
-  return mdAndDown.value;
+watch(search, (val) => {
+  usersStore.searchUser(val);
 });
 
 onMounted(() => {
+  //Load and set user-data from local storage if exists
   const userString = localStorage.getItem("user");
   if (userString) {
     const userData = JSON.parse(userString);
     store.setUserData(userData);
   }
-  /*  axios.interceptors.response.use(
-    (response) => response,
-    (error) => {
-      if (error.response.status === 401) {
-        store.logout();
-      }
-      return Promise.reject(error);
-    }
-  ); */
+
+  //Load and set theme from local storage if exists
+  const theme = localStorage.getItem("theme");
+  if (theme) settingsStore.setTheme(theme);
 });
 </script>
+
+<style>
+.hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+</style>

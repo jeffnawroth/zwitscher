@@ -1,12 +1,22 @@
 <template>
-  <v-card :subtitle="`@${post.username} • ${formattedDate}`">
+  <v-card
+    v-if="!editMode"
+    :subtitle="`@${post.username} • ${formattedDate}  ${
+      post.edited ? '• bearbeitet' : ''
+    }`"
+    density="compact"
+    rounded="lg"
+    flat
+    @click="openPost"
+  >
     <template #prepend>
       <v-btn icon variant="text" @click.stop="openProfile">
-        <v-img>
-          <v-avatar
-            class="avatar"
-            :image="generateFileURL(post?.avatar)"
-          ></v-avatar>
+        <v-avatar v-if="!post.avatar" color="grey">
+          <v-icon icon="mdi-account-circle" size="x-large"></v-icon>
+        </v-avatar>
+        <v-img v-else>
+          <v-avatar :image="generateFileURL(post.avatar as unknown as File)">
+          </v-avatar>
         </v-img>
       </v-btn>
     </template>
@@ -20,16 +30,17 @@
     <template #text>
       {{ post.text }}
       <FileLayout
+        v-if="post.files"
         :class="post.text === '' ? '' : 'mt-1'"
         :files="post.files"
       ></FileLayout>
     </template>
     <v-card-actions>
       <v-btn :prepend-icon="thumbUp" @click.stop="likePost">{{
-        post.upvotes
+        post.upVotes?.length ?? 0
       }}</v-btn>
       <v-btn :prepend-icon="thumbDown" @click.stop="dislikePost">{{
-        post.downvotes
+        post.downVotes?.length ?? 0
       }}</v-btn>
       <v-btn prepend-icon="mdi-comment-outline">{{
         post.comments?.length ?? 0
@@ -40,7 +51,18 @@
         v-if="
           authStore.loggedIn &&
           (post.userId === authStore.user?.id ||
-            authStore.user?.role == 'Admin')
+            authStore.user?.role == Role.NUMBER_0)
+        "
+        icon="mdi-pencil-outline"
+        @click.stop="editMode = true"
+      ></v-btn>
+      <v-btn
+        v-if="
+          authStore.loggedIn &&
+          (post.userId === authStore.user?.id ||
+            authStore.user?.role == Role.NUMBER_0 ||
+            (authStore.user?.role == Role.NUMBER_1 &&
+              post.userRole == Role.NUMBER_2))
         "
         icon="mdi-delete-outline"
         @click.stop="deleteDialog = true"
@@ -48,8 +70,16 @@
     </v-card-actions>
   </v-card>
 
+  <CreatePost
+    v-else
+    :post="post"
+    :edit-mode="editMode"
+    @set-edit-mode="(value) => (editMode = value)"
+  ></CreatePost>
+
   <BaseDeleteDialog
     v-model="deleteDialog"
+    :loading="store.crudCardLoading"
     @delete="deleteUserPost"
     @cancel="deleteDialog = false"
     >den Beitrag</BaseDeleteDialog
@@ -57,7 +87,7 @@
 </template>
 
 <script setup lang="ts">
-import { Post } from "@/interfaces";
+import { PostResult } from "@/typescript-axios-generated";
 import { useAuthenticationStore } from "@/store/authentication";
 import BaseDeleteDialog from "../BaseComponents/BaseDeleteDialog.vue";
 import { usePostStore } from "@/store/posts";
@@ -65,15 +95,12 @@ import { PropType, computed, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import FileLayout from "./FileLayout.vue";
 import { generateFileURL } from "@/helpers";
-
-const emit = defineEmits<{
-  (e: "set-upvotes", upvotes: number): void;
-  (e: "set-downvotes", downvotes: number): void;
-}>();
+import { Role } from "@/typescript-axios-generated";
+import CreatePost from "./CreatePost.vue";
 
 const props = defineProps({
   post: {
-    type: Object as PropType<Post>,
+    type: Object as PropType<PostResult>,
     required: true,
   },
 });
@@ -83,71 +110,61 @@ const authStore = useAuthenticationStore();
 const router = useRouter();
 const route = useRoute();
 const deleteDialog = ref(false);
+const editMode = ref(false);
 
 const thumbUp = computed(() => {
-  return authStore.user?.liked.includes(props.post.id)
+  return props.post.upVotes?.includes(authStore.user?.id!)
     ? "mdi-thumb-up"
     : "mdi-thumb-up-outline";
 });
 
 const thumbDown = computed(() => {
-  return authStore.user?.disliked.includes(props.post.id)
+  return props.post.downVotes?.includes(authStore.user?.id!)
     ? "mdi-thumb-down"
     : "mdi-thumb-down-outline";
 });
 
+//Open the users profile
 function openProfile() {
   router.push({ name: "profile", params: { username: props.post.username } });
 }
 
+//Like a post
 function likePost() {
   if (!authStore.loggedIn) {
     router.push({ name: "login" });
     return;
   }
-  const likedIndex = authStore.user?.liked.indexOf(props.post.id);
-  const dislikedIndex = authStore.user?.disliked.indexOf(props.post.id);
-
-  if (likedIndex != undefined && likedIndex !== -1) {
-    authStore.user?.liked.splice(likedIndex, 1);
-    emit("set-upvotes", props.post.upvotes - 1);
-  } else {
-    authStore.user?.liked.push(props.post.id);
-    emit("set-upvotes", props.post.upvotes + 1);
-    if (dislikedIndex != undefined && dislikedIndex !== -1) {
-      authStore.user?.disliked.splice(dislikedIndex, 1);
-      emit("set-downvotes", props.post.downvotes - 1);
-    }
-  }
+  store.upvotePost(props.post.id!);
 }
 
+//Dislike a post
 function dislikePost() {
   if (!authStore.loggedIn) {
     router.push({ name: "login" });
     return;
   }
-  const likedIndex = authStore.user?.liked.indexOf(props.post.id);
-  const dislikedIndex = authStore.user?.disliked.indexOf(props.post.id);
-
-  if (dislikedIndex != undefined && dislikedIndex !== -1) {
-    authStore.user?.disliked.splice(dislikedIndex, 1);
-    emit("set-downvotes", props.post.downvotes - 1);
-  } else {
-    authStore.user?.disliked.push(props.post.id);
-    emit("set-downvotes", props.post.downvotes + 1);
-    if (likedIndex != undefined && likedIndex !== -1) {
-      authStore.user?.liked.splice(likedIndex, 1);
-      emit("set-upvotes", props.post.upvotes - 1);
-    }
-  }
+  store.downvotePost(props.post.id!);
 }
 
-function deleteUserPost() {
-  store.deletePost(props.post.id);
+//Delete a user post
+async function deleteUserPost() {
+  await store.deletePost(props.post.id!);
+  deleteDialog.value = false;
 }
 
+//Open post details
+function openPost() {
+  store.post = props.post;
+  router.push({
+    name: "post",
+    params: { username: props.post.username, postId: props.post.id },
+  });
+}
+
+//Format date to show when post was created
 const formattedDate = computed(() => {
-  const { date } = props.post;
+  const date = new Date(props.post.date!);
   const now = new Date();
   const diff = now.getTime() - date.getTime();
   const diffInSeconds = Math.round(diff / 1000);

@@ -1,14 +1,46 @@
 <template>
-  <Form
-    v-slot="{ meta, validate }"
-    :initial-values="initialValues"
-    :validation-schema="validationSchema"
-    @submit="submit"
-  >
-    <v-card
-      :prepend-avatar="generateFileURL(authStore.user?.avatar)"
-      :title="cardTitle"
-      :subtitle="cardSubtitle"
+  <v-card :title="cardTitle" flat>
+    <template #subtitle>
+      <div v-if="route.name == 'post'">
+        Antworten auf
+        <router-link
+          class="text-decoration-none"
+          :to="{
+            name: 'profile',
+            params: { username: postsStore.post?.username },
+          }"
+          >{{ ` @${postsStore.post?.username}` }}</router-link
+        >
+      </div>
+      <div v-else>
+        {{ editMode ? `@${post.username}` : `@${authStore.user?.username}` }}
+      </div>
+    </template>
+    <template #prepend>
+      <template v-if="editMode">
+        <v-avatar v-if="!post.avatar" color="grey">
+          <v-icon icon="mdi-account-circle" size="x-large"></v-icon>
+        </v-avatar>
+        <v-img v-else>
+          <v-avatar :image="generateFileURL(post.avatar)"> </v-avatar>
+        </v-img>
+      </template>
+      <template v-else>
+        <v-avatar v-if="!authStore.user?.avatar" color="grey">
+          <v-icon icon="mdi-account-circle" size="x-large"></v-icon>
+        </v-avatar>
+        <v-img v-else>
+          <v-avatar :image="generateFileURL(authStore.user?.avatar)">
+          </v-avatar>
+        </v-img>
+      </template>
+    </template>
+    <Form
+      ref="form"
+      v-slot="{ meta, validate }"
+      :initial-values="initialValues"
+      :validation-schema="validationSchema"
+      @submit="submit"
     >
       <v-card-text>
         <BaseTextarea
@@ -24,6 +56,7 @@
           error-messages=""
         ></BaseTextarea>
         <FileLayout
+          v-if="files"
           class="mt-2"
           :files="files"
           remove-file-btn
@@ -59,42 +92,74 @@
         <v-btn :disabled="files.length >= 1" icon="mdi-file-gif-box"></v-btn>
         <v-btn icon="mdi-emoticon-happy-outline"></v-btn>
         <v-spacer></v-spacer>
-        <v-btn variant="tonal" type="submit" :disabled="!meta.valid">{{
-          buttonText
-        }}</v-btn>
+        <v-btn
+          v-if="!props.editMode"
+          variant="tonal"
+          type="submit"
+          :disabled="!meta.valid"
+          :loading="postsStore.crudCardLoading"
+          >{{ buttonText }}</v-btn
+        >
+
+        <template v-if="editMode">
+          <v-btn icon="mdi-close" @click="$emit('set-edit-mode', false)">
+          </v-btn>
+          <v-btn
+            :disabled="!meta.valid || !meta.dirty"
+            icon="mdi-check"
+            type="submit"
+          ></v-btn>
+        </template>
       </v-card-actions>
-    </v-card>
-  </Form>
+    </Form>
+  </v-card>
 </template>
 
 <script setup lang="ts">
-import { AddPost } from "@/interfaces";
 import { useAuthenticationStore } from "@/store/authentication";
 import { usePostStore } from "@/store/posts";
 import { computed, ref } from "vue";
 import { mixed, object, setLocale, string } from "yup";
 import { Form, Field } from "vee-validate";
 import yupLocaleDe from "@/plugins/yupLocaleDe";
-import { useRouter, useRoute } from "vue-router";
-import { useUsersStore } from "@/store/users";
+import { useRoute } from "vue-router";
 import FileLayout from "./FileLayout.vue";
 import BaseTextarea from "../BaseComponents/BaseTextarea.vue";
 import { generateFileURL } from "@/helpers";
+import { onMounted } from "vue";
+import { PropType } from "vue";
+import { CommentAdd, PostAdd, PostResult } from "@/typescript-axios-generated";
+
+const emit = defineEmits<{
+  (e: "set-edit-mode", value: boolean): void;
+  (e: "close-dialog"): void;
+}>();
+
+const props = defineProps({
+  post: {
+    type: Object as PropType<PostResult>,
+    default: null,
+  },
+  editMode: {
+    type: Boolean,
+  },
+});
 
 setLocale(yupLocaleDe);
 
 const authStore = useAuthenticationStore();
 const postsStore = usePostStore();
-const usersStore = useUsersStore();
 const route = useRoute();
 
 const fileInput = ref<HTMLInputElement | null>(null);
 
 const files = ref<File[]>([]);
 
+const form = ref<InstanceType<typeof Form> | null>(null);
+
 const initialValues = {
   text: "",
-  file: [],
+  file: [] as File[] | string[],
 };
 
 const validationSchema = object({
@@ -116,32 +181,71 @@ const buttonText = computed(() => {
   return route.name == "home" ? "Zwitschern" : "Antworten";
 });
 
-const cardSubtitle = computed(() => {
-  return route.name == "home"
-    ? `@${authStore.user?.username}`
-    : `Antworten auf @${usersStore.user?.username}`;
-});
-
 const cardTitle = computed(() => {
-  return route.name == "home" ? `${authStore.user?.name}` : "";
+  return route.name === "post"
+    ? ""
+    : props.editMode
+    ? props.post.name!
+    : `${authStore.user?.name}`;
 });
 
+onMounted(() => {
+  //Editmode: Set values
+  if (props.post) {
+    if (props.post.text) {
+      initialValues.text = props.post.text;
+    }
+    if (props.post.files) {
+      initialValues.file = props.post.files;
+    }
+
+    form.value?.resetForm({
+      values: initialValues,
+    });
+  }
+});
+
+/**
+ * Remove a file from array
+ * @param file
+ */
 function removeFile(file: File) {
   const fileIndex = files.value.indexOf(file);
   files.value.splice(fileIndex, 1);
 }
 
-function submit(values: any, { resetForm }: any) {
-  const post: AddPost = {
-    userId: authStore.user!.id,
-    text: values.text,
-    files: values.file,
-  };
+/**
+ * Create or update a post or add a comment
+ * @param values
+ * @param param1
+ */
+async function submit(values: any, { resetForm }: any) {
+  if (props.editMode) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { text, files, ...rest } = props.post;
+    const postEdit = {
+      ...rest,
+      text: values.text,
+      files: values.file,
+    };
+    await postsStore.updatePost(postEdit);
+    emit("set-edit-mode", false);
+  } else {
+    const post: PostAdd | CommentAdd = {
+      userId: authStore.user!.id,
+      text: values.text,
+      files: values.file,
+    };
 
-  route.name == "home"
-    ? postsStore.createPost(post)
-    : postsStore.addComment(post);
-  resetForm();
+    route.name == "home"
+      ? await postsStore.createPost(post)
+      : await postsStore.addComment({
+          ...post,
+          parentPostId: postsStore.post?.id!,
+        });
+    resetForm();
+    emit("close-dialog");
+  }
 }
 </script>
 

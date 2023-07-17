@@ -5,6 +5,8 @@
     :error-messages="errors"
     :clearable="true"
     :items="items"
+    item-value="value"
+    item-title="text"
     hide-details="auto"
     @blur="handleBlur"
   >

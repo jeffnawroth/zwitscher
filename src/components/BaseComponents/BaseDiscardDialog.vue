@@ -3,7 +3,7 @@
     :model-value="modelValue"
     max-width="500"
     persistent
-    @input="$emit('update:modelValue', $event)"
+    @update:model-value="$emit('update:modelValue', $event)"
   >
     <v-card>
       <v-card-title>Änderungen verwerfen</v-card-title>

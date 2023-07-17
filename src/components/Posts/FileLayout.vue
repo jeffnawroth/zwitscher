@@ -1,9 +1,15 @@
 <template>
   <v-row v-if="files.length > 0">
-    <v-col v-for="file in files" :key="file.name" :cols="imgCols">
+    <v-col v-for="file in files" :key="JSON.stringify(file)" :cols="imgCols">
       <!-- Image -->
-      <v-card v-if="file.type === 'image/jpeg'">
-        <v-img cover aspect-ratio="1/1" :src="generateFileURL(file)">
+      <v-card
+        v-if="
+          (typeof file === 'string' && file?.includes('image')) ||
+          //@ts-expect-error
+          file?.type?.startsWith('image/')
+        "
+      >
+        <v-img :src="generateFileURL(file)">
           <v-toolbar color="rgba(0, 0, 0, 0)" theme="dark">
             <template v-if="removeFileBtn" #prepend>
               <v-btn
@@ -20,7 +26,7 @@
         </v-img>
       </v-card>
       <!-- Video -->
-      <div v-else-if="file.type === 'video/mp4'" class="video-player">
+      <div v-else class="video-player">
         <video ref="videoPlayer" controls>
           <source :src="generateFileURL(files[0])" type="video/mp4" />
         </video>
@@ -50,7 +56,7 @@ defineEmits<{
 
 const props = defineProps({
   files: {
-    type: Array as PropType<Array<File>>,
+    type: Array as PropType<Array<File | string>>,
     default: () => {
       [];
     },
@@ -60,7 +66,6 @@ const props = defineProps({
   },
 });
 
-//Test
 const imgCols = computed(() => {
   return props.files.length == 1 ? "12" : "6";
 });

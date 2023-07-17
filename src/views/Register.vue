@@ -1,12 +1,12 @@
 <template>
-  <v-dialog v-model="dialog" width="500">
+  <v-dialog v-model="dialog" width="500" persistent>
     <Form
       v-slot="{ meta }"
       :validation-schema="validationSchema"
       :initial-values="initialValues"
       @submit="submit"
     >
-      <v-card title="Registrieren">
+      <v-card title="Registrieren" :loading="store.loading">
         <v-card-text>
           <v-row>
             <v-col>
@@ -14,6 +14,8 @@
                 name="username"
                 label="Benutzername"
                 type="text"
+                prefix="@"
+                @keydown.space.prevent
               ></BaseInputWithValidation>
             </v-col>
           </v-row>
@@ -50,9 +52,21 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col>
+            <v-col> </v-col>
+            <v-col cols="12">
               <span> Du hast bereits ein Konto? </span>
-              <router-link :to="{ name: 'login' }"> Anmelden </router-link>
+              <v-hover>
+                <template #default="{ isHovering, props }">
+                  <span
+                    v-bind="props"
+                    class="text-indigo-darken-2"
+                    :class="isHovering ? 'hover' : undefined"
+                    @click="router.push({ name: 'login' })"
+                  >
+                    Anmelden
+                  </span>
+                </template>
+              </v-hover>
             </v-col>
           </v-row>
         </v-card-text>
@@ -108,8 +122,13 @@ const validationSchema = object({
     .label("Passwörter"),
 });
 
-function submit(values: any) {
-  store.register(values);
-  router.push({ name: "home" });
+/**
+ * Register user with passed values
+ * @param values
+ */
+async function submit(values: any) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { passwordConfirm, ...credentials } = values;
+  await store.register(credentials);
 }
 </script>

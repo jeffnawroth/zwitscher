@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <v-dialog v-model="dialog">
     <v-card class="mx-auto">
       <v-card-title class="text-h4"> </v-card-title>
@@ -25,4 +25,4 @@ import { ref } from "vue";
 
 const store = useAuthenticationStore();
 const dialog = ref(true);
-</script>
+</script> -->

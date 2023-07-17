@@ -1,4 +1,5 @@
 <template>
+  <PageToolbar icon="mdi-home" title="Startseite"></PageToolbar>
   <v-tabs
     v-if="authStore.loggedIn"
     v-model="tab"
@@ -34,23 +35,32 @@ import { usePostStore } from "@/store/posts";
 import { onMounted, ref, watch } from "vue";
 import { useAuthenticationStore } from "@/store/authentication";
 import PostList from "@/components/Posts/PostList.vue";
+import PageToolbar from "@/components/PageToolbar.vue";
 
 const store = usePostStore();
 const authStore = useAuthenticationStore();
-
+//Test
 const tab = ref("one");
 
 onMounted(() => {
   store.getAllPosts();
-  if (authStore.loggedIn) {
-    store.getFollowedUsersPosts(authStore.user!.id);
-  }
 });
 
 watch(
   () => authStore.loggedIn,
   (newVal) => {
     if (!newVal) tab.value = "one";
-  }
+  },
 );
+
+/**
+ * Load posts based on tab (public/for you) selection
+ */
+watch(tab, (newVal) => {
+  if (newVal === "two") {
+    store.getFollowedUsersPosts();
+  } else {
+    store.getAllPosts();
+  }
+});
 </script>
