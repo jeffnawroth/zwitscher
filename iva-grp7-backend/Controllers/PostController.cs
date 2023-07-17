@@ -35,67 +35,81 @@ public class PostController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
     public async Task<ActionResult<PostResult>> CreatePost(PostAdd postAdd)
+{
+    // Fetch the user by their ID
+    var user = await _userManager.FindByIdAsync(postAdd.UserId);
+
+    // If the user does not exist, return a 404 error
+    if (user == null) return NotFound("User was not found");
+
+    // Create a new Post object with the given information
+    var post = new Post
     {
-        var user = await _userManager.FindByIdAsync(postAdd.UserId);
+        UserId = postAdd.UserId,
+        Text = postAdd.Text,
+        Name = user.Name,
+        Username = user.UserName,
+        Comments = new List<Comment>()
+    };
 
-        if (user == null) return NotFound("User wurde nicht gefunden");
-
-        var post = new Post
+    // If files have been included in the PostAdd object
+    if (postAdd.Files != null)
+    {
+        post.Files = new List<PostFile>();
+        // Loop over all of the files
+        foreach (var fileData in postAdd.Files)
         {
-            UserId = postAdd.UserId,
-            Text = postAdd.Text,
-            Name = user.Name,
-            Username = user.UserName,
-            Comments = new List<Comment>()
-        };
-
-        if (postAdd.Files != null)
-        {
-            post.Files = new List<PostFile>();
-            foreach (var fileData in postAdd.Files)
+            var fileSplit = fileData.Split(',');
+            byte[] fileBytes;
+            try
             {
-                var fileSplit = fileData.Split(',');
-                byte[] fileBytes;
-                try
-                {
-                    fileBytes = Convert.FromBase64String(fileSplit[1]);
-                }
-                catch (FormatException)
-                {
-                    return BadRequest("Invalid File format. Please provide a Base64 string.");
-                }
-
-                var postFile = new PostFile
-                {
-                    Data = fileBytes,
-                    PostId = post.Id,
-                    MediaType = fileSplit[0] // Medientyp speichern
-                };
-                post.Files.Add(postFile);
+                // Try to convert the Base64 string to a byte array
+                fileBytes = Convert.FromBase64String(fileSplit[1]);
             }
+            catch (FormatException)
+            {
+                // If the conversion fails, return a 400 error
+                return BadRequest("Invalid File format. Please provide a Base64 string.");
+            }
+
+            // Create a new PostFile object with the file's data
+            var postFile = new PostFile
+            {
+                Data = fileBytes,
+                PostId = post.Id,
+                MediaType = fileSplit[0] // Store the media type
+            };
+            // Add the PostFile object to the Post's Files list
+            post.Files.Add(postFile);
         }
-
-        _context.Posts.Add(post);
-        await _context.SaveChangesAsync();
-
-        var postResult = new PostResult
-        {
-            Id = post.Id,
-            UserId = post.UserId,
-            UserRole = user.Role,
-            Avatar = user.Avatar,
-            Name = user.Name,
-            Username = user.UserName,
-            Text = post.Text,
-            Date = post.Date,
-            Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
-                    new List<string>(),
-            Edited = false,
-            Comments = new List<CommentResult>()
-        };
-
-        return CreatedAtAction("GetPost", new {id = post.Id}, postResult);
     }
+
+    // Add the new Post object to the database context
+    _context.Posts.Add(post);
+    // Save changes to the database
+    await _context.SaveChangesAsync();
+
+    // Create a new PostResult object with the newly created Post's information
+    var postResult = new PostResult
+    {
+        Id = post.Id,
+        UserId = post.UserId,
+        UserRole = user.Role,
+        Avatar = user.Avatar,
+        Name = user.Name,
+        Username = user.UserName,
+        Text = post.Text,
+        Date = post.Date,
+        Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
+                new List<string>(),
+        Edited = false,
+        Comments = new List<CommentResult>()
+    };
+
+    // Return the PostResult object in the response, and a 201 status code
+    return CreatedAtAction("GetPost", new {id = post.Id}, postResult);
+}
+
 
 
     /// <summary>
@@ -108,53 +122,63 @@ public class PostController : ControllerBase
     [ProducesResponseType(200, Type = typeof(List<PostResult>))]
     [ProducesResponseType(500)]
     public async Task<ActionResult<IEnumerable<PostResult>>> GetAllPublicPosts()
+{
+    // Query all Posts that don't have any Comments linked to them, and include related entities
+    var posts = await _context.Posts
+        .Where(p => !_context.Comments.Any(c => c.Id == p.Id))
+        .Include(p => p.Votes)
+        .Include(p => p.Files)
+        .Include(p => p.Comments)
+        .ToListAsync();
+
+    // Create a new list to store the PostResult objects
+    var postResults = new List<PostResult>();
+
+    // Loop over all of the Posts
+    foreach (var post in posts)
     {
-        var posts = await _context.Posts
-            .Where(p => !_context.Comments.Any(c => c.Id == p.Id))
-            .Include(p => p.Votes)
-            .Include(p => p.Files)
-            .Include(p => p.Comments)
-            .ToListAsync();
-
-
-        var postResults = new List<PostResult>();
-
-        foreach (var post in posts)
+        // Fetch the User associated with the current Post
+        var user = await _userManager.FindByIdAsync(post.UserId);
+        // If the User is not null (they exist)
+        if (user != null)
         {
-            var user = await _userManager.FindByIdAsync(post.UserId);
-            if (user != null)
+            // Create a new PostResult object with the Post and User information
+            var postResult = new PostResult
             {
-                var postResult = new PostResult
+                Id = post.Id,
+                UserId = post.UserId,
+                UserRole = user.Role,
+                Avatar = user.Avatar,
+                Name = user.Name,
+                Username = user.UserName,
+                Text = post.Text,
+                Date = post.Date,
+                // For UpVotes and DownVotes, select only UserIds who performed these actions
+                UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
+                DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
+                Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
+                        new List<string>(),
+                Edited = post.Edited,
+                // For each Comment, create a new CommentResult object and add it to the list
+                Comments = post.Comments.Select(c => new CommentResult
                 {
-                    Id = post.Id,
-                    UserId = post.UserId,
-                    UserRole = user.Role,
-                    Avatar = user.Avatar,
-                    Name = user.Name,
-                    Username = user.UserName,
-                    Text = post.Text,
-                    Date = post.Date,
-                    UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
-                    DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
-                    Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
-                            new List<string>(),
-                    Edited = post.Edited,
-                    Comments = post.Comments.Select(c => new CommentResult
-                    {
-                        Id = c.Id,
-                        UserId = c.UserId,
-                        Text = c.Text,
-                        Date = c.Date,
-                        Edited = c.Edited
-                    }).ToList()
-                };
+                    Id = c.Id,
+                    UserId = c.UserId,
+                    Text = c.Text,
+                    Date = c.Date,
+                    Edited = c.Edited
+                }).ToList()
+            };
 
-                postResults.Add(postResult);
-            }
+            // Add the new PostResult object to the list
+            postResults.Add(postResult);
         }
-
-        return postResults;
     }
+
+    // Return the list of PostResult objects
+    return postResults;
+}
+
 
 
     /// <summary>
@@ -168,85 +192,97 @@ public class PostController : ControllerBase
     [ProducesResponseType(200, Type = typeof(PostResult))]
     [HttpGet("{id}")]
     public async Task<ActionResult<PostResult>> GetPost(string id)
+{
+    // Find the post, include the Votes, PostFiles and Comments in the query
+    var post = await _context.Posts
+        // Load Votes related to the Post
+        .Include(p => p.Votes) 
+        // Load Files related to the Post
+        .Include(p => p.Files)
+        // Load Comments related to the Post (level 1)
+        .Include(p => p.Comments) 
+            // Load Votes related to the Comments (level 1)
+            .ThenInclude(c => c.Votes)
+        // Load Comments related to the Post again (level 1)
+        .Include(p => p.Comments)
+            // Load Files related to the Comments (level 1)
+            .ThenInclude(c => c.Files)
+        // Continue including related data up to level 4 comments
+        .Include(p => p.Comments)
+            .ThenInclude(c => c.Comments)
+                .ThenInclude(cc => cc.Votes)
+        .Include(p => p.Comments)
+            .ThenInclude(c => c.Comments)
+                .ThenInclude(cc => cc.Files)
+        .Include(p => p.Comments)
+            .ThenInclude(c => c.Comments)
+                .ThenInclude(cc => cc.Comments)
+                    .ThenInclude(ccc => ccc.Votes)
+        .Include(p => p.Comments)
+            .ThenInclude(c => c.Comments)
+                .ThenInclude(cc => cc.Comments)
+                    .ThenInclude(ccc => ccc.Files)
+        .Include(p => p.Comments)
+            .ThenInclude(c => c.Comments)
+                .ThenInclude(cc => cc.Comments)
+                    .ThenInclude(ccc => ccc.Comments)
+                        .ThenInclude(cccc => cccc.Votes)
+        .Include(p => p.Comments)
+            .ThenInclude(c => c.Comments)
+                .ThenInclude(cc => cc.Comments)
+                    .ThenInclude(ccc => ccc.Comments)
+                        .ThenInclude(cccc => cccc.Files)
+        // Fetch the post that matches the given id
+        .SingleOrDefaultAsync(p => p.Id == id);
+
+    // If no matching post was found, return a 404 error
+    if (post == null) return NotFound();
+
+    // Fetch the User related to the Post
+    var user = await _userManager.FindByIdAsync(post.UserId);
+    // If the User exists
+    if (user != null)
     {
-        // Find the post, include the Votes, PostFiles and Comments in the query
-        var post = await _context.Posts
-            .Include(p => p.Votes) // Laden der Votes des Posts
-            .Include(p => p.Files) // Laden der Files des Posts
-            .Include(p => p.Comments) // Laden der Kommentare des Posts (Ebene 1)
-            .ThenInclude(c => c.Votes) // Laden der Votes für die Kommentare (Ebene 1)
-            .Include(p => p.Comments)
-            .ThenInclude(c => c.Files) // Laden der Files für die Kommentare (Ebene 1)
-            .Include(p => p.Comments)
-            .ThenInclude(c => c.Comments) // Laden der Kommentare der Kommentare (Ebene 2)
-            .ThenInclude(cc => cc.Votes) // Laden der Votes für die Kommentare (Ebene 2)
-            .Include(p => p.Comments)
-            .ThenInclude(c => c.Comments)
-            .ThenInclude(cc => cc.Files) // Laden der Files für die Kommentare (Ebene 2)
-            .Include(p => p.Comments)
-            .ThenInclude(c => c.Comments)
-            .ThenInclude(cc => cc.Comments) // Laden der Kommentare der Kommentare der Kommentare (Ebene 3)
-            .ThenInclude(ccc => ccc.Votes) // Laden der Votes für die Kommentare (Ebene 3)
-            .Include(p => p.Comments)
-            .ThenInclude(c => c.Comments)
-            .ThenInclude(cc => cc.Comments)
-            .ThenInclude(ccc => ccc.Files) // Laden der Files für die Kommentare (Ebene 3)
-            .Include(p => p.Comments)
-            .ThenInclude(c => c.Comments)
-            .ThenInclude(cc => cc.Comments)
-            .ThenInclude(ccc =>
-                ccc.Comments) // Laden der Kommentare der Kommentare der Kommentare der Kommentare (Ebene 4)
-            .ThenInclude(cccc => cccc.Votes) // Laden der Votes für die Kommentare (Ebene 4)
-            .Include(p => p.Comments)
-            .ThenInclude(c => c.Comments)
-            .ThenInclude(cc => cc.Comments)
-            .ThenInclude(ccc => ccc.Comments)
-            .ThenInclude(cccc => cccc.Files) // Laden der Files für die Kommentare (Ebene 4)
-            .SingleOrDefaultAsync(p => p.Id == id);
-
-
-        if (post == null) return NotFound();
-
-        // User Informationen laden
-        var user = await _userManager.FindByIdAsync(post.UserId);
-        if (user != null)
+        // Create a PostResult object and fill it with information from the Post and User
+        var postResult = new PostResult
         {
-            // Erstellen Sie ein PostResult-Objekt und füllen Sie die Informationen aus Post und User aus
-            var postResult = new PostResult
-            {
-                Id = post.Id,
-                UserId = post.UserId,
-                UserRole = user.Role,
-                Name = user.Name,
-                Avatar = user.Avatar,
-                Username = user.UserName,
-                Text = post.Text,
-                Date = post.Date,
-                UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
-                DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
-                Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
-                        new List<string>(),
-                Edited = post.Edited,
-                Comments = new List<CommentResult>()
-            };
-            // Iterate through each comment and create a CommentResult
-            foreach (var comment in post.Comments)
-            {
-                var commentResult = await CreateCommentResult(comment);
-                postResult.Comments.Add(commentResult);
-            }
-
-            return postResult;
+            Id = post.Id,
+            UserId = post.UserId,
+            UserRole = user.Role,
+            Name = user.Name,
+            Avatar = user.Avatar,
+            Username = user.UserName,
+            Text = post.Text,
+            Date = post.Date,
+            UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
+            DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
+            Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
+                    new List<string>(),
+            Edited = post.Edited,
+            Comments = new List<CommentResult>()
+        };
+        // Iterate through each comment and create a CommentResult
+        foreach (var comment in post.Comments)
+        {
+            var commentResult = await CreateCommentResult(comment);
+            postResult.Comments.Add(commentResult);
         }
 
-        return NotFound();
+        // Return the created PostResult
+        return postResult;
     }
+
+    // If the User doesn't exist, return a 404 error
+    return NotFound();
+}
+
 
     private async Task<CommentResult> CreateCommentResult(Comment comment)
     {
-        // User Informationen laden
+        // Load User information
         var user = await _userManager.FindByIdAsync(comment.UserId);
 
+        // Create a CommentResult object and fill it with information from Comment and User
         var commentResult = new CommentResult
         {
             Id = comment.Id,
@@ -265,14 +301,17 @@ public class PostController : ControllerBase
             Comments = new List<CommentResult>()
         };
 
+        // For each nested comment, create a CommentResult and add it to the list of comments for the current commentResult
         foreach (var nestedComment in comment.Comments)
         {
             var nestedCommentResult = await CreateCommentResult(nestedComment);
             commentResult.Comments.Add(nestedCommentResult);
         }
 
+        // Return the created CommentResult
         return commentResult;
     }
+
 
 
     /// <summary>
@@ -284,66 +323,70 @@ public class PostController : ControllerBase
     [ProducesResponseType(200, Type = typeof(List<PostResult>))]
     [HttpGet("followingPosts")]
     public async Task<ActionResult<IEnumerable<PostResult>>> GetPostsFromFollowedUsers()
+{
+    // Identify the user
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var user = await _userManager.FindByEmailAsync(userId);
+    // Check if the user exists
+    if (user == null) return Unauthorized();
+
+    // Find all the users that the current user is following
+    var followedUserIds = await _context.UserFollowings
+        .Where(f => f.UserId == user.Id)
+        .Select(f => f.FollowingId)
+        .ToListAsync();
+
+    // Load all posts created by the followed users
+    var posts = await _context.Posts
+        .Include(p => p.Votes)
+        .Include(p => p.Files)
+        .Include(p => p.Comments)
+        .Where(p => followedUserIds.Contains(p.UserId))
+        .Where(p => !_context.Comments.Any(c => c.Id == p.Id))
+        .ToListAsync();
+
+    // List to hold the PostResults
+    var postResults = new List<PostResult>();
+
+    // For each post, load the user information and votes and set them in a PostResult
+    foreach (var post in posts)
     {
-        // Benutzer ermitteln
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = await _userManager.FindByEmailAsync(userId);
-        if (user == null) return Unauthorized();
-
-        // Finden Sie alle Benutzer, denen der aktuelle Benutzer folgt
-        var followedUserIds = await _context.UserFollowings
-            .Where(f => f.UserId == user.Id)
-            .Select(f => f.FollowingId)
-            .ToListAsync();
-
-        // Alle Posts laden, die von den gefolgten Benutzern erstellt wurden
-        var posts = await _context.Posts
-            .Include(p => p.Votes)
-            .Include(p => p.Files)
-            .Include(p => p.Comments)
-            .Where(p => followedUserIds.Contains(p.UserId))
-            .Where(p => !_context.Comments.Any(c => c.Id == p.Id))
-            .ToListAsync();
-
-        // Liste für die PostResults
-        var postResults = new List<PostResult>();
-
-        // Für jeden Post die User-Informationen und die Votes laden und setzen
-        foreach (var post in posts)
+        var postUser = await _userManager.FindByIdAsync(post.UserId);
+        // Check if the post user exists
+        if (postUser != null)
         {
-            var postUser = await _userManager.FindByIdAsync(post.UserId);
-            if (postUser != null)
+            var postResult = new PostResult
             {
-                var postResult = new PostResult
+                Id = post.Id,
+                UserId = post.UserId,
+                UserRole = postUser.Role,
+                Name = postUser.Name,
+                Avatar = postUser.Avatar,
+                Username = postUser.UserName,
+                Text = post.Text,
+                Date = post.Date,
+                UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
+                DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
+                Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
+                        new List<string>(),
+                Edited = post.Edited,
+                Comments = post.Comments.Select(c => new CommentResult
                 {
-                    Id = post.Id,
-                    UserId = post.UserId,
-                    UserRole = postUser.Role,
-                    Name = postUser.Name,
-                    Avatar = postUser.Avatar,
-                    Username = postUser.UserName,
-                    Text = post.Text,
-                    Date = post.Date,
-                    UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
-                    DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
-                    Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
-                            new List<string>(),
-                    Edited = post.Edited,
-                    Comments = post.Comments.Select(c => new CommentResult
-                    {
-                        Id = c.Id,
-                        UserId = c.UserId,
-                        Text = c.Text,
-                        Date = c.Date,
-                        Edited = c.Edited
-                    }).ToList()
-                };
-                postResults.Add(postResult);
-            }
+                    Id = c.Id,
+                    UserId = c.UserId,
+                    Text = c.Text,
+                    Date = c.Date,
+                    Edited = c.Edited
+                }).ToList()
+            };
+            postResults.Add(postResult);
         }
-
-        return postResults;
     }
+
+    // Return the list of PostResults
+    return postResults;
+}
+
 
 
     /// <summary>
@@ -357,93 +400,93 @@ public class PostController : ControllerBase
     [ProducesResponseType(200, Type = typeof(List<PostResult>))]
     [HttpGet("user/{username}")]
     public async Task<ActionResult<IEnumerable<PostResult>>> GetPostsByUser(string username)
+{
+    // Verify if the user exists
+    var user = await _userManager.FindByNameAsync(username);
+    if (user == null) return NotFound();
+
+    // Load all posts created by the user
+    var userPosts = await _context.Posts
+        .Include(p => p.Votes)
+        .Include(p => p.Files)
+        .Where(p => p.UserId == user.Id)
+        .Where(p => !_context.Comments.Any(c => c.Id == p.Id))
+        .ToListAsync();
+
+    // Load all comments made by the user
+    var userComments = await _context.Comments
+        .Where(c => c.UserId == user.Id)
+        .Include(c => c.ParentPost).ThenInclude(p => p.Votes)
+        .Include(c => c.ParentPost).ThenInclude(p => p.Files)
+        .ToListAsync();
+
+    var postResults = new List<PostResult>();
+
+    // Set the user information for each post
+    foreach (var post in userPosts)
     {
-        // Überprüfen, ob der Benutzer existiert
-        var user = await _userManager.FindByNameAsync(username);
-        if (user == null) return NotFound();
+        var postResult = CreatePostResult(user, post);
+        postResults.Add(postResult);
+    }
 
-        // Alle Posts laden, die von den gefolgten Benutzern erstellt wurden
-        var userPosts = await _context.Posts
-            .Include(p => p.Votes)
-            .Include(p => p.Files)
-            .Where(p => p.UserId == user.Id)
-            .Where(p => !_context.Comments.Any(c => c.Id == p.Id))
-            .ToListAsync();
-
-
-        // Alle Kommentare des Benutzers laden
-        var userComments = await _context.Comments
-            .Where(c => c.UserId == user.Id)
-            .Include(c => c.ParentPost).ThenInclude(p => p.Votes)
-            .Include(c => c.ParentPost).ThenInclude(p => p.Files)
-            .ToListAsync();
-
-        var postResults = new List<PostResult>();
-
-        // Benutzerinformationen für jeden Post setzen
-        foreach (var post in userPosts)
+    // Add each parent post of the comments and the comment itself
+    foreach (var comment in userComments)
+    {
+        // If the parent post is not already in the list, we add it
+        if (!postResults.Any(pr => pr.Id == comment.ParentPost.Id))
         {
-            var postResult = CreatePostResult(user, post);
+            var parentUser = await _userManager.FindByIdAsync(comment.ParentPost.UserId);
+            var postResult = CreatePostResult(parentUser, comment.ParentPost);
             postResults.Add(postResult);
         }
 
-        // Füge jeden übergeordneten Post der Kommentare und den Kommentar selbst hinzu
-        foreach (var comment in userComments)
+        // We add the comment to the comment list of the parent post
+        var postResultWithComment = postResults.Single(pr => pr.Id == comment.ParentPost.Id);
+        var commentResult = new CommentResult
         {
-            // Wenn der übergeordnete Post noch nicht in der Liste ist, fügen wir ihn hinzu
-            if (!postResults.Any(pr => pr.Id == comment.ParentPost.Id))
-            {
-                var parentUser = await _userManager.FindByIdAsync(comment.ParentPost.UserId);
-                var postResult = CreatePostResult(parentUser, comment.ParentPost);
-                postResults.Add(postResult);
-            }
-
-            // Wir fügen den Kommentar zur Kommentarliste des übergeordneten Posts hinzu
-            var postResultWithComment = postResults.Single(pr => pr.Id == comment.ParentPost.Id);
-            var commentResult = new CommentResult
-            {
-                Id = comment.Id,
-                UserId = comment.UserId,
-                Text = comment.Text,
-                Date = comment.Date,
-                Edited = comment.Edited,
-                Avatar = comment.User.Avatar,
-                UserRole = comment.User.Role,
-                Name = comment.User.Name,
-                Username = comment.User.UserName,
-                UpVotes = comment.Votes?.Where(v => v.IsUpvote).Select(v => v.UserId).ToList() ?? new List<string>(),
-                DownVotes = comment.Votes?.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList() ?? new List<string>(),
-                Files = comment.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
-                        new List<string>(),
-                ParentPostId = comment.ParentPostId,
-                Comments = new List<CommentResult>()
-            };
-            postResultWithComment.Comments.Add(commentResult);
-        }
-
-        return postResults;
-    }
-
-    private PostResult CreatePostResult(ApplicationUser user, Post post)
-    {
-        return new PostResult
-        {
-            Id = post.Id,
-            UserId = post.UserId,
-            UserRole = user.Role,
-            Name = user.Name,
-            Avatar = user.Avatar,
-            Username = user.UserName,
-            Text = post.Text,
-            Date = post.Date,
-            UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
-            DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
-            Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
+            Id = comment.Id,
+            UserId = comment.UserId,
+            Text = comment.Text,
+            Date = comment.Date,
+            Edited = comment.Edited,
+            Avatar = comment.User.Avatar,
+            UserRole = comment.User.Role,
+            Name = comment.User.Name,
+            Username = comment.User.UserName,
+            UpVotes = comment.Votes?.Where(v => v.IsUpvote).Select(v => v.UserId).ToList() ?? new List<string>(),
+            DownVotes = comment.Votes?.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList() ?? new List<string>(),
+            Files = comment.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
                     new List<string>(),
-            Edited = post.Edited,
-            Comments = new List<CommentResult>() // Wir initialisieren die Kommentarliste hier, wir füllen sie später
+            ParentPostId = comment.ParentPostId,
+            Comments = new List<CommentResult>()
         };
+        postResultWithComment.Comments.Add(commentResult);
     }
+
+    return postResults;
+}
+
+private PostResult CreatePostResult(ApplicationUser user, Post post)
+{
+    return new PostResult
+    {
+        Id = post.Id,
+        UserId = post.UserId,
+        UserRole = user.Role,
+        Name = user.Name,
+        Avatar = user.Avatar,
+        Username = user.UserName,
+        Text = post.Text,
+        Date = post.Date,
+        UpVotes = post.Votes.Where(v => v.IsUpvote).Select(v => v.UserId).ToList(),
+        DownVotes = post.Votes.Where(v => !v.IsUpvote).Select(v => v.UserId).ToList(),
+        Files = post.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
+                new List<string>(),
+        Edited = post.Edited,
+        Comments = new List<CommentResult>() // We initialize the comment list here, we fill it later
+    };
+}
+
 
 
     /// <summary>
@@ -457,18 +500,20 @@ public class PostController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeletePost(string id)
     {
+        // Find the post with its comments
         var post = await _context.Posts.Include(p => p.Comments).FirstOrDefaultAsync(p => p.Id == id);
         if (post == null) return NotFound();
 
-        // Alle Kommentare löschen, die mit dem Post verknüpft sind
+        // Delete all comments associated with the post
         _context.Comments.RemoveRange(post.Comments);
 
-        // Dann den Post selbst löschen
+        // Then delete the post itself
         _context.Posts.Remove(post);
         await _context.SaveChangesAsync();
 
-        return Ok("Post wurde erfolgreich gelöscht");
+        return Ok("Post was successfully deleted");
     }
+
 
 
     /// <summary>
@@ -481,59 +526,71 @@ public class PostController : ControllerBase
     /// <response code="500">If an exception occurs while updating the post.</response>
     [HttpPut]
     public async Task<IActionResult> UpdatePost([FromBody] PostEdit updatedPost)
+{
+    // Find the post with its associated files
+    var post = await _context.Posts
+        .Include(p => p.Files)
+        .FirstOrDefaultAsync(p => p.Id == updatedPost.Id);
+
+    // If the post doesn't exist, return a 'Not Found' status
+    if (post == null) return NotFound("Post not found");
+
+    // Update the text and the 'Edited' flag of the post
+    post.Text = updatedPost.Text;
+    post.Edited = true;
+
+    // Remove all existing files linked to the post
+    _context.PostFiles.RemoveRange(post.Files);
+
+    // Add the new files if any
+    if (updatedPost.Files != null)
     {
-        var post = await _context.Posts
-            .Include(p => p.Files)
-            .FirstOrDefaultAsync(p => p.Id == updatedPost.Id);
-
-        if (post == null) return NotFound("Post wurde nicht gefunden");
-
-        post.Text = updatedPost.Text;
-        post.Edited = true;
-
-        // Remove all existing files
-        _context.PostFiles.RemoveRange(post.Files);
-
-        // Add new files
-        if (updatedPost.Files != null)
+        post.Files = new List<PostFile>();
+        foreach (var fileData in updatedPost.Files)
         {
-            post.Files = new List<PostFile>();
-            foreach (var fileData in updatedPost.Files)
+            // Each fileData is a Base64 string with a leading media type
+            var fileSplit = fileData.Split(',');
+            byte[] fileBytes;
+            try
             {
-                var fileSplit = fileData.Split(',');
-                byte[] fileBytes;
-                try
-                {
-                    fileBytes = Convert.FromBase64String(fileSplit[1]);
-                }
-                catch (FormatException)
-                {
-                    return BadRequest("Invalid File format. Please provide a Base64 string.");
-                }
-
-                var postFile = new PostFile
-                {
-                    Data = fileBytes,
-                    PostId = post.Id,
-                    MediaType = fileSplit[0] // Medientyp speichern
-                };
-                post.Files.Add(postFile);
+                // Try to convert the Base64 string to byte array
+                fileBytes = Convert.FromBase64String(fileSplit[1]);
             }
-        }
+            catch (FormatException)
+            {
+                // If the Base64 string is not valid, return a 'Bad Request' status
+                return BadRequest("Invalid file format. Please provide a Base64 string.");
+            }
 
-        try
-        {
-            await _context.SaveChangesAsync();
+            // Create a new PostFile
+            var postFile = new PostFile
+            {
+                Data = fileBytes,
+                PostId = post.Id,
+                MediaType = fileSplit[0] // Store the media type
+            };
+            post.Files.Add(postFile);
         }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!_context.Posts.Any(e => e.Id == updatedPost.Id))
-                return NotFound();
-            throw;
-        }
-
-        return Ok("Post wurde aktualisiert");
     }
+
+    try
+    {
+        // Save the changes to the database
+        await _context.SaveChangesAsync();
+    }
+    catch (DbUpdateConcurrencyException)
+    {
+        // If the post does not exist anymore (deleted by another user), return a 'Not Found' status
+        if (!_context.Posts.Any(e => e.Id == updatedPost.Id))
+            return NotFound();
+        // If another kind of concurrency exception occurred, let the exception propagate
+        throw;
+    }
+
+    // If the update is successful, return an 'OK' status with a confirmation message
+    return Ok("Post updated successfully");
+}
+
 
 
     /// <summary>
@@ -550,28 +607,39 @@ public class PostController : ControllerBase
     [HttpPost("{postId}/upvote")]
     public async Task<IActionResult> UpvotePost(string postId)
     {
+        // Fetch the user ID from the current HttpContext
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        // Retrieve the current user
         var currentUser = await _userManager.FindByEmailAsync(userId);
 
+        // Find the post
         var post = await _context.Posts.FindAsync(postId);
 
+        // If the post does not exist, return a 'Not Found' status
         if (post == null) return NotFound();
 
+        // Find an existing vote by the current user on the post
         var existingVote = await _context.PostVotes
             .SingleOrDefaultAsync(v => v.PostId == postId && v.UserId == currentUser.Id);
 
+        // If an existing vote is found
         if (existingVote != null)
         {
             if (!existingVote.IsUpvote)
-                // Benutzer hat bereits Downvote abgegeben, jetzt ändert er seine Meinung
+            {
+                // User had previously downvoted, now changing their vote to upvote
                 existingVote.IsUpvote = true;
+            }
             else
-                // Benutzer hat bereits Upvote abgegeben, entfernt jetzt seine Stimme
+            {
+                // User had previously upvoted, now they are removing their vote
                 _context.PostVotes.Remove(existingVote);
+            }
         }
         else
         {
-            // Erstellen Sie eine neue Abstimmung
+            // If no existing vote was found, create a new upvote
             var vote = new PostVote
             {
                 PostId = postId,
@@ -581,10 +649,13 @@ public class PostController : ControllerBase
             _context.PostVotes.Add(vote);
         }
 
+        // Save changes
         await _context.SaveChangesAsync();
 
-        return Ok("Post wurde ein UpVote gegeben!");
+        // If successful, return an 'OK' status with a confirmation message
+        return Ok("Upvote given to post!");
     }
+
 
     /// <summary>
     ///     Downvotes a post.
@@ -600,28 +671,39 @@ public class PostController : ControllerBase
     [HttpPost("{postId}/downvote")]
     public async Task<IActionResult> DownvotePost(string postId)
     {
+        // Fetch the user ID from the current HttpContext
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        // Retrieve the current user
         var currentUser = await _userManager.FindByEmailAsync(userId);
 
+        // Find the post
         var post = await _context.Posts.FindAsync(postId);
 
+        // If the post does not exist, return a 'Not Found' status
         if (post == null) return NotFound();
 
+        // Find an existing vote by the current user on the post
         var existingVote = await _context.PostVotes
             .SingleOrDefaultAsync(v => v.PostId == postId && v.UserId == currentUser.Id);
 
+        // If an existing vote is found
         if (existingVote != null)
         {
             if (existingVote.IsUpvote)
-                // Benutzer hat bereits Upvote abgegeben, jetzt ändert er seine Meinung
+            {
+                // User had previously upvoted, now changing their vote to downvote
                 existingVote.IsUpvote = false;
+            }
             else
-                // Benutzer hat bereits Downvote abgegeben, entfernt jetzt seine Stimme
+            {
+                // User had previously downvoted, now they are removing their vote
                 _context.PostVotes.Remove(existingVote);
+            }
         }
         else
         {
-            // Erstellen Sie eine neue Abstimmung
+            // If no existing vote was found, create a new downvote
             var vote = new PostVote
             {
                 PostId = postId,
@@ -631,10 +713,13 @@ public class PostController : ControllerBase
             _context.PostVotes.Add(vote);
         }
 
+        // Save changes
         await _context.SaveChangesAsync();
 
-        return Ok("Post wurde ein DownVote gegeben!");
+        // If successful, return an 'OK' status with a confirmation message
+        return Ok("Downvote given to post!");
     }
+
 
     /// <summary>
     ///     Creates a new comment.
@@ -649,78 +734,84 @@ public class PostController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
     public async Task<ActionResult<PostResult>> CreateComment(CommentAdd commentAdd)
+{
+    // Find the user
+    var user = await _userManager.FindByIdAsync(commentAdd.UserId);
+
+    // If the user does not exist, return a 'Not Found' status
+    if (user == null) return NotFound("User not found");
+
+    // Find the parent post and include its comments
+    var parentPost = await _context.Posts.Include(p => p.Comments)
+        .SingleOrDefaultAsync(p => p.Id == commentAdd.ParentPostId);
+
+    // If the parent post does not exist, return a 'Not Found' status
+    if (parentPost == null) return NotFound("Parent post not found");
+
+    // Create a new comment
+    var comment = new Comment
     {
-        // Find the user
-        var user = await _userManager.FindByIdAsync(commentAdd.UserId);
+        UserId = user.Id,
+        User = user,
+        Text = commentAdd.Text,
+        Name = user.Name, // Add the user's name
+        Username = user.UserName, // Add the user's username
+        ParentPostId = commentAdd.ParentPostId
+    };
 
-        if (user == null) return NotFound("User wurde nicht gefunden");
-
-        var parentPost = await _context.Posts.Include(p => p.Comments)
-            .SingleOrDefaultAsync(p => p.Id == commentAdd.ParentPostId);
-
-        if (parentPost == null) return NotFound("Übergeordneter Post wurde nicht gefunden");
-
-        // Create a new comment
-        var comment = new Comment
+    // If the comment contains files
+    if (commentAdd.Files != null)
+    {
+        comment.Files = new List<PostFile>();
+        foreach (var fileData in commentAdd.Files)
         {
-            UserId = user.Id,
-            User = user,
-            Text = commentAdd.Text,
-            Name = user.Name, // Add the user's name
-            Username = user.UserName, // Add the user's username
-            ParentPostId = commentAdd.ParentPostId
-        };
-
-        if (commentAdd.Files != null)
-        {
-            comment.Files = new List<PostFile>();
-            foreach (var fileData in commentAdd.Files)
+            var fileSplit = fileData.Split(',');
+            byte[] fileBytes;
+            try
             {
-                var fileSplit = fileData.Split(',');
-                byte[] fileBytes;
-                try
-                {
-                    fileBytes = Convert.FromBase64String(fileSplit[1]);
-                }
-                catch (FormatException)
-                {
-                    return BadRequest("Invalid File format. Please provide a Base64 string.");
-                }
-
-                var postFile = new PostFile
-                {
-                    Data = fileBytes,
-                    PostId = comment.Id,
-                    MediaType = fileSplit[0] // Medientyp speichern
-                };
-                comment.Files.Add(postFile);
+                fileBytes = Convert.FromBase64String(fileSplit[1]);
             }
+            catch (FormatException)
+            {
+                return BadRequest("Invalid File format. Please provide a Base64 string.");
+            }
+
+            // Create a new post file
+            var postFile = new PostFile
+            {
+                Data = fileBytes,
+                PostId = comment.Id,
+                MediaType = fileSplit[0] // Store media type
+            };
+            comment.Files.Add(postFile);
         }
-
-        // Add the comment to the post
-        parentPost.Comments.Add(comment);
-        await _context.SaveChangesAsync();
-
-        // Return the comment
-        var commentResult = new CommentResult
-        {
-            Id = comment.Id,
-            UserId = comment.UserId,
-            UserRole = user.Role,
-            Avatar = user.Avatar,
-            Name = user.Name,
-            Username = user.UserName,
-            Text = comment.Text,
-            Date = comment.Date,
-            Files = comment.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
-                    new List<string>(),
-            Edited = false,
-            ParentPostId = commentAdd.ParentPostId,
-            Comments = new List<CommentResult>()
-        };
-
-        return CreatedAtAction("GetComment", new {id = comment.Id}, commentResult);
     }
+
+    // Add the comment to the post
+    parentPost.Comments.Add(comment);
+    await _context.SaveChangesAsync();
+
+    // Return the comment
+    var commentResult = new CommentResult
+    {
+        Id = comment.Id,
+        UserId = comment.UserId,
+        UserRole = user.Role,
+        Avatar = user.Avatar,
+        Name = user.Name,
+        Username = user.UserName,
+        Text = comment.Text,
+        Date = comment.Date,
+        Files = comment.Files?.Select(f => $"{f.MediaType},{Convert.ToBase64String(f.Data)}").ToList() ??
+                new List<string>(),
+        Edited = false,
+        ParentPostId = commentAdd.ParentPostId,
+        Comments = new List<CommentResult>()
+    };
+
+    return CreatedAtAction("GetComment", new {id = comment.Id}, commentResult);
+}
+
 
 
     /// <summary>
@@ -742,6 +833,7 @@ public class PostController : ControllerBase
             .Include(p => p.Comments) // Include nested comments
             .SingleOrDefaultAsync(p => p.Id == id);
 
+        // If the comment does not exist, return a 'Not Found' status
         if (comment == null) return NotFound();
 
         // Create the CommentResult recursively
@@ -749,4 +841,5 @@ public class PostController : ControllerBase
 
         return commentResult;
     }
+
 }
