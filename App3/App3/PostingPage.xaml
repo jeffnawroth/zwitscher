@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="App3.PostingPage">
+    <ContentPage.Content>
+        <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+            <Frame BorderColor="LightGray" BackgroundColor="White" WidthRequest="400" HeightRequest="100" Padding="5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Editor x:Name="postingText" Grid.Row="0" Placeholder="Teile Neuigkeiten mit der Welt" PlaceholderColor="LightGray" TextColor="LightGray" TextChanged="OnTextChanged" />
+                    <Label x:Name="characterCou" Grid.Row="1" HorizontalTextAlignment="End" VerticalTextAlignment="End" FontSize="12" TextColor="Gray" />
+                </Grid>
+            </Frame>
+            <Button x:Name="postButton" Grid.Row="2" Text="Posten" Clicked="OnPostButtonClicked" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

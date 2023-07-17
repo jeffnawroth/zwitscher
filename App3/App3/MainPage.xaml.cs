@@ -1,37 +1,59 @@
-﻿using System;
+﻿using App3.Layouts;
+using App3.Services;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
+
 
 namespace App3
 {
     public partial class MainPage : ContentPage
     {
+        StackLayout postsStackLayout;
         public MainPage()
         {
-            InitializeComponent();
+            InitializePageAsync();
         }
-        private void OnLoginButtonClicked(object sender, EventArgs e)
+        private async void InitializePageAsync()
+        { 
+            postsStackLayout = new StackLayout();
+
+            var dummyPosts = await DummyPost.CreateDummyPosts(); // its not dummy, its actual data 
+
+            foreach (var post in dummyPosts)
+            {
+                // Create the layout for each post
+                var postLayout = PostLayout.CreatePostLayout(post, LoginPage.userID);
+                postsStackLayout.Children.Add(postLayout);
+            }
+
+            var scrollView = new ScrollView  // Create a ScrollView to contain the stack layout
+            {
+                Content = postsStackLayout
+            };
+
+            Content = scrollView;
+        }
+        protected override async void OnAppearing()
         {
-            string username = UsernameEntry.Text;
-            string password = PasswordEntry.Text;
 
-            // Hier können Sie Ihre Login-Logik implementieren, z. B. eine Datenbankabfrage oder eine API-Anforderung, um die Anmeldeinformationen zu überprüfen.
+            postsStackLayout.Children.Clear(); // Clear existing post layouts
 
-            if (username == "admin" && password == "password")
+            var dummyPosts = await DummyPost.CreateDummyPosts(); // its not dummy, its actual data 
+
+            foreach (var post in dummyPosts) // Create the layout for each post
             {
-                // Erfolgreich eingeloggt
-                DisplayAlert("Erfolgreich", "Anmeldung erfolgreich!", "OK");
-                // Hier können Sie den Benutzer zur Hauptseite weiterleiten oder andere Aktionen durchführen.
+                var postLayout = PostLayout.CreatePostLayout(post, LoginPage.userID);
+                postsStackLayout.Children.Add(postLayout);
             }
-            else
+
+            var scrollView = new ScrollView
             {
-                // Fehlgeschlagene Anmeldung
-                DisplayAlert("Fehler", "Ungültige Anmeldeinformationen!", "OK");
-            }
+                Content = postsStackLayout
+            };
+
+            Content = scrollView;
         }
     }
 }

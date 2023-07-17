@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="App3.Registration">
+    <ContentPage.Content>
+        <StackLayout Spacing="30">
+            <Label Text="Erstelle jetzt dein Konto" HorizontalOptions="Center" FontSize="35" />
+            <BoxView HeightRequest="20" />
+            
+            <Entry x:Name="usernameEntry" Placeholder="Benutzername" PlaceholderColor="Gray" />
+
+            <Entry x:Name="nameEntry" Placeholder="Name" PlaceholderColor="Gray" />
+
+            <Entry x:Name="emailEntry" Placeholder="E-Mail-Adresse" PlaceholderColor="Gray"/>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Entry x:Name="passwordEntry" Placeholder="Passwort" PlaceholderColor="Gray" IsPassword="True" Grid.Column="0" />
+                <Entry x:Name="confirmPasswordEntry" Placeholder="Passwort bestätigen" PlaceholderColor="Gray" IsPassword="True" Grid.Column="1" />
+            </Grid>
+
+            <Button Text="Registrieren" Clicked="RegisterButton_Clicked" BackgroundColor="LightGray" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
