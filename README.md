@@ -1,4 +1,4 @@
-# default
+# Zwitscher Frontend
 
 ## Project setup
 
