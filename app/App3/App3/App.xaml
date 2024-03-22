@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="App3.CustomApp">
+    <Application.Resources>
+        <ResourceDictionary>
+
+            <Color x:Key="LabelTextColor">LightGray</Color>
+            <Color x:Key="ButtonTextColor">White</Color>
+            <Color x:Key="PlaceholderColor">White</Color>
+            <Color x:Key="PlaceholderTextColor">White</Color>
+            <Color x:Key="ButtonBackgroundColor">LightGray</Color>
+            <Style TargetType="NavigationPage">
+                <Setter Property="BarBackgroundColor" Value="Gray" />
+            </Style>
+            <!-- define label stile -->
+            
+            <Style TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource LabelTextColor}" />
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="TextColor" Value="{StaticResource ButtonTextColor}" />
+                <Setter Property="BackgroundColor" Value="{StaticResource ButtonBackgroundColor}" />
+            </Style>
+
+            <!-- define placeholder stile -->
+            <Style TargetType="Editor">
+                <Setter Property="PlaceholderColor" Value="{StaticResource PlaceholderColor}" />
+                <Setter Property="TextColor" Value="{StaticResource PlaceholderTextColor}" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
