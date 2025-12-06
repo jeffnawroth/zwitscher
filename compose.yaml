@@ -1,0 +1,26 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://0.0.0.0:5176
+      ConnectionStrings__SqlDbConnection: "Server=sqlserver,1433;Database=ZwitscherDb;User ID=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True"
+    ports:
+      - "5176:5176"
+
+  sqlserver:
+      image: mcr.microsoft.com/mssql/server:2022-latest
+      environment:
+        MSSQL_SA_PASSWORD: "YourStrong!Passw0rd"
+        ACCEPT_EULA: "Y"
+      ports:
+        - "1433:1433"
