@@ -39,13 +39,11 @@ namespace App3
                     string jsonResponse = await response.Content.ReadAsStringAsync();
                     List<JObject> responseData = JsonConvert.DeserializeObject<List<JObject>>(jsonResponse);
                     var PostIDs = new List<string>();
-                    //Console.WriteLine(jsonResponse);
                     foreach (var post in responseData)
                     {
                         var id = (string)post["id"]?.ToString();
                         PostIDs.Add(id);
                     }
-                    Console.WriteLine(PostIDs.Count);
                     return PostIDs;
                 }
             }
@@ -66,13 +64,11 @@ namespace App3
                 {
                     //string jsonPayload = JsonConvert.SerializeObject(userID);
                     HttpResponseMessage response = await client.GetAsync("api/Comment/" + postId);
-                    Console.WriteLine(response.StatusCode);
                     if (response.IsSuccessStatusCode)
                     {
                         string jsonResponse = await response.Content.ReadAsStringAsync();
                         List<Posting> responseData = JsonConvert.DeserializeObject<List<Posting>>(jsonResponse);
                         var comments = new List<Posting>();
-                        //Console.WriteLine(jsonResponse);
                         foreach (var comment in responseData)
                         {
                             var newComment = new Posting
