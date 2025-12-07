@@ -3,24 +3,54 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`zwitscher.jeffnawroth.me`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=myresolver"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+    depends_on:
+      - backend
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://0.0.0.0:5176
-      ConnectionStrings__SqlDbConnection: "Server=sqlserver,1433;Database=ZwitscherDb;User ID=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True"
-    ports:
-      - "5176:5176"
+      ConnectionStrings__SqlDbConnection: "${DB_CONN}"
+      JwtConfig__Secret: "${JWT_SECRET}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`zwitscher.jeffnawroth.me`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.backend.entrypoints=websecure"
+      - "traefik.http.routers.backend.tls.certresolver=myresolver"
+      - "traefik.http.services.backend.loadbalancer.server.port=5176"
 
   sqlserver:
       image: mcr.microsoft.com/mssql/server:2022-latest
       environment:
-        MSSQL_SA_PASSWORD: "YourStrong!Passw0rd"
+        MSSQL_SA_PASSWORD: "${SA_PASSWORD}"
         ACCEPT_EULA: "Y"
-      ports:
-        - "1433:1433"
+      volumes:
+        - sqlserver:/var/opt/mssql
+
+  proxy:
+    image: traefik:v3.6.4
+    command:
+     - "--providers.docker=true"
+     - "--providers.docker.exposedbydefault=false"
+     - "--entrypoints.web.address=:80"
+     - "--entrypoints.websecure.address=:443"
+     - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+     - "--certificatesresolvers.myresolver.acme.email=contact@jeffnawroth.me"
+     - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - 80:80
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "./letsencrypt:/letsencrypt"
+
+volumes:
+  sqlserver:
