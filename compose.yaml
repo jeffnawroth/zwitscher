@@ -3,47 +3,34 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`zwitscher.jeffnawroth.me`)"
-      - "traefik.http.routers.frontend.entrypoints=web"
-      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+    container_name: zwitscher-frontend
+    restart: unless-stopped
     depends_on:
       - backend
+    ports:
+      - "8081:80"
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    container_name: zwitscher-backend
+    restart: unless-stopped
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://0.0.0.0:5176
       ConnectionStrings__SqlDbConnection: "${DB_CONN}"
       JwtConfig__Secret: "${JWT_SECRET}"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.backend.rule=Host(`zwitscher.jeffnawroth.me`) && PathPrefix(`/api`)"
-      - "traefik.http.routers.backend.entrypoints=web"
-      - "traefik.http.services.backend.loadbalancer.server.port=5176"
+    ports:
+      - "5176:5176"
 
   sqlserver:
-      image: mcr.microsoft.com/mssql/server:2022-latest
-      environment:
-        MSSQL_SA_PASSWORD: "${SA_PASSWORD}"
-        ACCEPT_EULA: "Y"
-      volumes:
-        - sqlserver:/var/opt/mssql
-
-  proxy:
-    image: traefik:v3.6.4
-    command:
-     - "--providers.docker=true"
-     - "--providers.docker.exposedbydefault=false"
-     - "--entrypoints.web.address=:80"
-    ports:
-      - 8081:80
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      MSSQL_SA_PASSWORD: "${SA_PASSWORD}"
+      ACCEPT_EULA: "Y"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-
+      - sqlserver:/var/opt/mssql
+    
 volumes:
   sqlserver:
