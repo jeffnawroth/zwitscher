@@ -18,7 +18,9 @@ import type { Configuration } from "./configuration";
 import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from "axios";
 import globalAxios from "axios";
 
-export const BASE_PATH = "https://localhost:7178".replace(/\/+$/, "");
+const BASE_URL = import.meta.env.VITE_API_BASE_URL
+
+export const BASE_PATH = BASE_URL.replace(/\/+$/, "");
 
 /**
  *

@@ -143,7 +143,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
 import { useAuthenticationStore } from "@/store/authentication";
-import { useDisplay } from "vuetify/lib/framework.mjs";
 import { Role } from "./typescript-axios-generated";
 import { useSettingsStore } from "./store/settings";
 import IconWithTooltip from "./components/IconWithTooltip.vue";
@@ -153,6 +152,7 @@ import FollowedUsersList from "./components/FollowedUsersList.vue";
 import { storeToRefs } from "pinia";
 import { useUsersStore } from "./store/users";
 import { generateFileURL } from "./helpers";
+import { useDisplay } from "vuetify";
 
 const store = useAuthenticationStore();
 const settingsStore = useSettingsStore();

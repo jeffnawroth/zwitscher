@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { useTheme } from "vuetify/lib/framework.mjs";
+import { useTheme } from "vuetify";
 
 export const useSettingsStore = defineStore("settings", () => {
   const theme = useTheme();

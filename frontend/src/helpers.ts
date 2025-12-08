@@ -13,7 +13,8 @@ export function generateFileURL(
   if (typeof file === "string") {
     const encoded = file.replace(/^data:(.*,)?/, "");
     const uInt8Array = Base64.toUint8Array(encoded);
-    return URL.createObjectURL(new Blob([uInt8Array]));
+    const buffer = new Uint8Array(uInt8Array);
+    return URL.createObjectURL(new Blob([buffer]));
   } else if (file instanceof File) {
     return URL.createObjectURL(file);
   }

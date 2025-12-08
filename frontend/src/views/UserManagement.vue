@@ -30,39 +30,39 @@
     </template>
 
     <template #[`item.role`]="{ item }">
-      {{ getUserRole(item.raw.role) }}
+      {{ getUserRole(item.role as Role) }}
     </template>
     <template #[`item.actions`]="{ item }">
       <IconWithTooltip
         text="Profil aufrufen"
         icon="mdi-open-in-app"
-        @click="openProfile(item.raw)"
+        @click="openProfile(item)"
       ></IconWithTooltip>
       <IconWithTooltip
         v-if="authStore.user?.role === Role.NUMBER_0"
         text="Nutzer bearbeiten"
         icon="mdi-account-edit"
-        @click="editUser(item.raw)"
+        @click="editUser(item)"
       ></IconWithTooltip>
       <IconWithTooltip
         v-if="
           authStore.user?.role === Role.NUMBER_0 ||
-          (item.raw.role == Role.NUMBER_2 &&
+          (item.role == Role.NUMBER_2 &&
             authStore.user?.role == Role.NUMBER_1)
         "
-        :text="item.raw.locked ? 'Nutzer entsperren' : 'Nutzer sperren'"
-        :icon="item.raw.locked ? 'mdi-account-lock' : 'mdi-account-lock-open'"
-        @click="openLockDialog(item.raw)"
+        :text="item.locked ? 'Nutzer entsperren' : 'Nutzer sperren'"
+        :icon="item.locked ? 'mdi-account-lock' : 'mdi-account-lock-open'"
+        @click="openLockDialog(item)"
       ></IconWithTooltip>
       <IconWithTooltip
         v-if="
           authStore.user?.role === Role.NUMBER_0 ||
-          (item.raw.role == Role.NUMBER_2 &&
+          (item.role == Role.NUMBER_2 &&
             authStore.user?.role == Role.NUMBER_1)
         "
         text="Nutzer löschen"
         icon="mdi-account-remove"
-        @click="openDeleteDialog(item.raw)"
+        @click="openDeleteDialog(item)"
       ></IconWithTooltip>
     </template>
   </v-data-table>
@@ -81,7 +81,7 @@ import IconWithTooltip from "@/components/IconWithTooltip.vue";
 import { useRouter } from "vue-router";
 import { Role, User } from "@/typescript-axios-generated/api";
 import { useAuthenticationStore } from "@/store/authentication";
-import { useTheme } from "vuetify/lib/framework.mjs";
+import { useTheme } from "vuetify";
 
 const store = useUsersStore();
 const router = useRouter();

@@ -50,10 +50,6 @@ namespace App3
 
                 HttpResponseMessage response = await client.DeleteAsync("api/User/" + LoginPage.userID);
 
-                Console.WriteLine(response.StatusCode);
-                Console.WriteLine("api/User/" + LoginPage.userID);
-                Console.WriteLine(response.Content);
-
                 if(response.IsSuccessStatusCode)
                 {
                     return true;

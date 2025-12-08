@@ -21,31 +21,31 @@
     </template>
 
     <template #[`item.upVotes`]="{ item }">
-      {{ item.raw.upVotes?.length }}
+      {{ item.upVotes?.length }}
     </template>
     <template #[`item.downVotes`]="{ item }">
-      {{ item.raw.downVotes?.length }}
+      {{ item.downVotes?.length }}
     </template>
     <template #[`item.edited`]="{ item }">
-      {{ item.raw.edited ? "Ja" : "Nein" }}
+      {{ item.edited ? "Ja" : "Nein" }}
     </template>
     <template #[`item.date`]="{ item }">
-      {{ toLocaleDate(item.raw.date) }}
+      {{ toLocaleDate(item.date as string) }}
     </template>
     <template #[`item.files`]="{ item }">
-      {{ item.raw.files?.length }}
+      {{ item.files?.length }}
     </template>
     <template #[`item.actions`]="{ item }">
       <IconWithTooltip
         text="Beitrag Detailansicht"
         icon="mdi-open-in-app"
-        @click="openPostDetails(item.raw)"
+        @click="openPostDetails(item)"
       ></IconWithTooltip>
 
       <IconWithTooltip
         text="Beitrag löschen"
         icon="mdi-delete"
-        @click="openDeleteDialog(item.raw)"
+        @click="openDeleteDialog(item)"
       ></IconWithTooltip>
     </template>
   </v-data-table>
@@ -66,7 +66,7 @@ import { useRouter, useRoute } from "vue-router";
 import { PostResult } from "@/typescript-axios-generated/api";
 import { usePostStore } from "@/store/posts";
 import BaseDeleteDialog from "./BaseComponents/BaseDeleteDialog.vue";
-import { useTheme } from "vuetify/lib/framework.mjs";
+import { useTheme } from "vuetify";
 
 const store = usePostStore();
 const router = useRouter();

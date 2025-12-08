@@ -1,0 +1,11 @@
+# FROM mcr.microsoft.com/dotnet/sdk:7.0
+
+# WORKDIR /app
+
+# COPY iva-grp7-backend/*.csproj ./
+
+# RUN dotnet restore
+
+# COPY . .
+
+# CMD ["dotnet","run","--no-launch-profile","--project","iva-grp7-backend/iva-grp7-backend.csproj"]

@@ -10,7 +10,6 @@ import "vuetify/styles";
 
 // Composables
 import { createVuetify } from "vuetify";
-import { VDataTable } from "vuetify/labs/VDataTable";
 
 import { de } from "vuetify/locale";
 
@@ -19,9 +18,6 @@ export default createVuetify({
   locale: {
     locale: "de",
     messages: { de },
-  },
-  components: {
-    VDataTable,
   },
   theme: {
     themes: {

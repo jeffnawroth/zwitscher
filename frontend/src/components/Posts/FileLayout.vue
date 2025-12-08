@@ -17,7 +17,7 @@
                 icon
                 color="black"
                 variant="tonal"
-                @click="$emit('remove-file', file)"
+                @click="$emit('remove-file', file as File)"
               >
                 <v-icon color="white">mdi-close</v-icon>
               </v-btn>
@@ -37,7 +37,7 @@
           icon
           color="black"
           variant="tonal"
-          @click="$emit('remove-file', file)"
+          @click="$emit('remove-file', file as File)"
         >
           <v-icon color="white">mdi-close</v-icon>
         </v-btn>
