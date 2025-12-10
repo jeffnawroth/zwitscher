@@ -1,17 +1,17 @@
-import { defineStore } from "pinia";
-import { useTheme } from "vuetify";
+import { defineStore } from 'pinia'
+import { useTheme } from 'vuetify'
 
-export const useSettingsStore = defineStore("settings", () => {
-  const theme = useTheme();
+export const useSettingsStore = defineStore('settings', () => {
+  const theme = useTheme()
 
   /**
    * Toggle theme
    */
   function toggleTheme() {
     theme.global.name.value = theme.global.current.value.dark
-      ? "light"
-      : "dark";
-    localStorage.setItem("theme", theme.global.name.value);
+      ? 'light'
+      : 'dark'
+    localStorage.setItem('theme', theme.global.name.value)
   }
 
   /**
@@ -19,8 +19,8 @@ export const useSettingsStore = defineStore("settings", () => {
    * @param newTheme
    */
   function setTheme(newTheme: string) {
-    theme.global.name.value = newTheme;
+    theme.global.name.value = newTheme
   }
 
-  return { toggleTheme, theme, setTheme };
-});
+  return { toggleTheme, theme, setTheme }
+})

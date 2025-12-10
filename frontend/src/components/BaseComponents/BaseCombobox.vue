@@ -1,23 +1,6 @@
-<template>
-  <v-combobox
-    v-model="value"
-    :label="label"
-    clearable
-    :items="items"
-    item-title="value"
-    multiple
-    chips
-    closable-chips
-    hide-details="auto"
-    :error-messages="errors"
-    @blur="handleBlur"
-  >
-  </v-combobox>
-</template>
-
 <script setup lang="ts">
-import { toRef } from "vue";
-import { useField } from "vee-validate";
+import { useField } from 'vee-validate'
+import { toRef } from 'vue'
 
 const props = defineProps({
   name: {
@@ -34,7 +17,23 @@ const props = defineProps({
     type: Array,
     required: true,
   },
-});
+})
 
-const { value, handleBlur, errors } = useField<unknown[]>(toRef(props, "name"));
+const { value, handleBlur, errors } = useField<unknown[]>(toRef(props, 'name'))
 </script>
+
+<template>
+  <v-combobox
+    v-model="value"
+    :label="label"
+    clearable
+    :items="items"
+    item-title="value"
+    multiple
+    chips
+    closable-chips
+    hide-details="auto"
+    :error-messages="errors"
+    @blur="handleBlur"
+  />
+</template>

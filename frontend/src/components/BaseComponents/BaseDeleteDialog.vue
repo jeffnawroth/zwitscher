@@ -1,3 +1,15 @@
+<script setup lang="ts">
+defineProps({
+  modelValue: {
+    type: Boolean,
+  },
+  loading: {
+    type: Boolean,
+  },
+})
+defineEmits(['cancel', 'delete', 'update:modelValue'])
+</script>
+
 <template>
   <v-dialog
     :model-value="modelValue"
@@ -7,31 +19,22 @@
   >
     <v-card title="Löschen" prepend-icon="mdi-delete" :loading="loading">
       <v-card-text>
-        Sind Sie sicher, dass Sie <slot></slot> löschen möchten?
+        Sind Sie sicher, dass Sie <slot /> löschen möchten?
       </v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn variant="tonal" @click="$emit('cancel')">Abbrechen</v-btn>
+        <v-spacer />
+        <v-btn variant="tonal" @click="$emit('cancel')">
+          Abbrechen
+        </v-btn>
         <v-btn
           variant="tonal"
           color="red"
           prepend-icon="mdi-delete-outline"
           @click="$emit('delete')"
-          >Löschen</v-btn
         >
+          Löschen
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
-
-<script setup lang="ts">
-defineEmits(["cancel", "delete", "update:modelValue"]);
-defineProps({
-  modelValue: {
-    type: Boolean,
-  },
-  loading: {
-    type: Boolean,
-  },
-});
-</script>

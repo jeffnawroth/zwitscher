@@ -1,18 +1,6 @@
-<template>
-  <v-text-field
-    v-model="value"
-    :label="label"
-    :error-messages="errors"
-    :type="type"
-    :clearable="true"
-    hide-details="auto"
-    @blur="handleBlur"
-  />
-</template>
-
 <script setup lang="ts">
-import { toRef } from "vue";
-import { useField } from "vee-validate";
+import { useField } from 'vee-validate'
+import { toRef } from 'vue'
 
 const props = defineProps({
   name: {
@@ -27,7 +15,19 @@ const props = defineProps({
     type: String,
     required: true,
   },
-});
+})
 
-const { value, handleBlur, errors } = useField(toRef(props, "name"), undefined);
+const { value, handleBlur, errors } = useField(toRef(props, 'name'), undefined)
 </script>
+
+<template>
+  <v-text-field
+    v-model="value"
+    :label="label"
+    :error-messages="errors"
+    :type="type"
+    :clearable="true"
+    hide-details="auto"
+    @blur="handleBlur"
+  />
+</template>

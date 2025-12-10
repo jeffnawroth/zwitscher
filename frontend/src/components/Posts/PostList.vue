@@ -1,18 +1,39 @@
+<script setup lang="ts">
+import type { PropType } from 'vue'
+import type { PostResult } from '@/typescript-axios-generated'
+import { useRoute } from 'vue-router'
+import { usePostStore } from '@/store/posts'
+import Post from './Post.vue'
+
+defineProps({
+  posts: {
+    type: Array as PropType<Array<PostResult>>,
+    default: () => [],
+  },
+  noPostsMessage: {
+    type: String,
+    default: 'Es wurden noch keine Beiträge veröffentlicht.',
+  },
+})
+const store = usePostStore()
+const route = useRoute()
+</script>
+
 <template>
   <v-card :loading="store.loading" flat>
     <v-card-text v-if="posts.length !== 0">
       <template v-for="(post, index) in posts" :key="post.id!">
-        <Post :post="post"></Post>
-        <template v-if="route.name == 'profile'">
+        <Post :post="post" />
+        <template v-if="route.name === 'profile'">
           <template v-for="comment in post.comments" :key="comment.id!">
             <v-timeline truncate-line="end">
               <v-timeline-item size="small" width="750">
-                <Post :post="comment"></Post>
+                <Post :post="comment" />
               </v-timeline-item>
             </v-timeline>
           </template>
         </template>
-        <v-divider v-if="index !== posts.length - 1"></v-divider>
+        <v-divider v-if="index !== posts.length - 1" />
       </template>
     </v-card-text>
     <v-card-text v-else class="d-flex justify-center">
@@ -20,30 +41,6 @@
     </v-card-text>
   </v-card>
 </template>
-
-<script setup lang="ts">
-import { PropType } from "vue";
-import Post from "./Post.vue";
-import { PostResult } from "@/typescript-axios-generated";
-import { usePostStore } from "@/store/posts";
-import { useRoute } from "vue-router";
-
-const store = usePostStore();
-const route = useRoute();
-
-defineProps({
-  posts: {
-    type: Array as PropType<Array<PostResult>>,
-    default: () => {
-      [];
-    },
-  },
-  noPostsMessage: {
-    type: String,
-    default: "Es wurden noch keine Beiträge veröffentlicht.",
-  },
-});
-</script>
 
 <style>
 .vl {
