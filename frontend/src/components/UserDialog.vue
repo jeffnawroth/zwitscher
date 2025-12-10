@@ -90,45 +90,51 @@ const interests = [
   'Tanzen',
 ]
 
-// Validationrules
-const validationSchema = object({
-  role: number().required().label('Rolle'),
-  username: string()
-    .required()
-    .label('Benutzername')
-    .matches(
-      /^[\w-]+$/,
-      'Der Benutzername darf nur Buchstaben, Zahlen, Bindestriche und Unterstriche enthalten',
-    ),
-  name: string().required().label('Name'),
-  gender: number().label('Geschlecht').nullable(),
-  interests: array().label('Interessen').nullable(),
-  email: string().required().email().label('E-Mail'),
-  birthDate: string().nullable(),
-  bio: string().nullable(),
-  password:
-    route.name === 'create-user'
-      ? string().required().label('Passwort')
-      : string().nullable().label('Passwort'),
-  passwordConfirm:
-    route.name === 'create-user'
-      ? string()
-          .required()
-          .oneOf([yupRef('password')], 'Passwörter stimmen nicht überein')
-      : string().nullable().label('Passwort bestätigen'),
-  avatar: mixed().nullable(),
-})
-
-const profileSettings = computed(() => {
-  return route.name === 'profile-settings'
-})
-
 const showAccountSettings = computed(() => {
   return (
     (authStore.user?.role === Role.NUMBER_0
       && authStore.user.id !== store.user?.id)
     || route.name === 'create-user'
   )
+})
+
+// Validationrules
+const validationSchema = computed(() => object({
+  role: showAccountSettings.value ? number().required().label('Rolle') : number().nullable(),
+  username: showAccountSettings.value
+    ? string()
+        .required()
+        .label('Benutzername')
+        .matches(
+          /^[\w-]+$/,
+          'Der Benutzername darf nur Buchstaben, Zahlen, Bindestriche und Unterstriche enthalten',
+        )
+    : string().nullable(),
+  name: string().required().label('Name'),
+  gender: number().label('Geschlecht').nullable(),
+  interests: array().label('Interessen').nullable(),
+  email: showAccountSettings.value ? string().required().email().label('E-Mail') : string().nullable(),
+  birthDate: string().nullable(),
+  bio: string().nullable(),
+  password:
+    showAccountSettings.value
+      ? route.name === 'create-user'
+        ? string().required().label('Passwort')
+        : string().nullable().label('Passwort')
+      : string().nullable(),
+  passwordConfirm:
+    showAccountSettings.value
+      ? route.name === 'create-user'
+        ? string()
+            .required()
+            .oneOf([yupRef('password')], 'Passwörter stimmen nicht überein')
+        : string().nullable().label('Passwort bestätigen')
+      : string().nullable(),
+  avatar: mixed().nullable(),
+}))
+
+const profileSettings = computed(() => {
+  return route.name === 'profile-settings'
 })
 
 const dateToday = computed(() => {
