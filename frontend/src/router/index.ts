@@ -1,7 +1,6 @@
 import type {
   RouteLocationNormalized,
 } from 'vue-router'
-import process from 'node:process'
 import {
   createRouter,
   createWebHistory,
@@ -117,7 +116,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes,
 })
 
