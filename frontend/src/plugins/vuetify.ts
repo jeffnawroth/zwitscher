@@ -4,29 +4,29 @@
  * Framework documentation: https://vuetifyjs.com`
  */
 
-// Styles
-import "@mdi/font/css/materialdesignicons.css";
-import "vuetify/styles";
-
 // Composables
-import { createVuetify } from "vuetify";
+import { createVuetify } from 'vuetify'
+import { de } from 'vuetify/locale'
 
-import { de } from "vuetify/locale";
+// Styles
+import '@mdi/font/css/materialdesignicons.css'
+
+import 'vuetify/styles'
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 export default createVuetify({
   locale: {
-    locale: "de",
+    locale: 'de',
     messages: { de },
   },
   theme: {
     themes: {
       light: {
         colors: {
-          primary: "#1867C0",
-          secondary: "#5CBBF6",
+          primary: '#1867C0',
+          secondary: '#5CBBF6',
         },
       },
     },
   },
-});
+})

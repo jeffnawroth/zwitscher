@@ -1,16 +1,138 @@
+<script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
+import { onBeforeRouteUpdate, useRouter } from 'vue-router'
+import DeleteUserDialog from '@/components/DeleteUserDialog.vue'
+import IconWithTooltip from '@/components/IconWithTooltip.vue'
+import LockUserDialog from '@/components/LockUserDialog.vue'
+import PageToolbar from '@/components/PageToolbar.vue'
+import PostList from '@/components/Posts/PostList.vue'
+import { generateFileURL } from '@/helpers'
+import { useAuthenticationStore } from '@/store/authentication'
+import { usePostStore } from '@/store/posts'
+import { useUsersStore } from '@/store/users'
+import { Role } from '@/typescript-axios-generated'
+
+const store = usePostStore()
+const usersStore = useUsersStore()
+const authStore = useAuthenticationStore()
+const router = useRouter()
+
+const lockDialog = ref(false)
+const deleteDialog = ref(false)
+
+onBeforeRouteUpdate(async (to, from) => {
+  if (to.params.username !== from.params.username) {
+    usersStore.getUserByUsername(to.params.username as string)
+    loadPosts(to.params.username as string)
+  }
+})
+
+onMounted(() => {
+  if (!usersStore.user?.username)
+    return
+  loadPosts(usersStore.user?.username)
+})
+
+const following = computed(() => {
+  return authStore.user?.following?.includes(usersStore.user!.id!)
+})
+
+const birthDate = computed(() => {
+  const userBirthDate = usersStore.user?.birthDate
+
+  if (!userBirthDate) {
+    return undefined
+  }
+
+  const [year, month, day] = userBirthDate.split('-')
+  const date = new Date(Number.parseInt(year), Number.parseInt(month) - 1, Number.parseInt(day))
+  return date.toLocaleDateString('de-DE', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+})
+
+const created = computed(() => {
+  if (!usersStore.user?.createdAt) {
+    return ''
+  }
+  const date = new Date(usersStore.user?.createdAt)
+  return date.toLocaleDateString('de-DE', {
+    month: 'long',
+    year: 'numeric',
+  })
+})
+
+const genderText = computed(() => {
+  const genderMap = {
+    0: 'männlich',
+    1: 'weiblich',
+    2: 'divers',
+  }
+
+  const genderValue = usersStore.user!.gender!
+  return genderMap[genderValue]
+})
+
+const genderIcon = computed(() => {
+  const genderMap = {
+    0: 'mdi-gender-male',
+    1: 'mdi-gender-female',
+    2: 'mdi-gender-non-binary',
+  }
+
+  const gender = usersStore.user!.gender!
+  return genderMap[gender]
+})
+
+/**
+ * Follow or unfollow user
+ */
+async function setFollow() {
+  const followingIndex = authStore.user?.following?.indexOf(
+    usersStore.user!.id!,
+  )
+  const followerIndex = usersStore.user?.followers?.indexOf(
+    authStore.user!.id!,
+  )
+
+  if (followingIndex !== undefined && followingIndex !== -1) {
+    authStore.user?.following?.splice(followingIndex, 1)
+    if (followerIndex !== undefined && followerIndex !== -1) {
+      usersStore.user?.followers?.splice(followerIndex, 1)
+    }
+    usersStore.unfollowUser(usersStore.user!.id!)
+  }
+  else {
+    authStore.user?.following?.push(usersStore.user!.id!)
+    usersStore.user?.followers?.push(authStore.user!.id!)
+    usersStore.followUser(usersStore.user!.id!)
+  }
+  authStore.setUserData(authStore.user)
+}
+
+/**
+ * Load all posts for a specific user
+ */
+function loadPosts(username: string) {
+  store.getPostsForUser(username)
+}
+</script>
+
 <template>
-  <PageToolbar icon="mdi-account" title="Profil"></PageToolbar>
+  <PageToolbar icon="mdi-account" title="Profil" />
   <v-card flat>
     <template #prepend>
       <v-avatar v-if="!usersStore.user?.avatar" size="75" color="grey">
-        <v-icon icon="mdi-account-circle" size="60"></v-icon>
+        <v-icon icon="mdi-account-circle" size="60" />
       </v-avatar>
       <v-img v-else>
         <v-avatar
           size="75"
           class="avatar"
           :image="generateFileURL(usersStore.user?.avatar)"
-        ></v-avatar>
+        />
       </v-img>
     </template>
     <template #append>
@@ -20,25 +142,25 @@
           :text="following ? 'Entfolgen' : 'Folgen'"
           :icon="following ? 'mdi-account-check' : 'mdi-account-plus'"
           @click="setFollow"
-        ></IconWithTooltip>
+        />
         <IconWithTooltip
           v-if="
-            $route.params.username == authStore.user?.username ||
-            authStore.user?.role == Role.NUMBER_0
+            $route.params.username === authStore.user?.username
+              || authStore.user?.role === Role.NUMBER_0
           "
           :text="
-            $route.params.username == authStore.user?.username
+            $route.params.username === authStore.user?.username
               ? 'Profil bearbeiten'
               : 'Nutzer bearbeiten'
           "
           icon="mdi-account-edit"
           @click="router.push({ name: 'profile-settings' })"
-        ></IconWithTooltip>
+        />
         <template
           v-if="
-            (authStore.user?.role == Role.NUMBER_0 ||
-              authStore.user?.role == Role.NUMBER_1) &&
-            $route.params.username != authStore.user?.username
+            (authStore.user?.role === Role.NUMBER_0
+              || authStore.user?.role === Role.NUMBER_1)
+              && $route.params.username !== authStore.user?.username
           "
         >
           <IconWithTooltip
@@ -51,12 +173,12 @@
                 : 'mdi-account-lock-open'
             "
             @click="lockDialog = true"
-          ></IconWithTooltip>
+          />
           <IconWithTooltip
             text="Nutzer löschen"
             icon="mdi-account-remove"
             @click="deleteDialog = true"
-          ></IconWithTooltip>
+          />
         </template>
       </div>
     </template>
@@ -112,130 +234,14 @@
       <span>{{ usersStore.user?.bio }}</span>
     </template>
   </v-card>
-  <v-divider></v-divider>
+  <v-divider />
 
   <PostList
     :posts="store.sortedUserPosts"
     no-posts-message="Der Nutzer hat noch keine Beiträge veröffentlicht."
-  ></PostList>
-  <router-view></router-view>
+  />
+  <router-view />
 
-  <DeleteUserDialog v-model="deleteDialog"></DeleteUserDialog>
-  <LockUserDialog v-model="lockDialog"></LockUserDialog>
+  <DeleteUserDialog v-model="deleteDialog" />
+  <LockUserDialog v-model="lockDialog" />
 </template>
-
-<script setup lang="ts">
-import { usePostStore } from "@/store/posts";
-import { computed, onMounted, ref } from "vue";
-import { useUsersStore } from "@/store/users";
-import PostList from "@/components/Posts/PostList.vue";
-import { useAuthenticationStore } from "@/store/authentication";
-import { generateFileURL } from "@/helpers";
-import IconWithTooltip from "@/components/IconWithTooltip.vue";
-import LockUserDialog from "@/components/LockUserDialog.vue";
-import DeleteUserDialog from "@/components/DeleteUserDialog.vue";
-import { onBeforeRouteUpdate, useRouter } from "vue-router";
-import { Role } from "@/typescript-axios-generated";
-import PageToolbar from "@/components/PageToolbar.vue";
-
-const store = usePostStore();
-const usersStore = useUsersStore();
-const authStore = useAuthenticationStore();
-const router = useRouter();
-
-const lockDialog = ref(false);
-const deleteDialog = ref(false);
-
-onBeforeRouteUpdate(async (to, from) => {
-  if (to.params.username !== from.params.username) {
-    usersStore.getUserByUsername(to.params.username as string);
-    loadPosts(to.params.username as string);
-  }
-});
-
-onMounted(() => {
-  loadPosts(usersStore.user?.username!);
-});
-
-const following = computed(() => {
-  return authStore.user?.following?.includes(usersStore.user!.id!);
-});
-
-const birthDate = computed(() => {
-  const userBirthDate = usersStore.user?.birthDate;
-
-  if (!userBirthDate) {
-    return undefined;
-  }
-
-  const [year, month, day] = userBirthDate.split("-");
-  const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-  return date.toLocaleDateString("de-DE", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-});
-
-const created = computed(() => {
-  const date = new Date(usersStore.user?.createdAt!);
-  return date.toLocaleDateString("de-DE", {
-    month: "long",
-    year: "numeric",
-  });
-});
-
-const genderText = computed(() => {
-  const genderMap = {
-    0: "männlich",
-    1: "weiblich",
-    2: "divers",
-  };
-
-  const genderValue = usersStore.user!.gender!;
-  return genderMap[genderValue];
-});
-
-const genderIcon = computed(() => {
-  const genderMap = {
-    0: "mdi-gender-male",
-    1: "mdi-gender-female",
-    2: "mdi-gender-non-binary",
-  };
-
-  const gender = usersStore.user!.gender!;
-  return genderMap[gender];
-});
-
-/**
- * Follow or unfollow user
- */
-async function setFollow() {
-  const followingIndex = authStore.user?.following?.indexOf(
-    usersStore.user!.id!,
-  );
-  const followerIndex = usersStore.user?.followers?.indexOf(
-    authStore.user?.id!,
-  );
-
-  if (followingIndex !== undefined && followingIndex !== -1) {
-    authStore.user?.following?.splice(followingIndex, 1);
-    if (followerIndex != undefined && followerIndex !== -1) {
-      usersStore.user?.followers?.splice(followerIndex, 1);
-    }
-    usersStore.unfollowUser(usersStore.user!.id!);
-  } else {
-    authStore.user?.following?.push(usersStore.user!.id!);
-    usersStore.user?.followers?.push(authStore.user?.id!);
-    usersStore.followUser(usersStore.user!.id!);
-  }
-  authStore.setUserData(authStore.user);
-}
-
-/**
- * Load all posts for a specific user
- */
-function loadPosts(username: string) {
-  store.getPostsForUser(username);
-}
-</script>

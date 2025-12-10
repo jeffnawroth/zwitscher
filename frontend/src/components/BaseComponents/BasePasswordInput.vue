@@ -1,18 +1,6 @@
-<template>
-  <BaseInputWithValidation
-    :name="name"
-    :label="label"
-    :type="showPassword ? 'text' : 'password'"
-    :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-    @click:append-inner="showPassword = !showPassword"
-  ></BaseInputWithValidation>
-</template>
-
 <script setup lang="ts">
-import { ref } from "vue";
-import BaseInputWithValidation from "./BaseInputWithValidation.vue";
-
-const showPassword = ref(false);
+import { ref } from 'vue'
+import BaseInputWithValidation from './BaseInputWithValidation.vue'
 
 defineProps({
   name: {
@@ -24,5 +12,17 @@ defineProps({
     type: String,
     required: true,
   },
-});
+})
+
+const showPassword = ref(false)
 </script>
+
+<template>
+  <BaseInputWithValidation
+    :name="name"
+    :label="label"
+    :type="showPassword ? 'text' : 'password'"
+    :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+    @click:append-inner="showPassword = !showPassword"
+  />
+</template>

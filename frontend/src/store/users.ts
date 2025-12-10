@@ -1,27 +1,28 @@
-import { defineStore } from "pinia";
-import { ref } from "vue";
-import { showNotification } from "./helpers";
-import {
+import type {
   User,
   UserAdd,
-  UserApi,
   UserEdit,
   UserLight,
   UserSearch,
-} from "@/typescript-axios-generated";
-import { toBase64 } from "@/helpers";
-import { computed } from "vue";
-import { useAuthenticationStore } from "./authentication";
+} from '@/typescript-axios-generated'
+import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
+import { toBase64 } from '@/helpers'
+import {
+  UserApi,
+} from '@/typescript-axios-generated'
+import { useAuthenticationStore } from './authentication'
+import { showNotification } from './helpers'
 
-export const useUsersStore = defineStore("users", () => {
-  const users = ref<User[]>([]);
-  const user = ref<User>();
-  const followedUsers = ref<UserLight[]>([]);
-  const loading = ref(false);
-  const crudCardLoading = ref(false);
-  const loadingFollowedUsers = ref(false);
-  const searchResult = ref<UserSearch[]>([]);
-  const searching = ref(false);
+export const useUsersStore = defineStore('users', () => {
+  const users = ref<User[]>([])
+  const user = ref<User>()
+  const followedUsers = ref<UserLight[]>([])
+  const loading = ref(false)
+  const crudCardLoading = ref(false)
+  const loadingFollowedUsers = ref(false)
+  const searchResult = ref<UserSearch[]>([])
+  const searching = ref(false)
 
   /**
    * Creates a new user
@@ -29,18 +30,21 @@ export const useUsersStore = defineStore("users", () => {
    */
   async function createUser(user: UserAdd) {
     try {
-      crudCardLoading.value = true;
-      if (user.avatar) user.avatar = await toBase64(user.avatar);
-      const data = await UserApi.prototype.apiUserPost(user);
-      users.value.push(data.data as User);
-      showNotification("success", "Der Nutzer wurde erfolgreich erstellt!");
-    } catch {
+      crudCardLoading.value = true
+      if (user.avatar)
+        user.avatar = await toBase64(user.avatar)
+      const data = await UserApi.prototype.apiUserPost(user)
+      users.value.push(data.data as User)
+      showNotification('success', 'Der Nutzer wurde erfolgreich erstellt!')
+    }
+    catch {
       showNotification(
-        "error",
-        "Beim Erstellen des Nutzers ist ein Fehler aufgetreten",
-      );
-    } finally {
-      crudCardLoading.value = false;
+        'error',
+        'Beim Erstellen des Nutzers ist ein Fehler aufgetreten',
+      )
+    }
+    finally {
+      crudCardLoading.value = false
     }
   }
 
@@ -49,18 +53,21 @@ export const useUsersStore = defineStore("users", () => {
    */
   async function getUsers() {
     try {
-      if (users.value.length === 0) loading.value = true;
+      if (users.value.length === 0)
+        loading.value = true
       // users.value = [];
       // loading.value = true;
-      const data = await UserApi.prototype.apiUserGet();
-      users.value = data.data as User[];
-    } catch (error) {
+      const data = await UserApi.prototype.apiUserGet()
+      users.value = data.data as User[]
+    }
+    catch {
       showNotification(
-        "error",
-        "Beim Laden der Nutzer ist ein Fehler aufgetreten",
-      );
-    } finally {
-      loading.value = false;
+        'error',
+        'Beim Laden der Nutzer ist ein Fehler aufgetreten',
+      )
+    }
+    finally {
+      loading.value = false
     }
   }
 
@@ -69,16 +76,18 @@ export const useUsersStore = defineStore("users", () => {
    */
   async function fetchFollowedUsers() {
     try {
-      loadingFollowedUsers.value = true;
-      const data = await UserApi.prototype.apiUserFollowedUsersLightGet();
-      followedUsers.value = data.data;
-    } catch (error) {
+      loadingFollowedUsers.value = true
+      const data = await UserApi.prototype.apiUserFollowedUsersLightGet()
+      followedUsers.value = data.data
+    }
+    catch {
       showNotification(
-        "error",
-        "Beim Laden der gefolgten Nutzer ist ein Fehler aufgetreten",
-      );
-    } finally {
-      loadingFollowedUsers.value = false;
+        'error',
+        'Beim Laden der gefolgten Nutzer ist ein Fehler aufgetreten',
+      )
+    }
+    finally {
+      loadingFollowedUsers.value = false
     }
   }
 
@@ -101,18 +110,20 @@ export const useUsersStore = defineStore("users", () => {
    */
   async function getUserByUsername(username: string) {
     try {
-      crudCardLoading.value = true;
+      crudCardLoading.value = true
       const data = await UserApi.prototype.apiUserGetByUsernameUsernameGet(
         username,
-      );
-      user.value = data.data as User;
-    } catch (error) {
+      )
+      user.value = data.data as User
+    }
+    catch {
       showNotification(
-        "error",
-        "Beim Laden des Nutzers ist ein Fehler aufgetreten",
-      );
-    } finally {
-      crudCardLoading.value = false;
+        'error',
+        'Beim Laden des Nutzers ist ein Fehler aufgetreten',
+      )
+    }
+    finally {
+      crudCardLoading.value = false
     }
   }
 
@@ -122,17 +133,19 @@ export const useUsersStore = defineStore("users", () => {
    */
   async function deleteUser(id: string) {
     try {
-      crudCardLoading.value = true;
-      await UserApi.prototype.apiUserIdDelete(id);
-      users.value = users.value.filter((user) => user.id !== id);
-      showNotification("success", "Der Nutzer wurde erfolgreich gelöscht!");
-    } catch {
+      crudCardLoading.value = true
+      await UserApi.prototype.apiUserIdDelete(id)
+      users.value = users.value.filter(user => user.id !== id)
+      showNotification('success', 'Der Nutzer wurde erfolgreich gelöscht!')
+    }
+    catch {
       showNotification(
-        "error",
-        "Beim Löschen des Nutzers ist ein Fehler aufgetreten",
-      );
-    } finally {
-      crudCardLoading.value = false;
+        'error',
+        'Beim Löschen des Nutzers ist ein Fehler aufgetreten',
+      )
+    }
+    finally {
+      crudCardLoading.value = false
     }
   }
 
@@ -143,22 +156,26 @@ export const useUsersStore = defineStore("users", () => {
    */
   async function updateUser(userEdit: UserEdit, notification = true) {
     try {
-      crudCardLoading.value = true;
-      if (userEdit.avatar) userEdit.avatar = await toBase64(userEdit.avatar);
-      await UserApi.prototype.apiUserIdPut(userEdit.id!, userEdit);
-      user.value = userEdit;
-      const index = users.value.findIndex((user) => user.id === userEdit.id);
-      if (index > -1) users.value.splice(index, 1, userEdit);
+      crudCardLoading.value = true
+      if (userEdit.avatar)
+        userEdit.avatar = await toBase64(userEdit.avatar)
+      await UserApi.prototype.apiUserIdPut(userEdit.id!, userEdit)
+      user.value = userEdit
+      const index = users.value.findIndex(user => user.id === userEdit.id)
+      if (index > -1)
+        users.value.splice(index, 1, userEdit)
 
       if (notification)
-        showNotification("success", "Die Änderungen wurden gespeichert!");
-    } catch {
+        showNotification('success', 'Die Änderungen wurden gespeichert!')
+    }
+    catch {
       showNotification(
-        "error",
-        "Beim Bearbeiten des Nutzers ist ein Fehler aufgetreten",
-      );
-    } finally {
-      crudCardLoading.value = false;
+        'error',
+        'Beim Bearbeiten des Nutzers ist ein Fehler aufgetreten',
+      )
+    }
+    finally {
+      crudCardLoading.value = false
     }
   }
 
@@ -168,16 +185,17 @@ export const useUsersStore = defineStore("users", () => {
    */
   async function followUser(id: string) {
     try {
-      await UserApi.prototype.apiUserIdFollowPost(id);
+      await UserApi.prototype.apiUserIdFollowPost(id)
       if (user.value) {
-        const { id, name, username, avatar } = user.value;
-        followedUsers.value.push({ id, avatar, username, name });
+        const { id, name, username, avatar } = user.value
+        followedUsers.value.push({ id, avatar, username, name })
       }
-    } catch (error) {
+    }
+    catch {
       showNotification(
-        "error",
-        "Beim Folgen des Nutzers ist ein Fehler aufgetreten",
-      );
+        'error',
+        'Beim Folgen des Nutzers ist ein Fehler aufgetreten',
+      )
     }
   }
 
@@ -187,14 +205,16 @@ export const useUsersStore = defineStore("users", () => {
    */
   async function unfollowUser(id: string) {
     try {
-      await UserApi.prototype.apiUserIdUnfollowPost(id);
-      const index = followedUsers.value.findIndex((user) => user.id == id);
-      if (index > -1) followedUsers.value?.splice(index, 1);
-    } catch (error) {
+      await UserApi.prototype.apiUserIdUnfollowPost(id)
+      const index = followedUsers.value.findIndex(user => user.id === id)
+      if (index > -1)
+        followedUsers.value?.splice(index, 1)
+    }
+    catch {
       showNotification(
-        "error",
-        "Beim Entfolgen des Nutzers ist ein Fehler aufgetreten",
-      );
+        'error',
+        'Beim Entfolgen des Nutzers ist ein Fehler aufgetreten',
+      )
     }
   }
 
@@ -204,19 +224,21 @@ export const useUsersStore = defineStore("users", () => {
    */
   async function changePassword(password: string) {
     try {
-      crudCardLoading.value = true;
-      await UserApi.prototype.apiUserPasswordChangePut(password);
-      const store = useAuthenticationStore();
-      store.user!.password = password;
-      showNotification("success", "Das Passwort wurde erfolgreich geändert!");
-    } catch (error) {
+      crudCardLoading.value = true
+      await UserApi.prototype.apiUserPasswordChangePut(password)
+      const store = useAuthenticationStore()
+      store.user!.password = password
+      showNotification('success', 'Das Passwort wurde erfolgreich geändert!')
+    }
+    catch (error) {
       showNotification(
-        "error",
-        "Beim ändern des Passworts ist ein Fehler aufgetreten!",
-      );
-      return Promise.reject(error);
-    } finally {
-      crudCardLoading.value = false;
+        'error',
+        'Beim ändern des Passworts ist ein Fehler aufgetreten!',
+      )
+      return Promise.reject(error)
+    }
+    finally {
+      crudCardLoading.value = false
     }
   }
 
@@ -226,19 +248,21 @@ export const useUsersStore = defineStore("users", () => {
    */
   async function changeEmail(email: string) {
     try {
-      crudCardLoading.value = true;
-      await UserApi.prototype.apiUserEmailChangePut(email);
-      const store = useAuthenticationStore();
-      store.user!.email = email;
-      showNotification("success", "Die E-Mail wurde erfolgreich geändert!");
-    } catch (error) {
+      crudCardLoading.value = true
+      await UserApi.prototype.apiUserEmailChangePut(email)
+      const store = useAuthenticationStore()
+      store.user!.email = email
+      showNotification('success', 'Die E-Mail wurde erfolgreich geändert!')
+    }
+    catch (error) {
       showNotification(
-        "error",
-        "Beim Ändern der E-Mail ist ein Fehler aufgetreten!",
-      );
-      return Promise.reject(error);
-    } finally {
-      crudCardLoading.value = false;
+        'error',
+        'Beim Ändern der E-Mail ist ein Fehler aufgetreten!',
+      )
+      return Promise.reject(error)
+    }
+    finally {
+      crudCardLoading.value = false
     }
   }
 
@@ -248,28 +272,30 @@ export const useUsersStore = defineStore("users", () => {
    */
   async function searchUser(query: string) {
     try {
-      searching.value = true;
-      if (!query || query == "") {
-        searchResult.value = [];
-        return;
+      searching.value = true
+      if (!query || query === '') {
+        searchResult.value = []
+        return
       }
-      const data = await UserApi.prototype.apiUserSearchQueryGet(query);
-      searchResult.value = data.data;
-    } catch (error) {
-      showNotification("error", "Bei der Suche ist ein Fehler aufgetreten!");
-    } finally {
-      searching.value = false;
+      const data = await UserApi.prototype.apiUserSearchQueryGet(query)
+      searchResult.value = data.data
+    }
+    catch {
+      showNotification('error', 'Bei der Suche ist ein Fehler aufgetreten!')
+    }
+    finally {
+      searching.value = false
     }
   }
 
   const sortedFollowedUsers = computed(() => {
     return followedUsers.value.sort((a, b) => {
-      const usernameA = a.username!.toLocaleUpperCase();
-      const usernameB = b.username!.toLocaleUpperCase();
+      const usernameA = a.username!.toLocaleUpperCase()
+      const usernameB = b.username!.toLocaleUpperCase()
 
-      return usernameA.localeCompare(usernameB);
-    });
-  });
+      return usernameA.localeCompare(usernameB)
+    })
+  })
 
   return {
     user,
@@ -293,5 +319,5 @@ export const useUsersStore = defineStore("users", () => {
     searchUser,
     searchResult,
     searching,
-  };
-});
+  }
+})

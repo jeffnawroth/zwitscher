@@ -1,3 +1,12 @@
+<script setup lang="ts">
+defineProps({
+  modelValue: {
+    type: Boolean,
+  },
+})
+defineEmits(['cancel', 'discard', 'update:modelValue'])
+</script>
+
 <template>
   <v-dialog
     :model-value="modelValue"
@@ -11,19 +20,14 @@
         Sind Sie sicher, dass Sie Ihre Änderungen verwerfen möchten?
       </v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn variant="tonal" @click="$emit('cancel')">Abbrechen</v-btn>
-        <v-btn variant="tonal" @click="$emit('discard')">Verwerfen</v-btn>
+        <v-spacer />
+        <v-btn variant="tonal" @click="$emit('cancel')">
+          Abbrechen
+        </v-btn>
+        <v-btn variant="tonal" @click="$emit('discard')">
+          Verwerfen
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
-
-<script setup lang="ts">
-defineEmits(["cancel", "discard", "update:modelValue"]);
-defineProps({
-  modelValue: {
-    type: Boolean,
-  },
-});
-</script>

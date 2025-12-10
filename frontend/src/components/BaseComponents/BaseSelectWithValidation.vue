@@ -1,21 +1,6 @@
-<template>
-  <v-select
-    v-model="value"
-    :label="label"
-    :error-messages="errors"
-    :clearable="true"
-    :items="items"
-    item-value="value"
-    item-title="text"
-    hide-details="auto"
-    @blur="handleBlur"
-  >
-  </v-select>
-</template>
-
 <script setup lang="ts">
-import { toRef } from "vue";
-import { useField } from "vee-validate";
+import { useField } from 'vee-validate'
+import { toRef } from 'vue'
 
 const props = defineProps({
   name: {
@@ -32,7 +17,21 @@ const props = defineProps({
     type: Array,
     required: true,
   },
-});
+})
 
-const { value, handleBlur, errors } = useField(toRef(props, "name"), undefined);
+const { value, handleBlur, errors } = useField(toRef(props, 'name'), undefined)
 </script>
+
+<template>
+  <v-select
+    v-model="value"
+    :label="label"
+    :error-messages="errors"
+    :clearable="true"
+    :items="items"
+    item-value="value"
+    item-title="text"
+    hide-details="auto"
+    @blur="handleBlur"
+  />
+</template>

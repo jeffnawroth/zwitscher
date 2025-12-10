@@ -1,7 +1,7 @@
-import { NotificationAlert } from "@/interfaces";
-import { v4 as uuidv4 } from "uuid";
-import { useNotificationStore } from "./notification";
-import { PostResult } from "@/typescript-axios-generated";
+import type { NotificationAlert } from '@/interfaces'
+import type { PostResult } from '@/typescript-axios-generated'
+import { v4 as uuidv4 } from 'uuid'
+import { useNotificationStore } from './notification'
 
 /**
  * Sort posts based on their date
@@ -9,10 +9,10 @@ import { PostResult } from "@/typescript-axios-generated";
  */
 export function sortByDateDescending(posts: PostResult[]) {
   return posts.sort((a: PostResult, b: PostResult) => {
-    const dateA = new Date(a.date!);
-    const dateB = new Date(b.date!);
-    return dateB.getTime() - dateA.getTime();
-  });
+    const dateA = new Date(a.date!)
+    const dateB = new Date(b.date!)
+    return dateB.getTime() - dateA.getTime()
+  })
 }
 
 /**
@@ -21,14 +21,14 @@ export function sortByDateDescending(posts: PostResult[]) {
  * @param text
  */
 export function showNotification(
-  type: "error" | "success" | "warning" | "info" | undefined,
+  type: 'error' | 'success' | 'warning' | 'info' | undefined,
   text: string,
 ) {
-  const store = useNotificationStore();
+  const store = useNotificationStore()
   const notification: NotificationAlert = {
     id: uuidv4(),
-    type: type,
-    text: text,
-  };
-  store.addNotification(notification);
+    type,
+    text,
+  }
+  store.addNotification(notification)
 }

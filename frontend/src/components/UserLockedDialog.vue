@@ -1,3 +1,12 @@
+<script setup lang="ts">
+defineProps({
+  modelValue: {
+    type: Boolean,
+  },
+})
+defineEmits(['close', 'update:model-value'])
+</script>
+
 <template>
   <v-dialog
     :model-value="modelValue"
@@ -10,18 +19,11 @@
       width="500"
     >
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn variant="tonal" @click="$emit('close')">Schließen</v-btn>
+        <v-spacer />
+        <v-btn variant="tonal" @click="$emit('close')">
+          Schließen
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
-
-<script setup lang="ts">
-defineEmits(["close", "update:model-value"]);
-defineProps({
-  modelValue: {
-    type: Boolean,
-  },
-});
-</script>
