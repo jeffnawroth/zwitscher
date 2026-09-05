@@ -21,20 +21,21 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://0.0.0.0:5176
-      ConnectionStrings__SqlDbConnection: "${DB_CONN}"
+      ConnectionStrings__PostgresConnection: "${DB_CONN}"
       JwtConfig__Secret: "${JWT_SECRET}"
     ports:
       - "5176:5176"
 
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+  postgres:
+    image: postgres:16-alpine
     environment:
-      MSSQL_SA_PASSWORD: "${SA_PASSWORD}"
-      ACCEPT_EULA: "Y"
+      POSTGRES_USER: zwitscher
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: zwitscher
     volumes:
-      - sqlserver:/var/opt/mssql
+      - pgdata:/var/lib/postgresql/data
     ports:
-      - "1433:1433"
-    
+      - "5432:5432"
+
 volumes:
-  sqlserver:
+  pgdata:
