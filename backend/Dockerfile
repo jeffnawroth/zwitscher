@@ -1,4 +1,9 @@
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+# Build stage runs on the *native* build host architecture (no QEMU
+# emulation - `dotnet restore` can hang for tens of minutes under emulation).
+# The output is a framework-dependent, architecture-independent IL build, so
+# cross-building this way is safe: only the final runtime base image below
+# needs to match the deployment target's architecture.
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 
 WORKDIR /source
 
