@@ -38,7 +38,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddDbContext<ApiDbContext>(opt =>
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("SqlDbConnection")));
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
 
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
 

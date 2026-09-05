@@ -1,6 +1,6 @@
 # Zwitscher
 
-Zwitscher is a social microblogging platform with a Vue 3 frontend, ASP.NET Core 7 backend API, SQL Server database, and an experimental Xamarin.Forms mobile client.
+Zwitscher is a social microblogging platform with a Vue 3 frontend, ASP.NET Core 7 backend API, PostgreSQL database, and an experimental Xamarin.Forms mobile client.
 
 ## Tech Stack
 
@@ -16,7 +16,7 @@ Zwitscher is a social microblogging platform with a Vue 3 frontend, ASP.NET Core
 - **Framework**: ASP.NET Core 7 Web API
 - **ORM**: Entity Framework Core
 - **Authentication**: ASP.NET Identity + JWT Bearer
-- **Database**: SQL Server 2022
+- **Database**: PostgreSQL 16
 - **API Documentation**: Swagger/OpenAPI
 
 ### Mobile App
@@ -55,9 +55,9 @@ cp .env.example .env
 
 Key environment variables:
 - `VITE_API_BASE_URL` - Frontend API endpoint (e.g., `http://localhost:5176`)
-- `DB_CONN` - SQL Server connection string
+- `DB_CONN` - PostgreSQL connection string
 - `JWT_SECRET` - Secret key for JWT token signing
-- `SA_PASSWORD` - SQL Server SA password
+- `POSTGRES_PASSWORD` - PostgreSQL password
 
 ### 2. Running with Docker (Recommended)
 
@@ -72,7 +72,7 @@ docker compose -f compose.dev.yaml up --build
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:5176
 - Swagger UI: http://localhost:5176/swagger
-- SQL Server: `localhost:1433`
+- PostgreSQL: `localhost:5432`
 
 #### Production Mode
 Optimized builds with NGINX serving the frontend:
@@ -94,7 +94,7 @@ dotnet restore
 dotnet run
 ```
 
-Ensure SQL Server is accessible and environment variables are set.
+Ensure PostgreSQL is accessible and environment variables are set.
 
 #### Frontend
 ```bash
@@ -153,7 +153,7 @@ Main API endpoints:
 
 ## Database
 
-The application uses **SQL Server 2022** with Entity Framework Core. Migrations are automatically applied on application startup.
+The application uses **PostgreSQL 16** with Entity Framework Core. Migrations are automatically applied on application startup.
 
 ### Manual Migration Commands
 ```bash
@@ -178,4 +178,4 @@ The backend includes:
 - Automatic Swagger documentation generation
 - CORS configuration for cross-origin requests
 - JWT bearer authentication middleware
-- Entity Framework Core with SQL Server provider
+- Entity Framework Core with Npgsql (PostgreSQL) provider
